@@ -1,0 +1,33 @@
+{
+    "product-template.txt": {
+      "title": "Prompt title",
+      "description": "Description of the prompt",
+      "type":"Block Generation",
+      "tags": ["pdp", "theme"]
+    },
+    "product-template.txt": {
+        "title": "Prompt title",
+        "description": "Description of the prompt",
+        "type":"Block Generation",
+        "tags": ["pdp", "theme"]
+      },
+      "product-template.txt": {
+        "title": "Prompt title",
+        "description": "Description of the prompt",
+        "type":"Block Generation",
+        "tags": ["pdp", "theme"]
+      },
+      "product-template.txt": {
+        "title": "Prompt title",
+        "description": "Description of the prompt",
+        "type":"Block Generation",
+        "tags": ["pdp", "theme"]
+      },
+      "product-template.txt": {
+        "title": "Prompt title",
+        "description": "Description of the prompt",
+        "type":"Block Generation",
+        "tags": ["pdp", "theme"]
+      }
+}
+  

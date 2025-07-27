@@ -1,0 +1,28 @@
+{
+    "product-template.liquid": {
+      "title": "Product Template",
+      "description": "A customizable product layout for PDP pages with metafield support.",
+      "tags": ["pdp", "theme"]
+    },
+    "landing-hero.liquid": {
+      "title": "Landing Hero",
+      "description": "A full-width hero section with headline, subtext, and CTA button.",
+      "tags": ["landing", "theme"]
+    },
+    "announcement-bar.liquid": {
+      "title": "Announcement Bar",
+      "description": "Displays a dismissible banner for promotions or shipping info.",
+      "tags": ["theme"]
+    },
+    "feature-grid.liquid": {
+      "title": "Feature Grid",
+      "description": "A multi-column layout to highlight product features or USPs.",
+      "tags": ["landing", "theme"]
+    },
+    "upsell-cross-sell.liquid": {
+      "title": "Upsell / Cross-Sell",
+      "description": "Recommends related products on PDPs or in the cart drawer.",
+      "tags": ["pdp", "theme"]
+    }
+}
+  
