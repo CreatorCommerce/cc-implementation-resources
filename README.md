@@ -77,7 +77,5 @@ For more information on contributing, refer to the [CONTRIBUTING.md](CONTRIBUTIN
 
 This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
 
----
-
 Thank you for using the CreatorCommerce Code Snippets & Resources repository. We hope this resource helps streamline your integration process and provides easy access to everything you need to get started with CreatorCommerce!
 
