@@ -28,7 +28,7 @@ Here’s how the repo is structured to help you navigate it easily:
 - **`README.md`**: This file, which serves as the central documentation for the repository, providing an overview and instructions for usage.
 
 
-### Using This Repo with an LLM
+## Using This Repo with an LLM
 
 To use this repository effectively with an LLM, follow these steps:
 
