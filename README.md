@@ -11,23 +11,22 @@ Welcome to the **CreatorCommerce Implementation Resources** repository! This pub
 
 Here’s how the repo is structured to help you navigate it easily:
 
-/cc-implementation-resources
-│
-├── /examples # Code snippets for different use cases
-│ ├── landing-pages # Examples for setting up landing pages
-│ ├── API-integration # Example code for integrating with CreatorCommerce APIs
-│ └── authentication # Code for user authentication setups
-│
-├── /documentation # Links to official CreatorCommerce documentation
-│ ├── getting-started.md
-│ ├── API-reference.md
-│ └── best-practices.md
-│
-├── /config # Configuration files for integrations
-│ ├── webhooks.yaml # Webhook configurations
-│ └── env.example # Environment variables setup
-│
-└── README.md # This file
+- **`/examples`**: Contains code snippets for various use cases to help you implement CreatorCommerce features.
+  - `landing-pages`: Example code and setup for landing pages.
+  - `API-integration`: Sample code for integrating CreatorCommerce APIs into your application.
+  - `authentication`: Code and configurations for setting up user authentication.
+
+- **`/documentation`**: Includes markdown files with important CreatorCommerce documentation to guide you through various tasks.
+  - `getting-started.md`: A guide to help you get started with CreatorCommerce integration.
+  - `API-reference.md`: Comprehensive reference for CreatorCommerce APIs.
+  - `best-practices.md`: Tips and practices to ensure you’re using CreatorCommerce in the most efficient and secure way.
+
+- **`/config`**: Configuration files used for integrations with external systems.
+  - `webhooks.yaml`: Example configuration for CreatorCommerce webhooks.
+  - `env.example`: A template for environment variables required for your project.
+
+- **`README.md`**: This file, which serves as the central documentation for the repository, providing an overview and instructions for usage.
+
 
 ### Using This Repo with an LLM
 
