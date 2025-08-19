@@ -13,9 +13,9 @@
 * [Dashboard](taxomony/dashboard.md)
 * [Integrations](taxomony/integrations.md)
 
-## USER FLOWS & CORE STRATEGIES
+## IMPLEMENTATION USER FLOWS & GUIDELINES
 
-* [Merchant Setup](user-flows-and-core-strategies/merchant-setup.md)
-* [Creator Setup](user-flows-and-core-strategies/creator-setup.md)
-* [Co-branded Landing Page Tips](user-flows-and-core-strategies/co-branded-landing-page-tips.md)
-* [Co-branding Ideas by Category](user-flows-and-core-strategies/co-branding-ideas-by-category.md)
+* [Merchant Setup](implementation-user-flows-and-guidelines/merchant-setup.md)
+* [Creator Setup](implementation-user-flows-and-guidelines/creator-setup.md)
+* [Co-branding Concepts](implementation-user-flows-and-guidelines/co-branding-concepts.md)
+* [Co-branded UI/UX Guidelines](implementation-user-flows-and-guidelines/co-branded-ui-ux-guidelines.md)
