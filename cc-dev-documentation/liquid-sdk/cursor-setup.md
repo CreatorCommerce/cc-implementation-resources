@@ -1,3 +1,17 @@
-# Page 1
+# Cursor setup
 
-blah blah new stuf
+Indexing CreatorCommerce documentation
+
+
+
+Using the CreatorCommerce MCP (Coming Soon)
+
+
+
+Using Shopify MCP
+
+Last but not least, don't forget this
+
+
+
+Setting up rules
