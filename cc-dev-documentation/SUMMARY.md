@@ -2,20 +2,43 @@
 
 ## Getting Started
 
-* [Page 1](README.md)
+* [The CreatorCommerce Platform](README.md)
+* [Build a co-branded storefront](getting-started/build-a-co-branded-storefront.md)
+* [Build custom workflows](getting-started/build-custom-workflows.md)
+* [Build co-branded email flows](getting-started/build-co-branded-email-flows.md)
+* [Customize the creator dashboard](getting-started/customize-the-creator-dashboard.md)
+* [Build creator messaging flows](getting-started/build-creator-messaging-flows.md)
+* [Build a partner integration](getting-started/build-a-partner-integration.md)
+* [Platform taxonomy](getting-started/platform-taxonomy.md)
 
-## INTEGRATION DEV
+## Liquid SDK
 
-* [Page 2](integration-dev/page-2.md)
+* [Overview](liquid-sdk/overview.md)
+* [Cursor Setup](liquid-sdk/cursor-setup.md)
+* [Build a landing page](liquid-sdk/build-a-landing-page.md)
+* [Co-brand the entire theme](liquid-sdk/co-brand-the-entire-theme.md)
+* [Metaobject Reference](liquid-sdk/metaobject-reference.md)
 
-## TAXOMONY
+## SHOPIFY FLOW
 
-* [Dashboard](taxomony/dashboard.md)
-* [Integrations](taxomony/integrations.md)
+* [Page 1](shopify-flow/page-1.md)
 
-## IMPLEMENTATION USER FLOWS & GUIDELINES
+## KLAVIYO
 
-* [Merchant Setup](implementation-user-flows-and-guidelines/merchant-setup.md)
-* [Creator Setup](implementation-user-flows-and-guidelines/creator-setup.md)
-* [Co-branding Concepts](implementation-user-flows-and-guidelines/co-branding-concepts.md)
-* [Co-branded UI/UX Guidelines](implementation-user-flows-and-guidelines/co-branded-ui-ux-guidelines.md)
+* [Out-of-the-box flows](klaviyo/out-of-the-box-flows.md)
+* [Events](klaviyo/events.md)
+* [Properties](klaviyo/properties.md)
+
+## PARTNER API
+
+* [Environment setup](partner-api/environment-setup.md)
+* [/program-updated](partner-api/program-updated.md)
+* [Submitting your integration](partner-api/submitting-your-integration.md)
+
+## USER EXPERIENCES & GUIDELINES
+
+* [How merchants get setup](user-experiences-and-guidelines/how-merchants-get-setup.md)
+* [How creators get setup](user-experiences-and-guidelines/how-creators-get-setup.md)
+* [Figma examples](user-experiences-and-guidelines/figma-examples.md)
+* [Co-branding concepts](user-experiences-and-guidelines/co-branding-concepts.md)
+* [Co-branded UI/UX guidelines](user-experiences-and-guidelines/co-branded-ui-ux-guidelines.md)

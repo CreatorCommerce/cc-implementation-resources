@@ -1,3 +1,2 @@
-# Page 1
+# The CreatorCommerce Platform
 
-blah blah new stuf
