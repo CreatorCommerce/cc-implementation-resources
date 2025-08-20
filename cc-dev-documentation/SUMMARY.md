@@ -3,13 +3,13 @@
 ## Getting Started
 
 * [The CreatorCommerce Platform](README.md)
-* [Build a co-branded storefront](getting-started/build-a-co-branded-storefront.md)
-* [Build custom workflows](getting-started/build-custom-workflows.md)
-* [Build co-branded email flows](getting-started/build-co-branded-email-flows.md)
-* [Customize the creator dashboard](getting-started/customize-the-creator-dashboard.md)
-* [Build creator messaging flows](getting-started/build-creator-messaging-flows.md)
-* [Build a partner integration](getting-started/build-a-partner-integration.md)
 * [Platform taxonomy](getting-started/platform-taxonomy.md)
+* [Build a co-branded storefront](getting-started/build-a-co-branded-storefront.md)
+* [Build a custom workflow](getting-started/build-a-custom-workflow.md)
+* [Build a co-branded email flow](getting-started/build-a-co-branded-email-flow.md)
+* [Customize the creator dashboard](getting-started/customize-the-creator-dashboard.md)
+* [Build a creator messaging flow](getting-started/build-a-creator-messaging-flow.md)
+* [Build a partner integration](getting-started/build-a-partner-integration.md)
 
 ## Liquid SDK
 
