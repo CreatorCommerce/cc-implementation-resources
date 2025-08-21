@@ -16,31 +16,31 @@
       {
         "dropdown": "Co-branded Storefronts",
         "icon": "layout",
-        "description": "Adapt your UX to creator data",
+        "description": "Personalize storefront UX around each creator",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Co-branded Emails",
         "icon": "mail",
-        "description": "Include 1:1 creator data in customer emails",
+        "description": "Personalize customer emails around each creator",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Workflows",
         "icon": "workflow",
-        "description": "Push & change data based on activities",
+        "description": "Push & change data based on events & schedules",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Message Flows",
         "icon": "message-circle",
-        "description": "Communicate with your creators at scale",
+        "description": "Communicate with creators at scale",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Dashboard",
         "icon": "monitor",
-        "description": "Style the creator dashboard experience",
+        "description": "Customize the creator dashboard experience",
         "pages": ["newfile"]
       },
       {
