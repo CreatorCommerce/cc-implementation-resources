@@ -10,7 +10,7 @@
        {
         "dropdown": "Getting Started",
         "icon": "layout",
-        "description": "How to build with CreatorCommerce",
+        "description": "Building with CreatorCommerce",
         "pages": ["newfile"]
       },
       {
