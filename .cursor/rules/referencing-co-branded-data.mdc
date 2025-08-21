@@ -1,0 +1,241 @@
+---
+description: Rules for effectively getting data needed to make co-branded UI components
+alwaysApply: false
+---
+# CreatorCommerce Co-Branded UI Data Reference Rules
+
+## Core Principles
+
+### 1. Creator Data Source Hierarchy
+
+Always treat "co-branded" data as coming from the `creator` metaobject. This includes data related to:
+- Influencers
+- Ambassadors  
+- Practitioners
+- Affiliates
+- Any other creator types we co-brand with
+
+**Data Source Priority:**
+1. Creator metaobject (primary source)
+2. Section/block settings (for non-co-branded configurable data)
+3. Fallback to neutral/default values
+
+### 2. Context-Aware Data Resolution
+
+**On Metaobject Page Templates:**
+```liquid
+{{ metaobject.field-name }}
+```
+
+**On All Other Pages/Sections/Snippets:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+**Field Access Patterns:**
+- Top-level fields: `{{ cc_creator.FIELD }}`
+- Nested JSON fields: `{{ cc_creator.data.value.FIELD }}`
+
+### 3. Graceful Fallback Handling
+
+**Never hardcode a single creator.** All code must handle:
+- Creator present with data
+- Creator present but missing specific fields
+- Creator completely missing
+- No creator context at all
+
+**Provide neutral fallbacks:**
+```liquid
+{% if cc_creator and cc_creator.bio %}
+  {{ cc_creator.bio }}
+{% else %}
+  <!-- Neutral fallback content -->
+{% endif %}
+```
+
+## Implementation Patterns
+
+### 4. Template Context Branching
+
+For components that run on both PDP and metaobject pages:
+
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+
+### 5. Collection/Product List Handling
+
+When referencing creator drops/collections:
+
+```liquid
+{% if cc_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value %}
+  {% for drop in cc_creator.cc-creator-drops.value %}
+    <!-- Safe iteration -->
+  {% endfor %}
+{% endif %}
+```
+
+### 6. Discount/Affiliate Link Safety
+
+```liquid
+{% if cc_creator and cc_creator.cc-collab-discount-code %}
+  <!-- Show discount UI -->
+{% else %}
+  <!-- Hide discount UI or show neutral state -->
+{% endif %}
+```
+
+## Code Quality Standards
+
+### 7. Liquid Code Organization
+
+**Avoid long nested Liquid in HTML:**
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator'
+%}
+
+<!-- Clean template with pre-computed variables -->
+<div class="creator-section">
+  {% if has_creator %}
+    <h2>{{ creator_name }}</h2>
+  {% endif %}
+</div>
+```
+
+### 8. Data Escaping and Security
+
+**Always escape unsafe strings:**
+```liquid
+{{ cc_creator.cc-creator-shop-description | escape }}
+{{ cc_creator.cc-collab-discount-amount | escape }}
+```
+
+**Image handling:**
+```liquid
+{% if cc_creator.cc-creator-profile-picture %}
+  <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 400, height: 400, crop: 'center' }}" 
+       alt="{{ cc_creator.cc-creator-first-name | escape }}"
+       loading="lazy">
+{% endif %}
+```
+
+### 9. JavaScript Integration
+
+**Serialize minimal creator context:**
+```liquid
+<script>
+window.__ccCreator = {
+  handle: {{ cc-creator-shop-handle | json }},
+  name: {{ cc_creator.cc-creator-first-name | json }},
+  discountCode: {{ cc_creator.cc-collab-discount-code | json }}
+};
+</script>
+```
+
+**Never dump full metaobject to JavaScript.**
+
+### 10. Expect references to custom fields that name live in data, in data drops, and in data drops products
+
+**Levels of custom fields:**
+```liquid
+{{ cc_creator.data.value.cc-bio }}
+{{ cc_creator.data.value.cc-creator-drops[0].cc-featured-media }}
+{{ cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products[0].cc-shoe-size }}
+```
+
+### 11. Styling and Brand Kit Integration
+
+**Use CSS variables for brand colors:**
+```liquid
+{% if cc_creator and cc_creator.cc-creator-shop-theme-primary-color %}
+  <style>
+    :root {
+      --cc-creator-color: {{ cc_creator.cc-creator-shop-theme-primary-color | default: '#000000' }};
+      --cc-channel-color: {{ cc_creator.channel-brandkit-primary-color | default: '#000000' }};
+    }
+  </style>
+{% endif %}
+```
+
+**Prefer minimal inline styles or section settings for styling tokens.**
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Don't Do This:
+```liquid
+<!-- Hardcoded creator -->
+<div>{{ metaobjects.creator['john-doe'].name }}</div>
+
+<!-- No fallback handling -->
+<div>{{ cc_creator.cc-bio }}</div>
+
+<!-- Confusing handle vs ID -->
+{% assign creator = metaobjects.creator[cc_creator.id] %}
+
+<!-- Long inline logic -->
+<div>{% if cart.attributes['cc-creator-handle'] %}{% assign cc_handle = cart.attributes['cc-creator-handle'] %}{% assign cc_creator = metaobjects.creator[cc_handle] %}{% if cc_creator %}{{ cc_creator.name }}{% endif %}{% endif %}</div>
+
+<!-- Dumping full metaobject to JS -->
+<script>window.creator = {{ cc_creator | json }};</script>
+```
+
+### ✅ Do This Instead:
+```liquid
+<!-- Dynamic creator resolution -->
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+<!-- With fallback -->
+<div>{{ cc_creator.cc-creator-first-name | default: 'Featured Creator' }}</div>
+
+<!-- Clean variable assignment -->
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Featured Creator'
+%}
+<div>{{ creator_name }}</div>
+
+<!-- Minimal JS context -->
+<script>
+window.__ccCreator = {
+  handle: {{ cc_creator.cc-creator-shop-handle | json }},
+  name: {{ cc_creator.cc-creator-first-name | json }}
+};
+</script>
+```
+
+## Key Reminders
+
+- **Handle vs ID**: Use creator **handle** to index `metaobjects.creator[...]`, not ID
+- **Configurable Data**: For non-co-branded data that should be configurable, use section or block settings
+- **Guard Against Null**: Always check for null/empty when referencing lists or nested objects
+- **Neutral Fallbacks**: When creator data is missing, provide neutral content that doesn't break UI
+- **Escape by Default**: Always escape unsafe strings and URLs in Liquid output
+
+## Testing Checklist
+
+Before implementing co-branded UI:
+
+- [ ] Test with creator present and all data populated
+- [ ] Test with creator present but missing optional fields
+- [ ] Test with no creator context (cart.attributes empty)
+- [ ] Test on metaobject pages vs regular pages
+- [ ] Verify fallbacks are neutral and don't break UI
+- [ ] Check that discount/affiliate UI hides when data missing
+- [ ] Validate image URLs and alt text
+- [ ] Test JavaScript integration with minimal data
+- [ ] Verify CSS variables work with and without creator colors
+- [ ] Test loops and iterations handle empty collections gracefully

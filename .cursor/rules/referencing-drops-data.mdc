@@ -1,0 +1,321 @@
+---
+description: Rules for creating UI that correctly incorporates drops from CreatorCommerce metaobject data
+alwaysApply: false
+---
+# CreatorCommerce Drops UI Implementation Rules
+
+## Core Drops Architecture
+
+### 1. Drops Data Sources
+
+**Drops always originate from the `creator` metaobject with TWO sources:**
+
+1. **Shopify Collections List**: `{{ cc_creator.cc-creator-drops }}` (or `{{ metaobject.cc-creator-drops }}` on creator page templates)
+2. **JSON Representation**: `{{ cc_creator.data.value.cc-creator-drops }}` (includes order, custom fields, product-level data)
+
+**Use JSON for order and custom fields, Collections for real Shopify objects.**
+
+### 2. Standard Creator Resolution
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes["cc-creator-handle"]
+  assign cc_creator = template.name contains "metaobject" and template.suffix == "creator"
+     ? metaobject
+     : metaobjects.creator[cc_handle]
+%}
+```
+
+## Drops Rendering Implementation
+
+### 3. Complete Drops Iteration Pattern
+
+**Always iterate JSON first to preserve order:**
+
+```liquid
+{% for json_drop in cc_creator.data.value["cc-creator-drops"] %}
+  {% assign drop_id = json_drop["cc-creator-drop-collection-id"] %}
+  {% assign drop = nil %}
+  {% for collection_drop in cc_creator.cc-creator-drops.value %}
+    {% if collection_drop.id | append: "" == drop_id %}
+      {% assign drop = collection_drop %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  
+  {% if drop and drop.products_count > 0 %}
+    {% for json_product in json_drop["cc-creator-drop-products"] %}
+      {% assign wanted_id = json_product["cc-creator-drop-product-shopify-id"] %}
+      {% assign selected_variant = json_product["cc-creator-drop-product-enhancement-variant"] | default: "" %}
+      
+      {% assign card_product = nil %}
+      {% for product in drop.products %}
+        {% if product.id | append: "" == wanted_id %}
+          {% assign card_product = product %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+      
+      {% if card_product %}
+        {% render "product-card",
+          card_product: card_product,
+          card_variant: selected_variant %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+```
+
+### 4. Custom Fields Access Patterns
+
+**Drop-level custom fields:**
+```liquid
+{{ cc_creator.data.value.cc-creator-drops[0]["cc-creator-drop-title"] }}
+{{ cc_creator.data.value.cc-creator-drops[0]["cc-creator-drop-hero-media"] }}
+{{ cc_creator.data.value.cc-creator-drops[0]["cc-creator-drop-description"] }}
+```
+
+**Product-level custom fields:**
+```liquid
+{{ cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products[0]["cc-creator-drop-product-enhancement-variant"] }}
+{{ cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products[0]["cc-creator-drop-product-note"] }}
+{{ cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products[0]["cc-shoe-size"] }}
+```
+
+### 5. Null Guards and Safety
+
+**Always guard for null/missing structures:**
+```liquid
+{% if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value["cc-creator-drops"] %}
+  <!-- Safe to iterate drops -->
+{% endif %}
+```
+
+**Guard drops collections iteration:**
+```liquid
+{% if cc_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value %}
+  {% for drop in cc_creator.cc-creator-drops.value %}
+    <!-- Safe iteration -->
+  {% endfor %}
+{% endif %}
+```
+
+## Performance and Optimization
+
+### 6. Performance Guidelines
+
+- **Keep nested loops tight**: Break as soon as a match is found
+- **Avoid rendering more than needed**: Use section settings to cap item counts
+- **Minimal JSON to client**: If JS needs data, emit minimal JSON blob per card
+- **Never stringify entire metaobjects**: Only send essential data to JavaScript
+
+### 7. Variant Picking
+
+```liquid
+{% assign selected_variant = json_product["cc-creator-drop-product-enhancement-variant"] | default: "" %}
+{% if selected_variant != "" %}
+  <!-- Use specific variant -->
+{% else %}
+  <!-- Let card choose first-available variant -->
+{% endif %}
+```
+
+### 8. Media Handling
+
+- If JSON includes media URLs/IDs, they augment/replace Shopify objects
+- Validate media presence before rendering
+- Provide neutral placeholder if missing
+
+## Code Quality Standards
+
+### 9. Naming Conventions
+
+- Use `json_drop` for JSON object and `drop` for Shopify Collection object
+- Use `json_product` for JSON product and `product` for Shopify Product object
+- Use `card_product` for the final product to render
+- Avoid typos like `cc_creaotr`; canonical variable is `cc_creator`
+
+### 10. Reusable Drops Resolver
+
+**Create a resolver snippet for consistency:**
+```liquid
+{% render "cc-drops-resolver" %}
+```
+
+**The resolver should expose:**
+- `cc_drops_json`: array = cc_creator.data.value["cc-creator-drops"] or empty
+- `cc_drops_collections`: array = cc_creator.cc-creator-drops.value or empty
+
+### 11. Data Escaping and Security
+
+**Always escape unsafe strings:**
+```liquid
+{{ cc_creator.data.value.cc-creator-drops[0]["cc-creator-drop-title"] | escape }}
+{{ cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products[0]["cc-creator-drop-product-note"] | escape }}
+```
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Dont Do This:
+```liquid
+<!-- Assuming JSON has current pricing -->
+<div>{{ json_product.price }}</div>
+
+<!-- Not guarding for empty drops -->
+{% for drop in cc_creator.cc-creator-drops.value %}
+  <!-- Could fail if drops is null -->
+{% endfor %}
+
+<!-- Iterating collections instead of JSON for order -->
+{% for drop in cc_creator.cc-creator-drops.value %}
+  <!-- Order not preserved -->
+{% endfor %}
+
+<!-- Hardcoding drop indices -->
+<div>{{ cc_creator.data.value.cc-creator-drops[0]["cc-creator-drop-title"] }}</div>
+
+<!-- Not checking if product exists in collection -->
+{% for product in drop.products %}
+  <!-- Could render removed products -->
+{% endfor %}
+```
+
+### ✅ Do This Instead:
+```liquid
+<!-- Always read price from Shopify product -->
+<div>{{ card_product.price }}</div>
+
+<!-- Guard drops iteration -->
+{% if cc_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value %}
+  {% for drop in cc_creator.cc-creator-drops.value %}
+    <!-- Safe iteration -->
+  {% endfor %}
+{% endif %}
+
+<!-- Iterate JSON for order, then match to collections -->
+{% for json_drop in cc_creator.data.value["cc-creator-drops"] %}
+  <!-- Find matching collection -->
+{% endfor %}
+
+<!-- Check if drop exists before accessing -->
+{% if cc_creator.data.value["cc-creator-drops"] and cc_creator.data.value["cc-creator-drops"][0] %}
+  <div>{{ cc_creator.data.value["cc-creator-drops"][0]["cc-creator-drop-title"] }}</div>
+{% endif %}
+
+<!-- Verify product exists before rendering -->
+{% if card_product %}
+  {% render "product-card", card_product: card_product %}
+{% endif %}
+```
+
+## Empty States and Fallbacks
+
+### 12. Empty State Handling
+
+**If no drops are present, render a tasteful fallback:**
+```liquid
+{% if cc_creator.data.value["cc-creator-drops"] and cc_creator.data.value["cc-creator-drops"].size > 0 %}
+  <!-- Render drops -->
+{% else %}
+  <!-- Render fallback collection from section settings -->
+  {% if section.settings.fallback_collection %}
+    {% assign fallback_collection = collections[section.settings.fallback_collection] %}
+    {% for product in fallback_collection.products limit: section.settings.product_limit %}
+      {% render "product-card", card_product: product %}
+    {% endfor %}
+  {% endif %}
+{% endif %}
+```
+
+### 13. Product Removal Handling
+
+**If a JSON-specified product is not in the collection, skip it gracefully:**
+```liquid
+{% if card_product %}
+  {% render "product-card", card_product: card_product %}
+{% endif %}
+<!-- Product silently skipped if not found -->
+```
+
+## Discount and Pricing Rules
+
+### 14. Discount Handling
+
+**Do not assume discounts per drop:**
+- Prefer creator-level discount fields
+- Only override if drop- or product-level override is explicitly present in JSON
+- Always read price/availability from Shopify product, never from JSON
+
+### 15. Pricing and Inventory
+
+**When mixing product fields from JSON with Shopify product data:**
+```liquid
+<!-- Never trust JSON for price/inventory -->
+<div class="price">{{ card_product.price }}</div>
+<div class="availability">{{ card_product.available }}</div>
+
+<!-- JSON is only for order and custom fields -->
+<div class="note">{{ json_product["cc-creator-drop-product-note"] }}</div>
+```
+
+## Testing Scenarios
+
+### 16. Testing Checklist
+
+Before implementing drops UI:
+
+- [ ] **Creator with 0 drops → fallback renders**
+- [ ] **Creator with 1+ drops → JSON order is respected**
+- [ ] **Product in JSON but removed from collection → skipped gracefully**
+- [ ] **Variant override present → card receives card_variant**
+- [ ] **Media overrides present → card/hero uses JSON-provided media**
+- [ ] **Empty drops collections → safe iteration**
+- [ ] **JSON missing but collections exist → graceful degradation**
+- [ ] **Nested loops break early on match**
+- [ ] **Section settings cap item counts**
+- [ ] **Minimal JSON sent to JavaScript**
+- [ ] **All unsafe strings are escaped**
+- [ ] **Price/availability read from Shopify product**
+- [ ] **Creator page templates work correctly**
+- [ ] **Cart attributes handle missing gracefully**
+
+## Creator Page Template Special Cases
+
+### 17. Creator Page Templates
+
+**On creator metaobject page templates:**
+```liquid
+<!-- Reference collection list directly -->
+{% for drop in metaobject.cc-creator-drops.value %}
+  <!-- Direct access to collections -->
+{% endfor %}
+
+<!-- Still use JSON for order and custom fields -->
+{% for json_drop in metaobject.data.value["cc-creator-drops"] %}
+  <!-- JSON drives order and custom fields -->
+{% endfor %}
+```
+
+### 18. JavaScript Integration
+
+**Serialize minimal drops context:**
+```liquid
+<script>
+window.__ccDrops = {
+  count: {{ cc_creator.data.value["cc-creator-drops"] | size }},
+  firstDropTitle: {{ cc_creator.data.value["cc-creator-drops"][0]["cc-creator-drop-title"] | json }}
+};
+</script>
+```
+
+**Never dump full drops JSON to JavaScript.**
+
+## Key Reminders
+
+- **JSON drives order and custom fields**: Always iterate JSON first
+- **Shopify objects are source of truth**: Use Collections for real product data
+- **Guard against null**: Always check for null/empty when referencing lists
+- **Break early**: Exit nested loops as soon as matches are found
+- **Escape by default**: Always escape unsafe strings in Liquid output
+- **Creator page templates**: Use `metaobject` directly instead of `metaobjects.creator[handle]`
+
