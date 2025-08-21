@@ -10,32 +10,32 @@
       {
         "dropdown": "Co-branded Storefronts",
         "icon": "layout",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Co-branded Emails",
         "icon": "mail",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Workflows",
         "icon": "workflow",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Message Flows",
         "icon": "message-circle",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Dashboard",
         "icon": "monitor",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Partner Integrations",
         "icon": "puzzle",
-        "pages": []
+        "pages": ["newfile"]
       },
       {
         "dropdown": "Documentation",
