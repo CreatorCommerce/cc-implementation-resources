@@ -1,6 +1,5 @@
 ---
-description: Rules for effectively getting data needed to make co-branded UI components
-alwaysApply: false
+alwaysApply: true
 ---
 # CreatorCommerce Co-Branded UI Data Reference Rules
 
@@ -16,7 +15,7 @@ Always treat "co-branded" data as coming from the `creator` metaobject. This inc
 - Any other creator types we co-brand with
 
 **Data Source Priority:**
-1. Creator metaobject (primary source)
+1. Creator metaobject (primary source & primitive)
 2. Section/block settings (for non-co-branded configurable data)
 3. Fallback to neutral/default values
 

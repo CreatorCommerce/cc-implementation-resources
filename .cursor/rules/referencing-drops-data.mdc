@@ -1,5 +1,5 @@
 ---
-description: Rules for creating UI that correctly incorporates drops from CreatorCommerce metaobject data
+description: Rules for creating UI that correctly incorporates drops from CreatorCommerce metaobject data. When requesting to show a creator's (also known as an amabassador, affiliate, influencer, practitioner, etc) recommended products, collections, capsules, products, etc. that means we are talking about their drops.
 alwaysApply: false
 ---
 # CreatorCommerce Drops UI Implementation Rules
