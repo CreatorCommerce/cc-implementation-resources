@@ -7,6 +7,12 @@
   },
   "navigation": {
     "dropdowns": [
+       {
+        "dropdown": "Getting Started",
+        "icon": "layout",
+        "description": "How to build with CreatorCommerce",
+        "pages": ["newfile"]
+      },
       {
         "dropdown": "Co-branded Storefronts",
         "icon": "layout",
