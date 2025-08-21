@@ -14,6 +14,8 @@
       },
       {
         "dropdown": "Co-branded Emails",
+        "description":"blah",
+        "tag": "NEW",
         "icon": "mail",
         "pages": ["newfile"]
       },
