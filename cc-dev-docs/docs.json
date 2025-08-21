@@ -16,7 +16,6 @@
       {
         "dropdown": "Co-branded Emails",
         "icon": "mail",
-        "tag":"NEW"
         "description": "Include 1:1 creator data in customer emails",
         "pages": ["newfile"]
       },
