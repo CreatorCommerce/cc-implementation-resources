@@ -10,52 +10,39 @@
       {
         "dropdown": "Co-branded Storefronts",
         "icon": "layout",
+        "description": "Adapt your UX to creator data",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Co-branded Emails",
-        "description":"blah",
-        "tag": "NEW",
         "icon": "mail",
+        "tag":"NEW"
+        "description": "Include 1:1 creator data in customer emails",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Workflows",
         "icon": "workflow",
+        "description": "Push & change data based on activities",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Message Flows",
         "icon": "message-circle",
+        "description": "Communicate with your creators at scale",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Creator Dashboard",
         "icon": "monitor",
+        "description": "Style the creator dashboard experience",
         "pages": ["newfile"]
       },
       {
         "dropdown": "Partner Integrations",
         "icon": "puzzle",
+        "description": "Build & distribute a 3rd party integration",
         "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Documentation",
-        "icon": "book-open",
-        "pages": [
-          "quickstart",
-          "development",
-          "navigation"
-        ]
-      },
-      {
-        "dropdown": "API reference",
-        "icon": "square-terminal",
-        "pages": []
-      },
-      {
-        "dropdown": "Blog",
-        "href": "https://external-link.com/blog"
       }
     ]
   }
