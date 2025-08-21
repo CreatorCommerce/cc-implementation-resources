@@ -10,7 +10,7 @@
        {
         "dropdown": "Getting Started",
         "icon": "layout",
-        "description": "Building with CreatorCommerce",
+        "description": "Build with CreatorCommerce",
         "pages": ["newfile"]
       },
       {
@@ -26,9 +26,9 @@
         "pages": ["newfile"]
       },
       {
-        "dropdown": "Workflows",
+        "dropdown": "Enrichment Workflows",
         "icon": "workflow",
-        "description": "Push & change data based on events & schedules",
+        "description": "Enhance & sync data based on events & schedules",
         "pages": ["newfile"]
       },
       {
