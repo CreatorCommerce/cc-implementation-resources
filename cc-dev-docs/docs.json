@@ -5,5 +5,56 @@
   "colors": {
     "primary": "#ff0000"
   },
-  "navigation": []
+  "navigation": {
+    "dropdowns": [
+      {
+        "dropdown": "Co-branded Storefronts",
+        "icon": "layout",
+        "pages": []
+      },
+      {
+        "dropdown": "Co-branded Emails",
+        "icon": "mail",
+        "pages": []
+      },
+      {
+        "dropdown": "Workflows",
+        "icon": "workflow",
+        "pages": []
+      },
+      {
+        "dropdown": "Creator Message Flows",
+        "icon": "message-circle",
+        "pages": []
+      },
+      {
+        "dropdown": "Creator Dashboard",
+        "icon": "monitor",
+        "pages": []
+      },
+      {
+        "dropdown": "Partner Integrations",
+        "icon": "puzzle",
+        "pages": []
+      },
+      {
+        "dropdown": "Documentation",
+        "icon": "book-open",
+        "pages": [
+          "quickstart",
+          "development",
+          "navigation"
+        ]
+      },
+      {
+        "dropdown": "API reference",
+        "icon": "square-terminal",
+        "pages": []
+      },
+      {
+        "dropdown": "Blog",
+        "href": "https://external-link.com/blog"
+      }
+    ]
+  }
 }
