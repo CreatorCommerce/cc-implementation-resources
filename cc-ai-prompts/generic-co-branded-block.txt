@@ -1,0 +1,45 @@
+We need to dynamically render [UI-UX-OUTCOME] for a creator using the creator metaobject from the CreatorCommerce app.
+
+**Data Reference:**
+Use this Liquid to reference the correct creator:
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+
+Then access fields with {{ cc_creator.data.value.FIELD-NAME }}. ❌ Do not use {{ cc_creator.FIELD-NAME }}. ✅ Always use {{ cc_creator.data.value.FIELD-NAME }}
+
+Fields to reference:
+
+[
+
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+
+]
+
+**UI Requirements:**
+
+1. [UI-UX-REQUIREMENT-1]
+
+If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+2. [UI-UX-REQUIREMENT-2]
+
+If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+**Logic & Empty States:**
+
+Field presence
+
+If a field value is missing or evaluates to false/empty, do not render the related UI block.
+
+Instead, support and check if a fallback entry is provided for that block. If yes, render the fallback. This applies to booleans, text, images.
+
+Section visibility
+
+If key field values are missing/false/empty and no fallbacks are provided, hide the entire section.

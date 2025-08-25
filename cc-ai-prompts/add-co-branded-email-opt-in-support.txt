@@ -1,0 +1,150 @@
+Add CreatorCommerce marketing attribution to any newsletter/email opt-in form while **preserving all default functionality** when not in creator funnel.
+
+**Implementation Steps**
+
+1. Add Creator Resolution
+At the top of the section/snippet, after asset includes:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+2. Update Form Element
+Add unique IDs to form and hidden tags field:
+```liquid
+{% form 'customer', class: 'newsletter-form', id: 'newsletterForm--{{ section.id }}' %}
+  <input type="hidden" name="contact[tags]" id="contactTags--{{ section.id }}" value="newsletter">
+  
+  <!-- Keep all existing form fields unchanged -->
+  <input
+    id="emailField--{{ section.id }}"
+    type="email"
+    name="contact[email]"
+    <!-- existing attributes -->
+  >
+{% endform %}
+```
+
+3. Add Delayed Submission Script
+After `{% endform %}`, add JavaScript:
+```liquid
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('newsletterForm--{{ section.id }}');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Block default submission
+
+        var email = document.getElementById('emailField--{{ section.id }}').value.trim();
+        var tagField = document.getElementById('contactTags--{{ section.id }}');
+        
+        // Start with base newsletter tag
+        var tags = 'newsletter';
+        
+        // Add creator tags if creator is present
+        {%- if cc_creator and cc_creator.cc-creator-shop-handle -%}
+          var creatorHandle = {{ cc_creator.cc-creator-shop-handle | json }};
+          if (email && creatorHandle) {
+            tags += ',cc-customer-email-' + email + ',cc-creator-marketing-opt-in-' + creatorHandle;
+          }
+        {%- endif -%}
+        
+        tagField.value = tags;
+
+        // Submit form manually after tag setup
+        console.log('Submitting newsletter with tags:', tagField.value);
+        this.submit();
+      });
+    }
+  });
+</script>
+```
+
+**Tag Structure Generated**
+
+Without Creator Context:
+```
+newsletter
+```
+
+With Creator Context:
+```
+newsletter,cc-customer-email-[EMAIL],cc-creator-marketing-opt-in-[CREATOR-HANDLE]
+```
+
+**Critical Requirements**
+
+[ ] Preserve Original Functionality:
+- Form validation must work unchanged
+- Error handling preserved
+- Success messages unchanged  
+- CSS classes and styling intact
+- Form submission behavior identical when no creator
+
+[ ] Unique Identifiers:
+- Use section.id in all IDs to prevent conflicts
+- Multiple newsletter forms on same page must work
+- Each form instance operates independently
+
+[ ] Safety Checks:
+- Email validation before tag generation
+- Creator handle existence check
+- Graceful degradation when JavaScript disabled
+- Console logging for debugging
+
+**Common Variations**
+
+For Popup Forms:
+```liquid
+id="newsletterForm--popup"
+id="emailField--popup" 
+id="contactTags--popup"
+```
+
+For Footer Forms:
+```liquid
+id="newsletterForm--footer"
+id="emailField--footer"
+id="contactTags--footer"
+```
+
+Multiple Section Instances:
+Always use `{{ section.id }}` or `{{ block.id }}` for uniqueness.
+
+**Testing Checklist**
+
+[ ]  Default Functionality:
+1. Form submits normally without creator context
+2. Email validation works
+3. Error messages display correctly
+4. Success states unchanged
+5. Only "newsletter" tag applied
+
+[ ] Creator Enhancement:
+1. Creator tags added when in funnel
+2. Email address captured in tag
+3. Creator handle captured correctly  
+4. Console shows tag generation
+5. Form submission succeeds
+
+[ ] Edge Cases:
+1. Empty email field handled
+2. Invalid email addresses rejected
+3. Missing creator handle graceful
+4. Multiple forms on page work independently
+5. JavaScript disabled fallback works
+
+**Success Criteria**
+- [ ]  Zero Regression: Original newsletter signup flow unchanged
+- [ ]  Creator Attribution: Marketing tags capture creator influence  
+- [ ]  Email Segmentation: Enables creator-specific campaigns
+- [ ]  Developer Friendly: Console logging for verification
+- [ ]  Scalable: Works across all newsletter form types
+
+**Note**: This conversion enables powerful creator marketing attribution while maintaining 100% backward compatibility for non-creator traffic.

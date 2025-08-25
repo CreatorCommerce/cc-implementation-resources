@@ -1,0 +1,126 @@
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+
+[PASTE-SHOPIFY-IMAGE-HERE]
+
+**Basic Pattern**
+
+1. Add Creator Resolution:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  # Check for creator image field
+  assign has_creator_image = false
+  assign creator_image_url = ''
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value.cc-[FIELD-NAME]
+    if cc_creator.data.value.cc-[FIELD-NAME].url
+      assign has_creator_image = true
+      assign creator_image_url = cc_creator.data.value.cc-[FIELD-NAME].url
+    endif
+  endif
+%}
+```
+
+2. Replace Shopify image with creator image:
+
+**❌ Original Shopify image example:**
+```liquid
+{{
+  section.settings.image
+  | image_url: width: 800, height: 600
+  | image_tag:
+    class: 'my-image-class',
+    loading: 'lazy',
+    alt: 'My alt text'
+}}
+```
+
+**✅ Creator image override:**
+```liquid
+{% if has_creator_image %}
+  <img 
+    src="{{ creator_image_url | escape }}" 
+    alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}"
+    class="my-image-class"
+    width="800"
+    height="600"
+    loading="lazy"
+  >
+{% elsif section.settings.image %}
+  {{
+    section.settings.image
+    | image_url: width: 800, height: 600
+    | image_tag:
+      class: 'my-image-class',
+      loading: 'lazy',
+      alt: 'Fallback alt text'
+  }}
+{% else %}
+  <!-- No image available -->
+{% endif %}
+```
+
+**Creator Field to Use**
+
+[
+
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+
+]
+
+**Key Conversion Points**
+
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes
+- **Add**: Proper `alt` text with creator context
+
+**CSS Considerations**
+```css
+.my-image-class {
+  object-fit: cover; /* Important for external images */
+  display: block;
+}
+```
+
+**Complete Example**
+```liquid
+{% liquid
+  # Creator resolution
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_hero = cc_creator and cc_creator.data.value.cc-hero-image-tan.url
+%}
+
+<!-- Image replacement -->
+{% if has_hero %}
+  <img 
+    src="{{ cc_creator.data.value.cc-hero-image-tan.url | escape }}" 
+    alt="{{ cc_creator.cc-creator-first-name | escape }} Hero Image"
+    class="hero-image"
+    width="1200"
+    height="800"
+    loading="lazy"
+  >
+{% else %}
+  {{ section.settings.hero_image | image_url: width: 1200, height: 800 | image_tag: class: 'hero-image' }}
+{% endif %}
+```
+
+**Result** Creator image overrides section image when available, falls back gracefully when not.

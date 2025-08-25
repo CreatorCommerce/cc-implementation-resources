@@ -1,0 +1,4073 @@
+<!-- Block Body -->
+{% comment %}
+ Max width for left column
+Center gap mobile, center gap desktop
+Padding right for left column (desktop only)
+Max width product card
+Collab circle’s x positoning Width of circle divided by 2 (done)
+Line height on every text input
+ {% endcomment %}
+{%- style -%}
+  /*=============================
+    Hero Section
+  =============================*/
+  #hero-section {
+    display: flex;
+    gap: {{ section.settings.center_gap }}px;
+    min-height: 90vh;
+    color: {{ section.settings.textcolor }};
+    width: 100%;
+    /* max-width: 1600px; */
+    margin: auto;
+    flex-direction: row;
+    background-size: cover;
+    background-position: center;
+    border-radius: {{ section.settings.container_border_radius }}px;
+  }
+   {% if section.settings.background_image == blank %}
+      #hero-section{
+        background-color: {{ section.settings.background }};
+      }
+    {% endif %}
+  .certified-container {
+    width: 100% !important;
+   }
+  {% if section.settings.heading-font-family %}
+    #hero-section h1,
+    #hero-section h2,
+    #hero-section h3,
+    #hero-section h4,
+    #hero-section h5,
+    #hero-section h6 {
+    font-family: {{ section.settings.heading-font-family }} !important;
+  }
+  {% endif %}
+
+   {% if section.settings.body-font-family %}
+  #hero-section p,
+  #hero-section span,
+   #hero-section div{
+    font-family: {{ section.settings.body-font-family }} !important;
+  }
+    {% endif %}
+
+  .hero-header-copy p {
+    margin: 0;
+  }
+
+  .hero-content.center-content {
+    align-items: center;
+    flex: auto;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+  }
+
+
+  .responsive-flex {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #hero-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* margin-right:15px !important; */
+  }
+
+  #image-width {
+    max-width: 500px;
+    max-height: 600px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-content {
+    /* flex: 1; */
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    padding-left: {{ section.settings.padding_left }}px;
+    /* max-width: 1100px; */
+    box-sizing: border-box;
+    /* background-color: {{ section.settings.background }}; */
+  }
+
+  .hero-header-copy {
+    max-width: 750px;
+    line-height: 1.05em;
+    margin: 1.5vh 0 {{ section.settings.heading_margin_bottom }}px 0;
+    display: block;
+  }
+
+  #star-container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 8px;
+  }
+  .template-creator  main#MainContent {
+    padding: 0;
+}
+  {% for block in section.blocks %}
+    .product-card-featured {
+      display: flex;
+      width: 100%;
+      min-width: 350px;
+      flex-direction: row;
+      gap: 20px;
+      text-align: left;
+      padding: 10px;
+      border: {{ block.settings.product_border_width }}px solid {{ block.settings.product_border_color }};
+      border-radius: {{ block.settings.product_corner_radius }}px;
+      background-color: {{ block.settings.product_background }};
+      justify-content: flex-start;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 0.05);
+    }
+
+    .product-card-grid {
+      display: flex;
+      height: 280px;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 10px 10px 15px;
+      border: {{ block.settings.product_border_width }}px solid {{ block.settings.product_border_color }};
+      border-radius: {{ block.settings.product_corner_radius }}px;
+      background-color: {{ block.settings.product_background }};
+      justify-content: flex-start;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 0.05);
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: {{ block.settings.product_text_color }};
+    }
+
+    .featured-product-image {
+      width: 100%;
+      height: 100%;
+      min-width: 100px;
+      max-width: 125px;
+      border-radius: {{ block.settings.product_corner_radius }}px;
+    }
+
+    .product-image-grid {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+      max-height: 150px;
+      object-fit: cover;
+      aspect-ratio: 1 / 1.2;
+      border-radius: {{ block.settings.product_corner_radius }}px;
+    }
+   #grid-container-grid {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.number_of_recommendations }}, 1fr);
+    gap: 10px;
+    max-width: 1200px;
+    margin: 20px 0;
+  }
+  {% endfor %}
+
+  #grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    max-width: 520px;
+    margin: 0;
+    margin-top: 2.2vh auto;
+    margin-top:20px;
+  }
+
+ 
+
+  #star-text {
+    font-size: {{ section.settings.star_text_size }}px;
+    font-weight: 600;
+    padding-top: {{ section.settings.star_adjustment_spacing }}px;
+  }
+
+  .star {
+    width: {{ section.settings.star_size }}px;
+    height: {{ section.settings.star_size }}px;
+  }
+
+  .hide-on-mobile {
+    display: flex !important;
+  }
+
+  .hide-on-desktop {
+    display: none !important;
+  }
+
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  /*=============================
+    Video Slider
+  =============================*/
+  .unique-video-slider {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  {% if section.settings.background_image != blank and section.settings.section_background == 'rgba(0,0,0,0)' %}
+  #super-background{
+   background-image: url('{{ section.settings.background_image | image_url }}');
+    background-size: cover;
+    background-position: center;
+  }
+  {% else %}
+    #hero-section{
+      background-image: url('{{ section.settings.background_image | image_url }}'); 
+    }
+  {% endif %}
+
+  #super-background {
+    background-color: {{ section.settings.section_background }};
+    padding: {{ section.settings.section_padding_top_bottom }}px {{ section.settings.section_padding_left_right }}px;
+  }
+   
+{% if section.settings.background_image == blank %}
+  .unique-video-slider::before,
+  .unique-video-slider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .unique-video-slider::before {
+    left: 0;
+    width: 30px;
+    background: linear-gradient(to right, {{ section.settings.background }}, rgba(243, 230, 202, 0));
+  }
+
+  .unique-video-slider::after {
+    right: 0;
+    width: 100px;
+    background: linear-gradient(to left, {{ section.settings.background }}, rgba(243, 230, 202, 0));
+  }
+ {% endif %}
+  .unique-video-slider .unique-testimonial__image {
+ {% if section.settings.aspect_ratio != 'custom' %}
+     aspect-ratio: {{ section.settings.aspect_ratio }};
+    width:600px;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+   {% endif %}
+    /* height: 600px;
+    width: 400px; */
+    overflow: hidden;
+    border-radius: {{ section.settings.video_corner_radius }}px;
+    position: relative;
+  }
+  .story .unique-testimonial__image{
+  {% if section.settings.aspect_ratio != 'custom' %}
+     aspect-ratio: {{ section.settings.aspect_ratio }};
+    width:600px;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+     border-radius: {{ section.settings.video_corner_radius }}px;
+     overflow: hidden;
+   {% endif %}
+  }
+  .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+    padding: 15px;
+}
+
+  .lazy-video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .lazy-video-container img {
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    position: relative;
+    border-radius: {{ section.settings.video_corner_radius }}px;
+    border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  }
+
+  .unique-video-slider .media-wrapper {
+    margin-right: 0;
+  }
+
+  .unique-video-slider-item {
+    margin-left: 40px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  .unique-video-slider-list {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .unique-video-slider-list.dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .unique-video-slider-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*=============================
+    CTA + Subscriptions
+  =============================*/
+  .custom-color-cta {
+    color: {{ section.settings.cta_text }};
+    background: {{ section.settings.cta_bg }};
+  }
+
+  .custom-color-cta:hover {
+    color: {{ section.settings.cta_hover_text }};
+    background: {{ section.settings.cta_hover_bg }};
+  }
+
+  .product__variants .relative {
+    color: {{ section.settings.subscription_txt }};
+  }
+
+  /*=============================
+    Certified Section
+  =============================*/
+  .certified-feature-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .certified-feature-section .top-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* width: 100%; */
+    max-width: 100%;
+    padding: 20px;
+    text-align: left;
+    border-radius: 10px;
+    justify-content:center;
+  }
+
+  .certified-feature-section .images {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 30%;
+  }
+
+  .certified-feature-section .images img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .certified-feature-section .images img:not(:first-child) {
+    margin-left: -10px;
+  }
+
+  .certified-feature-section .count {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px;
+    border-radius: 50%;
+    margin-left: -10px;
+    width: 32px;
+    height: 32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .certified-feature-section .text-section {
+    /* flex-grow: 1; */
+    max-width: 100%;
+    text-align: center;
+    line-height: 1.3;
+    /* margin: auto; */
+  }
+
+  .certified-feature-section .text-section a {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .certified-feature-section .bottom-section {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    margin-top: 10px;
+    max-width: 100%;
+    /* gap: 25px; */
+     gap: var(--desktop-gap);
+     flex-wrap:wrap;
+  }
+
+  .certified-feature-section .bottom-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    line-height: 1.1;
+    max-width: 50%;
+  }
+
+  .certified-feature-section .bottom-item span {
+    text-align: left;
+  }
+
+  .certified-feature-section .bottom-item img {
+    width: 50px;
+    height: 50px;
+  }
+  .cc-logo-container p{
+    margin:0;
+  }
+  {% for block in section.blocks %}
+    .cc-logo-image {
+      width: {{ block.settings.logo_width }}px;
+      height: auto;
+    }
+
+    .cc-creator-image {
+      width: {{ block.settings.creator_image_width }}px;
+      height: {{ block.settings.creator_image_width }}px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .cc-logo-divider {
+      font-size: {{ block.settings.divider_text_size}}px;
+      color: {{ block.settings.divider_color }};
+      height: {{block.settings.logo_width }}px;
+      align-self: start;
+      align-content:center;
+    }
+
+    .cc-logo-container {
+      display: flex;
+      align-items: flex-start;
+      justify:start;
+      gap: {{ block.settings.horizontal-spacing}}px;
+      max-width:fit-content;
+      /* margin-top: 30px; */
+    }
+    .cc-logo-container .dynamic-text {
+        max-width: min-content;
+
+    }
+    .cc-logo {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      text-decoration: none;
+      text-align:center;
+    }
+    .cc-creator {
+     text-align: center;
+    }
+   .certified-feature-section .top-section{
+       background: {{ block.settings.certified_bg }};
+   }
+  {% endfor %}
+  #hero-section .container{
+    max-width:747px;
+    padding:0;
+  }
+@media screen and (min-width: 1760px){
+ #hero-section .container {
+    max-width: 1024px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+div#hero-image {
+    max-width: 1500px;
+}
+}
+  /*=============================
+    Responsive Styles
+  =============================*/
+  @media (max-width: 1100px) {
+    .unique-video-slider .unique-testimonial__image {
+      margin-left: 0;
+      height: 300px;
+      width: 180px;
+    }
+
+    #super-background {
+      padding: {{ section.settings.section_padding_top_bottom_mobile }}px {{ section.settings.section_padding_left_right_mobile }}px;
+    }
+
+    .unique-video-slider {
+      margin-left: calc(-50vw + 50%);
+    }
+
+    .unique-video-slider::before {
+      width: 0px;
+    }
+
+    .unique-video-slider::after {
+      width: 50px;
+    }
+
+    #hero-section {
+      flex-direction: column;
+      height: auto;
+    }
+
+    .featured-product-image {
+      max-width: 75px;
+    }
+
+    .hide-on-desktop {
+      display: flex !important;
+    }
+
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    .hero-content {
+      order: 1;
+      align-items: center;
+      padding: 0 20px;
+      text-align: center;
+      display:flex;
+    }
+
+    #hero-image {
+      order: -1;
+      display: flex;
+      align-items: center;
+       justify-content: flex-start;
+      min-height: 34vh;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .hero-header-copy {
+      font-size: 2em;
+      margin-bottom: 4vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #image-width {
+      width: 100%;
+    }
+
+    .responsive-flex {
+      flex-direction: column;
+    }
+
+    #grid-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    #grid-container-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    #star-text {
+      font-size: 0.75em;
+    }
+
+    .star {
+      width: 16px;
+      height: 16px;
+    }
+    .certified-feature-section{
+      align-items:center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .certified-feature-section {
+      padding: 15px;
+    }
+
+    .certified-feature-section .top-section {
+      max-width: 100%;
+      text-align: center;
+      gap: 40px;
+    }
+
+    .certified-feature-section .images {
+      justify-content: center;
+      gap: 0;
+    }
+
+    .certified-feature-section .images img:not(:first-child) {
+      margin-left: -8px;
+    }
+
+    .certified-feature-section .count {
+      font-size: 12px;
+      padding: 5px;
+      background: #E6F4F1;
+      color: #000;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -5px;
+      min-width: 30px;
+      height: 30px;
+    }
+
+    .certified-feature-section .text-section strong {
+      display: block;
+    }
+
+    .certified-feature-section .bottom-section {
+      align-items: center;
+      gap: 12px;
+    }
+
+    .certified-feature-section .bottom-item {
+      max-width: 100%;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .certified-feature-section .bottom-item img {
+      width: 35px;
+      height: 35px;
+    }
+    .unique-video-slider-item {
+          margin-left: 20px;
+      }
+     div#hero-section {
+        padding: 24px 0;
+    }
+    .certified-feature-section .bottom-section {
+        gap: var(--mobile-gap);
+    }
+  }
+
+  {% for block in section.blocks %}
+    @media screen and (max-width: 749px) {
+      .cc-logo-image {
+        max-width: {{ block.settings.logo_width_mobile }}px;
+      }
+
+      .cc-creator-image {
+        width: {{ block.settings.creator_image_width_mobile }}px;
+        height: {{ block.settings.creator_image_width_mobile }}px;
+      }
+      .slider--social {
+          max-width: 95% !important;
+          margin: 0 auto !important;
+      }
+      .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+          right: 0;
+          max-width: 90%;
+          margin: 0 auto;
+      }
+    }
+  {% endfor %}
+
+  @media (max-width: 420px) {
+    .certified-feature-section {
+      padding: 0;
+    }
+  }
+{%- endstyle -%}
+
+<div id="super-background">
+  {%- assign total_media_count = 0 -%}
+
+  {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+    {%- for product in drop['cc-creator-drop-products'] -%}
+      {%- for media in product.enhancement.media -%}
+        {%- if media.mimeType contains 'video' or media.mimeType contains 'image' -%}
+          {%- assign total_media_count = total_media_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+
+{%- for block in section.blocks -%}
+  {% if block.type == 'testimonial' %}
+    {% if block.settings.video != blank or block.settings.p_image != blank %}
+      {%- assign total_media_count = total_media_count | plus: 1 -%}
+    {% endif %}
+  {% elsif block.type == 'testimonial-image' %}
+    {% if block.settings.image != blank %}
+      {%- assign total_media_count = total_media_count | plus: 1 -%}
+    {% endif %}
+  {% endif %}
+{%- endfor -%}
+
+  <div id="hero-section" class="section-{{ section.id }}-padding" data-auto-contrast="{{ section.settings.auto_text_contrast }}">
+    <!-- Right/Top Panel (Now First) -->
+    <div class="container">
+    <div class="hero-content{% if total_media_count == 0 and section.settings.center_content_no_media %} center-content{% endif %}">
+      {%- for block in section.blocks -%}
+       {% case block.type %}
+       {% when 'certified' %}
+        <div id="grid-container" class="certified-container" style="max-width:100%;">
+          <div class="certified-feature-section">
+          <div class="top-section" style="width:{{ block.settings.certified-box-width }}%;">
+              {% if block.settings.image_1 != blank or block.settings.image_2 != blank or block.settings.count_no != blank %}
+                <div class="images">
+                    {% if block.settings.image_1  %}<img src="{{ block.settings.image_1 |img_url :'master' }}" alt="Doctor 1">{% endif %}
+                    {% if block.settings.image_2  %}<img src="{{ block.settings.image_2 |img_url :'master' }}" alt="Doctor 2">{% endif %}
+                  {% if block.settings.image_3  %}<img src="{{ block.settings.image_3 |img_url :'master' }}" alt="Doctor 3">{% endif %}
+                    {% if block.settings.count_no != blank %}<span class="count" style="background:{{ block.settings.bg_count }};color:{{block.settings.color_count}};">{{ block.settings.count_no }}</span>{% endif %}
+                </div>
+              {% endif %}
+            {% if block.settings.txt_1  %}<div class="text-section" style="color:{{ block.settings.text_color }};font-size:{{ block.settings.certified_text_size }}px{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">{{ block.settings.txt_1 }}</div>{% endif %}
+          </div>
+         <div class="bottom-section" style="width:{{ block.settings.certified-box-width }}%;--desktop-gap: {{ section.settings.desktop_gap | default: '5' }}%;--mobile-gap: {{ section.settings.mobile_gap | default: '10' }}%;">
+          {% for icon_block in section.blocks %}
+            {% if icon_block.type == 'icon-text' %}
+              {% if icon_block.settings.image != blank or icon_block.settings.text != blank %}
+                <div class="bottom-item">
+                  {% if icon_block.settings.image %}
+                    <img src="{{ icon_block.settings.image | img_url: 'master' }}">
+                  {% endif %}
+                  {% if icon_block.settings.text %}
+                    <span class="dynamic-text"
+                      style="color:{{ icon_block.settings.text_color }};{% if icon_block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                      {{ icon_block.settings.text }}
+                    </span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+          </div>
+        </div>
+      
+  
+        {% when 'cc-eyebrow' %}
+           <div style="max-width: fit-content; display: flex; align-items: center; margin-bottom: {{ block.settings.eyebrow_margin_bottom }}px; background-color: {{ block.settings.eyebrowbackground }}; border-radius: {{ block.settings.eyebrow_corner_radius }}px; padding: 8px 14px; border: {{block.settings.eyebrow_border_width}}px solid {{block.settings.eyebrowbordercolor}};">
+              <div style="font-size: {{ block.settings.eyebrow_text_size }}px; color: {{ block.settings.eyebrowtextcolor }};display: flex;flex-direction:row;align-items: center;gap:10px;">
+                {% if metaobject['cc-creator-profile-picture'] %}
+                  <div
+                    style="
+                      border-radius: 100%;
+                      height: 30px;
+                      width: 30px;
+                      overflow: hidden;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <img
+                      src="{{ metaobject.cc-creator-profile-picture }}"
+                      alt="Creator Profile"
+                      style="height: 100%; width: 100%; object-fit: cover;"
+                    >
+                  </div>
+                {% endif %}
+                <div style="{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}" class="dynamic-text">
+                {{- block.settings.eyebrowcopy -}}
+                </div>
+              </div>
+            </div>
+   
+            {% when 'cc-header' %}
+              {%- assign move_header_mobile = block.settings.move_header_top_mobile -%}
+              <div class="{% if move_header_mobile %}hide-on-mobile{% endif %}">
+                  {%- if block.settings.title != blank -%}
+                    <{{ block.settings.heading_size }} class="hero-header-copy hide-on-mobile dynamic-text" style="font-weight:500 !important; font-size:{{ block.settings.heading_text_size }}px; margin-bottom: {{  block.settings.header_margin_bottom}}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                      {{ block.settings.title }}
+                    </{{ block.settings.heading_size }}>
+                  {%- endif -%}
+                
+                  {%- if block.settings.title != blank -%}
+                    <{{ block.settings.heading_size }}
+                      class="hero-header-copy hide-on-desktop dynamic-text"
+                      style="text-align: center; font-weight:500; font-size:{{ block.settings.mobile_heading_text_size }}px; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}"
+                    >
+                      {{ block.settings.title }}
+                    </{{ block.settings.heading_size }}>
+                  {%- endif -%}
+                </div>
+
+               {% when 'cc-star' %}
+                  {% if block.settings.show_stars %}
+                  <div style="display: flex; flex-direction: row; align-items: center; margin-top:5px; margin-bottom:{{ block.settings.star_margin_bottom }}px;">
+                    <div id="star-container">
+                      {% for i in (1..5) %}
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: {{ block.settings.star_size }}px; height: {{ block.settings.star_size }}px;">
+                          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="{{ block.settings.star_color }}"/>
+                        </svg>
+                      {% endfor %}
+                    </div>
+                    <p id="star-text" class="dynamic-text" style="font-size:{{ block.settings.star_text_size }}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">{{ block.settings.stars }}</p>
+                  </div>
+               {% endif %}
+
+               {% when 'cc-text' %}
+                   <p class="dynamic-text" style="font-size: {{ block.settings.description_text_size }}px; max-width:650px; margin-top:0; margin-bottom:{{ block.settings.text_margin_bottom }}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                  {{ block.settings.subtitle }}
+                </p>   
+                
+                {% when 'cc-product' %}
+                   {%- liquid
+                      assign cc_handle = metaobject.data.value['cc-creator-handle']
+                      assign cc_creator = metaobjects.creator[cc_handle]
+                      assign n_c = metaobject.data.value['cc-creator-handle']
+                    -%}
+                        {% if block.settings.show_creator_products
+                        and metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products']
+                        and metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'].size < 2
+                      %}
+                        <div id="grid-container" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                          {% for product in metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+                            <div class="product-card-featured">
+                              <img
+                                src="{{product.images[0].src}}"
+                                alt="Product 1"
+                                class="featured-product-image"
+                              >
+                              <div class="product-info">
+                                <p style="font-size: 0.8em; margin: 0 10px 10px 0; -webkit-line-clamp: 3; line-clamp: 3;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                  {{ product.title }}
+                                </p>
+                                <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
+                                  <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 600;">
+                                    {% if block.settings.apply_discount %}
+                                      {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                        and cc_creator != ''
+                                        and cc_creator != null
+                                      %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] | round | default: 0 %}
+                                        {% assign discouned_amt = product.variants[0].price | divided_by: discount %}
+                                        {{- product.variants[0].price | minus: discouned_amt | times: 100.00 | money }}
+                                      {% else %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                        {{- product.variants[0].price | minus: discount | times: 100.00 | money }}
+                                      {% endif %}
+                                    {% else %}
+                                      {{- product.variants[0].price | times: 100.00 | money -}}
+                                    {% endif %}
+                                  </p>
+                                  {% if block.settings.show_compare == 'true' %}
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
+                                      $
+                                      {{- product.variants[0].price | divided_by: 1.00 | append: '.00' }}
+                                    </p>
+                                  {% endif %}
+                                  <p style="font-size: 0.6em; margin: 2px 10px 2px 0px; font-weight: 400;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    (With {{ metaobject['cc-creator-first-name'] }}'s' Code)
+                                  </p>
+                                </div>
+                                <a
+                                  href="{{ shop.url }}/products/{{ product.handle}}"
+                                  style="text-decoration: none;"
+                                >
+                                  {% if block.settings.productcta != blank %}
+                                    <button style="background-color: {{block.settings.product_cta_background}}; font-weight:600; color: {{ block.settings.product_cta_text_color }}; padding: 8px 12px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      {{ block.settings.productcta }}
+                                    </button>
+                                  {%- endif %}
+                                </a>
+                              </div>
+                            </div>
+                          {% endfor %}
+                        </div>
+
+                      {% elsif block.settings.show_creator_products
+                        and metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products']
+                      %}
+                        <div id="grid-container-grid" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                          {% assign productcounter = 0 %}
+                          {% for product in metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+                            {% if productcounter < block.settings.number_of_recommendations %}
+                              <div class="product-card-grid aaa">
+                                <img
+                                  src="{{product.images[0].src}}"
+                                  alt="Product 1"
+                                  class="product-image-grid"
+                                >
+                                <p
+                                  style="
+                                    font-size: 0.7em;
+                                    margin: 0 0 10px 0;
+                                    color: {{ block.settings.product_text_color }};
+                                    position: relative;
+                                    line-height: 1.2em;
+                                    height: 3.5em;
+                                  {% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}
+                                  "
+                                >
+                                  <span
+                                    style="
+                                      position: absolute;
+                                      top: 0;
+                                      left: 0;
+                                      width: 100%;
+                                      height: 100%;
+                                      box-shadow: inset 0px -4px 8px {{ block.settings.product_background }}; /* Apply inner shadow to the span */
+                                    "
+                                  ></span>
+                                  {{ product.title }}
+                                </p>
+                                <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 10px;">
+                                  <p style="font-size: 0.8em; margin: 0 0 10px 0; color: {{block.settings.product_text_color}}; font-weight: 600;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    {% if block.settings.apply_discount %}
+                                      {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                        and cc_creator != ''
+                                        and cc_creator != null
+                                      %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] | round | default: 0 %}
+                                        {% assign discouned_amt = product.variants[0].price | divided_by: discount %}
+                                        {{- product.variants[0].price | minus: discouned_amt | times: 100.00 | money }}
+                                      {% else %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                        {{- product.variants[0].price | minus: discount | times: 100.00 | money }}
+                                      {% endif %}
+                                    {% else %}
+                                      {{- product.variants[0].price | times: 100.00 | money -}}
+                                    {% endif %}
+                                  </p>
+                                  {% if block.settings.show_compare == 'true' %}
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; color: {{block.settings.product_text_color}}; font-weight: 400; text-decoration: line-through;">
+                                      {{ product.variants[0].price | times: 100.00 | money }}
+                                    </p>
+                                  {% endif %}
+                                </div>
+                                <a href="{{ shop.url }}/products/{{product.handle}}" style="text-decoration: none; margin-top: auto;">
+                                  {% if block.settings.productcta != blank -%}
+                                    <button style="background-color: {{ block.settings.product_cta_background }}; border: {{ block.settings.product_cta_border_width }}px solid {{ block.settings.product_cta_border_color }}; color: {{ block.settings.product_cta_text_color }}; padding: 8px 12px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      {{ block.settings.productcta }}
+                                    </button>
+                                  {%- endif %}
+                                </a>
+                              </div>
+                              {% assign productcounter = productcounter | plus: 1 %}
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      {% else %}
+                        <div
+                          class="js-product"
+                          data-section-type="main-product"
+                          data-section-id="{{ section.id }}"
+                          id="main-product-section"
+                        >
+                          <div id="grid-container" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                            {% unless block.settings.hide_featured_product == true %}
+                              <div class="product-card-featured">
+                                <img
+                                  src="{{ all_products[block.settings.featured-product] | image_url: width: 200 }}"
+                                  alt="Product 1"
+                                  class="featured-product-image"
+                                >
+                                <div class="product-info">
+                                  <p style="font-size: 0.8em; margin: 0 10px 10px 0; -webkit-line-clamp: 3; line-clamp: 3;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    {{ all_products[block.settings['featured-product']].title }}
+                                  </p>
+                                  <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 600;">
+                                      {% if block.settings.apply_discount %}
+                                        {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                          and cc_creator != ''
+                                          and cc_creator != null
+                                        %}
+                                          {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
+                                          {% assign discouned_amt = block.settings.full_price | times: discount %}
+                                          {{- block.settings.full_price | minus: discouned_amt | times: 100.00 | money }}
+                                        {% else %}
+                                          {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                          {{- block.settings.full_price | minus: discount | times: 100.00 | money }}
+                                        {% endif %}
+                                      {% else %}
+                                        {{- block.settings.full_price | times: 100.00 | money -}}
+                                      {% endif %}
+                                    </p>
+                                    {% if block.settings.show_compare == 'true' %}
+                                      <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
+                                        {{- block.settings.full_price | times: 100.00 | money }}
+                                      </p>
+                                    {% endif %}
+                                    <p style="font-size: 0.6em; margin: 2px 10px 2px 0px; font-weight: 400;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      (With {{ metaobject['cc-creator-first-name'] }}'s' Code)
+                                    </p>
+                                  </div>
+                                  <a
+                                    href="{{ shop.url }}/products/{{ block.settings.featured-product}}"
+                                    style="text-decoration: none;{% if block.settings.featured-product == blank %}cursor: text;pointer-events: none;{% endif %}"
+                                  >
+                                    {% if block.settings.productcta != blank -%}
+                                      <button style="background-color: {{block.settings.product_cta_background}}; font-weight:600; color: {{ block.settings.product_cta_text_color }}; padding: 8px 12px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ section.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                        {{ block.settings.productcta }}
+                                      </button>
+                                    {%- endif %}
+                                  </a>
+                                </div>
+                              </div>
+                            {% endunless %}
+                            {% assign custom_featured_product = all_products[block.settings['featured-product']] %}
+                            {% assign product_form_id = 'product-form-' | append: section.id %}
+                          </div>
+                        </div>
+                      {% endif %}
+
+            {% when 'cc-logo' %}
+               {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+                {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+                {% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+                    <div class="cc-logo-container" {{ block.shopify_attributes }} style="margin-bottom:{{ block.settings.collab_margin_bottom }}px;">
+                    {% if block.settings.logo %}
+                      <div class="cc-logo">
+                        <img
+                          src="{{ block.settings.logo | image_url: width: 500 }}"
+                          alt="{{ block.settings.logo.alt | default: shop.name | escape }}"
+                          width="{{ block.settings.logo.width }}"
+                          height="{{ block.settings.logo.height }}"
+                          loading="lazy"
+                          class="cc-logo-image"
+                        >
+                      <div class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px; line-height:{{ block.settings.text-line-height-size }}px; text-align:center; margin:auto;margin-top:{{ block.settings.vertical-spacing }}px;">{{ block.settings.logo_text }}</div>
+                        </div>
+                    {% else %}
+                      <div class="cc-logo">
+                        <span class="h2">{{ shop.name }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% assign first_name = metaobject['cc-creator-first-name'] | default: '' %}
+                    {% assign last_name = metaobject['cc-creator-last-name'] | default: '' %}
+                    {% assign first_initial = first_name | slice: 0, 1 | upcase %}
+                    {% assign last_initial = last_name | slice: 0, 1 | upcase %}
+                    {% assign initials = first_initial | append: last_initial %}
+
+                    {% if metaobject['cc-creator-profile-picture'] %}
+                      <span class="cc-logo-divider">{{ block.settings.divider_text }}</span>
+                      <div class="cc-creator">
+                        <img
+                          src="{{ metaobject.cc-creator-profile-picture }}"
+                          alt="{{ first_name  | default: 'Creator' | escape }}"
+                          loading="lazy"
+                          class="cc-creator-image"
+                        >
+                      <p class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px;line-height:{{ block.settings.text-line-height-size }}px;text-align:center; margin:auto;margin-top:{{ block.settings.vertical-spacing }}px;">{{ metaobject.cc-creator-first-name }}</p>
+                      </div>
+
+                      {% else %}
+
+                      <span class="cc-logo-divider">{{ block.settings.divider_text }}</span>
+                       <div class="cc-creator-profile" style="align-self:start; text-align: center; height:100%;">
+                      <div class="cc-creator-image" style="
+                        background-color: {{ block.settings.fallback_bg_color }};
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto;
+                      ">
+                        <h4 style="
+                          color: {{ block.settings.initials_font_color }};
+                          font-size: {{ block.settings.initials_font_size }}px;
+                          font-weight: bold;
+                          text-transform: uppercase;
+                        ">{{ initials }}</h4>
+                      </div>
+                      <p class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px; text-align:center; margin-top:{{ block.settings.vertical-spacing }}px;">{{ first_name }}</p>
+                    </div>
+                    {% endif %}
+                  </div>
+
+      {% endcase %}
+      {% endfor %}
+
+    </div>
+  </div>
+    <!-- Left/Bottom Panel (Now Second) -->
+    <div id="hero-image" class="slider--{{ section.settings.carousel_type }}">
+    {%- assign blocks = section.blocks | where: 'type', 'cc-header' -%}
+        {%- for block in blocks -%}
+          {%- assign move_header_mobile = block.settings.move_header_top_mobile -%}
+
+      {% if move_header_mobile %}
+          <div class="mobile-header-top-wrapper hide-on-desktop">
+            {%- if block.settings.title != blank -%}
+              <{{ block.settings.heading_size }}
+                class="hero-header-copy hide-on-mobile dynamic-text"
+                style="font-weight: 500 !important; font-size: {{ block.settings.heading_text_size }}px; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %} text-transform: uppercase;{% endif %}"
+              >
+                {{ block.settings.title }}
+              </{{ block.settings.heading_size }}>
+            {%- endif -%}
+        
+            {%- if block.settings.title != blank -%}
+              <{{ block.settings.heading_size }}
+                class="hero-header-copy hide-on-desktop dynamic-text"
+                style="text-align: center; font-weight: 500; font-size: {{ block.settings.mobile_heading_text_size }}px; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %} text-transform: uppercase;{% endif %}"
+              >
+                {{ block.settings.title }}
+              </{{ block.settings.heading_size }}>
+            {%- endif -%}
+          </div>
+          {% endif %}
+        {%- endfor -%}
+
+ 
+      {% if section.settings.carousel_type == 'social' %}
+      <div class="story">
+        <div class="story__slider swiper">
+          <div class="story__wrapper swiper-wrapper">
+
+            {%- assign block_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+                {%- assign block_count = block_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- assign has_ugc_videos = false -%}
+            {%- if block_count > 0 -%}
+
+              {%- assign counter = 0 -%}
+
+              {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+                {%- for product in drop['cc-creator-drop-products'] -%}
+                  {%- for media in product.enhancement.media -%}
+                    {%- if media.mimeType contains 'video' and section.settings.include_creator_videos -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} playing{% endif %}" tabindex="0">
+                          <video {% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;max-width:none;">
+                            <source src="{{ media.url }}" type="video/mp4">
+                          </video>
+                          <div class="pause-icon{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} first-video{% endif %}">
+                            <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <div class="play-icon{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} first-video{% endif %}">
+                             <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <button class="mute-toggle">🔇</button>
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- elsif media.mimeType contains 'image' and section.settings.include_creator_images -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                          <img src="{{ media.url }}" style="height:100%;width:auto;object-fit: cover;">
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endfor -%}
+
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+                  <div class="story__slide swiper-slide" {{ block.shopify_attributes }}>
+                    {%- if block.type == 'testimonial' -%}
+                      {% assign new_video_url = block.settings.video.sources | where: 'format', 'mp4' | first %}
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first %} playing {% endif %}" tabindex="0">
+                        {% if block.settings.p_image != blank %}
+                          <div class="lazy-video-container" data-video-src="{{ new_video_url.url }}" data-poster="{{ block.settings.p_image | image_url: width: 1000 }}">
+                            <img src="{{ block.settings.p_image | img_url:'master' }}" alt="Video preview">
+                          </div>
+                        {% else %}
+                          {% assign video_poster = block.settings.video.preview_image | image_url: width: 2000 %}
+                          {{ block.settings.video | video_tag: image_size: '3840px', muted: true, autoplay: forloop.first, loop: true, playsinline: true, poster: video_poster, preload: 'none', class: forloop.first | if: 'autoplay-first' }}
+                        {% endif %}
+                        <!-- Play/Pause -->
+                        <div class="play-icon{% if forloop.first %} first-video{% endif %}">
+                           <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                        </div>
+                        <div class="pause-icon{% if forloop.first %} first-video{% endif %}"> <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg></div>
+                        <button class="mute-toggle">🔇</button>
+                      </div>
+                    {%- elsif block.type == 'testimonial-image' -%}
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                        <img src="{{ block.settings.image | img_url: 'master' }}" style="height:100%;width:100%;object-fit: cover;" />
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+
+            {%- endif -%}
+          </div>
+
+          <!-- Swiper Controls -->
+          <div class="story__next swiper-button-next"></div>
+          <div class="story__prev swiper-button-prev"></div>
+          <div class="story__pagination swiper-pagination"></div>
+
+        </div>
+      </div>
+
+                
+        {% else %}
+      <!-- Video Slider -->
+      <div class="unique-video-slider">
+        <div class="unique-testimonials">
+          {%- assign block_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+              {%- assign block_count = block_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- assign has_ugc_videos = false -%}
+          {%- if block_count > 0 -%}
+            {% assign counter = 0 %}
+            <testimonials-component
+              data-slider="{% if block_count > 1 %}true{% else %}false{% endif %}"
+              data-autorotate="{{ section.settings.autorotate }}"
+              data-autorotate-speed="{{ section.settings.autorotate_speed | times: 1000 }}"
+              style="--block-count: {{ block_count | minus: 1 }};"
+            >
+              <div class="unique-testimonial__list-wrapper">
+                <div class="unique-video-slider-list" id="Testimonials-{{ section.id }}">
+               
+                  {% for drop in metaobject.data.value['cc-creator-drops'] %}
+                    {% for product in metaobject.data.value['cc-creator-drops'][forloop.index0]['cc-creator-drop-products'] %}
+                      {% for media in product.enhancement.media %}
+                        {% if media.mimeType and media.mimeType contains 'video' and section.settings.include_creator_videos %}
+                          <div class="unique-video-slider-item">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} playing{% endif %}
+                        tabindex="0"
+                            >
+                              <video
+                              {% if forloop.first
+                                  and forloop.parentloop.first
+                                  and forloop.parentloop.parentloop.first
+                                %}
+                                  autoplay
+                                  class="autoplay-first" 
+                                {% endif %}
+                                muted
+                                playsinline
+                                loop
+                                style="height:100%;max-width:none;"
+                              >
+                                <source src="{{ media.url }}" type="video/mp4">
+                              </video>
+                              <div class="pause-icon{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                              </div>
+                          <div class="play-icon{% if forloop.first and forloop.parentloop.first and forloop.parentloop.parentloop.first %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                              </div>
+                              <button
+                                class="mute-toggle"
+                                style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                              >
+                                🔇
+                              </button>
+                              {%- assign has_ugc_videos = true -%}
+                            </div>
+                          </div>
+                         {% elsif media.mimeType and media.mimeType contains 'image' and section.settings.include_creator_images %}
+                          <div class="unique-video-slider-item">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small
+                          tabindex="0"
+                            >
+                            <img
+                            src="{{ media.url }}"
+                            style="height:100%;width:auto;object-fit: cover;"
+                          >
+                                    {%- assign has_ugc_videos = true -%}
+                                     </div>
+                          </div>
+                        {%- endif -%}
+                      {% endfor %}
+                    {% endfor %}
+                  {% endfor %}
+                 
+
+                  {%- for block in section.blocks -%}
+                    {% if block.type == 'testimonial' %}
+                      <div
+                        class="unique-video-slider-item{% if section.blocks.first == true or block_count == 1 %} is-selected{% endif %}"
+                        style="{% if block_count == 1 and has_ugc_videos == false%}margin-left:0;margin:auto{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first %} playing {% endif %}" tabindex="0">
+                          {% if block.settings.p_image != blank %}
+                            {% comment %}{%- assign video_poster = block.settings.p_image | image_url: width: 2000 -%}{% endcomment %}
+                            {% assign new_video_url = block.settings.video.sources | where: 'format', 'mp4' | first %}
+                            <div
+                              class="lazy-video-container"
+                              data-video-src="{{ new_video_url.url }}"
+                              data-poster="{{ block.settings.p_image | image_url: width: 1000 }}"
+                            >
+                              <img src="{{ block.settings.p_image | image_url: width: 1000 }}" alt="Video preview">
+                            </div>
+                          {% else %}
+                            {%- assign video_poster = block.settings.video.preview_image | image_url: width: 2000 -%}
+                            {% if block.settings.video != blank and counter == 0 %}
+                              {% assign video_class = '' %}
+                                {% assign autoplay_value = false %}
+                                
+                                {% if forloop.first %}
+                                  {% assign video_class = 'autoplay-first' %}
+                                  {% assign autoplay_value = true %}
+                                {% endif %}
+                              {{
+                                block.settings.video
+                                | video_tag:
+                                  image_size: '3840px',
+                                  muted: true,
+                                   autoplay: autoplay_value,
+                                  loop: true,
+                                  playsinline: true,
+                                  poster: video_poster,
+                                  preload: 'none',
+                                 class: video_class
+                              }}
+
+                            {%- else -%}
+                              {{
+                                block.settings.video
+                                | video_tag:
+                                  image_size: '3840px',
+                                  muted: true,
+                                  autoplay: false,
+                                  loop: true,
+                                  playsinline: true,
+                                  poster: video_poster,
+                                  preload: 'none'
+                              }}
+                            {%- endif -%}
+                          {% endif %}
+
+                          <div class="play-icon{% if forloop.first%} first-video{% endif %}">
+                            <svg
+                              width="50"
+                              height="50"
+                              viewBox="0 0 24 24"
+                              fill="white"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                            </svg>
+                          </div>
+                          <div class="pause-icon{% if forloop.first%} first-video{% endif %}">
+                            <svg
+                              width="50"
+                              height="50"
+                              viewBox="0 0 24 24"
+                              fill="white"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                              <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                            </svg>
+                          </div>
+                          <button
+                            class="mute-toggle"
+                            style="
+                              position: absolute;
+                              bottom: 10px;
+                              right: 10px;
+                              z-index: 10;
+                              padding: 6px 10px;
+                              background: rgba(0,0,0,0.5);
+                              color: white;
+                              border: none;
+                              border-radius: 16px;
+                              cursor: pointer;
+                            "
+                          >
+                            🔇
+                          </button>
+                          {%- assign has_ugc_videos = true -%}
+                        </div>
+                      </div>
+                      {% assign counter = counter | plus: 1 %}
+                    {% elsif block.type == 'testimonial-image' %}
+                      <div
+                        class="unique-video-slider-item"
+                        style="{% if block_count == 1 and has_ugc_videos == false%}margin-left:0;margin:auto{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div
+                          class="unique-testimonial__image media-wrapper media-wrapper--small"
+                          tabindex="0"
+                          style=""
+                        >
+                          <img
+                            src="{{ block.settings.image | img_url: 'master'}}"
+                            style="height:100%;width:auto;object-fit: cover;"
+                          >
+                        </div>
+                        {%- assign has_ugc_videos = true -%}
+                      </div>
+                      {% assign counter = counter | plus: 1 %}
+                    {% endif %}
+                  {%- endfor -%}
+                </div>
+              </div>
+            </testimonials-component>
+          {%- endif -%}
+        </div>
+         <button class="slider-arrow right-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><title>Right</title><polyline points="9 18 15 12 9 6"></polyline></svg>
+         </button>
+      </div>
+      {% endif %}
+      <!-- End of Video Slider -->
+    </div>
+  </div>
+</div>
+<style>
+  .unique-testimonial__image .play-icon,
+  .unique-testimonial__image .pause-icon {
+     position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+  }
+    .play-icon svg, .pause-icon svg {
+        width: 40px;
+        height: 40px;
+        color: white;
+    }
+  /* .unique-testimonial__image.playing:first-child:hover .pause-icon.first-video{display:flex;} */
+  .unique-testimonial__image .pause-icon , .unique-testimonial__image:first-child .play-icon.first-video{display:none;}
+  .unique-testimonial__image:hover .play-icon,
+  .unique-testimonial__image.playing:hover .pause-icon  {
+   display: flex;
+  }
+  .lazy-video-container img {height:600px;}
+</style>
+<script>
+  function attachMuteHandlers() {
+    const containers = document.querySelectorAll(
+      ".unique-testimonial__image.media-wrapper.media-wrapper--small"
+    );
+
+    containers.forEach(container => {
+      const video = container.querySelector("video");
+
+      if (!video || video.dataset.bound === "true") return;
+      video.dataset.bound = "true";
+
+      // Ensure autoplay works: must be muted BEFORE load
+      video.setAttribute("muted", ""); // set the attribute, not just .muted = true
+      video.muted = true;
+      video.setAttribute("playsinline", "");
+      video.setAttribute("loop", "");
+
+      // Create button
+      const button = document.createElement("button");
+      button.className = "mute-toggle";
+      button.textContent = "🔇";
+      Object.assign(button.style, {
+        position: "absolute",
+        bottom: "10px",
+        right: "10px",
+        zIndex: "10",
+        padding: "6px 10px",
+        background: "rgba(0,0,0,0.5)",
+        color: "white",
+        border: "none",
+        borderRadius: "16px",
+        cursor: "pointer"
+      });
+
+      container.style.position = "relative";
+      container.appendChild(button);
+
+      button.addEventListener("click", () => {
+        video.muted = !video.muted;
+        button.textContent = video.muted ? "🔇" : "🔊";
+      });
+    });
+  }
+
+  // Run as early as possible
+  document.addEventListener("DOMContentLoaded", () => {
+    attachMuteHandlers();
+  });
+
+  // Optional: if you're dynamically adding content later
+  // Use a timeout or manual call AFTER new elements are injected
+  // MutationObserver version can be added back if needed, but debounce it
+</script>
+
+{% schema %}
+{
+  "name": "CC Hero Section",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Copy Settings",
+      "info": "Edit settings for the main header content"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default":"#ffffff"
+    },
+    {
+      "type":"image_picker",
+      "id":"background_image",
+      "label":"Background Image"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "label": "Text Color",
+      "default":"#000000"
+    },
+    {
+      "type":"text",
+      "id":"heading-font-family",
+      "label":"Heading Font Family"
+    },
+    {
+      "type":"text",
+      "id":"body-font-family",
+      "label":"Body Font Family"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Margin Bottom",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Product Subscription Settings",
+      "info": "Edit settings Product subscription  "
+    },
+    {
+      "type": "color",
+      "id": "subscription_txt",
+      "label": "Product subscription text",
+      "default":"#000000"
+    },
+    {
+      "type": "header",
+        "content": "Video Settings",
+        "info": "Edit settings for the videos on the page"
+      },
+      {
+        "type": "select",
+        "id": "carousel_type",
+        "label": "Carousel Type",
+        "default": "inline",
+        "options": [
+          {
+            "value": "social",
+            "label": "Social"
+          },
+          {
+            "value": "inline",
+            "label": "Inline"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "auto_text_contrast",
+        "label": "Set all text color based on best contrast",
+        "default": false
+      },
+        {
+      "type": "color",
+      "id": "border_color",
+      "label": "Video Border Color",
+       "default":"#000000"
+     },
+      {
+      "type": "number",
+      "id": "border_width",
+      "label": "Video Border Width",
+        "default":0
+    },
+          {
+      "type": "range",
+      "id": "video_corner_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Video Corner Radius",
+      "default": 0
+    },
+     {
+      "type": "checkbox",
+      "id": "include_creator_videos",
+      "label": "Include creator videos",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "include_creator_images",
+      "label": "Include creator images",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Video Aspect Ratio",
+      "default": "custom",
+      "options": [
+        { "value": "1/1", "label": "1:1 (Square)" },
+        { "value": "4/3", "label": "4:3" },
+        { "value": "16/9", "label": "16:9 (Widescreen)" },
+        { "value": "21/9", "label": "21:9 (Cinematic)" },
+        { "value": "custom", "label": "Custom Size" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom Width (px)",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "custom_height",
+      "label": "Custom Height (px)",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Main CTA Button",
+      "info": "Edit settings Main CTA button "
+    },
+    {
+      "type": "color",
+      "id": "cta_bg",
+      "label": "Main CTA Background Color",
+      "default":"#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_text",
+      "label": "Main CTA Text Color",
+      "default":"#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_bg",
+      "label": "Main CTA hover Background Color",
+      "default":"#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_text",
+      "label": "Main CTA hover text Color",
+      "default":"#000000"
+    },
+    {
+      "type": "header",
+      "content": "Icon Text Settings",
+      "info": "Edit settings for the icon section"
+    },
+     {
+      "type": "text",
+      "id": "desktop_gap",
+      "label": "Icon Gap on Desktop (%)",
+      "default": "5"
+    },
+    {
+      "type": "text",
+      "id": "mobile_gap",
+      "label": "Icon Gap on Mobile (%)",
+      "default": "10"
+    },
+    {
+      "type": "header",
+      "content": "Section Settings",
+      "info": "Edit settings for the general section"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section Super Background",
+       "default":"#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_content_no_media",
+      "label": "Center content when there's no media",
+      "default": true
+      },
+      {
+      "type": "range",
+      "id": "section_padding_left_right_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Section Left/Right Padding Mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Section Top/Bottom Padding Mobile",
+      "default": 0
+    },
+            {
+      "type": "range",
+      "id": "section_padding_left_right",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Section Left/Right Padding",
+      "default": 0
+    },
+     {
+      "type": "range",
+      "id": "section_padding_top_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Section Top/Bottom Padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "center_gap",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Center Gap",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Left",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 36
+    },
+        {
+      "type": "range",
+      "id": "container_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Container Border Radius",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video link"
+        },
+        {
+          "type": "image_picker",
+          "id": "p_image",
+          "label": "Preview Image"
+        }
+      ]
+    },
+    {
+      "type": "testimonial-image",
+      "name": "image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image File"
+        }
+      ]
+    },
+    {
+      "type": "certified",
+      "name": "certified",
+      "limit":1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "First Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Second Image"
+        },
+               {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Third Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "count_no",
+          "label": "Count Number"
+        },
+        {
+          "type": "color",
+          "id": "color_count",
+          "label": "Text color for count",
+          "default":"#000000"
+        },
+        {
+          "type": "color",
+          "id": "bg_count",
+          "label": "Background for count",
+          "default":"#FFFFFF"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "txt_1",
+          "label": "Heading"
+        },
+        {
+          "type":"checkbox",
+          "id":"set-uppercase",
+          "label":"Set text to uppercase"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default":"#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "certified_text_size",
+          "min": 2,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Certified Text Size",
+          "default": 14
+        },
+         {
+          "type": "color",
+          "id": "certified_bg",
+          "label": "Certified Main Background",
+          "default":"#000000"
+        },
+        {
+          "type":"text",
+          "id":"certified-box-width",
+          "label":"Certified Box Width"
+        }
+      ]
+    },
+    {
+        "type":"cc-eyebrow",
+        "name":"CC Eyebrow",
+        "settings":[
+          {
+            "type": "inline_richtext",
+            "id": "eyebrowcopy",
+            "default": "Recommended by {{ metaobject.cc-creator-first-name }}",
+            "label": "Eyebrow Copy"
+          },
+            {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Set text to uppercase"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Eyebrow Text Size",
+            "default": 18
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_corner_radius",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "Eyebrow Corner Radius",
+            "default": 0
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbackground",
+            "label": "Eyebrow Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowtextcolor",
+            "label": "Eyebrow Text Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbordercolor",
+            "label": "Eyebrow Border Color"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_border_width",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "label": "Eyebrow Border Width",
+            "default": 0
+          },
+             {
+              "type": "range",
+              "id": "eyebrow_margin_bottom",
+              "min": 0,
+              "max": 100,
+              "step": 2,
+              "unit": "px",
+              "label": "Eyebrow Margin Bottom",
+              "default": 10
+            }
+        ]
+      },
+    {
+      "type":"cc-header",
+      "name": "CC Header",
+      "settings":[
+          {
+            "type": "richtext",
+            "id": "title",
+            "default": "<h1>Shop with {{ metaobject.cc-creator.first-name }}</h1>",
+            "label": "Hero title"
+          },
+          {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Set text to uppercase"
+          },
+          {
+            "type": "range",
+            "id": "heading_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Heading Exact Size",
+            "default": 42
+          },
+          {
+              "type": "range",
+              "id": "mobile_heading_text_size",
+              "min": 0,
+              "max": 100,
+              "step": 2,
+              "unit": "px",
+              "label": "Mobile Heading Size",
+              "default": 30
+            },
+          {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+              {
+                "value": "h2",
+                "label": "h1"
+              },
+              {
+                "value": "h1",
+                "label": "h2"
+              },
+              {
+                "value": "h3",
+                "label": "h3"
+              }
+            ],
+            "default": "h1",
+            "label": "Heading size"
+          },
+        {
+            "type": "checkbox",
+            "id": "move_header_top_mobile",
+            "label": "Move header to top of section on mobile",
+            "default": false
+        },
+         {
+          "type": "range",
+          "id": "header_margin_bottom",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Header Margin Bottom",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type":"cc-star",
+      "name":"CC Stars",
+      "settings":[
+         {
+      "type": "inline_richtext",
+      "id": "stars",
+      "default": "Trusted by 10,000 others",
+      "label": "Star Copy"
+    },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show Stars",
+      "default":true
+    },
+    {
+      "type": "range",
+      "id": "star_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Star Text Size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Size",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Adjustment Spacing",
+      "default": 0
+    },
+     {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default":"#000000"
+    },
+        {
+      "type": "range",
+      "id": "star_margin_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Margin Bottom",
+      "default": 5
+    }
+      ]
+    },
+    {
+      "type":"cc-text",
+      "name":"CC Text",
+      "settings":[
+      {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "default": "Get a discount by shopping from my curated collections.",
+      "label": "Hero Subtitle"
+     },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+      {
+      "type": "range",
+      "id": "description_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Description Exact Size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "text_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Text Margin Bottom",
+      "default": 10
+    }
+      ]
+    },
+    {
+      "type":"cc-product",
+      "name":"CC Product/CTA",
+      "settings":[
+        {
+        "type": "header",
+        "content": "Product Settings",
+        "info": "Edit settings for the products on the page"
+      },
+       {
+      "type": "checkbox",
+      "id": "show_creator_products",
+      "label": "Show Recent Recommendations",
+      "default":true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_featured_product",
+      "label": "Hide featured product card",
+      "default":false
+    },
+    {
+      "type": "range",
+      "id": "number_of_recommendations",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "label": "Number of Affiliate Recommendations",
+      "default": 3
+    },
+          {
+      "type": "range",
+      "id": "product_corner_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Product Corner Radius",
+      "default": 0
+    },
+              {
+      "type": "range",
+      "id": "product_cta_corner_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Product CTA Corner Radius",
+      "default": 0
+    },
+       {
+      "type": "inline_richtext",
+      "id": "productcta",
+      "default": "Get 20% Off",
+      "label": "Product CTA Copy"
+    },
+      {
+        "type":"checkbox",
+        "id":"set-uppercase",
+        "label":"Set text to uppercase"
+    },
+           {
+      "type": "inline_richtext",
+      "id": "featured-product",
+      "default": "featured-product-handle",
+      "label": "Featured Product Handle"
+    },
+          {
+      "type": "inline_richtext",
+      "id": "product_url",
+      "default": "https://productlink.com",
+      "label": "Featured Product URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "apply_discount",
+      "label": "Show discounted pricing",
+      "default":false
+    },
+    {
+      "type": "number",
+      "id": "full_price",
+      "label": "Full Price Amount"
+    },
+      {
+      "type": "select",
+      "id": "show_compare",
+      "options": [
+        {
+          "value": "true",
+          "label": "Yes"
+        },
+        {
+          "value": "false",
+          "label": "No"
+        }
+      ],
+      "default": "false",
+      "label": "Show Compare at Price"
+    },
+    {
+      "type": "color",
+      "id": "product_background",
+      "label": "Product Background Color",
+      "default":"#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "product_text_color",
+      "label": "Product Text Color",
+      "default":"#000000"
+    },
+           {
+      "type": "color",
+      "id": "product_border_color",
+      "label": "Product Border Color"
+    },
+               {
+      "type": "color",
+      "id": "product_cta_background",
+      "label": "Product CTA Background Color",
+      "default":"#000000"
+    },
+    {
+      "type": "color",
+      "id": "product_cta_text_color",
+      "label": "Product CTA Text Color",
+         "default":"#ffffff"
+    },
+           {
+      "type": "color",
+      "id": "product_cta_border_color",
+      "label": "Product CTA Border Color"
+    },
+    {
+      "type": "range",
+      "id": "product_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Product Border Width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "product_cta_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Product CTA Border Width",
+      "default": 0
+    },
+     {
+      "type": "range",
+      "id": "product_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Product Margin Bottom",
+      "default": 10
+    }
+      ]
+    },
+    {
+      "type": "icon-text",
+      "name": "Icon Text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default":"Dermatologist Reviewed"
+        },
+        {
+          "type":"checkbox",
+          "id":"set-uppercase",
+          "label":"Set text to uppercase"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default":"#FFFFFF"
+        }
+      ]
+    },
+    {
+      "type":"cc-logo",
+      "name":"Collab Highlight",
+      "settings":[
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+         "type":"richtext",
+          "id":"logo_text",
+          "label":"Logo Text"
+        },
+        {
+          "type": "select",
+          "id":"text-case",
+          "label": "Text Transformation",
+          "default": "uppercase",
+          "options": [
+            {
+              "label": "Uppercase",
+              "value": "uppercase"
+            },
+            {
+              "value": "lowercase",
+              "label": "Lowercase"
+            },
+            {
+              "label": "Capitalize",
+              "value": "capitalize"
+            }
+          ]
+        },
+        {
+          "type":"text",
+          "id":"text-size",
+          "label":"Text Size"
+        },
+         {
+          "type":"text",
+          "id":"text-line-height-size",
+          "label":"Text Line Height"
+        },
+        {
+          "type":"color",
+          "id":"text_color",
+          "label":"Text Color"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "logo_width_mobile",
+          "min": 50,
+          "max": 200,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width on mobile",
+          "default": 80
+        },
+        {
+          "type":"text",
+          "id":"horizontal-spacing",
+          "label":"Horizontal Spacing"
+        },
+        {
+          "type":"text",
+          "id":"vertical-spacing",
+          "label":"Vertical Spacing"
+        },
+        {
+          "type": "header",
+          "content": "Creator Collaboration Settings"
+        },
+        {
+          "type": "text",
+          "id": "divider_text",
+          "label": "Divider text",
+          "default": "×"
+        },
+        {
+          "type":"text",
+          "id":"divider_text_size",
+          "label":"Divider Size"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "fallback_bg_color",
+          "label": "Fallback Background Color",
+          "default": "#cccccc"
+        },
+        {
+          "type":"color",
+          "id":"initials_font_color",
+          "label":"Initials Font Color"
+        },
+        {
+          "type": "range",
+          "id": "initials_font_size",
+          "label": "Initials Font Size",
+          "min": 10,
+          "max": 60,
+          "step": 1,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width",
+          "min": 30,
+          "max": 150,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size",
+          "default": 60
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width_mobile",
+          "min": 30,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size on mobile",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "collab_margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Collab Margin Bottom",
+          "default": 10
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Hero Section",
+      "blocks": [
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  }
+}
+{% endschema %}
+
+{% comment %} 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          playIcon.style.display = "flex";
+          pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            pauseIcon.style.display = "none";
+            return;
+          }
+
+          // Show pause icon if playing
+          if (video && !video.paused) {
+            pauseIcon.style.display = "flex";
+            setTimeout(() => {
+              pauseIcon.style.display = "none";
+            }, 2000);
+          }
+        });
+      }
+    });
+  });
+</script> {% endcomment %}
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        // Attributes for autoplay inline on mobile
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        // ALSO set properties (needed on iOS Safari sometimes)
+        lazyVideo.playsInline = true;
+        lazyVideo.muted = true;
+        lazyVideo.autoplay = true;
+        lazyVideo.loop = true;
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          if (playIcon) playIcon.style.display = "none";
+          if (pauseIcon) pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          if (playIcon) playIcon.style.display = "flex";
+          if (pauseIcon) pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now and ensure properties
+      if (video) {
+        video.playsInline = true;
+        video.muted = true;
+        bindVideoEvents(video);
+      }
+
+      // PLAY icon handlers
+      const onPlayTap = async (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.();
+
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      };
+      playIcon?.addEventListener("click", onPlayTap);
+      playIcon?.addEventListener("touchstart", onPlayTap, { passive: false });
+
+      // PAUSE icon handlers (call video.pause() directly)
+      const onPauseTap = (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.(); // prevent slider / wrapper handlers
+        const vid = video || wrapper.querySelector("video");
+        if (vid) vid.pause();
+      };
+      pauseIcon?.addEventListener("click", onPauseTap);
+      pauseIcon?.addEventListener("touchstart", onPauseTap, { passive: false });
+
+      // Make sure pause icon is clickable above overlays/sliders
+      if (pauseIcon) {
+        pauseIcon.style.pointerEvents = "auto";
+        pauseIcon.style.touchAction = "manipulation";
+      }
+      if (playIcon) {
+        playIcon.style.pointerEvents = "auto";
+        playIcon.style.touchAction = "manipulation";
+      }
+
+      // Mobile: Show pause icon briefly on touch (not when tapping icons)
+      const isMobileTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768;
+
+      if (isMobileTouch) {
+        wrapper.addEventListener("touchstart", (e) => {
+          // If tapping on play/pause icons (or their children), do nothing here
+          if (
+            (pauseIcon && (e.target === pauseIcon || pauseIcon.contains(e.target))) ||
+            (playIcon && (e.target === playIcon || playIcon.contains(e.target)))
+          ) {
+            return;
+          }
+
+          // Show pause icon if video is playing
+          const vid = video || wrapper.querySelector("video");
+          if (vid && !vid.paused) {
+            if (pauseIcon) {
+              pauseIcon.style.display = "flex";
+              setTimeout(() => {
+                // Only hide if still playing
+                if (!vid.paused) {
+                  pauseIcon.style.display = "none";
+                }
+              }, 2000);
+            }
+          }
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".story__slide");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          playIcon.style.display = "flex";
+          pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            pauseIcon.style.display = "none";
+            return;
+          }
+
+          // Show pause icon if playing
+          if (video && !video.paused) {
+            pauseIcon.style.display = "flex";
+            setTimeout(() => {
+              pauseIcon.style.display = "none";
+            }, 2000);
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  function getContrastYIQ(hexColor) {
+    hexColor = hexColor.replace("#", "");
+    if (hexColor.length === 3) {
+      hexColor = hexColor.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? 'black' : 'white';
+  }
+
+  document.querySelectorAll('#hero-section').forEach(section => {
+    const autoContrast = section.dataset.autoContrast === "true";
+    if (!autoContrast) return;
+
+    const bgColor = window.getComputedStyle(section).backgroundColor;
+
+    // Convert rgb to hex
+    const rgbToHex = (rgb) => {
+      const result = rgb.match(/\d+/g);
+      if (!result) return '#ffffff';
+      return (
+        "#" +
+        result
+          .slice(0, 3)
+          .map((x) => {
+            const hex = parseInt(x).toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+          })
+          .join("")
+      );
+    };
+
+    const hexColor = rgbToHex(bgColor);
+    const textColor = getContrastYIQ(hexColor);
+
+    section.querySelectorAll('.dynamic-text').forEach(el => {
+      el.style.color = textColor;
+    });
+  });
+</script>
+
+
+
+<style>
+@media only screen and (min-width: 1101px) {
+  .unique-video-slider {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  .unique-video-slider-item {
+    flex: 0 0 auto;
+    transition:
+      opacity 0.3s ease-out,
+      transform 0.3s ease-out,
+      filter 0.3s ease-out;
+    opacity: 1;
+    filter: blur(0);
+    /* transform: scale(1) translateX(0); */
+    position: relative;
+    z-index: 1;
+  }
+
+  .unique-video-slider-item.is-active {
+    opacity: 1;
+    filter: blur(0);
+    /* transform: scale(1.05) translateX(0); */
+    z-index: 3;
+}
+
+.unique-video-slider-item.fade-out-left {
+  opacity: 0;
+  transform: scale(0.8) translateX(-40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.unique-video-slider-item.fade-left {
+  opacity: 0;
+  filter: blur(3px);
+  transform: scale(0.92) translateX(-20px);
+  z-index: 0;
+}
+
+.unique-video-slider-item.slide-forward {
+  opacity: 1;
+  filter: blur(0);
+  /* transform: scale(1) translateX(20px); */
+  z-index: 2;
+}
+}
+
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+.slider-arrow svg{
+  width:20px;
+  height:20px;
+}
+
+.slider-arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.right-arrow {
+  right: 10px;
+  height:40px;
+}
+
+
+</style>
+
+{% comment %} <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const slider = document.querySelector('.unique-video-slider-list');
+  const slidermain = slider ? slider.closest(".unique-video-slider") : null;
+  if (!slider || !slidermain) return;
+
+  const items = slider.querySelectorAll(".unique-video-slider-item");
+
+  function updateActiveItem() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const wrapperLeft = wrapperRect.left;
+    const wrapperRight = wrapperRect.right;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach(item => {
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+    });
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const leftDiff = rect.left - wrapperLeft;
+
+      if (leftDiff < -rect.width * 0.1) {
+        item.classList.add("fade-out-left");
+      } else if (leftDiff < 0) {
+        item.classList.add("fade-left");
+      } else if (leftDiff >= 0 && rect.right <= wrapperRight) {
+        item.classList.add("is-active");
+      } else {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  function updateActiveItemdrag() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const visibleCenter = wrapperRect.left + wrapperRect.width / 2;
+    const offsetPercent = 0.20;
+    let activeItem = null;
+    let minDiff = Infinity;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item) => {
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+    });
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const offset = rect.width * offsetPercent;
+      const triggerPoint = rect.right - offset;
+      const diff = Math.abs(visibleCenter - triggerPoint);
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeItem = { item, index };
+      }
+    });
+
+    if (!activeItem) return;
+
+    const activeIndex = activeItem.index;
+    const originalItemCount = items.length;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add("is-active");
+      } else if (index < activeIndex - 1) {
+        item.classList.add("fade-out-left");
+      } else if (index === activeIndex - 1) {
+        item.classList.add("fade-left");
+      } else if (index > activeIndex) {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  // Smooth scroll helper
+  function smoothScrollBy(element, distance, duration) {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    function scroll() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeInOutQuad = progress < 0.5 
+        ? 2 * progress * progress 
+        : -1 + (4 - 2 * progress) * progress;
+
+      element.scrollLeft = start + distance * easeInOutQuad;
+      updateActiveItem();
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      }
+    }
+
+    requestAnimationFrame(scroll);
+  }
+
+  // Initialize variables
+  let slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  // Function to create infinite loop by duplicating slides
+  function createInfiniteLoop() {
+    // Clone all items and append them to create infinite loop
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.classList.remove("is-active", "fade-left", "fade-out-left", "slide-forward");
+      slider.appendChild(clone);
+    });
+  }
+
+  // Function to handle infinite scroll
+  function handleInfiniteScroll() {
+    const currentScroll = slider.scrollLeft;
+    const totalWidth = slideWidth * items.length;
+    
+    // If we've scrolled past the end, reset to beginning
+    if (currentScroll >= totalWidth) {
+      slider.scrollLeft = 0;
+      updateActiveItemdrag();
+    }
+  }
+
+  // Enhanced smooth scroll helper with infinite loop support
+  function smoothScrollBy(element, distance, duration) {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    function scroll() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeInOutQuad = progress < 0.5 
+        ? 2 * progress * progress 
+        : -1 + (4 - 2 * progress) * progress;
+
+      element.scrollLeft = start + distance * easeInOutQuad;
+      updateActiveItem();
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      } else {
+        // Check for infinite loop after animation completes
+        handleInfiniteScroll();
+      }
+    }
+
+    requestAnimationFrame(scroll);
+  }
+
+  const rightArrow = document.querySelector(".right-arrow");
+
+  if (rightArrow && items.length) {
+    const totalScrollAmount = slideWidth * 1.1;
+    const fadeDuration = 300;
+    const smoothDuration = 800;
+
+    function twoStepScroll(distance) {
+      updateActiveItem();
+      setTimeout(() => {
+        smoothScrollBy(slider, distance, smoothDuration);
+      }, fadeDuration);
+    }
+
+    rightArrow.addEventListener("click", () => {
+      // Always scroll forward - the infinite loop handles the continuation
+      twoStepScroll(totalScrollAmount);
+    });
+  }
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('dragging');
+    slidermain.classList.add('dragslider');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+    }
+  });
+
+  slider.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      updateActiveItemdrag();
+      
+      // Check for infinite loop after drag ends
+      handleInfiniteScroll();
+    }
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 1.1;
+    slider.scrollLeft = scrollLeft - walk;
+    updateActiveItemdrag();
+  });
+  
+  slider.addEventListener('wheel', (e) => {
+  // If horizontal scroll detected, or shift+scroll for horizontal
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+    e.preventDefault(); // Prevent vertical scroll
+    slider.scrollLeft += e.deltaX;
+    updateActiveItemdrag();
+    
+    // Check for infinite loop after wheel scroll
+    handleInfiniteScroll();
+  }
+}, { passive: false });
+
+  slider.querySelectorAll('img').forEach(img => {
+    img.setAttribute('draggable', false);
+  });
+
+  // Initialize infinite loop
+  createInfiniteLoop();
+
+  window.addEventListener("resize", updateActiveItemdrag);
+  setTimeout(updateActiveItemdrag, 100);
+
+  // Periodic check for infinite scroll boundaries
+  setInterval(() => {
+    if (!isDown) { // Only check when not dragging
+      handleInfiniteScroll();
+    }
+  }, 1000);
+});
+</script>  {% endcomment %}
+
+{% comment %} <script>
+document.addEventListener("DOMContentLoaded", function () {
+    let slider = document.querySelector('.unique-video-slider-list');
+    const slidermain = slider ? slider.closest(".unique-video-slider") : null;
+    if (!slider || !slidermain) return;
+
+    let items = slider.querySelectorAll(".unique-video-slider-item");
+
+    // -----------------------------
+    // Update active item (scroll step)
+    // -----------------------------
+    function updateActiveItem() {
+        const wrapperRect = slidermain.getBoundingClientRect();
+        const wrapperLeft = wrapperRect.left;
+        const wrapperRight = wrapperRect.right;
+
+        slider.querySelectorAll(".unique-video-slider-item").forEach(item => {
+            item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+        });
+
+        slider.querySelectorAll(".unique-video-slider-item").forEach((item) => {
+            const rect = item.getBoundingClientRect();
+            const leftDiff = rect.left - wrapperLeft;
+
+            if (leftDiff < -rect.width * 0.1) {
+                item.classList.add("fade-out-left");
+            } else if (leftDiff < 0) {
+                item.classList.add("fade-left");
+            } else if (leftDiff >= 0 && rect.right <= wrapperRight) {
+                item.classList.add("is-active");
+            } else {
+                item.classList.add("slide-forward");
+            }
+        });
+    }
+
+    // -----------------------------
+    // Update active item (drag step)
+    // -----------------------------
+    function updateActiveItemdrag() {
+        const wrapperRect = slidermain.getBoundingClientRect();
+        const visibleCenter = wrapperRect.left + wrapperRect.width / 2;
+        const offsetPercent = 0.20;
+
+        let activeItem = null;
+        let minDiff = Infinity;
+
+        slider.querySelectorAll(".unique-video-slider-item").forEach((item) => {
+            item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+        });
+
+        slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+            const rect = item.getBoundingClientRect();
+            const offset = rect.width * offsetPercent;
+            const triggerPoint = rect.right - offset;
+            const diff = Math.abs(visibleCenter - triggerPoint);
+
+            if (diff < minDiff) {
+                minDiff = diff;
+                activeItem = { item, index };
+            }
+        });
+
+        if (!activeItem) return;
+        const activeIndex = activeItem.index;
+
+        slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+            if (index === activeIndex) {
+                item.classList.add("is-active");
+            } else if (index < activeIndex - 1) {
+                item.classList.add("fade-out-left");
+            } else if (index === activeIndex - 1) {
+                item.classList.add("fade-left");
+            } else if (index > activeIndex) {
+                item.classList.add("slide-forward");
+            }
+        });
+    }
+
+    // -----------------------------
+    // Smooth scroll helper
+    // -----------------------------
+    function smoothScrollBy(element, distance, duration) {
+        const start = element.scrollLeft;
+        const startTime = performance.now();
+
+        function scroll() {
+            const now = performance.now();
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            const easeInOutQuad = progress < 0.5
+                ? 2 * progress * progress
+                : -1 + (4 - 2 * progress) * progress;
+
+            element.scrollLeft = start + distance * easeInOutQuad;
+            updateActiveItem();
+
+            if (progress < 1) {
+                requestAnimationFrame(scroll);
+            } else {
+                handleInfiniteScroll();
+            }
+        }
+
+        requestAnimationFrame(scroll);
+    }
+
+    // -----------------------------
+    // Infinite loop setup
+    // -----------------------------
+    let slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    function createInfiniteLoop() {
+        items.forEach(item => {
+            const clone = item.cloneNode(true);
+            clone.classList.remove("is-active", "fade-left", "fade-out-left", "slide-forward");
+            slider.appendChild(clone);
+        });
+
+        items = slider.querySelectorAll(".unique-video-slider-item");
+        slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+    }
+
+    function handleInfiniteScroll() {
+        const currentScroll = slider.scrollLeft;
+        const totalWidth = slideWidth * items.length;
+
+        if (currentScroll >= totalWidth) {
+            slider.scrollLeft = 0;
+            updateActiveItemdrag();
+        }
+    }
+
+    // -----------------------------
+    // Arrow navigation
+    // -----------------------------
+    const rightArrow = document.querySelector(".right-arrow");
+    if (rightArrow && items.length) {
+        const totalScrollAmount = slideWidth * 1.1;
+        const fadeDuration = 300;
+        const smoothDuration = 800;
+
+        function twoStepScroll(distance) {
+            updateActiveItem();
+            setTimeout(() => {
+                smoothScrollBy(slider, distance, smoothDuration);
+            }, fadeDuration);
+        }
+
+        rightArrow.addEventListener("click", () => {
+            twoStepScroll(totalScrollAmount);
+        });
+    }
+
+    // -----------------------------
+    // Drag handling
+    // -----------------------------
+    slider.addEventListener('mousedown', (e) => {
+        isDown = true;
+        slider.classList.add('dragging');
+        slidermain.classList.add('dragslider');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', () => {
+        if (isDown) {
+            isDown = false;
+            slider.classList.remove('dragging');
+            slidermain.classList.remove('dragslider');
+        }
+    });
+
+    slider.addEventListener('mouseup', () => {
+        if (isDown) {
+            isDown = false;
+            slider.classList.remove('dragging');
+            slidermain.classList.remove('dragslider');
+            updateActiveItemdrag();
+            handleInfiniteScroll();
+        }
+    });
+
+    slider.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 1.1;
+        slider.scrollLeft = scrollLeft - walk;
+        updateActiveItemdrag();
+    });
+
+    // -----------------------------
+    // Wheel scroll handling
+    // -----------------------------
+    slider.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+            e.preventDefault();
+            slider.scrollLeft += e.deltaX;
+            updateActiveItemdrag();
+            handleInfiniteScroll();
+        }
+    }, { passive: false });
+
+    // -----------------------------
+    // Disable image drag
+    // -----------------------------
+    slider.querySelectorAll('img').forEach(img => {
+        img.setAttribute('draggable', false);
+    });
+
+    // -----------------------------
+    // Init
+    // -----------------------------
+    createInfiniteLoop();
+    window.addEventListener("resize", updateActiveItemdrag);
+    setTimeout(updateActiveItemdrag, 100);
+
+    setInterval(() => {
+        if (!isDown) {
+            handleInfiniteScroll();
+        }
+    }, 1000);
+});
+</script> {% endcomment %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const slider = document.querySelector('.unique-video-slider-list');
+  const slidermain = slider ? slider.closest(".unique-video-slider") : null;
+  if (!slider || !slidermain) return;
+
+  const items = Array.from(slider.querySelectorAll(".unique-video-slider-item"));
+
+  function updateActiveItem() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const wrapperLeft = wrapperRect.left;
+    const wrapperRight = wrapperRect.right;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach(item => {
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+    });
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const leftDiff = rect.left - wrapperLeft;
+
+      if (leftDiff < -rect.width * 0.1) {
+        item.classList.add("fade-out-left");
+      } else if (leftDiff < 0) {
+        item.classList.add("fade-left");
+      } else if (leftDiff >= 0 && rect.right <= wrapperRight) {
+        item.classList.add("is-active");
+      } else {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  function updateActiveItemdrag() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const visibleCenter = wrapperRect.left + wrapperRect.width / 2;
+    const offsetPercent = 0.20;
+    let activeItem = null;
+    let minDiff = Infinity;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item) => {
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+    });
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const offset = rect.width * offsetPercent;
+      const triggerPoint = rect.right - offset;
+      const diff = Math.abs(visibleCenter - triggerPoint);
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeItem = { item, index };
+      }
+    });
+
+    if (!activeItem) return;
+
+    const activeIndex = activeItem.index;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add("is-active");
+      } else if (index < activeIndex - 1) {
+        item.classList.add("fade-out-left");
+      } else if (index === activeIndex - 1) {
+        item.classList.add("fade-left");
+      } else if (index > activeIndex) {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  // Smooth scroll helper
+  function smoothScrollBy(element, distance, duration) {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    function scroll() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeInOutQuad = progress < 0.5 
+        ? 2 * progress * progress 
+        : -1 + (4 - 2 * progress) * progress;
+
+      element.scrollLeft = start + distance * easeInOutQuad;
+      updateActiveItem();
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      } else {
+        if (window.innerWidth > 1100) {
+          handleInfiniteScroll();
+        }
+      }
+    }
+
+    requestAnimationFrame(scroll);
+  }
+
+  // Infinite loop setup
+  let infiniteLoopEnabled = false;
+  let slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+
+  function createInfiniteLoop() {
+    if (infiniteLoopEnabled) return; // prevent duplicate clones
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.classList.remove("is-active", "fade-left", "fade-out-left", "slide-forward");
+      slider.appendChild(clone);
+    });
+    infiniteLoopEnabled = true;
+  }
+
+  function handleInfiniteScroll() {
+    if (!infiniteLoopEnabled) return;
+    const currentScroll = slider.scrollLeft;
+    const totalWidth = slideWidth * items.length;
+    if (currentScroll >= totalWidth) {
+      slider.scrollLeft = 0;
+      updateActiveItemdrag();
+    }
+  }
+
+  function initInfiniteLoop() {
+    if (window.innerWidth > 1100) {
+      createInfiniteLoop();
+      infiniteLoopEnabled = true;
+    } else {
+      infiniteLoopEnabled = false;
+    }
+  }
+
+  // Arrow click
+  const rightArrow = document.querySelector(".right-arrow");
+
+  if (rightArrow && items.length) {
+    const totalScrollAmount = slideWidth * 1.1;
+    const fadeDuration = 300;
+    const smoothDuration = 800;
+
+    function twoStepScroll(distance) {
+      updateActiveItem();
+      setTimeout(() => {
+        smoothScrollBy(slider, distance, smoothDuration);
+      }, fadeDuration);
+    }
+
+    rightArrow.addEventListener("click", () => {
+      twoStepScroll(totalScrollAmount);
+    });
+  }
+
+  // Dragging
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('dragging');
+    slidermain.classList.add('dragslider');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+    }
+  });
+
+  slider.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      updateActiveItemdrag();
+      if (window.innerWidth > 1100) {
+        handleInfiniteScroll();
+      }
+    }
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 1.1;
+    slider.scrollLeft = scrollLeft - walk;
+    updateActiveItemdrag();
+  });
+
+  // Wheel scroll
+  slider.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      slider.scrollLeft += e.deltaX;
+      updateActiveItemdrag();
+      if (window.innerWidth > 1100) {
+        handleInfiniteScroll();
+      }
+    }
+  }, { passive: false });
+
+  slider.querySelectorAll('img').forEach(img => {
+    img.setAttribute('draggable', false);
+  });
+
+  // Init
+  initInfiniteLoop();
+  window.addEventListener("resize", () => {
+    updateActiveItemdrag();
+    initInfiniteLoop();
+  });
+
+  setTimeout(updateActiveItemdrag, 100);
+
+  // Periodic check
+  setInterval(() => {
+    if (!isDown && window.innerWidth > 1100) {
+      handleInfiniteScroll();
+    }
+  }, 1000);
+});
+</script>
+
+
+
+<style>
+.story__slider {
+  width: 450px;
+  height: auto;
+  overflow: hidden;
+}
+
+.story__slide {
+  position: relative;
+}
+
+.story__slide video,
+.story__slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.story__pagination {
+  bottom: unset !important;
+  top: 8px !important;
+  display: flex;
+  padding: 0 4px;
+}
+
+.story__pagination .swiper-pagination-bullet {
+  flex-grow: 1;
+  border-radius: 100vh;
+  height: 3px;
+  margin: 0 2px !important;
+  background-color: rgba(247, 247, 245, 0.4);
+  opacity: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.story__pagination .swiper-pagination-bullet .swiper-pagination-progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 100vh;
+  background-color: #f7f7f5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.story__prev,
+.story__next {
+  height: 100%;
+  width: 50%;
+  top: 0;
+  margin-top: 0;
+  position: absolute;
+  z-index: 10;
+}
+
+.story__prev::after,
+.story__next::after {
+  content: none;
+}
+
+.story__prev {
+  left: 0;
+}
+
+.story__next {
+  right: 0;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script>
+
+{% comment %} <script>
+const totalSlides = document.querySelectorAll('.story__slide').length;
+
+const slider = new Swiper(".story__slider", {
+  speed: 1,
+  watchSlidesProgress: true,
+  loop: totalSlides > 1, // Enable loop only if more than 1
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false
+  },
+  slidesPerView: 1,
+  navigation: {
+    nextEl: ".story__next",
+    prevEl: ".story__prev",
+  },
+  pagination: {
+    el: '.story__pagination',
+    renderBullet: function (index, className) {
+      return '<div class="' + className + '"> <div class="swiper-pagination-progress"></div> </div>';
+    }
+  },
+  on: {
+    autoplayTimeLeft(swiper, time, progress) {
+      let currentSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.activeIndex];
+      let currentBullet = document.querySelectorAll('.story__slider .swiper-pagination-progress')[swiper.realIndex];
+      let fullTime = currentSlide.dataset.swiperAutoplay ? parseInt(currentSlide.dataset.swiperAutoplay) : swiper.params.autoplay.delay;
+
+      let percentage = Math.min(Math.max(parseFloat(((fullTime - time) * 100 / fullTime).toFixed(1)), 0), 100) + '%';
+
+      gsap.set(currentBullet, { width: percentage });
+    },
+    transitionEnd(swiper) {
+      let allBullets = $('.story__slider .swiper-pagination-progress');
+      let bulletsBefore = allBullets.slice(0, swiper.realIndex);
+      let bulletsAfter = allBullets.slice(swiper.realIndex, allBullets.length);
+      if (bulletsBefore.length) { gsap.set(bulletsBefore, { width: '100%' }) }
+      if (bulletsAfter.length) { gsap.set(bulletsAfter, { width: '0%' }) }
+
+      let activeSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.realIndex];
+      if (activeSlide.querySelector('video')) {
+        activeSlide.querySelector('video').currentTime = 0;
+      }
+    },
+  }
+});
+
+</script> {% endcomment %}
+
+<script>
+const totalSlides = document.querySelectorAll('.story__slide').length;
+
+const slider = new Swiper(".story__slider", {
+  speed: 1,
+  watchSlidesProgress: true,
+  loop: totalSlides > 1,
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false
+  },
+  slidesPerView: 1,
+  navigation: {
+    nextEl: ".story__next",
+    prevEl: ".story__prev",
+  },
+  pagination: {
+    el: '.story__pagination',
+    renderBullet: function (index, className) {
+      return '<div class="' + className + '"><div class="swiper-pagination-progress"></div></div>';
+    }
+  },
+  on: {
+    autoplayTimeLeft(swiper, time, progress) {
+      let currentSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.activeIndex];
+      let currentBullet = document.querySelectorAll('.story__slider .swiper-pagination-progress')[swiper.realIndex];
+      let fullTime = currentSlide.dataset.swiperAutoplay ? parseInt(currentSlide.dataset.swiperAutoplay) : swiper.params.autoplay.delay;
+      let percentage = Math.min(Math.max(parseFloat(((fullTime - time) * 100 / fullTime).toFixed(1)), 0), 100) + '%';
+      gsap.set(currentBullet, { width: percentage });
+    },
+    transitionEnd(swiper) {
+      let allBullets = $('.story__slider .swiper-pagination-progress');
+      let bulletsBefore = allBullets.slice(0, swiper.realIndex);
+      let bulletsAfter = allBullets.slice(swiper.realIndex, allBullets.length);
+      if (bulletsBefore.length) { gsap.set(bulletsBefore, { width: '100%' }) }
+      if (bulletsAfter.length) { gsap.set(bulletsAfter, { width: '0%' }) }
+
+      let activeSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.realIndex];
+      if (activeSlide.querySelector('video')) {
+        activeSlide.querySelector('video').currentTime = 0;
+      }
+    },
+  }
+});
+
+// Function to attach autoplay control events to videos
+function attachVideoEvents(video) {
+  if (video.__eventsBound) return; // prevent double-binding
+  video.__eventsBound = true;
+
+  video.addEventListener('play', () => slider.autoplay.stop());
+  video.addEventListener('pause', () => slider.autoplay.start());
+  video.addEventListener('ended', () => slider.autoplay.start());
+}
+
+// Attach to any videos already present
+document.querySelectorAll('.story__slide video').forEach(attachVideoEvents);
+
+// Watch for dynamically injected videos (from lazy-video-container click)
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.tagName === 'VIDEO') {
+        attachVideoEvents(node);
+      } else if (node.querySelectorAll) {
+        node.querySelectorAll('video').forEach(attachVideoEvents);
+      }
+    });
+  });
+});
+
+// Observe only inside the slider
+observer.observe(document.querySelector('.story__slider'), {
+  childList: true,
+  subtree: true
+});
+</script>
+
+
+
+
+
+

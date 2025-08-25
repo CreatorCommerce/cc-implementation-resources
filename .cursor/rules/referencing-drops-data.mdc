@@ -36,12 +36,16 @@ alwaysApply: false
 {% for json_drop in cc_creator.data.value["cc-creator-drops"] %}
   {% assign drop_id = json_drop["cc-creator-drop-collection-id"] %}
   {% assign drop = nil %}
-  {% for collection_drop in cc_creator.cc-creator-drops.value %}
-    {% if collection_drop.id | append: "" == drop_id %}
-      {% assign drop = collection_drop %}
-      {% break %}
-    {% endif %}
-  {% endfor %}
+  
+  {% if drop_id != blank %}
+    {% for collection_drop in cc_creator.cc-creator-drops.value %}
+      {% assign collection_id_str = collection_drop.id | append: "" %}
+      {% if collection_id_str == drop_id %}
+        {% assign drop = collection_drop %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
   
   {% if drop and drop.products_count > 0 %}
     {% for json_product in json_drop["cc-creator-drop-products"] %}
@@ -49,12 +53,15 @@ alwaysApply: false
       {% assign selected_variant = json_product["cc-creator-drop-product-enhancement-variant"] | default: "" %}
       
       {% assign card_product = nil %}
-      {% for product in drop.products %}
-        {% if product.id | append: "" == wanted_id %}
-          {% assign card_product = product %}
-          {% break %}
-        {% endif %}
-      {% endfor %}
+      {% if wanted_id != blank %}
+        {% for product in drop.products %}
+          {% assign product_id_str = product.id | append: "" %}
+          {% if product_id_str == wanted_id %}
+            {% assign card_product = product %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
       
       {% if card_product %}
         {% render "product-card",
@@ -102,14 +109,40 @@ alwaysApply: false
 
 ## Performance and Optimization
 
-### 6. Performance Guidelines
+### 6. Liquid Syntax Considerations
+
+**Type conversion in {% liquid %} blocks requires variable assignment:**
+
+```liquid
+<!-- ❌ Don't do this - causes parsing errors -->
+{% liquid
+  if collection_drop.id | append: "" == drop_id
+    assign drop = collection_drop
+  endif
+%}
+
+<!-- ✅ Do this instead - assign converted value first -->
+{% liquid
+  assign collection_id_str = collection_drop.id | append: ""
+  if collection_id_str == drop_id
+    assign drop = collection_drop
+  endif
+%}
+```
+
+**Why this matters:**
+- Complex filter expressions in `if` conditions can cause Liquid parsing errors
+- Always assign the converted value to a variable first, then compare
+- This applies to both drops matching and product matching scenarios
+
+### 7. Performance Guidelines
 
 - **Keep nested loops tight**: Break as soon as a match is found
 - **Avoid rendering more than needed**: Use section settings to cap item counts
 - **Minimal JSON to client**: If JS needs data, emit minimal JSON blob per card
 - **Never stringify entire metaobjects**: Only send essential data to JavaScript
 
-### 7. Variant Picking
+### 8. Variant Picking
 
 ```liquid
 {% assign selected_variant = json_product["cc-creator-drop-product-enhancement-variant"] | default: "" %}
@@ -120,7 +153,7 @@ alwaysApply: false
 {% endif %}
 ```
 
-### 8. Media Handling
+### 9. Media Handling
 
 - If JSON includes media URLs/IDs, they augment/replace Shopify objects
 - Validate media presence before rendering
@@ -128,14 +161,14 @@ alwaysApply: false
 
 ## Code Quality Standards
 
-### 9. Naming Conventions
+### 10. Naming Conventions
 
 - Use `json_drop` for JSON object and `drop` for Shopify Collection object
 - Use `json_product` for JSON product and `product` for Shopify Product object
 - Use `card_product` for the final product to render
 - Avoid typos like `cc_creaotr`; canonical variable is `cc_creator`
 
-### 10. Reusable Drops Resolver
+### 11. Reusable Drops Resolver
 
 **Create a resolver snippet for consistency:**
 ```liquid
@@ -146,7 +179,7 @@ alwaysApply: false
 - `cc_drops_json`: array = cc_creator.data.value["cc-creator-drops"] or empty
 - `cc_drops_collections`: array = cc_creator.cc-creator-drops.value or empty
 
-### 11. Data Escaping and Security
+### 12. Data Escaping and Security
 
 **Always escape unsafe strings:**
 ```liquid
@@ -258,9 +291,82 @@ alwaysApply: false
 <div class="note">{{ json_product["cc-creator-drop-product-note"] }}</div>
 ```
 
+## Section Conversion Patterns
+
+### 16. Converting Existing Collection Sections
+
+**When adding drops support to existing sections, follow this pattern:**
+
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  if template.name contains 'metaobject' and template.suffix == 'creator'
+    assign cc_creator = metaobject
+  else
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator_drops = false
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign json_drops = cc_creator.data.value['cc-creator-drops']
+    if json_drops.size > 0 and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+      assign has_creator_drops = true
+    endif
+  endif
+-%}
+
+{%- if has_creator_drops -%}
+  <!-- Drops feed rendering -->
+  {%- for json_drop in json_drops -%}
+    <!-- Drop title → subtitle -->
+    <!-- Drop description → main heading -->
+    <!-- Drop products → product grid -->
+  {%- endfor -%}
+{%- else -%}
+  <!-- Original collection behavior (preserved exactly) -->
+{%- endif -%}
+```
+
+**Key conversion principles:**
+- **Preserve all original functionality** as fallback when no drops present
+- **Add drops logic first**, fallback logic second
+- **Use same CSS classes** and styling systems
+- **Update schema name** to include "CC" prefix
+- **Label collection setting** as "Fallback Collection"
+
+### 17. Multi-Drop Feed UI Patterns
+
+**For sections that need to render multiple drops as a feed:**
+
+```liquid
+{% style %}
+  #shopify-section-{{ section.id }} .cc-drop-section {
+    margin-bottom: 4rem;
+  }
+  
+  #shopify-section-{{ section.id }} .cc-drop-section:last-child {
+    margin-bottom: 0;
+  }
+{% endstyle %}
+
+{%- for json_drop in json_drops -%}
+  <div class="cc-drop-section">
+    <!-- Drop title and description -->
+    <!-- Drop products grid -->
+  </div>
+{%- endfor -%}
+```
+
+**Feed behavior guidelines:**
+- Each drop gets its own section container (`.cc-drop-section`)
+- Drop title becomes subtitle, description becomes main heading
+- Products render in same grid system as original section
+- Proper spacing between drop sections
+
 ## Testing Scenarios
 
-### 16. Testing Checklist
+### 18. Testing Checklist
 
 Before implementing drops UI:
 
@@ -278,10 +384,13 @@ Before implementing drops UI:
 - [ ] **Price/availability read from Shopify product**
 - [ ] **Creator page templates work correctly**
 - [ ] **Cart attributes handle missing gracefully**
+- [ ] **Original section functionality preserved when no drops**
+- [ ] **Multi-drop feed renders with proper spacing**
+- [ ] **Schema updates maintain backward compatibility**
 
 ## Creator Page Template Special Cases
 
-### 17. Creator Page Templates
+### 19. Creator Page Templates
 
 **On creator metaobject page templates:**
 ```liquid
@@ -296,7 +405,7 @@ Before implementing drops UI:
 {% endfor %}
 ```
 
-### 18. JavaScript Integration
+### 20. JavaScript Integration
 
 **Serialize minimal drops context:**
 ```liquid
@@ -318,4 +427,3 @@ window.__ccDrops = {
 - **Break early**: Exit nested loops as soon as matches are found
 - **Escape by default**: Always escape unsafe strings in Liquid output
 - **Creator page templates**: Use `metaobject` directly instead of `metaobjects.creator[handle]`
-

@@ -1,0 +1,65 @@
+Convert an existing Shopify section that renders products from a collection to also support CreatorCommerce drops, while preserving all original functionality as a fallback.
+
+**Target Section:**
+`[INSERT SECTION FILE NAME HERE]` (e.g., `sections/featured-products.liquid`)
+
+**Preserve Base Functionality**
+- Keep all existing features, schema settings, and styling unchanged
+- Maintain backward compatibility - section must work exactly as before when no creator drops are present
+- Preserve all CSS classes, JavaScript functionality, and responsive behavior
+
+**Add Creator Drops Support**
+- Follow `@referencing-drops-data.mdc` rules exactly
+- Use proper creator resolution with template context branching
+- Iterate JSON first to preserve drop order, then match to Shopify collections
+- Handle drop-level custom fields (titles, descriptions, media)
+- Support product-level enhancements (variants, notes, custom fields)
+
+**Data Flow Logic**
+```
+1. Check for creator drops → cc_creator.data.value['cc-creator-drops']
+2. If drops exist → Render drops feed (title + description + products per drop)
+3. If no drops → Fallback to original collection behavior from section settings
+```
+
+**Implementation Pattern**
+- **Creator Resolution**: Use template context branching for metaobject vs regular pages
+- **Drops Iteration**: JSON first (`json_drops`) to preserve order, match to collections
+- **Type Conversion**: Use variable assignment for ID comparisons (`collection_id_str = collection_drop.id | append: ''`)
+- **Null Safety**: Check `drop_id != blank` and `wanted_id != blank` before loops
+- **Product Matching**: Loop through `drop.products`, not `all_products[]`
+
+**UI Behavior Required**
+- **Multi-drop feed**: Each drop renders as separate section with own title/description/products
+- **Drop spacing**: Add CSS for `.cc-drop-section` with proper margins between drops
+- **Field mapping**: 
+  - `json_drop['cc-creator-drop-title']` → subtitle
+  - `json_drop['cc-creator-drop-description']` → main heading
+  - `json_product['cc-creator-drop-product-enhancement-variant']` → pass to product card
+
+**Schema Updates**
+- Update section name to include "CC" prefix (e.g., "CC Featured Products Drops")
+- Add explanatory paragraph about drops vs collection fallback behavior
+- Label collection setting as "Fallback Collection" with helpful info text
+- Keep all existing settings for backward compatibility
+
+**Code Quality Standards**
+- Follow liquid code organization from `@referencing-co-branded-data.mdc`
+- Use proper variable naming: `json_drop`, `drop`, `json_product`, `card_product`
+- Escape all unsafe strings: `{{ drop_title | escape }}`
+- Add null guards at every level
+- Break loops early on matches for performance
+
+**Testing Checklist**
+- [ ] Works with creator drops present (shows drops feed)
+- [ ] Works with no creator drops (shows original collection)
+- [ ] Works with empty/malformed drop data (graceful degradation)
+- [ ] Preserves all original section functionality
+- [ ] Maintains responsive behavior and styling
+- [ ] Type conversion works without Liquid parsing errors
+
+**Expected Output**
+- One updated `.liquid` file that works in both modes
+- All original functionality preserved
+- Drops support added following established patterns
+- Schema updated appropriately

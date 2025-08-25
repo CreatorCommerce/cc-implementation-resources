@@ -170,6 +170,37 @@ window.__ccCreator = {
 
 **Prefer minimal inline styles or section settings for styling tokens.**
 
+### 12. ID Type Conversion for Comparisons
+
+**Always convert types when comparing IDs from different sources:**
+
+When comparing Shopify object IDs (integers) with JSON-stored IDs (strings), convert to string:
+
+```liquid
+<!-- ❌ Wrong - type mismatch -->
+{% if collection_drop.id == drop_id %}
+
+<!-- ✅ Correct - convert to string -->
+{% if collection_drop.id | append: '' == drop_id %}
+
+<!-- ❌ Wrong - type mismatch -->
+{% if product.id == wanted_id %}
+
+<!-- ✅ Correct - convert to string -->
+{% if product.id | append: '' == wanted_id %}
+```
+
+**Why this matters:**
+- Shopify object IDs are integers: `12345`
+- JSON-stored IDs are strings: `"12345"`
+- Direct comparison fails: `12345 != "12345"`
+- Type conversion ensures match: `"12345" == "12345"`
+
+**Common ID comparison scenarios:**
+- Matching drops: `collection_drop.id | append: '' == json_drop['cc-creator-drop-collection-id']`
+- Matching products: `product.id | append: '' == json_product['cc-creator-drop-product-shopify-id']`
+- Matching variants: `variant.id | append: '' == json_variant_id`
+
 ## Common Anti-Patterns to Avoid
 
 ### ❌ Don't Do This:

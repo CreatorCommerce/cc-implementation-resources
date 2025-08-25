@@ -1,0 +1,71 @@
+Generate a safe, idempotent JavaScript snippet (with Liquid wrapper) that conditionally hides specified UI elements on a Shopify storefront when a creator funnel is active AND additional custom business logic is met.
+
+**Base Condition (ALWAYS REQUIRED):**
+- Creator funnel is active: `cc_creator` exists AND `cc_creator.cc-collab-discount-amount > 0`
+
+**Additional Business Logic Condition:**
+[ADD YOUR EXTRA CONDITIONS - Examples below]
+- AND cart total exceeds $100
+- AND specific product variants are in cart  
+- AND during certain date ranges or promotional periods
+- AND user has specific customer tags
+- AND coming from specific traffic sources
+- AND certain metafield values are present
+- AND user is on mobile vs desktop
+- [Or leave blank if only cc_creator condition needed]
+
+**Target Elements:**
+Popup/UI selectors to hide (provide class names or CSS selectors from Chrome DevTools):
+```
+const POPUP_SELECTORS = [
+  '[INSERT YOUR SELECTORS HERE]'
+];
+```
+Examples: `.klaviyo-form`, `.justuno-pop`, `#privy-container`, `.newsletter-modal`, `.chat-widget`, `.promotional-banner`
+
+**Liquid Context Variables Needed:**
+Base variables (always included):
+- `cart.attributes['cc-creator-handle']`
+- `metaobjects.creator[cc_handle]`
+
+Additional variables for your logic:
+- `cart.total_price`
+- `customer.tags`
+- `product.metafields`
+- `collection.handle`
+- `template.name`
+
+**Console Message:**
+What message should appear in console when blocking is active?
+Example: `"Blocking popups to prioritize creator funnel over first-timer offer"`
+
+**Liquid Condition Structure:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% if cc_creator and cc_creator.cc-collab-discount-amount > 0 and [YOUR_ADDITIONAL_CONDITIONS] %}
+```
+
+**Requirements:**
+- Add to theme.liquid near `</body>`
+- Always check cc_creator base condition first
+- Hide elements using `cc-hidden` class + `display:none !important` + `aria-hidden="true"`
+- Handle both initial DOM and dynamically injected elements (MutationObserver)
+- Be idempotent and fail gracefully
+- No external dependencies
+- Don't break checkout functionality
+
+**Output Format:**
+Return one complete Liquid + JS snippet ready to paste into theme.liquid, maintaining the cc_creator base logic.
+
+---
+
+**EXAMPLE USAGE:**
+
+```
+Additional Business Logic: AND cart total is over $75
+Target Elements: .klaviyo-form, #upsell-popup
+Console Message: "Blocking popups for high-value creator funnel customers"
+
+Result: Only blocks popups when creator funnel is active AND cart is over $75
+```

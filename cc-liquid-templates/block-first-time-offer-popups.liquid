@@ -1,0 +1,109 @@
+{% comment %}
+  CreatorCommerce First-Time Offer Popup Blocker
+  
+  This code automatically hides common popup/modal elements when a creator funnel is active
+  to ensure the creator's first-time offer takes priority over other site popups.
+  
+  INTEGRATION INSTRUCTIONS:
+  
+  1. Add this entire code block to your theme.liquid file, preferably near the end of the <body> tag
+  2. The code will only activate when:
+     - A creator is present in the cart attributes
+     - The creator has a discount amount greater than 0
+  3. Update the POPUP_SELECTORS array to include selectors for any additional popups on your site
+  4. The script uses MutationObserver to detect dynamically added popups and hides them automatically
+  
+  EXAMPLE THEME.LIQUID INTEGRATION:
+  ```liquid
+  <!-- Add this before the closing </body> tag in theme.liquid -->
+  {% render 'block-first-time-offer-popups' %}
+  ```
+  
+  CUSTOMIZATION:
+  - Modify POPUP_SELECTORS array to target specific popup elements
+  - Adjust the HIDDEN_CLASS name if needed to avoid conflicts
+  - The script gracefully handles invalid selectors and Shadow DOM elements
+{% endcomment %}
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% if cc_creator and cc_creator.cc-collab-discount-amount > 0 %}
+    <script>
+    // Hide non-funnel popups when creator funnel is active - update POPUP_SELECTORS array to add new popup selectors
+    (function() {
+      'use strict';
+      
+      // Array of CSS selectors for common popup/modal elements that should be detected and handled
+      // 'INCLUDE_POPUP_SELECTORS' is a placeholder that gets replaced with actual selectors during build
+      const POPUP_SELECTORS = ['INCLUDE_POPUP_SELECTORS', '.klaviyo-form', '.justuno-pop', '#privy-container', '.newsletter-modal'];
+      const HIDDEN_CLASS = 'cc-hidden';
+      
+      let styleInjected = false;
+      let observerActive = false;
+      
+      function injectStyles() {
+        if (styleInjected) return;
+        const style = document.createElement('style');
+        style.textContent = `.${HIDDEN_CLASS} { display: none !important; }`;
+        document.head.appendChild(style);
+        styleInjected = true;
+      }
+      
+      function hidePopups(root = document) {
+        POPUP_SELECTORS.forEach(selector => {
+          try {
+            const elements = root.querySelectorAll(selector);
+            elements.forEach(el => {
+              if (!el.classList.contains(HIDDEN_CLASS)) {
+                el.classList.add(HIDDEN_CLASS);
+                el.setAttribute('aria-hidden', 'true');
+                el.style.setProperty('display', 'none', 'important');
+              }
+            });
+          } catch (e) {
+            // Fail gracefully on invalid selectors
+          }
+        });
+      }
+      
+      function initObserver() {
+        if (observerActive || !window.MutationObserver) return;
+        
+        const observer = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1) { // Element node
+                try {
+                  hidePopups(node);
+                  hidePopups(node.parentElement);
+                } catch (e) {
+                  // Ignore Shadow DOM errors
+                }
+              }
+            });
+          });
+        });
+        
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        
+        observerActive = true;
+      }
+      
+      function init() {
+        console.log('Blocking pop-ups to prioritize creator funnel');
+        injectStyles();
+        hidePopups();
+        initObserver();
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+    </script>
+    {% endif %}

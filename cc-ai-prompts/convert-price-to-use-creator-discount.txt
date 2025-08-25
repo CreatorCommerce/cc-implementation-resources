@@ -1,0 +1,107 @@
+Add CreatorCommerce discount functionality to `snippets/price.liquid` while **preserving all default behavior** when not in creator funnel.
+
+**Implementation Steps**
+
+1. Add Creator Resolution
+After target assignment, add:
+```liquid
+# Creator resolution with template context branching
+if template.name contains 'metaobject'
+  assign cc_creator = metaobject
+else
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+endif
+```
+
+2. Add Discount Logic
+Replace price assignment with:
+```liquid
+# Apply creator discount logic if creator is present
+assign original_price = target.price | default: 1999
+assign original_compare_at_price = target.compare_at_price
+assign has_creator_discount = false
+
+if cc_creator and cc_creator.cc-collab-discount-type and cc_creator.cc-collab-discount-amount
+  if cc_creator.cc-collab-discount-type == 'Percentage'
+    assign discount = cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    assign discount_multiplier = 1 | minus: discount
+    assign price = original_price | times: discount_multiplier | round
+    assign compare_at_price = original_price
+    assign has_creator_discount = true
+  elsif cc_creator.cc-collab-discount-type == 'Fixed'
+    assign discount = cc_creator.cc-collab-discount-amount | plus: 0
+    assign price = original_price | minus: discount
+    if price < 0
+      assign price = 0
+    endif
+    assign compare_at_price = original_price
+    assign has_creator_discount = true
+  else
+    assign price = original_price
+    assign compare_at_price = original_compare_at_price
+  endif
+else
+  assign price = original_price
+  assign compare_at_price = original_compare_at_price
+endif
+```
+
+3. Update CSS Classes (if applicable)
+Add creator discount class:
+```liquid
+{%- if compare_at_price > price or has_creator_discount %} price--on-sale {% endif -%}
+{%- if has_creator_discount %} price--creator-discount {% endif -%}
+```
+
+4. Add Creator Badge (If applicable)
+Before closing `</div>`:
+```liquid
+{%- if show_badges != false and has_creator_discount -%}
+  <span class="badge price__badge-creator-discount color-accent-1" aria-hidden="true">
+    {%- if cc_creator.cc-collab-discount-type == 'Percentage' -%}
+      {{ cc_creator.cc-collab-discount-amount | round }}% off with {{ cc_creator.cc-creator-first-name | default: 'Creator' }}
+    {%- elsif cc_creator.cc-collab-discount-type == 'Fixed' -%}
+      {% if settings.show_currency %}
+        {{ cc_creator.cc-collab-discount-amount | money_with_currency }} off with {{ cc_creator.cc-creator-first-name | default: 'Creator' }}
+      {% else %}
+        {{ cc_creator.cc-collab-discount-amount | money }} off with {{ cc_creator.cc-creator-first-name | default: 'Creator' }}
+      {% endif %}
+    {%- endif -%}
+  </span>
+{%- endif -%}
+```
+
+**Critical Testing Requirements**
+
+[ ] **MUST TEST: Default Functionality Preserved**
+1. No Creator Context: Verify identical behavior to original
+   - Same price calculations
+   - Same compare_at_price logic
+   - Same CSS classes applied
+   - No creator badge displays
+   - `has_creator_discount = false`
+
+2. Regular Sale Items: Ensure sale prices still work normally
+   - Original compare_at_price logic intact
+   - `price--on-sale` class still applies correctly
+
+3. Edge Cases:
+   - Empty cart attributes
+   - Missing creator fields
+   - Invalid discount values
+   - Price varies products
+
+[ ]**Creator Funnel Testing**
+1. Percentage Discount: 15% off shows discounted price + badge
+2. Fixed Discount: $10 off shows discounted price + badge  
+3. Badge Display: Shows correct discount amount and creator name
+4. Price Protection: Negative prices default to $0
+
+**Success Criteria**
+- [ ] Zero Regression: Default behavior 100% unchanged
+- [ ] Creator Enhancement: Discounts apply when in funnel
+- [ ] Visual Feedback: Clear discount indication with creator attribution
+- [ ] Responsive Design: Proper mobile/desktop badge positioning
+
+**Critical**: If ANY default functionality breaks, revert and debug. Creator features are additive only.

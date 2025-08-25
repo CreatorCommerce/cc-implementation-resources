@@ -1,0 +1,196 @@
+Convert an existing Shopify section to support CreatorCommerce data while preserving all original functionality as a fallback.
+
+**Target Section**
+Section File: `[ORIGINAL_SECTION_NAME].liquid`
+
+**Preserve Base Functionality**
+- Keep all existing features, schema settings, and styling unchanged
+- Maintain backward compatibility - section must work exactly as before when no creator drops are present
+- Preserve all CSS classes, JavaScript functionality, and responsive behavior
+- Keep original thumbnails/navigation logic intact
+
+**Creator Data Integration**
+
+Hero Images:
+- Background Override 1: Replace [ELEMENT] with `cc-hero-image-[TYPE]` when available
+- Additional Images: Add support for `cc-[FIELD_NAME]` images
+
+Content Overrides:
+- Main Heading: Use `cc-creator.data.value.cc-[FIELD]` or fallback to settings
+- Subheading: Use `cc-creator.data.value.cc-[FIELD]` or fallback to settings
+- Description: Use `cc-creator.data.value.cc-[FIELD]` or fallback to settings
+- CTA Button: Use `cc-creator.data.value.cc-[LINK_FIELD]` for URL and `cc-creator.data.value.cc-[LABEL_FIELD]` for text
+
+Conditional Content:
+- Additional Section/Slide: Show when `cc-creator.data.value.cc-[TRIGGER_FIELD]` exists
+- Business Info: Display `cc-business-name`, `cc-business-location` when available
+- Contact Actions: Use `cc-business-booking-link`, `cc-business-phone`, `cc-business-email`
+
+Brand Customization:
+- Colors: Apply `cc-creator-shop-theme-primary-color` and `channel-brandkit-primary-color`
+- Logo: Use `cc-business-logo` when available
+- Styling: Inherit design settings from existing blocks/sections
+
+**Implementation Requirements**
+
+Creator Resolution Pattern:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  Check for creator fields:
+  assign has_[field_name] = false
+  assign [field_name]_url = ''
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value
+    if cc_creator.data.value.cc-[field-name] and cc_creator.data.value.cc-[field-name].url
+      assign has_[field_name] = true
+      assign [field_name]_url = cc_creator.data.value.cc-[field-name].url
+    endif
+  endif
+%}
+```
+
+Image Handling Pattern:
+```liquid
+{% liquid
+  # Determine which image to use
+  assign use_creator_image = false
+  assign creator_image_url = ''
+  assign creator_image_alt = ''
+  
+  if [condition] and has_[field_name]
+    assign use_creator_image = true
+    assign creator_image_url = [field_name]_url
+    assign creator_image_alt = cc_creator.cc-creator-first-name | default: 'Creator' | append: ' - [Description]'
+  endif
+%}
+
+<!-- Image rendering -->
+{% if use_creator_image %}
+  <img 
+    src="{{ creator_image_url | escape }}" 
+    alt="{{ creator_image_alt | escape }}"
+    class="[EXISTING_CLASSES]"
+    loading="lazy"
+    width="[WIDTH]"
+    height="[HEIGHT]"
+  >
+{% else %}
+  <!-- Original image logic preserved -->
+{% endif %}
+```
+
+Content Override Pattern:
+```liquid
+{% if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value.cc-[field] %}
+  {{ cc_creator.data.value.cc-[field] | escape }}
+{% else %}
+  {{ [original_setting] | escape }}
+{% endif %}
+```
+
+Thumbnail/Navigation Updates:
+```liquid
+data-[navigation-attribute]="{%- for [item] in [collection] -%}
+  {% liquid
+    assign [item]_url = ''
+    if [creator_condition]
+      assign [item]_url = [creator_field]_url
+    elsif [original_condition]
+      assign [item]_url = [original_field] | image_url: width: 192, height: 192
+    endif
+  %}
+  {{ [item]_url }}{% unless forloop.last %},{% endunless %}
+{% endfor %}"
+```
+
+**File Structure**
+
+Create New Section:
+- **New File:** `cc-[ORIGINAL_SECTION_NAME].liquid`
+- **Schema Name:** "CC [Original Section Name]"
+- **Preserve Original:** Keep `[ORIGINAL_SECTION_NAME].liquid` unchanged
+
+Schema Updates:
+```json
+{
+  "name": "CC [Original Section Name]",
+  "enabled_on": {
+    "templates": ["*"]
+  },
+  "settings": [
+    // Keep all original settings for backward compatibility
+  ]
+}
+```
+
+**Code Quality Standards**
+
+Liquid Organization:
+```liquid
+{% liquid
+  # All variable assignments at top
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator'
+%}
+
+<!-- Clean template with pre-computed variables -->
+```
+
+Safety & Escaping:
+- **Always escape:** `{{ field | escape }}`
+- **Null guards:** Check at every level: `cc_creator and cc_creator.data and cc_creator.data.value`
+- **Fallbacks:** Provide neutral defaults when creator data missing
+- **Type conversion:** Use `| append: ''` for ID comparisons
+
+CSS Integration:
+```liquid
+{% if cc_creator and cc_creator.cc-creator-shop-theme-primary-color %}
+  <style>
+    :root {
+      --cc-creator-color: {{ cc_creator.cc-creator-shop-theme-primary-color | default: '#000000' }};
+      --cc-channel-color: {{ cc_creator.channel-brandkit-primary-color | default: '#000000' }};
+    }
+  </style>
+{% endif %}
+```
+
+**Relevant Creator Fields Reference**
+
+[
+
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+
+]
+
+**Testing Checklist**
+- [ ] Works with creator present and all data populated
+- [ ] Works with creator present but missing optional fields  
+- [ ] Works with no creator context (cart.attributes empty)
+- [ ] Works on metaobject pages vs regular pages
+- [ ] Fallbacks are neutral and don't break UI
+- [ ] Creator-specific UI hides when data missing
+- [ ] Images have proper alt text and dimensions
+- [ ] Thumbnails/navigation updated to match content if applicable
+- [ ] CSS variables work with and without creator colors
+- [ ] All strings properly escaped
+
+**Expected Output**
+- One new `cc-[section-name].liquid` file with CreatorCommerce functionality
+- Original section file preserved and unchanged
+- Dual-mode operation: enhanced with creator data, original without
+- All thumbnails and navigation elements updated consistently

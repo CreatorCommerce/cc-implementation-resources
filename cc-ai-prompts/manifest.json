@@ -2,31 +2,31 @@
     "product-template.txt": {
       "title": "Prompt title",
       "description": "Description of the prompt",
-      "type":"Block Generation",
+      "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
       "tags": ["pdp", "theme"]
     },
-    "product-template.txt": {
+    "add-drops-support-to-collections-section.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
-        "type":"Block Generation",
+        "type": ["cursor"],
         "tags": ["pdp", "theme"]
       },
       "product-template.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
-        "type":"Block Generation",
+        "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
         "tags": ["pdp", "theme"]
       },
       "product-template.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
-        "type":"Block Generation",
+        "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
         "tags": ["pdp", "theme"]
       },
       "product-template.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
-        "type":"Block Generation",
+        "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
         "tags": ["pdp", "theme"]
       }
 }
