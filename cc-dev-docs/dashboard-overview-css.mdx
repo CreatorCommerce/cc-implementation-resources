@@ -1,0 +1,82 @@
+---
+title: "Creator Dahboard CSS"
+description: "css classes and ids "
+---
+
+--- 
+
+title: "Creator Dashboard — Custom CSS Theming (Overview & Best Practices)"
+
+--- 
+
+# Creator Dashboard — Custom CSS Theming (Overview & Best Practices)
+
+Re-skin the CreatorCommerce \*\*Creator Dashboard\*\* down to the pixel. This guide shows how to target broad UI primitives (buttons, inputs, sections) or laser-focus specific pages and fields using stable IDs and classes.
+
+\> With great power comes great ways to break things. If you hide required fields or obliterate focus states, your conversions will suffer. Read the best practices.
+
+## ✅ What you can do
+
+- \*\*Global theme\*\*: change fonts, colors, radii, spacing for the entire dashboard.  
+
+- \*\*Page-specific tweaks\*\*: restyle only onboarding, only drop creation, etc.  
+
+- \*\*Element-level overrides\*\*: target a single button or input precisely.  
+
+- \*\*Responsive & stateful styles\*\*: adapt across breakpoints and interactive states.
+
+## 🔌 How your CSS is applied
+
+- Your custom CSS is loaded \*\*after\*\* our base styles, so simple selectors usually win.
+
+- If something still doesn’t override, \*\*increase specificity\*\* (ID \+ class) and avoid `!important` unless you’re truly stuck.
+
+- Scope your rules to the provided IDs/classes to avoid accidental bleed.
+
+- Keep your CSS file \*\*≤100KB\*\*, fingerprint it (e.g., `brand-x-creator.css?v=2025-08-27`), and host assets (fonts, bg images) on a fast CDN.
+
+## 🧪 Integration & Delivery
+
+- \*\*Hosted CSS\*\*: Point your dashboard configuration at a versioned CSS file on your CDN.  
+
+- \*\*Inline CSS\*\*: If your integration supports a custom CSS text field, paste your rules there (we inject it after base styles).  
+
+- \*\*Cache busting\*\*: Append a version query `?v=YYYYMMDD`) when you ship changes.
+
+\> \*\*Tip:\*\* Keep a minimal “base theme” and layer brand variations on top to avoid duplication.
+
+## ⚠️ Best Practices
+
+- \*\*Don’t nuke UX\*\*: Avoid hiding required fields or system buttons. If you must hide, confirm the flow still completes.  
+
+- \*\*Respect focus states\*\*: Keyboard users exist. Keep `:focus-visible` obvious.  
+
+- \*\*Avoid global element selectors\*\* like `input { … }` without scoping — you’ll overreach.  
+
+- \*\*Specificity first, `!important` last\*\*: Prefer `#pageId .cc-general-css-button` over `!important`.  
+
+- \*\*Performance\*\*: Keep selectors shallow; avoid universal `*` chains; compress images; subset webfonts.  
+
+- \*\*Test\*\* across mobile/desktop, light/dark, and low bandwidth.  
+
+- \*\*Version\*\* your CSS and keep a rollback.
+
+## 🧑‍⚕️ Troubleshooting
+
+- \*\*“My CSS isn’t applying.”\*\* Check load order (your CSS should be last). Increase specificity `#pageId .class`). Inspect in devtools to see which rule wins.  
+
+- \*\*“Only some pages changed.”\*\* You probably used a contextual ID. That’s by design. Use general classes for global changes.  
+
+- \*\*“The layout broke on mobile.”\*\* Audit your spacing/radii at `<640px>` and test long content (e.g., long names, long drop titles).  
+
+- \*\*“Buttons lost their click/disabled states.”\*\* Don’t override `pointer-events`, `opacity`, or `cursor` globally. Preserve `:disabled` styles.
+
+## 🔒 Stability & Versioning
+
+- We treat these IDs/classes as \*\*stable\*\*. If something must change, we’ll provide a deprecation window and alternates.
+
+- We add new targets over time; existing ones won’t silently disappear in a minor update.
+
+## 📬 Questions / Requests
+
+Need a new hook (ID/class) to theme a niche element? Open a ticket with the element name, screenshot, and the style you’re aiming for. We’ll add a stable target.
