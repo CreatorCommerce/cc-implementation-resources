@@ -3,29 +3,11 @@ description: "This section bundles ready-to-ship snippets and explains *why* you
 title: "Code Examples & Practical Patterns (Technical + Conceptual)"
 ---
 
-```
-```
-
-
 ## 🍱 Usage Patterns
-
-### Page-specific targeting
-
-
-```css
-/* Onboarding welcome hero */
-#cc-targeted-css-onboarding-welcome-container .cc-general-css-header {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: clamp(24px, 3vw, 36px);
-  letter-spacing: -0.02em;
-}
-````
 
 ### Global primitives
 
-CSS
-
-```
+```css
 /* Buttons everywhere */
 .cc-general-css-button {
   border-radius: 12px;
@@ -37,11 +19,20 @@ CSS
 .cc-general-css-button:disabled { opacity: 0.5; cursor: not-allowed; }
 ```
 
+### Page-specific targeting
+
+```css
+/* Onboarding welcome hero */
+#cc-targeted-css-onboarding-welcome-container .cc-general-css-header {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.02em;
+}
+```
+
 ### Precise control (ID \+ class)
 
-CSS
-
-```
+```css
 /* Only the main Welcome accept button */
 #cc-targeted-css-welcome-accept-button.cc-general-css-button {
   background: #1E22AA;
@@ -51,9 +42,7 @@ CSS
 
 ### Inputs & focus accessibility
 
-CSS
-
-```
+```css
 /* High-contrast focus rings that pass WCAG */
 .cc-general-css-input:focus-visible {
   outline: 3px solid #4BC58E;
@@ -63,9 +52,7 @@ CSS
 
 ### Card/UI chrome
 
-CSS
-
-```
+```css
 /* Drop cards */
 #cc-targeted-css-drop-card {
   border: 1px solid #EEE;
@@ -80,9 +67,7 @@ CSS
 
 ### Responsive adjustments
 
-CSS
-
-```
+```css
 /* Tighten spacing on mobile, expand on desktop */
 @media (max-width: 640px) {
   .cc-general-css-section { padding: 12px; }
@@ -94,9 +79,7 @@ CSS
 
 ### Dark mode (optional)
 
-CSS
-
-```
+```css
 @media (prefers-color-scheme: dark) {
   .cc-general-css-section { background: #111; color: #EAEAEA; }
   .cc-general-css-input { background: #1A1A1A; color: #F2F2F2; border-color: #2A2A2A; }
@@ -108,9 +91,7 @@ CSS
 
 ## 🚀 Starter CSS (Copy/Paste Scaffold)
 
-CSS
-
-```
+```css
 /* Creator Dashboard Theme — Brand Name (v1.0) */
 
 /* 1) Typography */
@@ -163,9 +144,7 @@ Goal: Match the creator’s brand from the first touchpoint to reduce bounce and
 
 Example:
 
-CSS
-
-```
+```css
 /* Onboarding-specific brand experience */
 #cc-targeted-css-onboarding-welcome-container .cc-general-css-section {
   background: linear-gradient(180deg, #F6CED4 0%, #FFF 100%);
@@ -184,9 +163,7 @@ Scenario: You also use LinkForge (fictional) for link tracking. Creators see Lin
 
 Design tokens (JSON) coming from LinkForge:
 
-JSON
-
-```
+```json
 {
   "brand": "Old Dominion",
   "colors": { "primary": "#1E22AA", "accent": "#4BC58E", "bg": "#FFFFFF", "text": "#22201F" },
@@ -197,9 +174,7 @@ JSON
 
 CSS using those tokens:
 
-CSS
-
-```
+```css
 :root {
   --lf-primary: #1E22AA;
   --lf-accent: #4BC58E;
@@ -216,9 +191,7 @@ CSS
 
 Conditional load (desktop web, example JS):
 
-HTML
-
-```
+```javascript
 <script>
   // Example: choose CSS by creator handle or affiliate param (e.g., ?aff=old-dominion)
   (function() {
