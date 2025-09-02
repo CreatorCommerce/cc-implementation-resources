@@ -1,0 +1,388 @@
+Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Template:**
+```
+We need to dynamically render **a grid of creators** using the creator metaobject from the CreatorCommerce app, filtering and displaying creator information in a responsive grid layout.
+
+**Target Section:**
+`sections/cc-creator-grid.liquid`
+
+**Data Reference:**
+Access all creators through the metaobjects system:
+
+```liquid
+{% assign all_creators = metaobjects.creator %}
+```
+
+Then access fields with `{{ creator.data.value.FIELD-NAME }}`. ❌ Do not use `{{ creator.FIELD-NAME }}`. ✅ Always use `{{ creator.data.value.FIELD-NAME }}`
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-first-name": "Kenyon",
+  "cc-creator-last-name": "Brown",
+  "cc-creator-shop-description": "Explore my handpicked products from my favorite brands...",
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg"
+  },
+  "cc-creator-shop-handle": "kenyon-539",
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-products": [
+        {"cc-creator-drop-product-shopify-id": "12345"}
+      ]
+    }
+  ],
+  "cc-public": "Y"
+}
+```
+
+**UI Requirements:**
+
+1. **Creator Filtering Logic**
+   Loop through all creators and only include those that meet ALL criteria:
+   - `creator.data.value['cc-public'] == 'Y'`
+   - `creator.data.value['cc-creator-profile-picture']` exists and has a URL
+   - `creator.cc-creator-drops` exists and has more than 0 drops
+
+2. **Product Count Calculation**
+   For each creator, count total products across all drops:
+   ```liquid
+   {% assign total_products = 0 %}
+   {% for drop in creator.cc-creator-drops.value %}
+     {% assign total_products = total_products | plus: drop.products_count %}
+   {% endfor %}
+   ```
+
+3. **Grid Display Format**
+   - Creator profile picture (circular, with fallback to initials)
+   - Creator name (first + last name)
+   - Shop description (truncated to 3 lines max)
+   - Product count badge
+   - Link to creator's shop page
+
+4. **Layout Options**
+   - Responsive grid with configurable spacing
+   - Corner radius customization
+   - Hover effects with creator branding
+
+**Schema Settings Required:**
+```json
+{
+  "type": "range",
+  "id": "creators_per_page",
+  "label": "Creators per page",
+  "min": 12,
+  "max": 50,
+  "step": 4,
+  "default": 24
+},
+{
+  "type": "range",
+  "id": "corner_radius",
+  "label": "Corner Radius",
+  "min": 0,
+  "max": 20,
+  "step": 2,
+  "default": 8,
+  "unit": "px"
+},
+{
+  "type": "range",
+  "id": "grid_gap",
+  "label": "Grid Gap",
+  "min": 8,
+  "max": 32,
+  "step": 4,
+  "default": 16,
+  "unit": "px"
+},
+{
+  "type": "select",
+  "id": "grid_columns",
+  "label": "Grid Columns",
+  "options": [
+    {"value": "2", "label": "2 Columns"},
+    {"value": "3", "label": "3 Columns"},
+    {"value": "4", "label": "4 Columns"},
+    {"value": "5", "label": "5 Columns"}
+  ],
+  "default": "3"
+}
+```
+
+**Implementation Pattern:**
+
+1. **Creator Filtering and Processing:**
+```liquid
+{% liquid
+  assign filtered_creators = ''
+  assign creator_count = 0
+  assign max_creators = section.settings.creators_per_page
+  
+  for creator in metaobjects.creator
+    assign creator_data = creator.data.value
+    assign is_public = creator_data['cc-public'] == 'Y'
+    assign has_profile = creator_data['cc-creator-profile-picture'] and creator_data['cc-creator-profile-picture'].url
+    assign has_drops = creator.cc-creator-drops and creator.cc-creator-drops.value.size > 0
+    
+    if is_public and has_profile and has_drops
+      assign creator_count = creator_count | plus: 1
+      if creator_count <= max_creators
+        assign filtered_creators = filtered_creators | append: creator.handle | append: ','
+      endif
+    endif
+  endfor
+  
+  assign creator_handles = filtered_creators | split: ','
+%}
+```
+
+2. **Creator Grid Rendering:**
+```liquid
+{% if creator_handles.size > 0 %}
+  <div class="creator-grid" 
+       style="--grid-gap: {{ section.settings.grid_gap }}px; 
+              --corner-radius: {{ section.settings.corner_radius }}px;
+              --grid-columns: {{ section.settings.grid_columns }};">
+    
+    {% for creator_handle in creator_handles %}
+      {% if creator_handle != blank %}
+        {% assign creator = metaobjects.creator[creator_handle] %}
+        {% assign creator_data = creator.data.value %}
+        
+        {% liquid
+          assign creator_name = creator.cc-creator-first-name | append: ' ' | append: creator.cc-creator-last-name
+          assign profile_url = creator_data['cc-creator-profile-picture'].url
+          assign shop_description = creator_data['cc-creator-shop-description'] | default: ''
+          assign shop_handle = creator_data['cc-creator-shop-handle']
+          
+          # Count total products
+          assign total_products = 0
+          if creator.cc-creator-drops and creator.cc-creator-drops.value
+            for drop in creator.cc-creator-drops.value
+              assign total_products = total_products | plus: drop.products_count
+            endfor
+          endif
+        %}
+        
+        <div class="creator-card">
+          <div class="creator-profile">
+            {% if profile_url %}
+              <img src="{{ profile_url | escape }}" 
+                   alt="{{ creator_name | escape }} Profile"
+                   class="creator-avatar"
+                   width="80"
+                   height="80"
+                   loading="lazy">
+            {% else %}
+              <div class="creator-initials">
+                {{ creator.cc-creator-first-name | slice: 0, 1 }}{{ creator.cc-creator-last-name | slice: 0, 1 }}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="creator-info">
+            <h3 class="creator-name">{{ creator_name | escape }}</h3>
+            
+            {% if shop_description != blank %}
+              <p class="creator-description">{{ shop_description | truncate: 120 }}</p>
+            {% endif %}
+            
+            <div class="creator-stats">
+              <span class="product-count">{{ total_products }} products</span>
+            </div>
+            
+            {% if shop_handle %}
+              <a href="/pages/{{ shop_handle }}" class="creator-link">
+                Visit {{ creator.cc-creator-first-name | escape }}'s Shop
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-creators">
+    <p>No creators available at the moment.</p>
+  </div>
+{% endif %}
+```
+
+**Required CSS Styling:**
+```css
+.creator-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.creator-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--corner-radius);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.creator-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.creator-profile {
+  margin-bottom: 1rem;
+}
+
+.creator-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+}
+
+.creator-initials {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.creator-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.creator-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.creator-stats {
+  margin-bottom: 1rem;
+}
+
+.product-count {
+  background: #f8f9fa;
+  color: #495057;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.creator-link {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.creator-link:hover {
+  background: #0056b3;
+  color: white;
+}
+
+.no-creators {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .creator-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .creator-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(var(--grid-gap) * 0.75);
+  }
+  
+  .creator-card {
+    padding: 1rem;
+  }
+  
+  .creator-avatar,
+  .creator-initials {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .creator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Logic & Empty States:**
+
+**Filtering Logic**
+Only show creators that meet ALL criteria: public status, profile picture, and at least one drop with products.
+
+**Empty States**
+If no creators meet the criteria, show a friendly message. If individual creators are missing data, skip them gracefully.
+
+**Performance Considerations**
+- Limit to 50 creators maximum for performance
+- Use lazy loading for profile images
+- Efficient product counting without deep nesting
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use proper null guards for all creator data access
+- Escape all unsafe strings and URLs
+- Provide fallbacks for missing profile pictures
+- Ensure responsive design with configurable settings
+
+**Expected Output:**
+- Responsive grid of filtered creators
+- Configurable layout settings (columns, spacing, radius)
+- Product count badges for each creator
+- Links to individual creator shop pages
+- Graceful handling of missing data
+
+**Testing Scenarios:**
+- [ ] Grid displays only creators meeting all filter criteria
+- [ ] Product counts are accurate across all drops
+- [ ] Profile pictures display correctly with fallback initials
+- [ ] Shop descriptions truncate properly to 3 lines
+- [ ] Links navigate to correct creator shop pages
+- [ ] Responsive design works on all screen sizes
+- [ ] Configurable settings affect layout appropriately
+- [ ] Performance remains good with 50+ creators
+- [ ] Empty state displays when no creators available
+- [ ] Missing creator data is handled gracefully
+```

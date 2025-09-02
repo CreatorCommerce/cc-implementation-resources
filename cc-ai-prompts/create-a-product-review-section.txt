@@ -1,0 +1,141 @@
+Create a product page section that displays creator reviews for the current product.
+
+**Template:**
+```
+We need to dynamically render **a product review section with creator profile information** for a creator using the creator metaobject from the CreatorCommerce app.
+
+**Target Section:**
+`sections/cc-product-reviews.liquid`
+
+**Data Reference:**
+Use this Liquid to reference the correct creator:
+
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+Then access fields with `{{ cc_creator.data.value.FIELD-NAME }}`. ❌ Do not use `{{ cc_creator.FIELD-NAME }}`. ✅ Always use `{{ cc_creator.data.value.FIELD-NAME }}`
+
+**Fields to reference:**
+```json
+{
+  "cc-creator-first-name": "Kenyon",
+  "cc-creator-last-name": "Brown", 
+  "cc-creator-profile-picture": null,
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-products": [
+        {
+          "cc-creator-drop-product-shopify-id": "7663834759375",
+          "cc-creator-drop-product-enhancement-note": "Amazing stuff, love it"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**UI Requirements:**
+
+1. **Review Discovery Logic**
+   Loop through `cc_creator.data.value['cc-creator-drops']`, then through each drop's products. Compare current `product.id` (converted to string) with `cc-creator-drop-product-shopify-id`. If they match AND `cc-creator-drop-product-enhancement-note` exists and is not empty, that's the review. Stop looping once found.
+
+2. **Review Display Format**
+   Show the review text wrapped in quotation marks with proper typography. Add an em dash followed by the creator's name.
+
+3. **Profile Picture Logic**
+   If `cc-creator-profile-picture` exists and has a URL, show the creator's profile picture. Otherwise, show creator's initials (first letter of first name + first letter of last name) in a circular background with configurable text and background colors.
+
+4. **Layout Options**
+   Support both vertical stack (image/initials above text) and horizontal stack (image/initials beside text) layouts with left, center, or right alignment options.
+
+**Schema Settings Required:**
+```json
+{
+  "type": "select",
+  "id": "layout_direction",
+  "label": "Layout Direction",
+  "options": [
+    {"value": "vertical", "label": "Vertical Stack"},
+    {"value": "horizontal", "label": "Horizontal Stack"}
+  ],
+  "default": "horizontal"
+},
+{
+  "type": "select", 
+  "id": "alignment",
+  "label": "Alignment",
+  "options": [
+    {"value": "left", "label": "Left"},
+    {"value": "center", "label": "Center"},
+    {"value": "right", "label": "Right"}
+  ],
+  "default": "left"
+},
+{
+  "type": "color",
+  "id": "initials_bg_color",
+  "label": "Initials Background Color",
+  "default": "#000000"
+},
+{
+  "type": "color",
+  "id": "initials_text_color", 
+  "label": "Initials Text Color",
+  "default": "#ffffff"
+}
+```
+
+**Data Flow Logic:**
+```
+1. Check if creator exists → cc_creator
+2. Loop through cc_creator.data.value['cc-creator-drops']
+3. For each drop, loop through cc-creator-drop-products
+4. Convert product.id to string and compare with cc-creator-drop-product-shopify-id
+5. If match found AND cc-creator-drop-product-enhancement-note is not empty → render review
+6. If no review found → hide section entirely
+```
+
+**Implementation Pattern:**
+- **Creator Resolution**: Use template context branching for metaobject vs regular pages
+- **Product Matching**: Convert `product.id | append: ''` to match string IDs from JSON
+- **Type Conversion**: Use variable assignment for ID comparisons
+- **Null Safety**: Check for creator, drops array, products array, and note content
+- **Early Exit**: Break loops immediately when review is found
+
+**Logic & Empty States:**
+
+**Field presence**
+If no review is found for the current product, hide the entire section. If creator profile picture is missing, show initials circle with section settings for colors.
+
+**Section visibility**
+If no creator context exists or no review is found for the current product, hide the entire section.
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages  
+- Escape all unsafe strings with `| escape` filter
+- Add null guards at every level of data access
+- Provide neutral fallbacks when creator data is missing
+- Break nested loops early when review is found for performance
+
+**Expected Output:**
+- One new `sections/cc-product-reviews.liquid` file
+- Schema with layout, alignment, and color settings
+- Proper review discovery logic with type conversion
+- Conditional profile picture vs initials display
+- Responsive design supporting both layout directions
+- Section hides gracefully when no review exists
+
+**Testing Scenarios:**
+- [ ] Product with creator review shows section with review text
+- [ ] Product without creator review hides section entirely  
+- [ ] Creator with profile picture shows image
+- [ ] Creator without profile picture shows initials circle
+- [ ] Vertical and horizontal layout options work correctly
+- [ ] Left, center, right alignments work correctly
+- [ ] Initials colors are configurable via section settings
+- [ ] Type conversion works for product ID matching
+- [ ] Nested loops break early when review found
+```

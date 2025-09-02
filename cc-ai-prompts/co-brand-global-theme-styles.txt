@@ -1,0 +1,65 @@
+Apply co-branded data accross the theme's global styles
+
+**Key Features:**
+
+**1. Comprehensive Creator Theme Fields [UPDATE-THESE]**
+```json
+{
+  "cc-creator-shop-theme-primary-color": "#000000",
+  "cc-creator-shop-theme-secondary-color": "#ffffff", 
+  "cc-creator-shop-theme-accent-color": "#ff6b35",
+  "cc-creator-shop-theme-text-color": "#333333",
+  "cc-creator-shop-theme-background-color": "#f8f8f8",
+  "cc-creator-shop-theme-border-color": "#e0e0e0",
+  "cc-creator-shop-theme-button-color": "#007bff",
+  "cc-creator-shop-theme-button-text-color": "#ffffff",
+  "cc-creator-shop-theme-font-family": "Inter, sans-serif",
+  "cc-creator-shop-theme-font-weight": "500",
+  "cc-creator-shop-theme-border-radius": "8px",
+  "cc-creator-shop-theme-spacing": "16px"
+}
+```
+
+**2. Two Implementation Approaches**
+- **Inline Styles**: Direct CSS injection into `<head>` section
+- **External CSS File**: Separate asset file with Liquid processing
+
+**3. CSS Custom Properties System**
+- **Comprehensive Variables**: Primary, secondary, accent, text, background, border colors
+- **Typography Support**: Font family, weight, spacing
+- **Layout Variables**: Border radius, spacing units
+- **Color Manipulation**: Lightened variants for hover states
+
+**4. Reusable Component Classes**
+```css
+.cc-creator-button { /* Styled buttons with creator colors */ }
+.cc-creator-card { /* Cards with creator theming */ }
+.cc-creator-accent { /* Accent color text */ }
+.cc-creator-primary { /* Primary color text */ }
+```
+
+**5. Responsive Design**
+- **Mobile Adjustments**: Reduced spacing on smaller screens
+- **CSS Calc Functions**: Dynamic sizing based on creator variables
+- **Media Queries**: Responsive behavior with creator theming
+
+**6. Graceful Fallbacks**
+- **Default Values**: Sensible fallbacks for all creator fields
+- **Theme Enhancement**: Creator styles enhance, don't replace existing theme
+- **No Breaking Changes**: Site works perfectly without creator data
+
+**7. Usage Examples**
+- **Component Integration**: How to use creator classes in templates
+- **Dynamic Content**: Creator name integration with styled components
+- **Cross-Page Consistency**: Global application across all pages
+
+**Updated Task Categories:**
+- Added "Global style integration" to Visual/Media Tasks
+- References Template #7 for theme-wide creator styling
+
+**Key Benefits:**
+- **Consistent Branding**: Creator colors applied site-wide
+- **Maintainable Code**: CSS custom properties for easy updates
+- **Performance Optimized**: Minimal CSS overhead
+- **Accessibility Focused**: Color contrast considerations
+- **Developer Friendly**: Clear class naming and structure

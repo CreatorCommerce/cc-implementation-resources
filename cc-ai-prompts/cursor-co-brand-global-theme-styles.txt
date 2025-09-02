@@ -1,0 +1,39 @@
+Add creator-specific CSS variables and styles to global style files for consistent theming across the site.
+
+**Template:**
+```
+Add creator-specific CSS variables and styles to global style files for consistent theming across the site.
+
+**Target File:**
+`snippets/global-styles.liquid` or `assets/global-styles.css` or `layout/theme.liquid` (in the `<head>` section)
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+- Use CSS custom properties for maintainable theming
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-shop-theme-primary-color": "#000000",
+  "cc-creator-shop-theme-secondary-color": "#ffffff", 
+  "cc-creator-shop-theme-accent-color": "#ff6b35",
+  "cc-creator-shop-theme-text-color": "#333333",
+  "cc-creator-shop-theme-background-color": "#f8f8f8",
+  "cc-creator-shop-theme-border-color": "#e0e0e0",
+  "cc-creator-shop-theme-button-color": "#007bff",
+  "cc-creator-shop-theme-button-text-color": "#ffffff",
+  "cc-creator-shop-theme-font-family": "Inter, sans-serif",
+  "cc-creator-shop-theme-font-weight": "500",
+  "cc-creator-shop-theme-border-radius": "8px",
+  "cc-creator-shop-theme-spacing": "16px"
+}
+```
+
+**Expected Output:**
+- CSS variables injected into global styles when creator has theme data
+- Fallback to default theme when no creator or creator has no theme data
+- Reusable CSS classes for creator-specific components
+- Responsive design considerations with creator variables
+```

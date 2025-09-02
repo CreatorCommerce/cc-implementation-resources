@@ -1,0 +1,39 @@
+Replace Shopify section images with creator-specific images.
+
+**Template:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+[PASTE-SHOPIFY-IMAGE-HERE]
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+
+**Creator Field to Use**
+[
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+]
+
+**Key Conversion Points:**
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes
+- **Add**: Proper `alt` text with creator context
+
+**CSS Considerations:**
+```css
+.my-image-class {
+  object-fit: cover; /* Important for external images */
+  display: block;
+}
+```

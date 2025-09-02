@@ -1,0 +1,70 @@
+Create a product page section that displays creator reviews for the current product.
+
+**Template:**
+```
+Create a product page section that displays creator reviews for the current product.
+
+**Target Section:**
+`sections/cc-product-reviews.liquid`
+
+**Implementation Requirements:**
+- Follow `cc-referencing-product-data` rules for product matching and ID conversion
+- Use `cc-referencing-co-branded-data` rules for creator resolution
+- Apply proper null guards and early loop breaking for performance
+- Support both profile picture and initials fallback
+
+**Data Flow Logic:**
+```
+1. Check if creator exists → cc_creator
+2. Loop through cc_creator.data.value['cc-creator-drops']
+3. For each drop, loop through cc-creator-drop-products
+4. Convert product.id to string and compare with cc-creator-drop-product-shopify-id
+5. If match found AND cc-creator-drop-product-enhancement-note is not empty → render review
+6. If no review found → hide section entirely
+```
+
+**Schema Settings Required:**
+```json
+{
+  "type": "select",
+  "id": "layout_direction",
+  "label": "Layout Direction",
+  "options": [
+    {"value": "vertical", "label": "Vertical Stack"},
+    {"value": "horizontal", "label": "Horizontal Stack"}
+  ],
+  "default": "horizontal"
+},
+{
+  "type": "select", 
+  "id": "alignment",
+  "label": "Alignment",
+  "options": [
+    {"value": "left", "label": "Left"},
+    {"value": "center", "label": "Center"},
+    {"value": "right", "label": "Right"}
+  ],
+  "default": "left"
+},
+{
+  "type": "color",
+  "id": "initials_bg_color",
+  "label": "Initials Background Color",
+  "default": "#000000"
+},
+{
+  "type": "color",
+  "id": "initials_text_color", 
+  "label": "Initials Text Color",
+  "default": "#ffffff"
+}
+```
+
+**Expected Output:**
+- One new `sections/cc-product-reviews.liquid` file
+- Schema with layout, alignment, and color settings
+- Proper review discovery logic with type conversion
+- Conditional profile picture vs initials display
+- Responsive design supporting both layout directions
+- Section hides gracefully when no review exists
+```

@@ -1,0 +1,242 @@
+Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Template:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+No existing image - this is a new addition to the navigation bar to the left of the brand logo.
+
+**Target File:**
+`snippets/header.liquid` or `sections/header.liquid` (whichever contains the main navigation)
+
+**Basic Pattern**
+
+1. Add Creator Resolution:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  # Check for creator profile picture and affiliate link
+  assign has_creator_image = false
+  assign creator_image_url = ''
+  assign creator_affiliate_link = ''
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-profile-picture']
+    if cc_creator.data.value['cc-creator-profile-picture'].url
+      assign has_creator_image = true
+      assign creator_image_url = cc_creator.data.value['cc-creator-profile-picture'].url
+    endif
+  endif
+  
+  if cc_creator and cc_creator.cc-collab-affiliate-link
+    assign creator_affiliate_link = cc_creator.cc-collab-affiliate-link
+  endif
+%}
+```
+
+2. Add creator profile picture to navigation:
+
+**Target Location:**
+Find the brand logo in the header/navigation and add the creator image to the left of it.
+
+**Implementation:**
+```liquid
+<div class="header-brand-container">
+  {% if has_creator_image %}
+    <div class="creator-profile-nav">
+      {% if creator_affiliate_link != blank %}
+        <a href="{{ creator_affiliate_link | escape }}" class="creator-profile-link" target="_blank" rel="noopener">
+          <img 
+            src="{{ creator_image_url | escape }}" 
+            alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }} Profile"
+            class="creator-profile-image"
+            width="40"
+            height="40"
+            loading="eager"
+          >
+        </a>
+      {% else %}
+        <img 
+          src="{{ creator_image_url | escape }}" 
+          alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }} Profile"
+          class="creator-profile-image"
+          width="40"
+          height="40"
+          loading="eager"
+        >
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <!-- Existing brand logo -->
+  <a href="{{ routes.root_url }}" class="header__heading-link">
+    <!-- Your existing logo code here -->
+  </a>
+</div>
+```
+
+**Creator Fields to Use**
+```json
+{
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg",
+    "alt": "Creator profile picture"
+  },
+  "cc-collab-affiliate-link": "https://example.com/creator-shop"
+}
+```
+
+**Required CSS Styling**
+```css
+.header-brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Perfect spacing between profile pic and logo */
+}
+
+.creator-profile-nav {
+  flex-shrink: 0;
+}
+
+.creator-profile-link {
+  display: block;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.creator-profile-link:hover {
+  transform: scale(1.05); /* Subtle hover effect */
+}
+
+.creator-profile-image {
+  border-radius: 50%; /* Perfect circle */
+  object-fit: cover; /* Ensures proper cropping */
+  display: block;
+  border: 2px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect when not wrapped in link */
+.creator-profile-image:hover {
+  transform: scale(1.05); /* Subtle hover effect */
+}
+
+/* Match logo height - adjust these values to match your actual logo */
+.creator-profile-image {
+  width: 40px;
+  height: 40px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .header-brand-container {
+    gap: 8px; /* Tighter spacing on mobile */
+  }
+  
+  .creator-profile-image {
+    width: 32px; /* Slightly smaller on mobile */
+    height: 32px;
+  }
+}
+```
+
+**Key Conversion Points**
+
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes matching logo dimensions
+- **Add**: Proper `alt` text with creator context
+- **Add**: `border-radius: 50%` for perfect circle
+- **Add**: `object-fit: cover` for proper image cropping
+
+**Layout Considerations**
+```css
+/* Ensure proper alignment with existing logo */
+.header__heading-link {
+  display: flex;
+  align-items: center;
+}
+
+/* If logo has specific height, match it */
+.creator-profile-image {
+  width: var(--logo-height, 40px);
+  height: var(--logo-height, 40px);
+}
+```
+
+**Complete Example Integration**
+```liquid
+{% liquid
+  # Creator resolution
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator_profile = cc_creator and cc_creator.data.value['cc-creator-profile-picture'] and cc_creator.data.value['cc-creator-profile-picture'].url
+  assign creator_affiliate_link = cc_creator.cc-collab-affiliate-link | default: ''
+%}
+
+<!-- Header navigation with creator profile -->
+<header class="header">
+  <div class="header-brand-container">
+    {% if has_creator_profile %}
+      <div class="creator-profile-nav">
+        {% if creator_affiliate_link != blank %}
+          <a href="{{ creator_affiliate_link | escape }}" class="creator-profile-link" target="_blank" rel="noopener">
+            <img 
+              src="{{ cc_creator.data.value['cc-creator-profile-picture'].url | escape }}" 
+              alt="{{ cc_creator.cc-creator-first-name | escape }} Profile - Visit {{ cc_creator.cc-creator-first-name | escape }}'s Shop"
+              class="creator-profile-image"
+              width="40"
+              height="40"
+              loading="eager"
+            >
+          </a>
+        {% else %}
+          <img 
+            src="{{ cc_creator.data.value['cc-creator-profile-picture'].url | escape }}" 
+            alt="{{ cc_creator.cc-creator-first-name | escape }} Profile"
+            class="creator-profile-image"
+            width="40"
+            height="40"
+            loading="eager"
+          >
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <a href="{{ routes.root_url }}" class="header__heading-link">
+      {% if settings.logo %}
+        <img src="{{ settings.logo | image_url: height: 40 }}" alt="{{ shop.name }}" class="header__logo">
+      {% else %}
+        <span class="header__shop-name">{{ shop.name }}</span>
+      {% endif %}
+    </a>
+  </div>
+</header>
+```
+
+**Result** Creator profile picture appears to the left of the brand logo when available, with perfect circular styling and height matching. When affiliate link exists, profile picture becomes clickable and opens creator's shop in new tab. Falls back gracefully when no creator or profile picture exists.
+
+**Testing Checklist**
+- [ ] Creator with profile picture shows circular image to left of logo
+- [ ] Creator with affiliate link makes profile picture clickable
+- [ ] Affiliate link opens in new tab with proper security attributes
+- [ ] Creator without affiliate link shows non-clickable profile picture
+- [ ] Creator without profile picture shows only logo (no broken layout)
+- [ ] No creator context shows only logo
+- [ ] Image height matches logo height perfectly
+- [ ] Spacing between profile picture and logo looks balanced
+- [ ] Circle cropping works with various image aspect ratios
+- [ ] Responsive behavior works on mobile devices
+- [ ] Hover effects work for both linked and non-linked states
+- [ ] Alt text is descriptive and includes clickable context when applicable
+```

@@ -1,0 +1,1398 @@
+---
+alwaysApply: false
+---
+# CreatorCommerce General Prompt Generator
+
+This rule provides templates for generating effective prompts to accomplish common CreatorCommerce storefront development tasks. Each template is structured to provide clear context, requirements, and expected outcomes.
+
+## Core Prompt Templates
+
+### 1. Converting Existing Sections to Support Drops
+
+**Use Case:** Convert any existing Shopify section that renders products from a collection to also support CreatorCommerce drops.
+
+**Template:**
+```
+Convert an existing Shopify section that renders products from a collection to also support CreatorCommerce drops, while preserving all original functionality as a fallback.
+
+**Target Section:**
+`[INSERT SECTION FILE NAME HERE]` (e.g., `sections/featured-products.liquid`)
+
+**Preserve Base Functionality**
+- Keep all existing features, schema settings, and styling unchanged
+- Maintain backward compatibility - section must work exactly as before when no creator drops are present
+- Preserve all CSS classes, JavaScript functionality, and responsive behavior
+
+**Add Creator Drops Support**
+- Follow `cc-referencing-drops-data` rules exactly
+- Use proper creator resolution with template context branching
+- Iterate JSON first to preserve drop order, then match to Shopify collections
+- Handle drop-level custom fields (titles, descriptions, media)
+- Support product-level enhancements (variants, notes, custom fields)
+
+**Data Flow Logic**
+```
+1. Check for creator drops → cc_creator.data.value['cc-creator-drops']
+2. If drops exist → Render drops feed (title + description + products per drop)
+3. If no drops → Fallback to original collection behavior from section settings
+```
+
+**Implementation Pattern**
+- **Creator Resolution**: Use template context branching for metaobject vs regular pages
+- **Drops Iteration**: JSON first (`json_drops`) to preserve order, match to collections
+- **Type Conversion**: Use variable assignment for ID comparisons (`collection_id_str = collection_drop.id | append: ''`)
+- **Null Safety**: Check `drop_id != blank` and `wanted_id != blank` before loops
+- **Product Matching**: Loop through `drop.products`, not `all_products[]`
+
+**UI Behavior Required**
+- **Multi-drop feed**: Each drop renders as separate section with own title/description/products
+- **Drop spacing**: Add CSS for `.cc-drop-section` with proper margins between drops
+- **Field mapping**: 
+  - `json_drop['cc-creator-drop-title']` → subtitle
+  - `json_drop['cc-creator-drop-description']` → main heading
+  - `json_product['cc-creator-drop-product-enhancement-variant']` → pass to product card
+
+**Schema Updates**
+- Update section name to include "CC" prefix (e.g., "CC Featured Products Drops")
+- Add explanatory paragraph about drops vs collection fallback behavior
+- Label collection setting as "Fallback Collection" with helpful info text
+- Keep all existing settings for backward compatibility
+
+**Code Quality Standards**
+- Follow liquid code organization from `cc-referencing-co-branded-data` rules
+- Use proper variable naming: `json_drop`, `drop`, `json_product`, `card_product`
+- Escape all unsafe strings: `{{ drop_title | escape }}`
+- Add null guards at every level
+- Break loops early on matches for performance
+
+**Testing Checklist**
+- [ ] Works with creator drops present (shows drops feed)
+- [ ] Works with no creator drops (shows original collection)
+- [ ] Works with empty/malformed drop data (graceful degradation)
+- [ ] Preserves all original section functionality
+- [ ] Maintains responsive behavior and styling
+- [ ] Type conversion works without Liquid parsing errors
+
+**Expected Output**
+- One updated `.liquid` file that works in both modes
+- All original functionality preserved
+- Drops support added following established patterns
+- Schema updated appropriately
+```
+
+### 2. Dynamic Creator UI Rendering
+
+**Use Case:** Render dynamic UI elements based on creator metaobject data.
+
+**Template:**
+```
+We need to dynamically render [UI-UX-OUTCOME] for a creator using the creator metaobject from the CreatorCommerce app.
+
+**Data Reference:**
+Use this Liquid to reference the correct creator:
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+Then access fields with {{ cc_creator.data.value.FIELD-NAME }}. ❌ Do not use {{ cc_creator.FIELD-NAME }}. ✅ Always use {{ cc_creator.data.value.FIELD-NAME }}
+
+**Fields to reference:**
+[
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+]
+
+**UI Requirements:**
+
+1. [UI-UX-REQUIREMENT-1]
+   If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+2. [UI-UX-REQUIREMENT-2]
+   If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+**Logic & Empty States:**
+
+**Field presence**
+If a field value is missing or evaluates to false/empty, do not render the related UI block.
+Instead, support and check if a fallback entry is provided for that block. If yes, render the fallback. This applies to booleans, text, images.
+
+**Section visibility**
+If key field values are missing/false/empty and no fallbacks are provided, hide the entire section.
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Escape all unsafe strings with `| escape` filter
+- Add null guards at every level of data access
+- Provide neutral fallbacks when creator data is missing
+```
+
+### 3. Creator Image Replacement
+
+**Use Case:** Replace Shopify section images with creator-specific images.
+
+**Template:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+[PASTE-SHOPIFY-IMAGE-HERE]
+
+**Basic Pattern**
+
+1. Add Creator Resolution:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  # Check for creator image field
+  assign has_creator_image = false
+  assign creator_image_url = ''
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value.cc-[FIELD-NAME]
+    if cc_creator.data.value.cc-[FIELD-NAME].url
+      assign has_creator_image = true
+      assign creator_image_url = cc_creator.data.value.cc-[FIELD-NAME].url
+    endif
+  endif
+%}
+```
+
+2. Replace Shopify image with creator image:
+
+**❌ Original Shopify image example:**
+```liquid
+{{
+  section.settings.image
+  | image_url: width: 800, height: 600
+  | image_tag:
+    class: 'my-image-class',
+    loading: 'lazy',
+    alt: 'My alt text'
+}}
+```
+
+**✅ Creator image override:**
+```liquid
+{% if has_creator_image %}
+  <img 
+    src="{{ creator_image_url | escape }}" 
+    alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}"
+    class="my-image-class"
+    width="800"
+    height="600"
+    loading="lazy"
+  >
+{% elsif section.settings.image %}
+  {{
+    section.settings.image
+    | image_url: width: 800, height: 600
+    | image_tag:
+      class: 'my-image-class',
+      loading: 'lazy',
+      alt: 'Fallback alt text'
+  }}
+{% else %}
+  <!-- No image available -->
+{% endif %}
+```
+
+**Creator Field to Use**
+[
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+]
+
+**Key Conversion Points**
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes
+- **Add**: Proper `alt` text with creator context
+
+**CSS Considerations**
+```css
+.my-image-class {
+  object-fit: cover; /* Important for external images */
+  display: block;
+}
+```
+
+**Result** Creator image overrides section image when available, falls back gracefully when not.
+```
+
+### 4. Navigation Profile Picture
+
+**Use Case:** Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Template:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+No existing image - this is a new addition to the navigation bar to the left of the brand logo.
+
+**Target File:**
+`snippets/header.liquid` or `sections/header.liquid` (whichever contains the main navigation)
+
+**Basic Pattern**
+
+1. Add Creator Resolution:
+```liquid
+{% liquid
+  # Creator resolution with template context branching
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  # Check for creator profile picture and affiliate link
+  assign has_creator_image = false
+  assign creator_image_url = ''
+  assign creator_affiliate_link = ''
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-profile-picture']
+    if cc_creator.data.value['cc-creator-profile-picture'].url
+      assign has_creator_image = true
+      assign creator_image_url = cc_creator.data.value['cc-creator-profile-picture'].url
+    endif
+  endif
+  
+  if cc_creator and cc_creator.cc-collab-affiliate-link
+    assign creator_affiliate_link = cc_creator.cc-collab-affiliate-link
+  endif
+%}
+```
+
+2. Add creator profile picture to navigation:
+
+**Target Location:**
+Find the brand logo in the header/navigation and add the creator image to the left of it.
+
+**Implementation:**
+```liquid
+<div class="header-brand-container">
+  {% if has_creator_image %}
+    <div class="creator-profile-nav">
+      {% if creator_affiliate_link != blank %}
+        <a href="{{ creator_affiliate_link | escape }}" class="creator-profile-link" target="_blank" rel="noopener">
+          <img 
+            src="{{ creator_image_url | escape }}" 
+            alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }} Profile"
+            class="creator-profile-image"
+            width="40"
+            height="40"
+            loading="eager"
+          >
+        </a>
+      {% else %}
+        <img 
+          src="{{ creator_image_url | escape }}" 
+          alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }} Profile"
+          class="creator-profile-image"
+          width="40"
+          height="40"
+          loading="eager"
+        >
+      {% endif %}
+    </div>
+  {% endif %}
+  
+  <!-- Existing brand logo -->
+  <a href="{{ routes.root_url }}" class="header__heading-link">
+    <!-- Your existing logo code here -->
+  </a>
+</div>
+```
+
+**Creator Fields to Use**
+```json
+{
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg",
+    "alt": "Creator profile picture"
+  },
+  "cc-collab-affiliate-link": "https://example.com/creator-shop"
+}
+```
+
+**Required CSS Styling**
+```css
+.header-brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Perfect spacing between profile pic and logo */
+}
+
+.creator-profile-nav {
+  flex-shrink: 0;
+}
+
+.creator-profile-link {
+  display: block;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.creator-profile-link:hover {
+  transform: scale(1.05); /* Subtle hover effect */
+}
+
+.creator-profile-image {
+  border-radius: 50%; /* Perfect circle */
+  object-fit: cover; /* Ensures proper cropping */
+  display: block;
+  border: 2px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect when not wrapped in link */
+.creator-profile-image:hover {
+  transform: scale(1.05); /* Subtle hover effect */
+}
+
+/* Match logo height - adjust these values to match your actual logo */
+.creator-profile-image {
+  width: 40px;
+  height: 40px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .header-brand-container {
+    gap: 8px; /* Tighter spacing on mobile */
+  }
+  
+  .creator-profile-image {
+    width: 32px; /* Slightly smaller on mobile */
+    height: 32px;
+  }
+}
+```
+
+**Key Conversion Points**
+
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes matching logo dimensions
+- **Add**: Proper `alt` text with creator context
+- **Add**: `border-radius: 50%` for perfect circle
+- **Add**: `object-fit: cover` for proper image cropping
+
+**Layout Considerations**
+```css
+/* Ensure proper alignment with existing logo */
+.header__heading-link {
+  display: flex;
+  align-items: center;
+}
+
+/* If logo has specific height, match it */
+.creator-profile-image {
+  width: var(--logo-height, 40px);
+  height: var(--logo-height, 40px);
+}
+```
+
+**Complete Example Integration**
+```liquid
+{% liquid
+  # Creator resolution
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator_profile = cc_creator and cc_creator.data.value['cc-creator-profile-picture'] and cc_creator.data.value['cc-creator-profile-picture'].url
+  assign creator_affiliate_link = cc_creator.cc-collab-affiliate-link | default: ''
+%}
+
+<!-- Header navigation with creator profile -->
+<header class="header">
+  <div class="header-brand-container">
+    {% if has_creator_profile %}
+      <div class="creator-profile-nav">
+        {% if creator_affiliate_link != blank %}
+          <a href="{{ creator_affiliate_link | escape }}" class="creator-profile-link" target="_blank" rel="noopener">
+            <img 
+              src="{{ cc_creator.data.value['cc-creator-profile-picture'].url | escape }}" 
+              alt="{{ cc_creator.cc-creator-first-name | escape }} Profile - Visit {{ cc_creator.cc-creator-first-name | escape }}'s Shop"
+              class="creator-profile-image"
+              width="40"
+              height="40"
+              loading="eager"
+            >
+          </a>
+        {% else %}
+          <img 
+            src="{{ cc_creator.data.value['cc-creator-profile-picture'].url | escape }}" 
+            alt="{{ cc_creator.cc-creator-first-name | escape }} Profile"
+            class="creator-profile-image"
+            width="40"
+            height="40"
+            loading="eager"
+          >
+        {% endif %}
+      </div>
+    {% endif %}
+    
+    <a href="{{ routes.root_url }}" class="header__heading-link">
+      {% if settings.logo %}
+        <img src="{{ settings.logo | image_url: height: 40 }}" alt="{{ shop.name }}" class="header__logo">
+      {% else %}
+        <span class="header__shop-name">{{ shop.name }}</span>
+      {% endif %}
+    </a>
+  </div>
+</header>
+```
+
+**Result** Creator profile picture appears to the left of the brand logo when available, with perfect circular styling and height matching. When affiliate link exists, profile picture becomes clickable and opens creator's shop in new tab. Falls back gracefully when no creator or profile picture exists.
+
+**Testing Checklist**
+- [ ] Creator with profile picture shows circular image to left of logo
+- [ ] Creator with affiliate link makes profile picture clickable
+- [ ] Affiliate link opens in new tab with proper security attributes
+- [ ] Creator without affiliate link shows non-clickable profile picture
+- [ ] Creator without profile picture shows only logo (no broken layout)
+- [ ] No creator context shows only logo
+- [ ] Image height matches logo height perfectly
+- [ ] Spacing between profile picture and logo looks balanced
+- [ ] Circle cropping works with various image aspect ratios
+- [ ] Responsive behavior works on mobile devices
+- [ ] Hover effects work for both linked and non-linked states
+- [ ] Alt text is descriptive and includes clickable context when applicable
+```
+
+### 5. Product Reviews Section
+
+**Use Case:** Create a product page section that displays creator reviews for the current product.
+
+**Template:**
+```
+We need to dynamically render **a product review section with creator profile information** for a creator using the creator metaobject from the CreatorCommerce app.
+
+**Target Section:**
+`sections/cc-product-reviews.liquid`
+
+**Data Reference:**
+Use this Liquid to reference the correct creator:
+
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+Then access fields with `{{ cc_creator.data.value.FIELD-NAME }}`. ❌ Do not use `{{ cc_creator.FIELD-NAME }}`. ✅ Always use `{{ cc_creator.data.value.FIELD-NAME }}`
+
+**Fields to reference:**
+```json
+{
+  "cc-creator-first-name": "Kenyon",
+  "cc-creator-last-name": "Brown", 
+  "cc-creator-profile-picture": null,
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-products": [
+        {
+          "cc-creator-drop-product-shopify-id": "7663834759375",
+          "cc-creator-drop-product-enhancement-note": "Amazing stuff, love it"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**UI Requirements:**
+
+1. **Review Discovery Logic**
+   Loop through `cc_creator.data.value['cc-creator-drops']`, then through each drop's products. Compare current `product.id` (converted to string) with `cc-creator-drop-product-shopify-id`. If they match AND `cc-creator-drop-product-enhancement-note` exists and is not empty, that's the review. Stop looping once found.
+
+2. **Review Display Format**
+   Show the review text wrapped in quotation marks with proper typography. Add an em dash followed by the creator's name.
+
+3. **Profile Picture Logic**
+   If `cc-creator-profile-picture` exists and has a URL, show the creator's profile picture. Otherwise, show creator's initials (first letter of first name + first letter of last name) in a circular background with configurable text and background colors.
+
+4. **Layout Options**
+   Support both vertical stack (image/initials above text) and horizontal stack (image/initials beside text) layouts with left, center, or right alignment options.
+
+**Schema Settings Required:**
+```json
+{
+  "type": "select",
+  "id": "layout_direction",
+  "label": "Layout Direction",
+  "options": [
+    {"value": "vertical", "label": "Vertical Stack"},
+    {"value": "horizontal", "label": "Horizontal Stack"}
+  ],
+  "default": "horizontal"
+},
+{
+  "type": "select", 
+  "id": "alignment",
+  "label": "Alignment",
+  "options": [
+    {"value": "left", "label": "Left"},
+    {"value": "center", "label": "Center"},
+    {"value": "right", "label": "Right"}
+  ],
+  "default": "left"
+},
+{
+  "type": "color",
+  "id": "initials_bg_color",
+  "label": "Initials Background Color",
+  "default": "#000000"
+},
+{
+  "type": "color",
+  "id": "initials_text_color", 
+  "label": "Initials Text Color",
+  "default": "#ffffff"
+}
+```
+
+**Data Flow Logic:**
+```
+1. Check if creator exists → cc_creator
+2. Loop through cc_creator.data.value['cc-creator-drops']
+3. For each drop, loop through cc-creator-drop-products
+4. Convert product.id to string and compare with cc-creator-drop-product-shopify-id
+5. If match found AND cc-creator-drop-product-enhancement-note is not empty → render review
+6. If no review found → hide section entirely
+```
+
+**Implementation Pattern:**
+- **Creator Resolution**: Use template context branching for metaobject vs regular pages
+- **Product Matching**: Convert `product.id | append: ''` to match string IDs from JSON
+- **Type Conversion**: Use variable assignment for ID comparisons
+- **Null Safety**: Check for creator, drops array, products array, and note content
+- **Early Exit**: Break loops immediately when review is found
+
+**Logic & Empty States:**
+
+**Field presence**
+If no review is found for the current product, hide the entire section. If creator profile picture is missing, show initials circle with section settings for colors.
+
+**Section visibility**
+If no creator context exists or no review is found for the current product, hide the entire section.
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages  
+- Escape all unsafe strings with `| escape` filter
+- Add null guards at every level of data access
+- Provide neutral fallbacks when creator data is missing
+- Break nested loops early when review is found for performance
+
+**Expected Output:**
+- One new `sections/cc-product-reviews.liquid` file
+- Schema with layout, alignment, and color settings
+- Proper review discovery logic with type conversion
+- Conditional profile picture vs initials display
+- Responsive design supporting both layout directions
+- Section hides gracefully when no review exists
+
+**Testing Scenarios:**
+- [ ] Product with creator review shows section with review text
+- [ ] Product without creator review hides section entirely  
+- [ ] Creator with profile picture shows image
+- [ ] Creator without profile picture shows initials circle
+- [ ] Vertical and horizontal layout options work correctly
+- [ ] Left, center, right alignments work correctly
+- [ ] Initials colors are configurable via section settings
+- [ ] Type conversion works for product ID matching
+- [ ] Nested loops break early when review found
+```
+
+### 6. Conditional UI Blocking Script
+
+**Use Case:** Add JavaScript to conditionally hide UI elements based on creator funnel status and custom business logic.
+
+**Template:**
+```
+Update my theme.liquid file with a safe, idempotent JavaScript snippet (with Liquid wrapper) that conditionally hides specified UI elements on a Shopify storefront when a creator funnel is active AND additional custom business logic is met.
+
+**Base Condition (ALWAYS REQUIRED):**
+- Creator funnel is active: `cc_creator` exists AND `cc_creator.cc-collab-discount-amount > 0`
+
+**Additional Business Logic Condition:**
+[ADD YOUR EXTRA CONDITIONS - Examples below]
+- AND cart total exceeds $100
+- AND specific product variants are in cart  
+- AND during certain date ranges or promotional periods
+- AND user has specific customer tags
+- AND coming from specific traffic sources
+- AND certain metafield values are present
+- AND user is on mobile vs desktop
+- [Or leave blank if only cc_creator condition needed]
+
+**Target Elements:**
+Popup/UI selectors to hide (provide class names or CSS selectors from Chrome DevTools):
+```
+const POPUP_SELECTORS = [
+  '[INSERT YOUR SELECTORS HERE]'
+];
+```
+Examples: `.klaviyo-form`, `.justuno-pop`, `#privy-container`, `.newsletter-modal`, `.chat-widget`, `.promotional-banner`
+
+**Liquid Context Variables Needed:**
+Base variables (always included):
+- `cart.attributes['cc-creator-handle']`
+- `metaobjects.creator[cc_handle]`
+
+Additional variables for your logic:
+- `cart.total_price`
+- `customer.tags`
+- `product.metafields`
+- `collection.handle`
+- `template.name`
+
+**Console Message:**
+What message should appear in console when blocking is active?
+Example: `"Blocking popups to prioritize creator funnel over first-timer offer"`
+
+**Liquid Condition Structure:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% if cc_creator and cc_creator.cc-collab-discount-amount > 0 and [YOUR_ADDITIONAL_CONDITIONS] %}
+```
+
+**Requirements:**
+- Add to theme.liquid near `</body>`
+- Always check cc_creator base condition first
+- Hide elements using `cc-hidden` class + `display:none !important` + `aria-hidden="true"`
+- Handle both initial DOM and dynamically injected elements (MutationObserver)
+- Be idempotent and fail gracefully
+- No external dependencies
+- Don't break checkout functionality
+
+**Output Format:**
+Add one complete Liquid + JS snippet to the end of my theme.liquid file, maintaining the cc_creator base logic.
+```
+
+### 7. Global Style Integration
+
+**Use Case:** Add creator-specific CSS variables and styles to global style files for consistent theming across the site.
+
+**Template:**
+```
+We need to dynamically inject creator-specific CSS variables and styles into the global stylesheet using creator metaobject data from the CreatorCommerce app.
+
+**Target File:**
+`snippets/global-styles.liquid` or `assets/global-styles.css` or `layout/theme.liquid` (in the `<head>` section)
+
+**Data Reference:**
+Use this Liquid to reference the correct creator:
+
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+Then access fields with `{{ cc_creator.data.value.FIELD-NAME }}`. ❌ Do not use `{{ cc_creator.FIELD-NAME }}`. ✅ Always use `{{ cc_creator.data.value.FIELD-NAME }}`
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-shop-theme-primary-color": "#000000",
+  "cc-creator-shop-theme-secondary-color": "#ffffff", 
+  "cc-creator-shop-theme-accent-color": "#ff6b35",
+  "cc-creator-shop-theme-text-color": "#333333",
+  "cc-creator-shop-theme-background-color": "#f8f8f8",
+  "cc-creator-shop-theme-border-color": "#e0e0e0",
+  "cc-creator-shop-theme-button-color": "#007bff",
+  "cc-creator-shop-theme-button-text-color": "#ffffff",
+  "cc-creator-shop-theme-font-family": "Inter, sans-serif",
+  "cc-creator-shop-theme-font-weight": "500",
+  "cc-creator-shop-theme-border-radius": "8px",
+  "cc-creator-shop-theme-spacing": "16px"
+}
+```
+
+**Implementation Pattern:**
+
+1. **Creator Resolution with Fallbacks:**
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator_styles = false
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value
+    assign creator_data = cc_creator.data.value
+    if creator_data['cc-creator-shop-theme-primary-color']
+      assign has_creator_styles = true
+    endif
+  endif
+%}
+```
+
+2. **CSS Variables Injection:**
+```liquid
+{% if has_creator_styles %}
+  <style>
+    :root {
+      /* Primary Colors */
+      --cc-creator-primary: {{ creator_data['cc-creator-shop-theme-primary-color'] | default: '#000000' }};
+      --cc-creator-secondary: {{ creator_data['cc-creator-shop-theme-secondary-color'] | default: '#ffffff' }};
+      --cc-creator-accent: {{ creator_data['cc-creator-shop-theme-accent-color'] | default: '#ff6b35' }};
+      
+      /* Text Colors */
+      --cc-creator-text: {{ creator_data['cc-creator-shop-theme-text-color'] | default: '#333333' }};
+      --cc-creator-text-light: {{ creator_data['cc-creator-shop-theme-text-color'] | color_lighten: 20 }};
+      
+      /* Background Colors */
+      --cc-creator-bg: {{ creator_data['cc-creator-shop-theme-background-color'] | default: '#f8f8f8' }};
+      --cc-creator-bg-light: {{ creator_data['cc-creator-shop-theme-background-color'] | color_lighten: 10 }};
+      
+      /* Border Colors */
+      --cc-creator-border: {{ creator_data['cc-creator-shop-theme-border-color'] | default: '#e0e0e0' }};
+      
+      /* Button Colors */
+      --cc-creator-button: {{ creator_data['cc-creator-shop-theme-button-color'] | default: '#007bff' }};
+      --cc-creator-button-text: {{ creator_data['cc-creator-shop-theme-button-text-color'] | default: '#ffffff' }};
+      
+      /* Typography */
+      --cc-creator-font: {{ creator_data['cc-creator-shop-theme-font-family'] | default: 'inherit' }};
+      --cc-creator-font-weight: {{ creator_data['cc-creator-shop-theme-font-weight'] | default: '500' }};
+      
+      /* Spacing & Layout */
+      --cc-creator-radius: {{ creator_data['cc-creator-shop-theme-border-radius'] | default: '8px' }};
+      --cc-creator-spacing: {{ creator_data['cc-creator-shop-theme-spacing'] | default: '16px' }};
+    }
+    
+    /* Creator-specific component styles */
+    .cc-creator-button {
+      background-color: var(--cc-creator-button);
+      color: var(--cc-creator-button-text);
+      border-radius: var(--cc-creator-radius);
+      font-family: var(--cc-creator-font);
+      font-weight: var(--cc-creator-font-weight);
+      padding: var(--cc-creator-spacing);
+    }
+    
+    .cc-creator-card {
+      background-color: var(--cc-creator-bg);
+      border: 1px solid var(--cc-creator-border);
+      border-radius: var(--cc-creator-radius);
+      color: var(--cc-creator-text);
+    }
+    
+    .cc-creator-accent {
+      color: var(--cc-creator-accent);
+    }
+    
+    .cc-creator-primary {
+      color: var(--cc-creator-primary);
+    }
+  </style>
+{% endif %}
+```
+
+**Alternative: CSS Custom Properties in External File**
+```liquid
+<!-- In layout/theme.liquid head section -->
+{% if has_creator_styles %}
+  <link rel="stylesheet" href="{{ 'creator-styles.css' | asset_url }}" data-creator-styles>
+{% endif %}
+```
+
+**Creator Styles CSS File (assets/creator-styles.css):**
+```css
+:root {
+  /* CSS variables will be dynamically replaced by Liquid processing */
+  --cc-creator-primary: {{ creator_data['cc-creator-shop-theme-primary-color'] }};
+  --cc-creator-secondary: {{ creator_data['cc-creator-shop-theme-secondary-color'] }};
+  /* ... other variables ... */
+}
+
+/* Component styles using creator variables */
+.cc-creator-button {
+  background-color: var(--cc-creator-button);
+  color: var(--cc-creator-button-text);
+  border-radius: var(--cc-creator-radius);
+  font-family: var(--cc-creator-font);
+  font-weight: var(--cc-creator-font-weight);
+  padding: var(--cc-creator-spacing);
+  transition: all 0.2s ease;
+}
+
+.cc-creator-button:hover {
+  background-color: var(--cc-creator-button);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.cc-creator-card {
+  background-color: var(--cc-creator-bg);
+  border: 1px solid var(--cc-creator-border);
+  border-radius: var(--cc-creator-radius);
+  color: var(--cc-creator-text);
+  padding: var(--cc-creator-spacing);
+}
+
+.cc-creator-accent {
+  color: var(--cc-creator-accent);
+}
+
+.cc-creator-primary {
+  color: var(--cc-creator-primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --cc-creator-spacing: calc(var(--cc-creator-spacing) * 0.75);
+  }
+}
+```
+
+**Usage in Components:**
+```liquid
+<!-- Use creator styles in any component -->
+<button class="cc-creator-button">
+  {{ cc_creator.cc-creator-first-name | escape }}'s Pick
+</button>
+
+<div class="cc-creator-card">
+  <h3 class="cc-creator-accent">Featured by {{ cc_creator.cc-creator-first-name | escape }}</h3>
+  <p>Product description here...</p>
+</div>
+```
+
+**Logic & Empty States:**
+
+**Field presence**
+If creator style fields are missing, use default theme colors and styles. The site should look good with or without creator theming.
+
+**Global application**
+Creator styles should enhance the existing theme, not replace it entirely. Use CSS custom properties for easy override and fallback.
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Escape all color values with proper CSS validation
+- Provide sensible defaults for all creator style fields
+- Use CSS custom properties for maintainable theming
+- Ensure responsive behavior with creator variables
+
+**Expected Output:**
+- CSS variables injected into global styles when creator has theme data
+- Fallback to default theme when no creator or creator has no theme data
+- Reusable CSS classes for creator-specific components
+- Responsive design considerations with creator variables
+
+**Testing Scenarios:**
+- [ ] Creator with theme data applies custom colors and styles
+- [ ] Creator without theme data uses default theme styling
+- [ ] No creator context uses default theme styling
+- [ ] CSS variables are properly formatted and valid
+- [ ] Responsive behavior works with creator variables
+- [ ] Component classes work across different pages
+- [ ] Color contrast meets accessibility standards
+- [ ] Fallback colors are visually appealing
+```
+
+### 8. Creator Grid Display
+
+**Use Case:** Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Template:**
+```
+We need to dynamically render **a grid of creators** using the creator metaobject from the CreatorCommerce app, filtering and displaying creator information in a responsive grid layout.
+
+**Target Section:**
+`sections/cc-creator-grid.liquid`
+
+**Data Reference:**
+Access all creators through the metaobjects system:
+
+```liquid
+{% assign all_creators = metaobjects.creator %}
+```
+
+Then access fields with `{{ creator.data.value.FIELD-NAME }}`. ❌ Do not use `{{ creator.FIELD-NAME }}`. ✅ Always use `{{ creator.data.value.FIELD-NAME }}`
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-first-name": "Kenyon",
+  "cc-creator-last-name": "Brown",
+  "cc-creator-shop-description": "Explore my handpicked products from my favorite brands...",
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg"
+  },
+  "cc-creator-shop-handle": "kenyon-539",
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-products": [
+        {"cc-creator-drop-product-shopify-id": "12345"}
+      ]
+    }
+  ],
+  "cc-public": "Y"
+}
+```
+
+**UI Requirements:**
+
+1. **Creator Filtering Logic**
+   Loop through all creators and only include those that meet ALL criteria:
+   - `creator.data.value['cc-public'] == 'Y'`
+   - `creator.data.value['cc-creator-profile-picture']` exists and has a URL
+   - `creator.cc-creator-drops` exists and has more than 0 drops
+
+2. **Product Count Calculation**
+   For each creator, count total products across all drops:
+   ```liquid
+   {% assign total_products = 0 %}
+   {% for drop in creator.cc-creator-drops.value %}
+     {% assign total_products = total_products | plus: drop.products_count %}
+   {% endfor %}
+   ```
+
+3. **Grid Display Format**
+   - Creator profile picture (circular, with fallback to initials)
+   - Creator name (first + last name)
+   - Shop description (truncated to 3 lines max)
+   - Product count badge
+   - Link to creator's shop page
+
+4. **Layout Options**
+   - Responsive grid with configurable spacing
+   - Corner radius customization
+   - Hover effects with creator branding
+
+**Schema Settings Required:**
+```json
+{
+  "type": "range",
+  "id": "creators_per_page",
+  "label": "Creators per page",
+  "min": 12,
+  "max": 50,
+  "step": 4,
+  "default": 24
+},
+{
+  "type": "range",
+  "id": "corner_radius",
+  "label": "Corner Radius",
+  "min": 0,
+  "max": 20,
+  "step": 2,
+  "default": 8,
+  "unit": "px"
+},
+{
+  "type": "range",
+  "id": "grid_gap",
+  "label": "Grid Gap",
+  "min": 8,
+  "max": 32,
+  "step": 4,
+  "default": 16,
+  "unit": "px"
+},
+{
+  "type": "select",
+  "id": "grid_columns",
+  "label": "Grid Columns",
+  "options": [
+    {"value": "2", "label": "2 Columns"},
+    {"value": "3", "label": "3 Columns"},
+    {"value": "4", "label": "4 Columns"},
+    {"value": "5", "label": "5 Columns"}
+  ],
+  "default": "3"
+}
+```
+
+**Implementation Pattern:**
+
+1. **Creator Filtering and Processing:**
+```liquid
+{% liquid
+  assign filtered_creators = ''
+  assign creator_count = 0
+  assign max_creators = section.settings.creators_per_page
+  
+  for creator in metaobjects.creator
+    assign creator_data = creator.data.value
+    assign is_public = creator_data['cc-public'] == 'Y'
+    assign has_profile = creator_data['cc-creator-profile-picture'] and creator_data['cc-creator-profile-picture'].url
+    assign has_drops = creator.cc-creator-drops and creator.cc-creator-drops.value.size > 0
+    
+    if is_public and has_profile and has_drops
+      assign creator_count = creator_count | plus: 1
+      if creator_count <= max_creators
+        assign filtered_creators = filtered_creators | append: creator.handle | append: ','
+      endif
+    endif
+  endfor
+  
+  assign creator_handles = filtered_creators | split: ','
+%}
+```
+
+2. **Creator Grid Rendering:**
+```liquid
+{% if creator_handles.size > 0 %}
+  <div class="creator-grid" 
+       style="--grid-gap: {{ section.settings.grid_gap }}px; 
+              --corner-radius: {{ section.settings.corner_radius }}px;
+              --grid-columns: {{ section.settings.grid_columns }};">
+    
+    {% for creator_handle in creator_handles %}
+      {% if creator_handle != blank %}
+        {% assign creator = metaobjects.creator[creator_handle] %}
+        {% assign creator_data = creator.data.value %}
+        
+        {% liquid
+          assign creator_name = creator.cc-creator-first-name | append: ' ' | append: creator.cc-creator-last-name
+          assign profile_url = creator_data['cc-creator-profile-picture'].url
+          assign shop_description = creator_data['cc-creator-shop-description'] | default: ''
+          assign shop_handle = creator_data['cc-creator-shop-handle']
+          
+          # Count total products
+          assign total_products = 0
+          if creator.cc-creator-drops and creator.cc-creator-drops.value
+            for drop in creator.cc-creator-drops.value
+              assign total_products = total_products | plus: drop.products_count
+            endfor
+          endif
+        %}
+        
+        <div class="creator-card">
+          <div class="creator-profile">
+            {% if profile_url %}
+              <img src="{{ profile_url | escape }}" 
+                   alt="{{ creator_name | escape }} Profile"
+                   class="creator-avatar"
+                   width="80"
+                   height="80"
+                   loading="lazy">
+            {% else %}
+              <div class="creator-initials">
+                {{ creator.cc-creator-first-name | slice: 0, 1 }}{{ creator.cc-creator-last-name | slice: 0, 1 }}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="creator-info">
+            <h3 class="creator-name">{{ creator_name | escape }}</h3>
+            
+            {% if shop_description != blank %}
+              <p class="creator-description">{{ shop_description | truncate: 120 }}</p>
+            {% endif %}
+            
+            <div class="creator-stats">
+              <span class="product-count">{{ total_products }} products</span>
+            </div>
+            
+            {% if shop_handle %}
+              <a href="/pages/{{ shop_handle }}" class="creator-link">
+                Visit {{ creator.cc-creator-first-name | escape }}'s Shop
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-creators">
+    <p>No creators available at the moment.</p>
+  </div>
+{% endif %}
+```
+
+**Required CSS Styling:**
+```css
+.creator-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gap);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.creator-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--corner-radius);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.creator-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.creator-profile {
+  margin-bottom: 1rem;
+}
+
+.creator-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f0f0f0;
+}
+
+.creator-initials {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.creator-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.creator-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.creator-stats {
+  margin-bottom: 1rem;
+}
+
+.product-count {
+  background: #f8f9fa;
+  color: #495057;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.creator-link {
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.creator-link:hover {
+  background: #0056b3;
+  color: white;
+}
+
+.no-creators {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .creator-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .creator-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(var(--grid-gap) * 0.75);
+  }
+  
+  .creator-card {
+    padding: 1rem;
+  }
+  
+  .creator-avatar,
+  .creator-initials {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .creator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+```
+
+**Logic & Empty States:**
+
+**Filtering Logic**
+Only show creators that meet ALL criteria: public status, profile picture, and at least one drop with products.
+
+**Empty States**
+If no creators meet the criteria, show a friendly message. If individual creators are missing data, skip them gracefully.
+
+**Performance Considerations**
+- Limit to 50 creators maximum for performance
+- Use lazy loading for profile images
+- Efficient product counting without deep nesting
+
+**Code Quality Standards**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use proper null guards for all creator data access
+- Escape all unsafe strings and URLs
+- Provide fallbacks for missing profile pictures
+- Ensure responsive design with configurable settings
+
+**Expected Output:**
+- Responsive grid of filtered creators
+- Configurable layout settings (columns, spacing, radius)
+- Product count badges for each creator
+- Links to individual creator shop pages
+- Graceful handling of missing data
+
+**Testing Scenarios:**
+- [ ] Grid displays only creators meeting all filter criteria
+- [ ] Product counts are accurate across all drops
+- [ ] Profile pictures display correctly with fallback initials
+- [ ] Shop descriptions truncate properly to 3 lines
+- [ ] Links navigate to correct creator shop pages
+- [ ] Responsive design works on all screen sizes
+- [ ] Configurable settings affect layout appropriately
+- [ ] Performance remains good with 50+ creators
+- [ ] Empty state displays when no creators available
+- [ ] Missing creator data is handled gracefully
+```
+
+## Task Categories and Templates
+
+### Collection/Product Display Tasks
+- **Converting sections to drops**: Use Template #1
+- **Creating new drops sections**: Use Template #1 as base, remove "preserve" requirements
+- **Adding product recommendations**: Use Template #2 with product-specific fields
+- **Product reviews section**: Use Template #5 for creator review display
+- **Creator grid display**: Use Template #8 for multi-creator showcase
+
+### Visual/Media Tasks  
+- **Hero image replacement**: Use Template #3
+- **Background image updates**: Use Template #3 with background CSS
+- **Logo/branding changes**: Use Template #3 with appropriate sizing
+- **Navigation profile picture**: Use Template #4 for header integration
+- **Global style integration**: Use Template #7 for theme-wide creator styling
+
+### Interactive/Behavioral Tasks
+- **Conditional popup blocking**: Use Template #6
+- **Dynamic form behavior**: Use Template #2 with form-specific logic
+- **Cart behavior modifications**: Use Template #6 with cart conditions
+
+### Content/Text Tasks
+- **Dynamic text replacement**: Use Template #2
+- **Conditional messaging**: Use Template #2 with text fields
+- **Personalized content**: Use Template #2 with multiple creator fields
+
+## Prompt Enhancement Guidelines
+
+### Required Context Elements
+1. **Clear Objective**: What specific outcome is needed
+2. **Target Files**: Exact file names and paths
+3. **Creator Fields**: Specific metaobject field names needed
+4. **Fallback Behavior**: What happens when creator data is missing
+5. **Testing Scenarios**: How to verify the implementation works
+
+### Data Access Patterns
+Always include proper creator resolution:
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+Always specify field access pattern:
+```liquid
+{{ cc_creator.data.value.FIELD-NAME }}
+```
+
+### Quality Checklist
+- [ ] Follows established CreatorCommerce patterns
+- [ ] Includes proper null guards and fallbacks
+- [ ] Specifies exact field names and data paths
+- [ ] Provides clear testing criteria
+- [ ] Maintains backward compatibility
+- [ ] Uses proper Liquid escaping for security
+
+## Usage Instructions
+
+1. **Identify Task Type**: Determine which category your task falls into
+2. **Select Template**: Choose the most appropriate template
+3. **Fill Placeholders**: Replace all `[PLACEHOLDER]` values with specific requirements
+4. **Add Context**: Include specific field names, file paths, and business logic
+5. **Specify Testing**: Define clear success criteria and edge cases
+6. **Review Quality**: Ensure prompt follows CreatorCommerce patterns and rules
+
+## Example Usage
+
+**Task:** "Make the hero section show creator's profile image"
+
+**Generated Prompt Using Template #3:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+{{ section.settings.hero_image | image_url: width: 1200, height: 800 | image_tag: class: 'hero-image' }}
+
+**Creator Field to Use**
+cc-creator-profile-picture
+
+**Key Conversion Points**
+Shopify Image → External Image:
+- Remove: image_url filter (doesn't work on external URLs)
+- Remove: image_tag filter 
+- Add: Manual <img> tag with src="{{ url | escape }}"
+- Add: Explicit width="1200" height="800" attributes
+- Add: Proper alt text with creator context
+
+**Result** Creator profile image overrides hero image when available, falls back to section image when not.
+```
+
+This rule ensures all CreatorCommerce development prompts are comprehensive, follow established patterns, and provide clear implementation guidance.

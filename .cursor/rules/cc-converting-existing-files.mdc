@@ -1,0 +1,769 @@
+---
+alwaysApply: false
+---
+# Converting Existing Shopify Sections to Support CreatorCommerce Data
+
+## Overview
+This rule documents the process and best practices for converting existing Shopify sections to support CreatorCommerce (CC) drops while preserving all original functionality as a fallback.
+
+## Core Principles
+
+### 1. **Never Modify Original Files**
+- **Create new files** with "CC" prefix (e.g., `cc-best-sellers-drops.liquid`)
+- **Preserve original** files completely unchanged
+- **Maintain backward compatibility** for existing implementations
+
+### 2. **Dual-Mode Architecture**
+- **Creator Drops Mode**: When `cc_creator.data.value['cc-creator-drops']` exists
+- **Fallback Mode**: When no creator drops, use original section behavior
+- **Seamless switching** between modes based on data availability
+
+## Implementation Pattern
+
+### 3. **Standard Creator Resolution**
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  if template.name contains 'metaobject' and template.suffix == 'creator'
+    assign cc_creator = metaobject
+  else
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator_drops = false
+  assign json_drops = blank
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign json_drops = cc_creator.data.value['cc-creator-drops']
+    if json_drops.size > 0 and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+      assign has_creator_drops = true
+    endif
+  endif
+-%}
+```
+
+### 4. **Conditional Rendering Structure**
+```liquid
+{%- if has_creator_drops -%}
+  <!-- Creator Drops Feed -->
+  {%- for json_drop in json_drops -%}
+    <!-- Drop rendering logic -->
+  {%- endfor -%}
+{%- else -%}
+  <!-- Original Collection Behavior (Fallback) -->
+  <!-- Copy entire original section content here -->
+{%- endif -%}
+```
+
+### 5. **Drops Iteration & Product Matching**
+```liquid
+{%- for json_drop in json_drops -%}
+  {%- liquid
+    assign drop_id = json_drop['cc-creator-drop-collection-id']
+    assign drop = nil
+    
+    if drop_id != blank
+      for collection_drop in cc_creator.cc-creator-drops.value
+        assign collection_id_str = collection_drop.id | append: ''
+        if collection_id_str == drop_id
+          assign drop = collection_drop
+          break
+        endif
+      endfor
+    endif
+    
+    assign drop_title = json_drop['cc-creator-drop-title'] | escape
+    assign drop_description = json_drop['cc-creator-drop-description'] | escape
+  -%}
+  
+  {%- if drop and drop.products_count > 0 -%}
+    <!-- Drop rendering -->
+  {%- endif -%}
+{%- endfor -%}
+```
+
+## JavaScript Considerations for Multi-Carousels
+
+### 6. **Critical JavaScript Architecture**
+When converting sections with carousels, JavaScript must be completely refactored:
+
+#### **❌ Don't Do This:**
+```javascript
+// Single carousel initialization - won't work with multiple carousels
+function initCarousel() {
+  const track = document.getElementById('carousel-track');
+  // ... single carousel logic
+}
+```
+
+#### **✅ Do This Instead:**
+```javascript
+// Class-based approach for multiple independent carousels
+function initializeAllCarousels() {
+  const allTracks = document.querySelectorAll('[id^="carousel-track"]');
+  
+  allTracks.forEach(function(track) {
+    const trackId = track.id;
+    let prevId, nextId, progressId;
+    
+    if (trackId === 'carousel-track') {
+      // Original fallback carousel
+      prevId = 'carousel-prev';
+      nextId = 'carousel-next';
+      progressId = 'carousel-progress';
+    } else {
+      // Drop carousel (format: carousel-track-1, carousel-track-2, etc.)
+      const index = trackId.split('-').pop();
+      prevId = `carousel-prev-${index}`;
+      nextId = `carousel-next-${index}`;
+      progressId = `carousel-progress-${index}`;
+    }
+    
+    // Create independent carousel instance
+    new CarouselInstance(trackId, prevId, nextId, progressId);
+  });
+}
+
+function CarouselInstance(trackId, prevId, nextId, progressId) {
+  // Instance-specific variables and logic
+  // Each carousel maintains its own state
+}
+```
+
+### 7. **JavaScript Pitfalls to Avoid**
+
+#### **Duplicate Code Issues:**
+- **Problem**: When replacing script tags, ensure old JavaScript is completely removed
+- **Solution**: Use precise search/replace to avoid duplicate code showing as text
+- **Check**: Verify only one script tag exists in the final file
+
+#### **Variable Scope Conflicts:**
+- **Problem**: Global variables shared between multiple carousels
+- **Solution**: Use class-based approach with instance-specific variables
+- **Example**: Each carousel has its own `currentIndex`, `cardWidth`, `isDragging`, etc.
+
+#### **Event Handler Conflicts:**
+- **Problem**: Event listeners from multiple carousels interfering
+- **Solution**: Scope event handlers to specific carousel instances
+- **Example**: Use `carouselTrack.addEventListener()` instead of global listeners
+
+### 8. **ID Naming Convention**
+```liquid
+<!-- Original fallback carousel -->
+<div class="carousel-track" id="carousel-track">
+<button id="carousel-prev">Previous</button>
+<button id="carousel-next">Next</button>
+<div id="carousel-progress"></div>
+
+<!-- Drop carousels -->
+<div class="carousel-track" id="carousel-track-1">
+<button id="carousel-prev-1">Previous</button>
+<button id="carousel-next-1">Next</button>
+<div id="carousel-progress-1"></div>
+
+<div class="carousel-track" id="carousel-track-2">
+<button id="carousel-prev-2">Previous</button>
+<button id="carousel-next-2">Next</button>
+<div id="carousel-progress-2"></div>
+```
+
+## UI Patterns
+
+### 9. **Multi-Drop Feed Structure**
+```liquid
+{%- for json_drop in json_drops -%}
+  <div class="cc-drop-section">
+    {%- if drop_title != blank -%}
+      <h3 class="drop-subtitle">{{ drop_title }}</h3>
+    {%- endif -%}
+    
+    {%- if drop_description != blank -%}
+      <h2 class="section-title">{{ drop_description }}</h2>
+    {%- else -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    
+    <!-- Carousel content -->
+  </div>
+{%- endfor -%}
+```
+
+### 10. **CSS for Drop Sections**
+```css
+.cc-drop-section {
+  margin-bottom: 4rem;
+}
+.cc-drop-section:last-child {
+  margin-bottom: 0;
+}
+.drop-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  color: #666666;
+  margin-bottom: 10px;
+  text-transform: none;
+}
+@media (max-width: 767px) {
+  .cc-drop-section {
+    margin-bottom: 3rem;
+  }
+  .drop-subtitle {
+    font-size: 18px;
+    margin-bottom: 8px;
+    margin-left: 12px;
+  }
+}
+```
+
+## Schema Updates
+
+### 11. **Schema Modification Pattern**
+```json
+{
+  "name": "CC [Original Section Name] Drops",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "ORIGINAL TITLE",
+      "info": "Title displayed when no creator drops are present (fallback mode)"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Fallback Collection",
+      "info": "Collection to display products from when no creator drops are present"
+    },
+    {
+      "type": "header",
+      "content": "Creator Drops Behavior"
+    },
+    {
+      "type": "paragraph",
+      "content": "When a creator has drops configured, this section will display their drops as separate carousels. Each drop shows the creator's curated products with custom titles and descriptions. When no creator drops are present, the section falls back to displaying products from the selected collection."
+    },
+    {
+      "type": "header",
+      "content": "Original Settings (Fallback Mode)"
+    }
+    // ... copy all original settings here
+  ],
+  "presets": [
+    {
+      "name": "CC [Original Section Name] Drops",
+      "category": "Collection",
+      "settings": {
+        "title": "ORIGINAL TITLE"
+      }
+    }
+  ]
+}
+```
+
+## Code Quality Standards
+
+### 12. **Liquid Code Organization**
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator'
+-%}
+
+<!-- Clean template with pre-computed variables -->
+<div class="creator-section">
+  {%- if has_creator -%}
+    <h2>{{ creator_name }}</h2>
+  {%- endif -%}
+</div>
+```
+
+### 13. **Variable Naming Conventions**
+- `json_drop`: Individual drop from JSON array
+- `drop`: Matched Shopify collection object
+- `json_product`: Product from JSON array
+- `card_product`: Matched Shopify product object
+- `cc_creator`: Creator metaobject reference
+
+### 14. **Type Conversion for ID Comparisons**
+```liquid
+<!-- Always convert Shopify integer IDs to strings -->
+{%- if collection_drop.id | append: '' == drop_id -%}
+{%- if product.id | append: '' == wanted_id -%}
+{%- if variant.id | append: '' == json_variant_id -%}
+```
+
+## Testing Checklist
+
+### 15. **Comprehensive Testing Requirements**
+- [ ] **Creator drops present**: Shows drops feed with multiple carousels
+- [ ] **No creator drops**: Shows original collection behavior
+- [ ] **Empty/malformed data**: Graceful degradation without errors
+- [ ] **Multiple carousels**: Each carousel works independently
+- [ ] **JavaScript functionality**: Buttons, drag, swipe all work per carousel
+- [ ] **Responsive behavior**: Mobile and desktop interactions
+- [ ] **Original features preserved**: All original section functionality intact
+- [ ] **No duplicate code**: Clean file structure without text rendering
+
+### 16. **JavaScript Testing**
+- [ ] **Button clicks**: Previous/Next arrows work for each carousel
+- [ ] **Mouse drag**: Desktop drag functionality per carousel
+- [ ] **Touch swipe**: Mobile swipe functionality per carousel
+- [ ] **Progress bars**: Each carousel has independent progress
+- [ ] **No conflicts**: Multiple carousels don't interfere with each other
+- [ ] **Window resize**: Carousels adapt to screen size changes
+
+## Common Anti-Patterns
+
+### 17. **Avoid These Mistakes**
+```liquid
+<!-- ❌ Hardcoded creator -->
+<div>{{ metaobjects.creator['john-doe'].name }}</div>
+
+<!-- ❌ No fallback handling -->
+<div>{{ cc_creator.cc-bio }}</div>
+
+<!-- ❌ Confusing handle vs ID -->
+{% assign creator = metaobjects.creator[cc_creator.id] %}
+
+<!-- ❌ Long inline logic -->
+<div>{% if cart.attributes['cc-creator-handle'] %}{% assign cc_handle = cart.attributes['cc-creator-handle'] %}{% assign cc_creator = metaobjects.creator[cc_handle] %}{% if cc_creator %}{{ cc_creator.name }}{% endif %}{% endif %}</div>
+
+<!-- ❌ Dumping full metaobject to JS -->
+<script>window.creator = {{ cc_creator | json }};</script>
+```
+
+### 18. **JavaScript Anti-Patterns**
+```javascript
+// ❌ Global variables for multiple carousels
+let currentIndex = 0; // Will conflict with multiple carousels
+
+// ❌ Single carousel initialization
+function initCarousel() { // Won't work with multiple carousels
+
+// ❌ Duplicate event listeners
+window.addEventListener('resize', function() { // Will fire multiple times
+
+// ❌ Hardcoded element IDs
+const track = document.getElementById('carousel-track'); // Only works for one carousel
+```
+
+## File Organization
+
+### 19. **Naming Convention**
+- **Original file**: `best-sellers.liquid`
+- **CC version**: `cc-best-sellers.liquid`
+- **Schema name**: "CC Best Sellers Drops"
+- **Preset name**: "CC Best Sellers Drops"
+
+### 20. **File Structure**
+```
+sections/
+├── best-sellers.liquid          # Original (unchanged)
+└── cc-best-sellers-drops.liquid # CC version (new)
+```
+
+## Key Reminders
+
+- **Handle vs ID**: Use creator **handle** to index `metaobjects.creator[...]`, not ID
+- **Configurable Data**: For non-co-branded data that should be configurable, use section or block settings
+- **Guard Against Null**: Always check for null/empty when referencing lists or nested objects
+- **Neutral Fallbacks**: When creator data is missing, provide neutral content that doesn't break UI
+- **Escape by Default**: Always escape unsafe strings and URLs in Liquid output
+- **JavaScript Isolation**: Each carousel must be completely independent
+- **No Duplicate Code**: Ensure clean file structure without text rendering
+
+## Rule Improvement Triggers
+
+- New code patterns not covered by existing rules
+- Repeated similar implementations across files
+- Common error patterns that could be prevented
+- New libraries or tools being used consistently
+- Emerging best practices in the codebase
+
+Follow [cursor-rules.mdc](mdc:.cursor/rules/cursor-rules.mdc) for proper rule formatting and structure.
+# Converting Existing Shopify Sections to Support CreatorCommerce Drops
+
+## Overview
+This rule documents the process and best practices for converting existing Shopify sections to support CreatorCommerce (CC) drops while preserving all original functionality as a fallback.
+
+## Core Principles
+
+### 1. **Never Modify Original Files**
+- **Create new files** with "CC" prefix (e.g., `cc-best-sellers-drops.liquid`)
+- **Preserve original** files completely unchanged
+- **Maintain backward compatibility** for existing implementations
+
+### 2. **Dual-Mode Architecture**
+- **Creator Drops Mode**: When `cc_creator.data.value['cc-creator-drops']` exists
+- **Fallback Mode**: When no creator drops, use original section behavior
+- **Seamless switching** between modes based on data availability
+
+## Implementation Pattern
+
+### 3. **Standard Creator Resolution**
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  if template.name contains 'metaobject' and template.suffix == 'creator'
+    assign cc_creator = metaobject
+  else
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator_drops = false
+  assign json_drops = blank
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign json_drops = cc_creator.data.value['cc-creator-drops']
+    if json_drops.size > 0 and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+      assign has_creator_drops = true
+    endif
+  endif
+-%}
+```
+
+### 4. **Conditional Rendering Structure**
+```liquid
+{%- if has_creator_drops -%}
+  <!-- Creator Drops Feed -->
+  {%- for json_drop in json_drops -%}
+    <!-- Drop rendering logic -->
+  {%- endfor -%}
+{%- else -%}
+  <!-- Original Collection Behavior (Fallback) -->
+  <!-- Copy entire original section content here -->
+{%- endif -%}
+```
+
+### 5. **Drops Iteration & Product Matching**
+```liquid
+{%- for json_drop in json_drops -%}
+  {%- liquid
+    assign drop_id = json_drop['cc-creator-drop-collection-id']
+    assign drop = nil
+    
+    if drop_id != blank
+      for collection_drop in cc_creator.cc-creator-drops.value
+        assign collection_id_str = collection_drop.id | append: ''
+        if collection_id_str == drop_id
+          assign drop = collection_drop
+          break
+        endif
+      endfor
+    endif
+    
+    assign drop_title = json_drop['cc-creator-drop-title'] | escape
+    assign drop_description = json_drop['cc-creator-drop-description'] | escape
+  -%}
+  
+  {%- if drop and drop.products_count > 0 -%}
+    <!-- Drop rendering -->
+  {%- endif -%}
+{%- endfor -%}
+```
+
+## JavaScript Considerations for Multi-Carousels
+
+### 6. **Critical JavaScript Architecture**
+When converting sections with carousels, JavaScript must be completely refactored:
+
+#### **❌ Don't Do This:**
+```javascript
+// Single carousel initialization - won't work with multiple carousels
+function initCarousel() {
+  const track = document.getElementById('carousel-track');
+  // ... single carousel logic
+}
+```
+
+#### **✅ Do This Instead:**
+```javascript
+// Class-based approach for multiple independent carousels
+function initializeAllCarousels() {
+  const allTracks = document.querySelectorAll('[id^="carousel-track"]');
+  
+  allTracks.forEach(function(track) {
+    const trackId = track.id;
+    let prevId, nextId, progressId;
+    
+    if (trackId === 'carousel-track') {
+      // Original fallback carousel
+      prevId = 'carousel-prev';
+      nextId = 'carousel-next';
+      progressId = 'carousel-progress';
+    } else {
+      // Drop carousel (format: carousel-track-1, carousel-track-2, etc.)
+      const index = trackId.split('-').pop();
+      prevId = `carousel-prev-${index}`;
+      nextId = `carousel-next-${index}`;
+      progressId = `carousel-progress-${index}`;
+    }
+    
+    // Create independent carousel instance
+    new CarouselInstance(trackId, prevId, nextId, progressId);
+  });
+}
+
+function CarouselInstance(trackId, prevId, nextId, progressId) {
+  // Instance-specific variables and logic
+  // Each carousel maintains its own state
+}
+```
+
+### 7. **JavaScript Pitfalls to Avoid**
+
+#### **Duplicate Code Issues:**
+- **Problem**: When replacing script tags, ensure old JavaScript is completely removed
+- **Solution**: Use precise search/replace to avoid duplicate code showing as text
+- **Check**: Verify only one script tag exists in the final file
+
+#### **Variable Scope Conflicts:**
+- **Problem**: Global variables shared between multiple carousels
+- **Solution**: Use class-based approach with instance-specific variables
+- **Example**: Each carousel has its own `currentIndex`, `cardWidth`, `isDragging`, etc.
+
+#### **Event Handler Conflicts:**
+- **Problem**: Event listeners from multiple carousels interfering
+- **Solution**: Scope event handlers to specific carousel instances
+- **Example**: Use `carouselTrack.addEventListener()` instead of global listeners
+
+### 8. **ID Naming Convention**
+```liquid
+<!-- Original fallback carousel -->
+<div class="carousel-track" id="carousel-track">
+<button id="carousel-prev">Previous</button>
+<button id="carousel-next">Next</button>
+<div id="carousel-progress"></div>
+
+<!-- Drop carousels -->
+<div class="carousel-track" id="carousel-track-1">
+<button id="carousel-prev-1">Previous</button>
+<button id="carousel-next-1">Next</button>
+<div id="carousel-progress-1"></div>
+
+<div class="carousel-track" id="carousel-track-2">
+<button id="carousel-prev-2">Previous</button>
+<button id="carousel-next-2">Next</button>
+<div id="carousel-progress-2"></div>
+```
+
+## UI Patterns
+
+### 9. **Multi-Drop Feed Structure**
+```liquid
+{%- for json_drop in json_drops -%}
+  <div class="cc-drop-section">
+    {%- if drop_title != blank -%}
+      <h3 class="drop-subtitle">{{ drop_title }}</h3>
+    {%- endif -%}
+    
+    {%- if drop_description != blank -%}
+      <h2 class="section-title">{{ drop_description }}</h2>
+    {%- else -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    
+    <!-- Carousel content -->
+  </div>
+{%- endfor -%}
+```
+
+### 10. **CSS for Drop Sections**
+```css
+.cc-drop-section {
+  margin-bottom: 4rem;
+}
+.cc-drop-section:last-child {
+  margin-bottom: 0;
+}
+.drop-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  color: #666666;
+  margin-bottom: 10px;
+  text-transform: none;
+}
+@media (max-width: 767px) {
+  .cc-drop-section {
+    margin-bottom: 3rem;
+  }
+  .drop-subtitle {
+    font-size: 18px;
+    margin-bottom: 8px;
+    margin-left: 12px;
+  }
+}
+```
+
+## Schema Updates
+
+### 11. **Schema Modification Pattern**
+```json
+{
+  "name": "CC [Original Section Name] Drops",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "ORIGINAL TITLE",
+      "info": "Title displayed when no creator drops are present (fallback mode)"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Fallback Collection",
+      "info": "Collection to display products from when no creator drops are present"
+    },
+    {
+      "type": "header",
+      "content": "Creator Drops Behavior"
+    },
+    {
+      "type": "paragraph",
+      "content": "When a creator has drops configured, this section will display their drops as separate carousels. Each drop shows the creator's curated products with custom titles and descriptions. When no creator drops are present, the section falls back to displaying products from the selected collection."
+    },
+    {
+      "type": "header",
+      "content": "Original Settings (Fallback Mode)"
+    }
+    // ... copy all original settings here
+  ],
+  "presets": [
+    {
+      "name": "CC [Original Section Name] Drops",
+      "category": "Collection",
+      "settings": {
+        "title": "ORIGINAL TITLE"
+      }
+    }
+  ]
+}
+```
+
+## Code Quality Standards
+
+### 12. **Liquid Code Organization**
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator'
+-%}
+
+<!-- Clean template with pre-computed variables -->
+<div class="creator-section">
+  {%- if has_creator -%}
+    <h2>{{ creator_name }}</h2>
+  {%- endif -%}
+</div>
+```
+
+### 13. **Variable Naming Conventions**
+- `json_drop`: Individual drop from JSON array
+- `drop`: Matched Shopify collection object
+- `json_product`: Product from JSON array
+- `card_product`: Matched Shopify product object
+- `cc_creator`: Creator metaobject reference
+
+### 14. **Type Conversion for ID Comparisons**
+```liquid
+<!-- Always convert Shopify integer IDs to strings -->
+{%- if collection_drop.id | append: '' == drop_id -%}
+{%- if product.id | append: '' == wanted_id -%}
+{%- if variant.id | append: '' == json_variant_id -%}
+```
+
+## Testing Checklist
+
+### 15. **Comprehensive Testing Requirements**
+- [ ] **Creator drops present**: Shows drops feed with multiple carousels
+- [ ] **No creator drops**: Shows original collection behavior
+- [ ] **Empty/malformed data**: Graceful degradation without errors
+- [ ] **Multiple carousels**: Each carousel works independently
+- [ ] **JavaScript functionality**: Buttons, drag, swipe all work per carousel
+- [ ] **Responsive behavior**: Mobile and desktop interactions
+- [ ] **Original features preserved**: All original section functionality intact
+- [ ] **No duplicate code**: Clean file structure without text rendering
+
+### 16. **JavaScript Testing**
+- [ ] **Button clicks**: Previous/Next arrows work for each carousel
+- [ ] **Mouse drag**: Desktop drag functionality per carousel
+- [ ] **Touch swipe**: Mobile swipe functionality per carousel
+- [ ] **Progress bars**: Each carousel has independent progress
+- [ ] **No conflicts**: Multiple carousels don't interfere with each other
+- [ ] **Window resize**: Carousels adapt to screen size changes
+
+## Common Anti-Patterns
+
+### 17. **Avoid These Mistakes**
+```liquid
+<!-- ❌ Hardcoded creator -->
+<div>{{ metaobjects.creator['john-doe'].name }}</div>
+
+<!-- ❌ No fallback handling -->
+<div>{{ cc_creator.cc-bio }}</div>
+
+<!-- ❌ Confusing handle vs ID -->
+{% assign creator = metaobjects.creator[cc_creator.id] %}
+
+<!-- ❌ Long inline logic -->
+<div>{% if cart.attributes['cc-creator-handle'] %}{% assign cc_handle = cart.attributes['cc-creator-handle'] %}{% assign cc_creator = metaobjects.creator[cc_handle] %}{% if cc_creator %}{{ cc_creator.name }}{% endif %}{% endif %}</div>
+
+<!-- ❌ Dumping full metaobject to JS -->
+<script>window.creator = {{ cc_creator | json }};</script>
+```
+
+### 18. **JavaScript Anti-Patterns**
+```javascript
+// ❌ Global variables for multiple carousels
+let currentIndex = 0; // Will conflict with multiple carousels
+
+// ❌ Single carousel initialization
+function initCarousel() { // Won't work with multiple carousels
+
+// ❌ Duplicate event listeners
+window.addEventListener('resize', function() { // Will fire multiple times
+
+// ❌ Hardcoded element IDs
+const track = document.getElementById('carousel-track'); // Only works for one carousel
+```
+
+## File Organization
+
+### 19. **Naming Convention**
+- **Original file**: `best-sellers.liquid`
+- **CC version**: `cc-best-sellers.liquid`
+- **Schema name**: "CC Best Sellers Drops"
+- **Preset name**: "CC Best Sellers Drops"
+
+### 20. **File Structure**
+```
+sections/
+├── best-sellers.liquid          # Original (unchanged)
+└── cc-best-sellers-drops.liquid # CC version (new)
+```
+
+## Key Reminders
+
+- **Handle vs ID**: Use creator **handle** to index `metaobjects.creator[...]`, not ID
+- **Configurable Data**: For non-co-branded data that should be configurable, use section or block settings
+- **Guard Against Null**: Always check for null/empty when referencing lists or nested objects
+- **Neutral Fallbacks**: When creator data is missing, provide neutral content that doesn't break UI
+- **Escape by Default**: Always escape unsafe strings and URLs in Liquid output
+- **JavaScript Isolation**: Each carousel must be completely independent
+- **No Duplicate Code**: Ensure clean file structure without text rendering
+
+## Rule Improvement Triggers
+
+- New code patterns not covered by existing rules
+- Repeated similar implementations across files
+- Common error patterns that could be prevented
+- New libraries or tools being used consistently
+- Emerging best practices in the codebase
+
+Follow [cursor-rules.mdc](mdc:.cursor/rules/cursor-rules.mdc) for proper rule formatting and structure.

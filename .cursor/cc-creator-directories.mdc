@@ -1,0 +1,549 @@
+---
+alwaysApply: false
+---
+
+# CreatorCommerce Directory & Search Rules
+
+## Core Principles
+
+### 1. Directory vs Cart Context
+
+**Directory Experiences** work with the full creator metaobject dataset, not the current cart creator context.
+
+```liquid
+<!-- ❌ Don't use cart context for directories -->
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+<!-- ✅ Use full metaobject dataset for directories -->
+{% assign all_creators = metaobjects.creator %}
+{% for creator in all_creators %}
+  <!-- Process each creator independently -->
+{% endfor %}
+```
+
+### 2. Metaobject Iteration Patterns
+
+**Standard directory iteration:**
+```liquid
+{% liquid
+  assign filtered_creators = ''
+  assign creator_count = 0
+  assign max_creators = section.settings.creators_per_page | default: 24
+  
+  for creator in metaobjects.creator
+    assign creator_data = creator.data.value
+    
+    # Apply filtering logic
+    if creator_data['cc-public'] == 'Y'
+      assign creator_count = creator_count | plus: 1
+      if creator_count <= max_creators
+        assign filtered_creators = filtered_creators | append: creator.handle | append: ','
+      endif
+    endif
+  endfor
+  
+  assign creator_handles = filtered_creators | split: ','
+%}
+```
+
+## Directory Filtering Patterns
+
+### 3. Basic Public Filtering
+
+**Show only public creators:**
+```liquid
+{% liquid
+  assign public_creators = ''
+  
+  for creator in metaobjects.creator
+    assign creator_data = creator.data.value
+    if creator_data['cc-public'] == 'Y'
+      assign public_creators = public_creators | append: creator.handle | append: ','
+    endif
+  endfor
+  
+  assign creator_list = public_creators | split: ','
+%}
+```
+
+### 4. Shared Attribute Filtering
+
+**Filter creators with shared attributes to current creator:**
+
+```liquid
+{% liquid
+  # Get current creator context (if available)
+  assign current_creator_handle = cart.attributes['cc-creator-handle']
+  assign current_creator = metaobjects.creator[current_creator_handle]
+  assign current_creator_data = current_creator.data.value
+  
+  # Shared attribute filtering
+  assign shared_creators = ''
+  assign shared_attribute = section.settings.shared_attribute | default: 'cc-collab-tier'
+  assign current_value = current_creator_data[shared_attribute]
+  
+  if current_value != blank
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_value = creator_data[shared_attribute]
+      
+      # Skip current creator and check for shared value
+      if creator.handle != current_creator_handle and creator_value == current_value
+        if creator_data['cc-public'] == 'Y'
+          assign shared_creators = shared_creators | append: creator.handle | append: ','
+        endif
+      endif
+    endfor
+  endif
+  
+  assign similar_creators = shared_creators | split: ','
+%}
+```
+
+### 5. Multi-Criteria Filtering
+
+**Complex filtering with multiple conditions:**
+```liquid
+{% liquid
+  assign filtered_creators = ''
+  assign filter_tier = section.settings.filter_tier | default: ''
+  assign filter_location = section.settings.filter_location | default: ''
+  assign filter_category = section.settings.filter_category | default: ''
+  
+  for creator in metaobjects.creator
+    assign creator_data = creator.data.value
+    assign include_creator = true
+    
+    # Check public status
+    if creator_data['cc-public'] != 'Y'
+      assign include_creator = false
+    endif
+    
+    # Check tier filter
+    if filter_tier != blank and creator_data['cc-collab-tier'] != filter_tier
+      assign include_creator = false
+    endif
+    
+    # Check location filter
+    if filter_location != blank and creator_data['cc-creator-location'] != filter_location
+      assign include_creator = false
+    endif
+    
+    # Check category filter
+    if filter_category != blank and creator_data['cc-creator-category'] != filter_category
+      assign include_creator = false
+    endif
+    
+    # Check profile picture requirement
+    if section.settings.require_profile_picture
+      unless creator_data['cc-creator-profile-picture'] and creator_data['cc-creator-profile-picture'].url
+        assign include_creator = false
+      endunless
+    endif
+    
+    # Check drops requirement
+    if section.settings.require_drops
+      unless creator.cc-creator-drops and creator.cc-creator-drops.value.size > 0
+        assign include_creator = false
+      endunless
+    endif
+    
+    if include_creator
+      assign filtered_creators = filtered_creators | append: creator.handle | append: ','
+    endif
+  endfor
+  
+  assign creator_list = filtered_creators | split: ','
+%}
+```
+
+## Search & Discovery Patterns
+
+### 6. Text-Based Search
+
+**Search creators by name, description, or tags:**
+```liquid
+{% liquid
+  assign search_query = section.settings.search_query | downcase
+  assign search_results = ''
+  
+  if search_query != blank
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_name = creator.cc-creator-first-name | append: ' ' | append: creator.cc-creator-last-name | downcase
+      assign creator_description = creator_data['cc-creator-shop-description'] | downcase
+      assign creator_tags = creator_data['cc-creator-tags'] | downcase
+      
+      # Check if query matches any field
+      assign is_match = false
+      if creator_name contains search_query
+        assign is_match = true
+      elsif creator_description contains search_query
+        assign is_match = true
+      elsif creator_tags contains search_query
+        assign is_match = true
+      endif
+      
+      if is_match and creator_data['cc-public'] == 'Y'
+        assign search_results = search_results | append: creator.handle | append: ','
+      endif
+    endfor
+  endif
+  
+  assign search_creators = search_results | split: ','
+%}
+```
+
+### 7. Category-Based Discovery
+
+**Group creators by categories or tags:**
+```liquid
+{% liquid
+  assign category_groups = ''
+  assign target_category = section.settings.category_filter | default: ''
+  
+  if target_category != blank
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_category = creator_data['cc-creator-category'] | default: ''
+      
+      if creator_category == target_category and creator_data['cc-public'] == 'Y'
+        assign category_groups = category_groups | append: creator.handle | append: ','
+      endif
+    endfor
+  endif
+  
+  assign category_creators = category_groups | split: ','
+%}
+```
+
+## Shared Attribute Use Cases
+
+### 8. Tier-Based Matching
+
+**Find creators with same collaboration tier:**
+```liquid
+{% liquid
+  # Get current creator's tier
+  assign current_creator_handle = cart.attributes['cc-creator-handle']
+  assign current_creator = metaobjects.creator[current_creator_handle]
+  assign current_tier = current_creator.data.value['cc-collab-tier']
+  
+  # Find similar tier creators
+  assign tier_creators = ''
+  if current_tier != blank
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_tier = creator_data['cc-collab-tier']
+      
+      if creator.handle != current_creator_handle and creator_tier == current_tier
+        if creator_data['cc-public'] == 'Y'
+          assign tier_creators = tier_creators | append: creator.handle | append: ','
+        endif
+      endif
+    endfor
+  endif
+  
+  assign similar_tier_creators = tier_creators | split: ','
+%}
+```
+
+### 9. Location-Based Matching
+
+**Find creators in same location:**
+```liquid
+{% liquid
+  # Get current creator's location
+  assign current_creator_handle = cart.attributes['cc-creator-handle']
+  assign current_creator = metaobjects.creator[current_creator_handle]
+  assign current_location = current_creator.data.value['cc-creator-location']
+  
+  # Find local creators
+  assign local_creators = ''
+  if current_location != blank
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_location = creator_data['cc-creator-location']
+      
+      if creator.handle != current_creator_handle and creator_location == current_location
+        if creator_data['cc-public'] == 'Y'
+          assign local_creators = local_creators | append: creator.handle | append: ','
+        endif
+      endif
+    endfor
+  endif
+  
+  assign nearby_creators = local_creators | split: ','
+%}
+```
+
+### 10. Interest-Based Matching
+
+**Find creators with similar interests or categories:**
+```liquid
+{% liquid
+  # Get current creator's interests
+  assign current_creator_handle = cart.attributes['cc-creator-handle']
+  assign current_creator = metaobjects.creator[current_creator_handle]
+  assign current_interests = current_creator.data.value['cc-creator-interests'] | split: ','
+  
+  # Find creators with overlapping interests
+  assign interest_creators = ''
+  if current_interests.size > 0
+    for creator in metaobjects.creator
+      assign creator_data = creator.data.value
+      assign creator_interests = creator_data['cc-creator-interests'] | split: ','
+      
+      # Check for interest overlap
+      assign has_overlap = false
+      for interest in current_interests
+        if creator_interests contains interest
+          assign has_overlap = true
+          break
+        endif
+      endfor
+      
+      if has_overlap and creator.handle != current_creator_handle
+        if creator_data['cc-public'] == 'Y'
+          assign interest_creators = interest_creators | append: creator.handle | append: ','
+        endif
+      endif
+    endfor
+  endif
+  
+  assign similar_interest_creators = interest_creators | split: ','
+%}
+```
+
+## Performance Optimization
+
+### 11. Efficient Filtering Strategies
+
+**Limit processing for large datasets:**
+```liquid
+{% liquid
+  assign max_creators = section.settings.max_creators | default: 50
+  assign creator_count = 0
+  assign filtered_creators = ''
+  
+  for creator in metaobjects.creator
+    # Early exit if we have enough creators
+    if creator_count >= max_creators
+      break
+    endif
+    
+    assign creator_data = creator.data.value
+    
+    # Quick public check first
+    if creator_data['cc-public'] == 'Y'
+      # Apply additional filters only if needed
+      assign include_creator = true
+      
+      # Add your filtering logic here
+      
+      if include_creator
+        assign creator_count = creator_count | plus: 1
+        assign filtered_creators = filtered_creators | append: creator.handle | append: ','
+      endif
+    endif
+  endfor
+  
+  assign creator_list = filtered_creators | split: ','
+%}
+```
+
+### 12. Caching Filtered Results
+
+**Cache results to avoid repeated processing:**
+```liquid
+{% liquid
+  # Create a cache key based on filter parameters
+  assign cache_key = 'creator_directory_'
+  assign cache_key = cache_key | append: section.settings.filter_type
+  assign cache_key = cache_key | append: '_'
+  assign cache_key = cache_key | append: section.settings.filter_value
+  
+  # Check if we have cached results
+  assign cached_results = shop.metafields.global[cache_key]
+  
+  if cached_results != blank
+    assign creator_list = cached_results | split: ','
+  else
+    # Perform filtering and cache results
+    assign filtered_creators = ''
+    # ... filtering logic ...
+    
+    # Cache the results (if your theme supports it)
+    # This would require custom implementation
+  endif
+%}
+```
+
+## Schema Configuration
+
+### 13. Directory Section Settings
+
+**Comprehensive schema for directory sections:**
+```json
+{
+  "name": "Creator Directory",
+  "settings": [
+    {
+      "type": "select",
+      "id": "filter_type",
+      "label": "Filter Type",
+      "options": [
+        {"value": "all", "label": "All Public Creators"},
+        {"value": "shared_tier", "label": "Same Tier as Current Creator"},
+        {"value": "shared_location", "label": "Same Location as Current Creator"},
+        {"value": "shared_interests", "label": "Similar Interests as Current Creator"},
+        {"value": "category", "label": "Specific Category"},
+        {"value": "search", "label": "Text Search"}
+      ],
+      "default": "all"
+    },
+    {
+      "type": "text",
+      "id": "filter_value",
+      "label": "Filter Value",
+      "info": "Category name, search term, or specific value"
+    },
+    {
+      "type": "range",
+      "id": "creators_per_page",
+      "label": "Creators per page",
+      "min": 12,
+      "max": 100,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "require_profile_picture",
+      "label": "Require Profile Picture",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "require_drops",
+      "label": "Require Drops",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "exclude_current_creator",
+      "label": "Exclude Current Creator",
+      "default": true
+    }
+  ]
+}
+```
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Don't Do This:
+
+```liquid
+<!-- Using cart context for directory filtering -->
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+<!-- No performance limits -->
+{% for creator in metaobjects.creator %}
+  <!-- Could process hundreds of creators -->
+{% endfor %}
+
+<!-- No public status filtering -->
+{% for creator in metaobjects.creator %}
+  <!-- Shows private creators -->
+{% endfor %}
+
+<!-- Hardcoded attribute names -->
+{% if creator.data.value['cc-collab-tier'] == 'Premium' %}
+  <!-- Not flexible for different attributes -->
+{% endif %}
+
+<!-- No error handling for missing data -->
+{{ creator.data.value['cc-creator-location'] }}
+```
+
+### ✅ Do This Instead:
+
+```liquid
+<!-- Use full metaobject dataset -->
+{% for creator in metaobjects.creator %}
+  {% assign creator_data = creator.data.value %}
+  {% if creator_data['cc-public'] == 'Y' %}
+    <!-- Process public creators only -->
+  {% endif %}
+{% endfor %}
+
+<!-- Performance limits -->
+{% liquid
+  assign max_creators = 50
+  assign creator_count = 0
+  for creator in metaobjects.creator
+    if creator_count >= max_creators
+      break
+    endif
+    # Process creator
+    assign creator_count = creator_count | plus: 1
+  endfor
+%}
+
+<!-- Flexible attribute filtering -->
+{% liquid
+  assign filter_attribute = section.settings.filter_attribute
+  assign filter_value = section.settings.filter_value
+  if creator_data[filter_attribute] == filter_value
+    # Include creator
+  endif
+%}
+
+<!-- Safe data access -->
+{{ creator_data['cc-creator-location'] | default: 'Location not specified' }}
+```
+
+## Testing Scenarios
+
+### 14. Directory Testing Checklist
+
+When implementing creator directories:
+
+- [ ] **Public filtering works** → Only public creators shown
+- [ ] **Performance with large datasets** → Handles 100+ creators efficiently
+- [ ] **Shared attribute matching** → Correctly finds creators with same tier/location
+- [ ] **Current creator exclusion** → Doesn't show current creator in results
+- [ ] **Missing data handling** → Graceful fallbacks for incomplete creator data
+- [ ] **Search functionality** → Text search works across name, description, tags
+- [ ] **Category filtering** → Correctly filters by creator categories
+- [ ] **Pagination/limits** → Respects creator count limits
+- [ ] **Empty results** → Shows appropriate message when no matches
+- [ ] **Responsive design** → Grid layout works on all screen sizes
+- [ ] **Accessibility** → Proper alt text, semantic markup, keyboard navigation
+- [ ] **Caching behavior** → Results are cached appropriately (if implemented)
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+- `cc-referencing-co-branded-data.mdc` - For creator data access patterns
+- `cc-referencing-drops-data.mdc` - For drops-based filtering
+- `cc-referencing-product-data.mdc` - For product count calculations
+- `cc-prompt-generator.mdc` - For directory implementation templates
+
+## Key Reminders
+
+- **Always filter by public status** (`cc-public == 'Y'`)
+- **Set performance limits** to handle large creator datasets
+- **Use flexible attribute filtering** rather than hardcoded values
+- **Exclude current creator** when showing similar creators
+- **Provide fallbacks** for missing or incomplete data
+- **Cache results** when possible to improve performance
+- **Test with large datasets** to ensure scalability
+- **Handle empty results** gracefully with user-friendly messages
+description:
+globs:
+alwaysApply: true
+---
+

@@ -1,0 +1,1046 @@
+---
+description: Rules for referencing and comparing product data in CreatorCommerce implementations, focusing on ID matching and product-specific data retrieval
+alwaysApply: false
+---
+
+# CreatorCommerce Product Data Reference Rules
+
+## Core Principles
+
+### 1. Product ID Type Conversion is Critical
+
+**The Problem:** Shopify product IDs are integers, but JSON-stored IDs are strings. Direct comparison will always fail.
+
+**The Solution:** Always convert Shopify IDs to strings before comparison:
+
+```liquid
+<!-- ❌ Wrong - type mismatch -->
+{% if product.id == json_product_id %}
+
+<!-- ✅ Correct - convert to string -->
+{% assign product_id_str = product.id | append: '' %}
+{% if product_id_str == json_product_id %}
+```
+
+### 2. Product Data Source Hierarchy
+
+When working with product data in CreatorCommerce:
+
+1. **Shopify Product Object** (primary source for pricing, availability, variants)
+2. **Creator Enhancement Data** (JSON stored custom fields, notes, media)
+3. **Section Settings** (fallback configuration)
+
+**Never trust JSON for pricing, inventory, or availability - always use Shopify product object.**
+
+## Product Matching Patterns
+
+### 3. Finding Products in Drops
+
+**Standard pattern for locating product-specific data:**
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign found_review = blank
+  assign found_media = blank
+  assign found_note = blank
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign current_product_id = product.id | append: ''
+    
+    for json_drop in cc_creator.data.value['cc-creator-drops']
+      if json_drop['cc-creator-drop-products']
+        for json_product in json_drop['cc-creator-drop-products']
+          assign stored_product_id = json_product['cc-creator-drop-product-shopify-id']
+          
+          if current_product_id == stored_product_id
+            assign found_review = json_product['cc-creator-drop-product-enhancement-note']
+            assign found_media = json_product['cc-creator-drop-product-enhancement-media']
+            assign found_note = json_product['cc-creator-drop-product-note']
+            break
+          endif
+        endfor
+        
+        if found_review != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+%}
+
+<!-- Use the found data -->
+{% if found_review != blank %}
+  <div class="creator-review">{{ found_review | escape }}</div>
+{% endif %}
+```
+
+### 4. Product Page Context Detection
+
+**Determine if current page is for a specific product:**
+
+```liquid
+{% liquid
+  assign is_product_page = false
+  assign current_product = nil
+  
+  if template.name == 'product'
+    assign is_product_page = true
+    assign current_product = product
+  elsif template.name contains 'product'
+    assign is_product_page = true
+    assign current_product = product
+  endif
+%}
+```
+
+### 5. Variant-Level Matching
+
+**When enhancement data includes specific variant selections:**
+
+```liquid
+{% liquid
+  assign selected_variant_id = json_product['cc-creator-drop-product-enhancement-variant']
+  assign target_variant = nil
+  
+  if selected_variant_id != blank
+    assign variant_id_str = selected_variant_id | append: ''
+    
+    for variant in product.variants
+      assign current_variant_id = variant.id | append: ''
+      if current_variant_id == variant_id_str
+        assign target_variant = variant
+        break
+      endif
+    endfor
+  endif
+%}
+
+<!-- Use specific variant or fall back to first available -->
+{% assign display_variant = target_variant | default: product.selected_or_first_available_variant %}
+```
+
+## Performance Optimization
+
+### 6. Early Loop Breaking
+
+**Always break loops as soon as you find what you're looking for:**
+
+```liquid
+{% liquid
+  assign product_found = false
+  assign product_id_str = product.id | append: ''
+  
+  for json_drop in cc_creator.data.value['cc-creator-drops']
+    for json_product in json_drop['cc-creator-drop-products']
+      if product_id_str == json_product['cc-creator-drop-product-shopify-id']
+        # Found the product data
+        assign product_found = true
+        break
+      endif
+    endfor
+    
+    if product_found
+      break
+    endif
+  endfor
+%}
+```
+
+### 7. Minimize Nested Loops
+
+**Cache frequently accessed data:**
+
+```liquid
+{% liquid
+  # Cache product ID once
+  assign current_product_id = product.id | append: ''
+  
+  # Cache drops array
+  assign creator_drops = cc_creator.data.value['cc-creator-drops'] | default: empty
+  
+  # Single loop with early exit
+  for json_drop in creator_drops
+    assign drop_products = json_drop['cc-creator-drop-products'] | default: empty
+    
+    for json_product in drop_products
+      if current_product_id == json_product['cc-creator-drop-product-shopify-id']
+        # Process and break
+        break
+      endif
+    endfor
+  endfor
+%}
+```
+
+## Data Access Patterns
+
+### 8. Product Enhancement Fields
+
+**Common product-level enhancement fields:**
+
+```liquid
+<!-- Product-specific review/note -->
+{{ json_product['cc-creator-drop-product-enhancement-note'] }}
+
+<!-- Product-specific media array -->
+{{ json_product['cc-creator-drop-product-enhancement-media'] }}
+
+<!-- Recommended variant -->
+{{ json_product['cc-creator-drop-product-enhancement-variant'] }}
+
+<!-- Custom product fields (varies by implementation) -->
+{{ json_product['cc-shoe-size'] }}
+{{ json_product['cc-color-preference'] }}
+{{ json_product['cc-usage-instructions'] }}
+```
+
+### 8a. Media Object Structure
+
+**CreatorCommerce media objects follow this convention:**
+
+```json
+{
+  "cc-creator-drop-product-enhancement-media": [
+    {
+      "type": "image",
+      "url": "https://example.com/image.jpg",
+      "alt": "Creator using the product",
+      "title": "Optional title",
+      "width": 800,
+      "height": 600,
+      "caption": "Optional caption text"
+    },
+    {
+      "type": "video",
+      "url": "https://example.com/video.mp4",
+      "video_embed_url": "https://youtube.com/embed/VIDEO_ID",
+      "alt": "Creator video review",
+      "title": "Product demonstration",
+      "width": 1920,
+      "height": 1080,
+      "poster_url": "https://example.com/thumbnail.jpg",
+      "mime_type": "video/mp4",
+      "duration": 120
+    }
+  ]
+}
+```
+
+**Safe media access pattern:**
+
+```liquid
+{% liquid
+  assign media_array = json_product['cc-creator-drop-product-enhancement-media']
+  assign has_media = false
+  
+  if media_array and media_array.size > 0
+    assign has_media = true
+  endif
+%}
+
+{% if has_media %}
+  {% for media_item in media_array %}
+    {% liquid
+      assign media_type = media_item.type | default: 'image'
+      assign media_url = media_item.url
+      assign is_valid_media = false
+      
+      if media_url != blank and media_url != null
+        assign is_valid_media = true
+      endif
+    %}
+    
+    {% if is_valid_media %}
+      <!-- Render media based on type -->
+    {% endif %}
+  {% endfor %}
+{% endif %}
+```
+
+### 9. Product Collection Matching
+
+**When you need to verify product belongs to a creator's drop collection:**
+
+```liquid
+{% liquid
+  assign is_in_creator_drop = false
+  assign product_id_str = product.id | append: ''
+  
+  if cc_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+    for drop_collection in cc_creator.cc-creator-drops.value
+      for collection_product in drop_collection.products
+        assign collection_product_id = collection_product.id | append: ''
+        if collection_product_id == product_id_str
+          assign is_in_creator_drop = true
+          break
+        endif
+      endfor
+      
+      if is_in_creator_drop
+        break
+      endif
+    endfor
+  endif
+%}
+```
+
+### 10. Cross-Reference Product Data
+
+**Match JSON data with actual Shopify collection products:**
+
+```liquid
+{% liquid
+  assign json_drops = cc_creator.data.value['cc-creator-drops']
+  assign collection_drops = cc_creator.cc-creator-drops.value
+  
+  for json_drop in json_drops
+    assign drop_id = json_drop['cc-creator-drop-collection-id']
+    assign matching_collection = nil
+    
+    # Find matching collection
+    for collection_drop in collection_drops
+      assign collection_id_str = collection_drop.id | append: ''
+      if collection_id_str == drop_id
+        assign matching_collection = collection_drop
+        break
+      endif
+    endfor
+    
+    # Now cross-reference products
+    if matching_collection
+      for json_product in json_drop['cc-creator-drop-products']
+        assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+        
+        for real_product in matching_collection.products
+          assign real_product_id = real_product.id | append: ''
+          if real_product_id == wanted_id
+            # Found matching product with enhancement data
+            break
+          endif
+        endfor
+      endfor
+    endif
+  endfor
+%}
+```
+
+## Error Handling and Null Safety
+
+### 11. Comprehensive Null Guards
+
+**Always check for data existence at every level:**
+
+```liquid
+{% liquid
+  assign has_product_data = false
+  assign product_enhancement = blank
+  
+  if cc_creator
+    if cc_creator.data and cc_creator.data.value
+      if cc_creator.data.value['cc-creator-drops']
+        assign creator_drops = cc_creator.data.value['cc-creator-drops']
+        if creator_drops.size > 0
+          assign has_product_data = true
+        endif
+      endif
+    endif
+  endif
+%}
+
+{% if has_product_data %}
+  <!-- Safe to proceed with product matching -->
+{% endif %}
+```
+
+### 12. Graceful Degradation
+
+**Handle missing or malformed data:**
+
+```liquid
+{% liquid
+  assign product_note = blank
+  assign product_media = blank
+  
+  # Try to find enhancement data
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    # ... matching logic ...
+    
+    # Safely access enhancement fields
+    if json_product
+      assign product_note = json_product['cc-creator-drop-product-enhancement-note'] | default: ''
+      assign product_media = json_product['cc-creator-drop-product-enhancement-media'] | default: empty
+    endif
+  endif
+  
+  # Provide fallbacks
+  if product_note == blank
+    assign product_note = section.settings.default_product_note | default: ''
+  endif
+%}
+```
+
+## Common Use Cases
+
+### 13. Product Review Display
+
+**Find and display creator's review for current product:**
+
+```liquid
+{% liquid
+  assign creator_review = blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator'
+  assign current_product_id = product.id | append: ''
+  
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    for json_drop in cc_creator.data.value['cc-creator-drops']
+      if json_drop['cc-creator-drop-products']
+        for json_product in json_drop['cc-creator-drop-products']
+          if current_product_id == json_product['cc-creator-drop-product-shopify-id']
+            assign enhancement_note = json_product['cc-creator-drop-product-enhancement-note']
+            if enhancement_note != blank
+              assign creator_review = enhancement_note
+              break
+            endif
+          endif
+        endfor
+        if creator_review != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{% if creator_review != blank %}
+  <div class="creator-review">
+    <blockquote>"{{ creator_review | escape }}"</blockquote>
+    <cite>— {{ creator_name | escape }}</cite>
+  </div>
+{% endif %}
+```
+
+### 14. Product Recommendation Badge
+
+**Show if product is creator-recommended:**
+
+```liquid
+{% liquid
+  assign is_creator_recommended = false
+  assign current_product_id = product.id | append: ''
+  
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    for json_drop in cc_creator.data.value['cc-creator-drops']
+      if json_drop['cc-creator-drop-products']
+        for json_product in json_drop['cc-creator-drop-products']
+          if current_product_id == json_product['cc-creator-drop-product-shopify-id']
+            assign is_creator_recommended = true
+            break
+          endif
+        endfor
+        if is_creator_recommended
+          break
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{% if is_creator_recommended %}
+  <div class="creator-badge">
+    <span>{{ cc_creator.cc-creator-first-name | escape }} Recommends</span>
+  </div>
+{% endif %}
+```
+
+### 15. Enhanced Product Media
+
+**Display creator-provided product media with full media type support:**
+
+```liquid
+{% liquid
+  assign creator_media = blank
+  assign current_product_id = product.id | append: ''
+  
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    for json_drop in cc_creator.data.value['cc-creator-drops']
+      if json_drop['cc-creator-drop-products']
+        for json_product in json_drop['cc-creator-drop-products']
+          if current_product_id == json_product['cc-creator-drop-product-shopify-id']
+            assign enhancement_media = json_product['cc-creator-drop-product-enhancement-media']
+            if enhancement_media and enhancement_media.size > 0
+              assign creator_media = enhancement_media
+              break
+            endif
+          endif
+        endfor
+        if creator_media != blank
+          break
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{% if creator_media and creator_media.size > 0 %}
+  <div class="creator-media">
+    {% for media_item in creator_media %}
+      {% liquid
+        assign media_type = media_item.type | default: 'image'
+        assign media_url = media_item.url | escape
+        assign media_alt = media_item.alt | default: 'Creator content' | escape
+        assign media_title = media_item.title | default: '' | escape
+        assign media_width = media_item.width | default: 800
+        assign media_height = media_item.height | default: 600
+      %}
+      
+      {% case media_type %}
+        {% when 'image' %}
+          <img 
+            src="{{ media_url }}" 
+            alt="{{ media_alt }}"
+            {% if media_title != blank %}title="{{ media_title }}"{% endif %}
+            width="{{ media_width }}"
+            height="{{ media_height }}"
+            loading="lazy"
+            class="creator-media-image"
+          >
+        
+        {% when 'video' %}
+          {% if media_item.video_embed_url %}
+            <!-- Embedded video (YouTube, Vimeo, etc.) -->
+            <div class="creator-media-video-embed">
+              <iframe 
+                src="{{ media_item.video_embed_url | escape }}" 
+                title="{{ media_alt }}"
+                width="{{ media_width }}"
+                height="{{ media_height }}"
+                frameborder="0"
+                allowfullscreen
+                loading="lazy">
+              </iframe>
+            </div>
+          {% else %}
+            <!-- Direct video file -->
+            <video 
+              width="{{ media_width }}"
+              height="{{ media_height }}"
+              controls
+              preload="metadata"
+              class="creator-media-video"
+              {% if media_item.poster_url %}poster="{{ media_item.poster_url | escape }}"{% endif %}
+            >
+              <source src="{{ media_url }}" type="{{ media_item.mime_type | default: 'video/mp4' }}">
+              Your browser does not support the video tag.
+            </video>
+          {% endif %}
+        
+        {% else %}
+          <!-- Fallback for unknown media types -->
+          <div class="creator-media-unknown">
+            <a href="{{ media_url }}" target="_blank" rel="noopener">
+              {{ media_title | default: 'View Media' }}
+            </a>
+          </div>
+      {% endcase %}
+    {% endfor %}
+  </div>
+{% endif %}
+```
+
+### 16. Media Gallery with Mixed Content
+
+**Create a comprehensive media gallery supporting images and videos:**
+
+```liquid
+{% liquid
+  assign product_media = blank
+  assign current_product_id = product.id | append: ''
+  assign media_count = 0
+  
+  # Find product media
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    for json_drop in cc_creator.data.value['cc-creator-drops']
+      if json_drop['cc-creator-drop-products']
+        for json_product in json_drop['cc-creator-drop-products']
+          if current_product_id == json_product['cc-creator-drop-product-shopify-id']
+            assign product_media = json_product['cc-creator-drop-product-enhancement-media']
+            if product_media and product_media.size > 0
+              assign media_count = product_media.size
+              break
+            endif
+          endif
+        endfor
+        if media_count > 0
+          break
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{% if media_count > 0 %}
+  <div class="creator-media-gallery" data-media-count="{{ media_count }}">
+    <h3>{{ cc_creator.cc-creator-first-name | escape }}'s Media</h3>
+    
+    <div class="media-grid">
+      {% for media_item in product_media %}
+        {% liquid
+          assign media_type = media_item.type | default: 'image'
+          assign media_url = media_item.url
+          assign media_alt = media_item.alt | default: 'Creator content' | escape
+          assign media_title = media_item.title | escape
+          assign media_caption = media_item.caption | escape
+          assign media_width = media_item.width | default: 800
+          assign media_height = media_item.height | default: 600
+          assign aspect_ratio = media_height | times: 100.0 | divided_by: media_width
+        %}
+        
+        {% if media_url != blank %}
+          <div class="media-item media-item--{{ media_type }}" data-index="{{ forloop.index0 }}">
+            <div class="media-container" style="aspect-ratio: {{ media_width }}/{{ media_height }};">
+              
+              {% case media_type %}
+                {% when 'image' %}
+                  <img 
+                    src="{{ media_url | escape }}" 
+                    alt="{{ media_alt }}"
+                    width="{{ media_width }}"
+                    height="{{ media_height }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                    class="media-image"
+                    {% if media_title != blank %}title="{{ media_title }}"{% endif %}
+                  >
+                
+                {% when 'video' %}
+                  {% if media_item.video_embed_url %}
+                    <!-- Embedded video -->
+                    <div class="media-embed-wrapper">
+                      <iframe 
+                        src="{{ media_item.video_embed_url | escape }}" 
+                        title="{{ media_alt }}"
+                        width="{{ media_width }}"
+                        height="{{ media_height }}"
+                        frameborder="0"
+                        allowfullscreen
+                        loading="lazy"
+                        class="media-embed">
+                      </iframe>
+                    </div>
+                  {% else %}
+                    <!-- Direct video file -->
+                    <video 
+                      width="{{ media_width }}"
+                      height="{{ media_height }}"
+                      controls
+                      preload="metadata"
+                      class="media-video"
+                      {% if media_item.poster_url %}poster="{{ media_item.poster_url | escape }}"{% endif %}
+                    >
+                      <source src="{{ media_url | escape }}" type="{{ media_item.mime_type | default: 'video/mp4' }}">
+                      Your browser does not support the video tag.
+                    </video>
+                  {% endif %}
+                
+                {% else %}
+                  <!-- Unknown media type fallback -->
+                  <div class="media-unknown">
+                    <a href="{{ media_url | escape }}" target="_blank" rel="noopener" class="media-link">
+                      <span class="media-icon">📄</span>
+                      <span class="media-label">{{ media_title | default: 'View Media' }}</span>
+                    </a>
+                  </div>
+              {% endcase %}
+              
+            </div>
+            
+            {% if media_caption != blank %}
+              <div class="media-caption">{{ media_caption }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <style>
+    .creator-media-gallery {
+      margin: 2rem 0;
+    }
+    
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    
+    .media-item {
+      position: relative;
+    }
+    
+    .media-container {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    .media-image,
+    .media-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .media-embed-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .media-embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .media-unknown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background: #f5f5f5;
+      border: 2px dashed #ccc;
+    }
+    
+    .media-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #666;
+    }
+    
+    .media-caption {
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+    }
+    
+    @media (max-width: 768px) {
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+{% endif %}
+```
+
+### 17. Media Performance Optimization
+
+**Optimize media loading and display:**
+
+```liquid
+{% liquid
+  # Count media types for optimization
+  assign image_count = 0
+  assign video_count = 0
+  assign total_media = 0
+  
+  if product_media and product_media.size > 0
+    for media_item in product_media
+      assign media_type = media_item.type | default: 'image'
+      if media_type == 'image'
+        assign image_count = image_count | plus: 1
+      elsif media_type == 'video'
+        assign video_count = video_count | plus: 1
+      endif
+      assign total_media = total_media | plus: 1
+    endfor
+  endif
+  
+  # Optimize based on media count
+  assign should_lazy_load = total_media > 3
+  assign should_preload_first = total_media > 1
+%}
+
+<!-- Media with performance optimizations -->
+{% if total_media > 0 %}
+  <div class="creator-media-optimized" data-total="{{ total_media }}" data-images="{{ image_count }}" data-videos="{{ video_count }}">
+    {% for media_item in product_media limit: 6 %}
+      {% liquid
+        assign media_type = media_item.type | default: 'image'
+        assign loading_strategy = 'lazy'
+        
+        if forloop.first and should_preload_first
+          assign loading_strategy = 'eager'
+        elsif should_lazy_load == false
+          assign loading_strategy = 'eager'
+        endif
+      %}
+      
+      {% case media_type %}
+        {% when 'image' %}
+          <img 
+            src="{{ media_item.url | escape }}"
+            alt="{{ media_item.alt | default: 'Creator content' | escape }}"
+            loading="{{ loading_strategy }}"
+            width="{{ media_item.width | default: 800 }}"
+            height="{{ media_item.height | default: 600 }}"
+            {% if forloop.first %}fetchpriority="high"{% endif %}
+          >
+        
+        {% when 'video' %}
+          <video 
+            {% if loading_strategy == 'lazy' %}preload="none"{% else %}preload="metadata"{% endif %}
+            controls
+            width="{{ media_item.width | default: 800 }}"
+            height="{{ media_item.height | default: 600 }}"
+            {% if media_item.poster_url %}poster="{{ media_item.poster_url | escape }}"{% endif %}
+          >
+            <source src="{{ media_item.url | escape }}" type="{{ media_item.mime_type | default: 'video/mp4' }}">
+          </video>
+      {% endcase %}
+    {% endfor %}
+    
+    {% if total_media > 6 %}
+      <div class="media-overflow-indicator">
+        +{{ total_media | minus: 6 }} more items
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+```
+
+## Template Context Considerations
+
+### 16. Template-Aware Product Matching
+
+**Handle different template contexts:**
+
+```liquid
+{% liquid
+  assign target_product = nil
+  assign target_product_id = ''
+  
+  if template.name == 'product'
+    # On product page - use current product
+    assign target_product = product
+    assign target_product_id = product.id | append: ''
+  elsif template.name contains 'collection' and product
+    # On collection page with product context
+    assign target_product = product
+    assign target_product_id = product.id | append: ''
+  elsif product
+    # Other contexts where product is available
+    assign target_product = product
+    assign target_product_id = product.id | append: ''
+  else
+    # No product context - cannot proceed
+    assign target_product = nil
+  endif
+%}
+
+{% if target_product %}
+  <!-- Proceed with product data matching -->
+{% endif %}
+```
+
+## Common Anti-Patterns to Avoid
+
+### ❌ Don't Do This:
+
+```liquid
+<!-- No type conversion -->
+{% if product.id == json_product['cc-creator-drop-product-shopify-id'] %}
+
+<!-- No null checking -->
+{% for json_product in cc_creator.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+
+<!-- No early breaking -->
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for json_product in json_drop['cc-creator-drop-products'] %}
+    <!-- Continue looping even after finding match -->
+  {% endfor %}
+{% endfor %}
+
+<!-- Using JSON for pricing -->
+<span class="price">${{ json_product['price'] }}</span>
+
+<!-- Hardcoded array indices -->
+{{ cc_creator.data.value['cc-creator-drops'][0]['cc-creator-drop-products'][0]['note'] }}
+
+<!-- No fallback handling -->
+{{ json_product['cc-creator-drop-product-enhancement-note'] }}
+
+<!-- Unsafe media rendering -->
+<img src="{{ media_item.url }}">
+
+<!-- No media type checking -->
+{% for media_item in json_product['cc-creator-drop-product-enhancement-media'] %}
+  <img src="{{ media_item.url }}">
+{% endfor %}
+
+<!-- Missing video fallback -->
+<video src="{{ media_item.url }}"></video>
+```
+
+### ✅ Do This Instead:
+
+```liquid
+<!-- Proper type conversion -->
+{% assign product_id_str = product.id | append: '' %}
+{% if product_id_str == json_product['cc-creator-drop-product-shopify-id'] %}
+
+<!-- Comprehensive null checking -->
+{% if cc_creator and cc_creator.data.value['cc-creator-drops'] %}
+  {% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% if json_drop['cc-creator-drop-products'] %}
+      {% for json_product in json_drop['cc-creator-drop-products'] %}
+
+<!-- Early breaking -->
+{% assign found_match = false %}
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for json_product in json_drop['cc-creator-drop-products'] %}
+    {% if product_id_str == json_product['cc-creator-drop-product-shopify-id'] %}
+      {% assign found_match = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  {% if found_match %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+<!-- Use Shopify product for pricing -->
+<span class="price">{{ product.price | money }}</span>
+
+<!-- Safe iteration without hardcoded indices -->
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for json_product in json_drop['cc-creator-drop-products'] %}
+
+<!-- Fallback handling -->
+{{ json_product['cc-creator-drop-product-enhancement-note'] | default: section.settings.default_note }}
+
+<!-- Safe media rendering with type checking -->
+{% liquid
+  assign media_type = media_item.type | default: 'image'
+  assign media_url = media_item.url | escape
+%}
+
+{% if media_url != blank %}
+  {% case media_type %}
+    {% when 'image' %}
+      <img src="{{ media_url }}" alt="{{ media_item.alt | default: 'Creator content' | escape }}" loading="lazy">
+    {% when 'video' %}
+      <video controls preload="metadata">
+        <source src="{{ media_url }}" type="{{ media_item.mime_type | default: 'video/mp4' }}">
+        Your browser does not support video.
+      </video>
+  {% endcase %}
+{% endif %}
+
+<!-- Safe media iteration with validation -->
+{% liquid
+  assign media_array = json_product['cc-creator-drop-product-enhancement-media']
+  assign has_valid_media = false
+  
+  if media_array and media_array.size > 0
+    assign has_valid_media = true
+  endif
+%}
+
+{% if has_valid_media %}
+  {% for media_item in media_array %}
+    {% if media_item.url != blank %}
+      <!-- Render media with type checking -->
+    {% endif %}
+  {% endfor %}
+{% endif %}
+```
+
+## Performance Guidelines
+
+### 17. Optimization Checklist
+
+- [ ] Convert product IDs to strings before comparison
+- [ ] Cache frequently accessed values (product ID, drops array)
+- [ ] Break loops immediately when match is found
+- [ ] Check for null/empty at every data level
+- [ ] Use default filters for fallback values
+- [ ] Minimize nested loop depth when possible
+- [ ] Avoid processing large datasets multiple times
+- [ ] **Media-specific optimizations:**
+  - [ ] Validate media URLs before rendering
+  - [ ] Use lazy loading for images beyond the first
+  - [ ] Set appropriate video preload strategies
+  - [ ] Limit media galleries to reasonable counts
+  - [ ] Use aspect-ratio CSS for consistent layouts
+  - [ ] Provide fallbacks for unsupported media types
+
+### 18. Liquid Syntax Considerations
+
+**In {% liquid %} blocks, complex filter expressions in conditions can cause parsing errors:**
+
+```liquid
+<!-- ❌ Can cause parsing errors -->
+{% liquid
+  if product.id | append: '' == json_product_id
+    # ... logic
+  endif
+%}
+
+<!-- ✅ Assign filtered value first -->
+{% liquid
+  assign product_id_str = product.id | append: ''
+  if product_id_str == json_product_id
+    # ... logic
+  endif
+%}
+```
+
+## Testing Scenarios
+
+### 19. Required Test Cases
+
+When implementing product data references:
+
+- [ ] **Product in creator drops with enhancement data** → Shows enhanced content
+- [ ] **Product in creator drops without enhancement data** → Shows product without enhancements
+- [ ] **Product not in creator drops** → No creator-specific content shown
+- [ ] **No creator context** → Section/component hidden or shows fallback
+- [ ] **Malformed JSON data** → Graceful degradation without errors
+- [ ] **Missing product IDs** → Safe iteration without breaking
+- [ ] **Type conversion edge cases** → ID matching works consistently
+- [ ] **Performance with large datasets** → Loops break early, no timeout
+- [ ] **Media-specific test cases:**
+  - [ ] **Product with image media** → Images render with proper alt text
+  - [ ] **Product with video media** → Videos display with controls
+  - [ ] **Product with mixed media types** → Gallery handles both correctly
+  - [ ] **Product with invalid media URLs** → Graceful fallback without broken images
+  - [ ] **Product with no media** → Media section hidden appropriately
+  - [ ] **Large media arrays** → Performance remains acceptable
+  - [ ] **Embedded videos** → iframes load correctly with security attributes
+  - [ ] **Media with missing metadata** → Defaults applied consistently
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+- `cc-referencing-co-branded-data.mdc` - For creator resolution patterns
+- `cc-referencing-drops-data.mdc` - For drops iteration and collection matching
+- `cc-converting-existing-files.mdc` - For adding product data features to existing sections
+
+## Key Reminders
+
+- **Always convert Shopify IDs to strings** before comparing with JSON data
+- **Break loops early** when matches are found for performance
+- **Use Shopify product objects** for pricing, availability, and inventory
+- **Use JSON enhancement data** for custom fields, notes, and media
+- **Guard against null** at every level of data access
+- **Provide fallbacks** when creator data is missing or incomplete
+- **Cache frequently accessed values** to improve performance

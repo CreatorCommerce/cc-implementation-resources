@@ -1,0 +1,76 @@
+Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Template:**
+```
+Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Target Section:**
+`sections/cc-creator-grid.liquid`
+
+**Implementation Requirements:**
+- Follow `cc-creator-directories` rules for creator filtering and iteration patterns
+- Use `cc-referencing-co-branded-data` rules for creator data access
+- Apply proper null guards and performance optimization
+- Support responsive design with configurable settings
+
+**Creator Filtering Logic:**
+Loop through all creators and only include those that meet ALL criteria:
+- `creator.data.value['cc-public'] == 'Y'`
+- `creator.data.value['cc-creator-profile-picture']` exists and has a URL
+- `creator.cc-creator-drops` exists and has more than 0 drops
+
+**Product Count Calculation:**
+For each creator, count total products across all drops using `cc-referencing-drops-data` patterns.
+
+**Schema Settings Required:**
+```json
+{
+  "type": "range",
+  "id": "creators_per_page",
+  "label": "Creators per page",
+  "min": 12,
+  "max": 50,
+  "step": 4,
+  "default": 24
+},
+{
+  "type": "range",
+  "id": "corner_radius",
+  "label": "Corner Radius",
+  "min": 0,
+  "max": 20,
+  "step": 2,
+  "default": 8,
+  "unit": "px"
+},
+{
+  "type": "range",
+  "id": "grid_gap",
+  "label": "Grid Gap",
+  "min": 8,
+  "max": 32,
+  "step": 4,
+  "default": 16,
+  "unit": "px"
+},
+{
+  "type": "select",
+  "id": "grid_columns",
+  "label": "Grid Columns",
+  "options": [
+    {"value": "2", "label": "2 Columns"},
+    {"value": "3", "label": "3 Columns"},
+    {"value": "4", "label": "4 Columns"},
+    {"value": "5", "label": "5 Columns"}
+  ],
+  "default": "3"
+}
+```
+
+**Expected Output:**
+- Responsive grid of filtered creators
+- Configurable layout settings (columns, spacing, radius)
+- Product count badges for each creator
+- Links to individual creator shop pages
+- Graceful handling of missing data
+```

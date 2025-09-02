@@ -1,0 +1,39 @@
+Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Template:**
+```
+Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Target File:**
+`snippets/header.liquid` or `sections/header.liquid` (whichever contains the main navigation)
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+- Include affiliate link functionality when available
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg",
+    "alt": "Creator profile picture"
+  },
+  "cc-collab-affiliate-link": "https://example.com/creator-shop"
+}
+```
+
+**Layout Requirements:**
+- Position to the left of the brand logo
+- Circular styling with configurable dimensions
+- Match logo height for visual balance
+- Include hover effects and responsive design
+- Support affiliate link functionality when available
+
+**Expected Output:**
+- Creator profile picture appears to the left of the brand logo when available
+- Perfect circular styling and height matching
+- When affiliate link exists, profile picture becomes clickable and opens creator's shop in new tab
+- Falls back gracefully when no creator or profile picture exists
+```

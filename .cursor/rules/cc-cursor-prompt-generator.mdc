@@ -1,0 +1,528 @@
+---
+description: Generate effective prompts for CreatorCommerce storefront development tasks in Cursor
+alwaysApply: false
+---
+
+# CreatorCommerce Cursor Prompt Generator
+
+This rule provides templates for generating effective prompts to accomplish common CreatorCommerce storefront development tasks in Cursor. Each template references existing rules to avoid duplication and ensure consistency.
+
+## Core Prompt Templates
+
+### 1. Converting Existing Sections to Support Drops
+
+**Use Case:** Convert any existing Shopify section that renders products from a collection to also support CreatorCommerce drops.
+
+**Template:**
+```
+Convert an existing Shopify section that renders products from a collection to also support CreatorCommerce drops, while preserving all original functionality as a fallback.
+
+**Target Section:**
+`[INSERT SECTION FILE NAME HERE]` (e.g., `sections/featured-products.liquid`)
+
+**Implementation Requirements:**
+- Follow `cc-converting-existing-files` rules exactly for dual-mode architecture
+- Use `cc-referencing-drops-data` rules for drops iteration and product matching
+- Apply `cc-referencing-co-branded-data` rules for creator resolution and data access
+- Preserve all existing features, schema settings, and styling unchanged
+- Maintain backward compatibility - section must work exactly as before when no creator drops are present
+
+**Data Flow Logic:**
+```
+1. Check for creator drops → cc_creator.data.value['cc-creator-drops']
+2. If drops exist → Render drops feed (title + description + products per drop)
+3. If no drops → Fallback to original collection behavior from section settings
+```
+
+**Schema Updates:**
+- Update section name to include "CC" prefix (e.g., "CC Featured Products Drops")
+- Add explanatory paragraph about drops vs collection fallback behavior
+- Label collection setting as "Fallback Collection" with helpful info text
+- Keep all existing settings for backward compatibility
+
+**Testing Checklist:**
+- [ ] Works with creator drops present (shows drops feed)
+- [ ] Works with no creator drops (shows original collection)
+- [ ] Works with empty/malformed drop data (graceful degradation)
+- [ ] Preserves all original section functionality
+- [ ] Maintains responsive behavior and styling
+- [ ] Type conversion works without Liquid parsing errors
+
+**Expected Output:**
+- One updated `.liquid` file that works in both modes
+- All original functionality preserved
+- Drops support added following established patterns
+- Schema updated appropriately
+```
+
+### 2. Dynamic Creator UI Rendering
+
+**Use Case:** Render dynamic UI elements based on creator metaobject data.
+
+**Template:**
+```
+We need to dynamically render [UI-UX-OUTCOME] for a creator using the creator metaobject from the CreatorCommerce app.
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution and data access patterns
+- Use template context branching for metaobject vs regular pages
+- Escape all unsafe strings with `| escape` filter
+- Add null guards at every level of data access
+- Provide neutral fallbacks when creator data is missing
+
+**Fields to reference:**
+[
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+]
+
+**UI Requirements:**
+
+1. [UI-UX-REQUIREMENT-1]
+   If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+2. [UI-UX-REQUIREMENT-2]
+   If [FIELD-NAME] is [VALUE], show [UI-UX-EXPECTATION].
+
+**Logic & Empty States:**
+- If a field value is missing or evaluates to false/empty, do not render the related UI block
+- If key field values are missing/false/empty and no fallbacks are provided, hide the entire section
+```
+
+### 3. Creator Image Replacement
+
+**Use Case:** Replace Shopify section images with creator-specific images.
+
+**Template:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+[PASTE-SHOPIFY-IMAGE-HERE]
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+
+**Creator Field to Use**
+[
+In Shopify: Content > Metaobjects > Creator > Select an entry > Copy/paste relevant JSON fields for the prompt here
+
+OR
+
+Ask sidekick "Get the JSON data from the creator metaobject for CREATOR-SHOP-HANDLE, but only return the following fields:
+INSERT-FIELD-NAMES-FOR-THE-PROMPT-HERE"
+]
+
+**Key Conversion Points:**
+Shopify Image → External Image:
+- **Remove**: `image_url` filter (doesn't work on external URLs)
+- **Remove**: `image_tag` filter 
+- **Add**: Manual `<img>` tag with `src="{{ url | escape }}"`
+- **Add**: Explicit `width` and `height` attributes
+- **Add**: Proper `alt` text with creator context
+
+**CSS Considerations:**
+```css
+.my-image-class {
+  object-fit: cover; /* Important for external images */
+  display: block;
+}
+```
+
+**Result:** Creator image overrides section image when available, falls back gracefully when not.
+```
+
+### 4. Navigation Profile Picture
+
+**Use Case:** Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Template:**
+```
+Add creator's profile picture to the navigation bar positioned relative to the brand logo.
+
+**Target File:**
+`snippets/header.liquid` or `sections/header.liquid` (whichever contains the main navigation)
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+- Include affiliate link functionality when available
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-profile-picture": {
+    "url": "https://example.com/profile.jpg",
+    "alt": "Creator profile picture"
+  },
+  "cc-collab-affiliate-link": "https://example.com/creator-shop"
+}
+```
+
+**Layout Requirements:**
+- Position to the left of the brand logo
+- Circular styling with configurable dimensions
+- Match logo height for visual balance
+- Include hover effects and responsive design
+- Support affiliate link functionality when available
+
+**Expected Output:**
+- Creator profile picture appears to the left of the brand logo when available
+- Perfect circular styling and height matching
+- When affiliate link exists, profile picture becomes clickable and opens creator's shop in new tab
+- Falls back gracefully when no creator or profile picture exists
+```
+
+### 5. Product Reviews Section
+
+**Use Case:** Create a product page section that displays creator reviews for the current product.
+
+**Template:**
+```
+Create a product page section that displays creator reviews for the current product.
+
+**Target Section:**
+`sections/cc-product-reviews.liquid`
+
+**Implementation Requirements:**
+- Follow `cc-referencing-product-data` rules for product matching and ID conversion
+- Use `cc-referencing-co-branded-data` rules for creator resolution
+- Apply proper null guards and early loop breaking for performance
+- Support both profile picture and initials fallback
+
+**Data Flow Logic:**
+```
+1. Check if creator exists → cc_creator
+2. Loop through cc_creator.data.value['cc-creator-drops']
+3. For each drop, loop through cc-creator-drop-products
+4. Convert product.id to string and compare with cc-creator-drop-product-shopify-id
+5. If match found AND cc-creator-drop-product-enhancement-note is not empty → render review
+6. If no review found → hide section entirely
+```
+
+**Schema Settings Required:**
+```json
+{
+  "type": "select",
+  "id": "layout_direction",
+  "label": "Layout Direction",
+  "options": [
+    {"value": "vertical", "label": "Vertical Stack"},
+    {"value": "horizontal", "label": "Horizontal Stack"}
+  ],
+  "default": "horizontal"
+},
+{
+  "type": "select", 
+  "id": "alignment",
+  "label": "Alignment",
+  "options": [
+    {"value": "left", "label": "Left"},
+    {"value": "center", "label": "Center"},
+    {"value": "right", "label": "Right"}
+  ],
+  "default": "left"
+},
+{
+  "type": "color",
+  "id": "initials_bg_color",
+  "label": "Initials Background Color",
+  "default": "#000000"
+},
+{
+  "type": "color",
+  "id": "initials_text_color", 
+  "label": "Initials Text Color",
+  "default": "#ffffff"
+}
+```
+
+**Expected Output:**
+- One new `sections/cc-product-reviews.liquid` file
+- Schema with layout, alignment, and color settings
+- Proper review discovery logic with type conversion
+- Conditional profile picture vs initials display
+- Responsive design supporting both layout directions
+- Section hides gracefully when no review exists
+```
+
+### 6. Conditional UI Blocking Script
+
+**Use Case:** Add JavaScript to conditionally hide UI elements based on creator funnel status and custom business logic.
+
+**Template:**
+```
+Update my theme.liquid file with a safe, idempotent JavaScript snippet (with Liquid wrapper) that conditionally hides specified UI elements on a Shopify storefront when a creator funnel is active AND additional custom business logic is met.
+
+**Base Condition (ALWAYS REQUIRED):**
+- Creator funnel is active: `cc_creator` exists AND `cc_creator.cc-collab-discount-amount > 0`
+
+**Additional Business Logic Condition:**
+[ADD YOUR EXTRA CONDITIONS - Examples below]
+- AND cart total exceeds $100
+- AND specific product variants are in cart  
+- AND during certain date ranges or promotional periods
+- AND user has specific customer tags
+- AND coming from specific traffic sources
+- AND certain metafield values are present
+- AND user is on mobile vs desktop
+- [Or leave blank if only cc_creator condition needed]
+
+**Target Elements:**
+Popup/UI selectors to hide (provide class names or CSS selectors from Chrome DevTools):
+```
+const POPUP_SELECTORS = [
+  '[INSERT YOUR SELECTORS HERE]'
+];
+```
+Examples: `.klaviyo-form`, `.justuno-pop`, `#privy-container`, `.newsletter-modal`, `.chat-widget`, `.promotional-banner`
+
+**Liquid Context Variables Needed:**
+Base variables (always included):
+- `cart.attributes['cc-creator-handle']`
+- `metaobjects.creator[cc_handle]`
+
+Additional variables for your logic:
+- `cart.total_price`
+- `customer.tags`
+- `product.metafields`
+- `collection.handle`
+- `template.name`
+
+**Console Message:**
+What message should appear in console when blocking is active?
+Example: `"Blocking popups to prioritize creator funnel over first-timer offer"`
+
+**Requirements:**
+- Add to theme.liquid near `</body>`
+- Always check cc_creator base condition first
+- Hide elements using `cc-hidden` class + `display:none !important` + `aria-hidden="true"`
+- Handle both initial DOM and dynamically injected elements (MutationObserver)
+- Be idempotent and fail gracefully
+- No external dependencies
+- Don't break checkout functionality
+
+**Output Format:**
+Add one complete Liquid + JS snippet to the end of my theme.liquid file, maintaining the cc_creator base logic.
+```
+
+### 7. Global Style Integration
+
+**Use Case:** Add creator-specific CSS variables and styles to global style files for consistent theming across the site.
+
+**Template:**
+```
+Add creator-specific CSS variables and styles to global style files for consistent theming across the site.
+
+**Target File:**
+`snippets/global-styles.liquid` or `assets/global-styles.css` or `layout/theme.liquid` (in the `<head>` section)
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+- Use CSS custom properties for maintainable theming
+
+**Creator Fields to Use:**
+```json
+{
+  "cc-creator-shop-theme-primary-color": "#000000",
+  "cc-creator-shop-theme-secondary-color": "#ffffff", 
+  "cc-creator-shop-theme-accent-color": "#ff6b35",
+  "cc-creator-shop-theme-text-color": "#333333",
+  "cc-creator-shop-theme-background-color": "#f8f8f8",
+  "cc-creator-shop-theme-border-color": "#e0e0e0",
+  "cc-creator-shop-theme-button-color": "#007bff",
+  "cc-creator-shop-theme-button-text-color": "#ffffff",
+  "cc-creator-shop-theme-font-family": "Inter, sans-serif",
+  "cc-creator-shop-theme-font-weight": "500",
+  "cc-creator-shop-theme-border-radius": "8px",
+  "cc-creator-shop-theme-spacing": "16px"
+}
+```
+
+**Expected Output:**
+- CSS variables injected into global styles when creator has theme data
+- Fallback to default theme when no creator or creator has no theme data
+- Reusable CSS classes for creator-specific components
+- Responsive design considerations with creator variables
+```
+
+### 8. Creator Grid Display
+
+**Use Case:** Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Template:**
+```
+Display a grid of multiple creators with their profile information, filtering by specific criteria and showing creator statistics.
+
+**Target Section:**
+`sections/cc-creator-grid.liquid`
+
+**Implementation Requirements:**
+- Follow `cc-creator-directories` rules for creator filtering and iteration patterns
+- Use `cc-referencing-co-branded-data` rules for creator data access
+- Apply proper null guards and performance optimization
+- Support responsive design with configurable settings
+
+**Creator Filtering Logic:**
+Loop through all creators and only include those that meet ALL criteria:
+- `creator.data.value['cc-public'] == 'Y'`
+- `creator.data.value['cc-creator-profile-picture']` exists and has a URL
+- `creator.cc-creator-drops` exists and has more than 0 drops
+
+**Product Count Calculation:**
+For each creator, count total products across all drops using `cc-referencing-drops-data` patterns.
+
+**Schema Settings Required:**
+```json
+{
+  "type": "range",
+  "id": "creators_per_page",
+  "label": "Creators per page",
+  "min": 12,
+  "max": 50,
+  "step": 4,
+  "default": 24
+},
+{
+  "type": "range",
+  "id": "corner_radius",
+  "label": "Corner Radius",
+  "min": 0,
+  "max": 20,
+  "step": 2,
+  "default": 8,
+  "unit": "px"
+},
+{
+  "type": "range",
+  "id": "grid_gap",
+  "label": "Grid Gap",
+  "min": 8,
+  "max": 32,
+  "step": 4,
+  "default": 16,
+  "unit": "px"
+},
+{
+  "type": "select",
+  "id": "grid_columns",
+  "label": "Grid Columns",
+  "options": [
+    {"value": "2", "label": "2 Columns"},
+    {"value": "3", "label": "3 Columns"},
+    {"value": "4", "label": "4 Columns"},
+    {"value": "5", "label": "5 Columns"}
+  ],
+  "default": "3"
+}
+```
+
+**Expected Output:**
+- Responsive grid of filtered creators
+- Configurable layout settings (columns, spacing, radius)
+- Product count badges for each creator
+- Links to individual creator shop pages
+- Graceful handling of missing data
+```
+
+## Task Categories and Templates
+
+### Collection/Product Display Tasks
+- **Converting sections to drops**: Use Template #1
+- **Creating new drops sections**: Use Template #1 as base, remove "preserve" requirements
+- **Adding product recommendations**: Use Template #2 with product-specific fields
+- **Product reviews section**: Use Template #5 for creator review display
+- **Creator grid display**: Use Template #8 for multi-creator showcase
+
+### Visual/Media Tasks  
+- **Hero image replacement**: Use Template #3
+- **Background image updates**: Use Template #3 with background CSS
+- **Logo/branding changes**: Use Template #3 with appropriate sizing
+- **Navigation profile picture**: Use Template #4 for header integration
+- **Global style integration**: Use Template #7 for theme-wide creator styling
+
+### Interactive/Behavioral Tasks
+- **Conditional popup blocking**: Use Template #6
+- **Dynamic form behavior**: Use Template #2 with form-specific logic
+- **Cart behavior modifications**: Use Template #6 with cart conditions
+
+### Content/Text Tasks
+- **Dynamic text replacement**: Use Template #2
+- **Conditional messaging**: Use Template #2 with text fields
+- **Personalized content**: Use Template #2 with multiple creator fields
+
+## Prompt Enhancement Guidelines
+
+### Required Context Elements
+1. **Clear Objective**: What specific outcome is needed
+2. **Target Files**: Exact file names and paths
+3. **Creator Fields**: Specific metaobject field names needed
+4. **Fallback Behavior**: What happens when creator data is missing
+5. **Testing Scenarios**: How to verify the implementation works
+
+### Rule References
+Always reference the appropriate existing rules:
+- **Creator data access**: `cc-referencing-co-branded-data`
+- **Drops implementation**: `cc-referencing-drops-data`
+- **Product matching**: `cc-referencing-product-data`
+- **Section conversion**: `cc-converting-existing-files`
+- **Directory/search**: `cc-creator-directories`
+
+### Quality Checklist
+- [ ] References appropriate existing rules
+- [ ] Includes proper null guards and fallbacks
+- [ ] Specifies exact field names and data paths
+- [ ] Provides clear testing criteria
+- [ ] Maintains backward compatibility
+- [ ] Uses proper Liquid escaping for security
+
+## Usage Instructions
+
+1. **Identify Task Type**: Determine which category your task falls into
+2. **Select Template**: Choose the most appropriate template
+3. **Fill Placeholders**: Replace all `[PLACEHOLDER]` values with specific requirements
+4. **Reference Rules**: Ensure the prompt references appropriate existing rules
+5. **Add Context**: Include specific field names, file paths, and business logic
+6. **Specify Testing**: Define clear success criteria and edge cases
+7. **Review Quality**: Ensure prompt follows CreatorCommerce patterns and rules
+
+## Example Usage
+
+**Task:** "Make the hero section show creator's profile image"
+
+**Generated Prompt Using Template #3:**
+```
+Replace an image with a creator Image field instead
+
+**Image Reference to Replace**
+{{ section.settings.hero_image | image_url: width: 1200, height: 800 | image_tag: class: 'hero-image' }}
+
+**Implementation Requirements:**
+- Follow `cc-referencing-co-branded-data` rules for creator resolution
+- Use template context branching for metaobject vs regular pages
+- Apply proper null guards and fallback handling
+
+**Creator Field to Use**
+cc-creator-profile-picture
+
+**Key Conversion Points:**
+Shopify Image → External Image:
+- Remove: image_url filter (doesn't work on external URLs)
+- Remove: image_tag filter 
+- Add: Manual <img> tag with src="{{ url | escape }}"
+- Add: Explicit width="1200" height="800" attributes
+- Add: Proper alt text with creator context
+
+**Result:** Creator profile image overrides hero image when available, falls back to section image when not.
+```
+
+This rule ensures all CreatorCommerce development prompts are comprehensive, follow established patterns, and leverage existing rules effectively.
