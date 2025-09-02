@@ -1,0 +1,119 @@
+---
+title: "Selector & Field Reference (IDs, Classes, Naming & Syntax)"
+description: "The source of truth for the stable selectors used to theme the Creator Dashboard."
+---
+
+---
+
+## title: "Selector & Field Reference (IDs, Classes, Naming & Syntax)"
+
+# Selector & Field Reference (IDs, Classes, Naming & Syntax)
+
+This is your **source of truth** for the stable selectors used to theme the Creator Dashboard.
+
+## 🎯 Contextual IDs (Page-Specific)
+
+> Use when you want to style a particular screen/step without touching the rest.
+
+### Form Steps
+
+| Selector                                         | Description                         |
+| ------------------------------------------------ | ----------------------------------- |
+| `#cc-targeted-css-add-products-container`        | AddProductsStep main container      |
+| `#cc-targeted-css-product-search-input`          | Product search input field          |
+| `#cc-targeted-css-finish-products-button`        | Complete products selection button  |
+| `#cc-targeted-css-save-product-button`           | Save individual product button      |
+| `#cc-targeted-css-custom-welcome-container`      | CustomFormWelcomeStep container     |
+| `#cc-targeted-css-continue-button`               | Continue button in custom welcome   |
+| `#cc-targeted-css-verification-code`             | Email verification code input       |
+| `#cc-targeted-css-drop-details-container`        | DropDetailsStep container           |
+| `#cc-targeted-css-drop-title-input`              | Drop title input field              |
+| `#cc-targeted-css-drop-description-input`        | Drop description textarea           |
+| `#cc-targeted-css-drop-continue-button`          | Drop details continue button        |
+| `#cc-targeted-css-drop-step-container`           | DropStep container                  |
+| `#cc-targeted-css-drop-title-field`              | Drop title field (DropStep)         |
+| `#cc-targeted-css-drop-description-field`        | Drop description field (DropStep)   |
+| `#cc-targeted-css-drop-finish-button`            | Drop completion button              |
+| `#cc-targeted-css-generic-form-step`             | GenericFormStep container           |
+| `#cc-targeted-css-onboarding-welcome-container`  | OnboardingWelcomeStep container     |
+| `#cc-targeted-css-accept-button`                 | Onboarding accept button            |
+| `#cc-targeted-css-email-verification-code`       | Email verification in onboarding    |
+| `#cc-targeted-css-personal-info-container`       | PersonalInfoStep container          |
+| `#cc-targeted-css-first-name-input`              | First name input                    |
+| `#cc-targeted-css-last-name-input`               | Last name input                     |
+| `#cc-targeted-css-personal-info-continue-button` | Personal info continue button       |
+| `#cc-targeted-css-submit-step-container`         | SubmitStep container                |
+| `#cc-targeted-css-welcome-step-container`        | WelcomeStep container               |
+| `#cc-targeted-css-shop-handle-input`             | Shop handle input field             |
+| `#cc-targeted-css-welcome-accept-button`         | Welcome accept button (main)        |
+| `#cc-targeted-css-welcome-accept-alt-button`     | Welcome accept button (alternative) |
+
+### Navigation
+
+| Selector                                | Description                 |
+| --------------------------------------- | --------------------------- |
+| `#cc-targeted-css-creator-navbar`       | Main creator navigation bar |
+| `#cc-targeted-css-form-steps-container` | Form steps page container   |
+
+### Creator Home & Profile Settings
+
+| Selector                                    | Description                   |
+| ------------------------------------------- | ----------------------------- |
+| `#cc-targeted-css-creator-home-container`   | Creator home page container   |
+| `#cc-targeted-css-copy-link-button`         | Copy shop link button         |
+| `#cc-targeted-css-drop-card`                | Individual drop cards         |
+| `#cc-targeted-css-creator-update-container` | Creator update page container |
+| `#cc-targeted-css-first-name-edit`          | First name edit field         |
+| `#cc-targeted-css-last-name-edit`           | Last name edit field          |
+| `#cc-targeted-css-shop-handle-edit`         | Shop handle edit field        |
+| `#cc-targeted-css-shop-title-edit`          | Shop title edit field         |
+| `#cc-targeted-css-shop-bio-edit`            | Shop bio edit field           |
+| `#cc-targeted-css-primary-color-edit`       | Primary color picker          |
+| `#cc-targeted-css-save-changes-button`      | Save changes button           |
+
+## 🌐 General Classes (Universal)
+
+> Use when you want consistent styling across the whole dashboard.
+
+| Class                        | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `.cc-general-css-header`     | Headers, titles, primary text               |
+| `.cc-general-css-text`       | Body/secondary text                         |
+| `.cc-general-css-input`      | Inputs, textareas, form controls            |
+| `.cc-general-css-button`     | All buttons                                 |
+| `.cc-general-css-section`    | Containers/sections/content areas           |
+| `.cc-general-css-navigation` | Nav bars, back buttons, navigation controls |
+
+## 💡 Usage Guidelines & Syntax
+
+### Target specific pages
+
+```css
+#cc-targeted-css-creator-home-container { /* styles */ }
+#cc-targeted-css-drop-card { /* styles */ }
+```
+
+### Apply universal styling
+
+```css
+.cc-general-css-button { /* all buttons */ }
+.cc-general-css-header { /* all headers */ }
+```
+
+### Combine for precise control
+
+```css
+#cc-targeted-css-onboarding-welcome-container .cc-general-css-button { /* onboarding buttons only */ }
+```
+
+### Naming Convention
+
+| Item    | Pattern/Value                              |
+| ------- | ------------------------------------------ |
+| IDs     | `cc-targeted-css-[page/feature]-[element]` |
+| Classes | `cc-general-css-[type]`                    |
+| Prefix  | `cc-` (CreatorCommerce)                    |
+
+### Specificity Hierarchy
+
+ID \> Class \> Element. Prefer **IDs** for unique, page-specific elements; **classes** for reusable, universal styling. Minimize `!important`.

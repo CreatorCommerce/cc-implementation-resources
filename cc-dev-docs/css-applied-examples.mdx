@@ -1,0 +1,214 @@
+---
+description: "This section bundles ready-to-ship snippets and explains *why* you’d theme the dashboard (onboarding polish, or consistent branding with external tools)."
+title: "Code Examples & Practical Patterns (Technical + Conceptual)"
+---
+
+## 🍱 Usage Patterns
+
+### Global primitives
+
+```css
+/* Buttons everywhere */
+.cc-general-css-button {
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #111;
+  color: #fff;
+}
+.cc-general-css-button:hover { background: #000; }
+.cc-general-css-button:disabled { opacity: 0.5; cursor: not-allowed; }
+```
+
+### Page-specific targeting
+
+```css
+/* Onboarding welcome hero */
+#cc-targeted-css-onboarding-welcome-container .cc-general-css-header {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.02em;
+}
+```
+
+### Precise control (ID \+ class)
+
+```css
+/* Only the main Welcome accept button */
+#cc-targeted-css-welcome-accept-button.cc-general-css-button {
+  background: #1E22AA;
+  box-shadow: 0 6px 18px rgba(30,34,170,0.25);
+}
+```
+
+### Inputs & focus accessibility
+
+```css
+/* High-contrast focus rings that pass WCAG */
+.cc-general-css-input:focus-visible {
+  outline: 3px solid #4BC58E;
+  outline-offset: 2px;
+}
+```
+
+### Card/UI chrome
+
+```css
+/* Drop cards */
+#cc-targeted-css-drop-card {
+  border: 1px solid #EEE;
+  border-radius: 16px;
+  background: #fff;
+  padding: 16px;
+}
+#cc-targeted-css-drop-card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.06);
+}
+```
+
+### Responsive adjustments
+
+```css
+/* Tighten spacing on mobile, expand on desktop */
+@media (max-width: 640px) {
+  .cc-general-css-section { padding: 12px; }
+}
+@media (min-width: 1024px) {
+  .cc-general-css-section { padding: 24px 32px; }
+}
+```
+
+### Dark mode (optional)
+
+```css
+@media (prefers-color-scheme: dark) {
+  .cc-general-css-section { background: #111; color: #EAEAEA; }
+  .cc-general-css-input { background: #1A1A1A; color: #F2F2F2; border-color: #2A2A2A; }
+  .cc-general-css-button { background: #FFF; color: #111; }
+}
+```
+
+---
+
+## 🚀 Starter CSS (Copy/Paste Scaffold)
+
+```css
+/* Creator Dashboard Theme — Brand Name (v1.0) */
+
+/* 1) Typography */
+.cc-general-css-header { font-family: "Inter", system-ui, sans-serif; letter-spacing: -0.02em; }
+.cc-general-css-text { font-family: "Inter", system-ui, sans-serif; color: #22201F; }
+
+/* 2) Buttons */
+.cc-general-css-button {
+  --btn-bg: #1E22AA;
+  --btn-fg: #FFFFFF;
+  background: var(--btn-bg); color: var(--btn-fg);
+  border-radius: 12px; padding: 12px 16px; border: 1px solid transparent;
+}
+.cc-general-css-button:hover { filter: brightness(0.95); }
+
+/* 3) Inputs */
+.cc-general-css-input {
+  background: #fff; color: #22201F;
+  border: 1px solid #E5E7EB; border-radius: 10px;
+  padding: 10px 12px;
+}
+.cc-general-css-input:focus-visible { outline: 3px solid #4BC58E; outline-offset: 2px; }
+
+/* 4) Sections */
+.cc-general-css-section { background: #fff; border-radius: 16px; padding: 16px; }
+
+/* 5) Page-specific example */
+#cc-targeted-css-onboarding-welcome-container .cc-general-css-header { font-size: clamp(28px, 4vw, 40px); }
+
+/* 6) Responsive */
+@media (max-width: 640px) {
+  .cc-general-css-section { padding: 12px; }
+  .cc-general-css-header { font-size: 20px; }
+}
+
+/* 7) Dark mode */
+@media (prefers-color-scheme: dark) {
+  .cc-general-css-section { background: #111; color: #F1F5F9; }
+  .cc-general-css-input { background: #0F0F0F; color: #F1F5F9; border-color: #262626; }
+}
+```
+
+---
+
+## 💭 Why theme at all? Two common reasons
+
+### A) Onboarding polish (reduce friction, increase trust)
+
+Goal: Match the creator’s brand from the first touchpoint to reduce bounce and increase completion rates. How: Use contextual IDs to theme only the onboarding steps, while keeping global primitives consistent.
+
+Example:
+
+```css
+/* Onboarding-specific brand experience */
+#cc-targeted-css-onboarding-welcome-container .cc-general-css-section {
+  background: linear-gradient(180deg, #F6CED4 0%, #FFF 100%);
+}
+#cc-targeted-css-email-verification-code.cc-general-css-input {
+  border-color: #1E22AA;
+}
+#cc-targeted-css-accept-button.cc-general-css-button {
+  background: #4BC58E;
+}
+```
+
+### B) Consistent branding with an external affiliate tool (fictional example)
+
+Scenario: You also use LinkForge (fictional) for link tracking. Creators see LinkForge UI in emails and your Creator Dashboard in web. You want both to look unified. Approach: Mirror the LinkForge design tokens in your dashboard CSS, and conditionally load per-creator variations.
+
+Design tokens (JSON) coming from LinkForge:
+
+```json
+{
+  "brand": "Old Dominion",
+  "colors": { "primary": "#1E22AA", "accent": "#4BC58E", "bg": "#FFFFFF", "text": "#22201F" },
+  "radii": { "button": 12, "card": 16 },
+  "font": "Inter"
+}
+```
+
+CSS using those tokens:
+
+```css
+:root {
+  --lf-primary: #1E22AA;
+  --lf-accent: #4BC58E;
+  --lf-bg: #FFFFFF;
+  --lf-text: #22201F;
+  --lf-r-card: 16px;
+  --lf-r-btn: 12px;
+}
+
+.cc-general-css-section { background: var(--lf-bg); color: var(--lf-text); border-radius: var(--lf-r-card); }
+.cc-general-css-button { background: var(--lf-primary); border-radius: var(--lf-r-btn); }
+.cc-general-css-button:hover { background: color-mix(in srgb, var(--lf-primary) 92%, black); }
+```
+
+Conditional load (desktop web, example JS):
+
+```javascript
+<script>
+  // Example: choose CSS by creator handle or affiliate param (e.g., ?aff=old-dominion)
+  (function() {
+    const params = new URLSearchParams(location.search);
+    const aff = params.get('aff') || window.__ccCreator?.handle || 'default';
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `https://cdn.yourbrand.com/creator-themes/${aff}.css?v=2025-08-27`;
+    document.head.appendChild(link);
+  })();
+</script>
+```
+
+Why this works:
+
+You maintain one base theme and layer per-affiliate overrides.
+
+You can mirror external tools’ branding so creators never feel like they switched products.
+
+You retain complete control via stable IDs/classes, without forking product code.
