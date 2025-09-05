@@ -6,64 +6,57 @@
     "primary": "#ff0000"
   },
   "navigation": {
-     "tabs": [
+    "tabs": [
       {
         "tab": "API reference",
         "icon": "square-terminal",
-         "anchors": [
-       {
-        "anchor": "Getting Started",
-        "icon": "layout",
-        "pages": ["c"]
-      },
-      {
-        "anchor": "Co-branded Storefronts",
-        "icon": "layout",
-        "pages": ["newfile"]
-      },
-      {
-        "anchor": "Co-branded Emails",
-        "icon": "mail",
-        "pages": ["newfile"]
-      },
-      {
-        "anchor": "Enrichment Workflows",
-        "icon": "workflow",
-        "pages": ["newfile"]
-      },
-      {
-        "anchor": "Creator Message Flows",
-        "icon": "message-circle",
-        "pages": ["newfile"]
-      },
-      {
-        "anchor": "Creator Dashboard",
-        "icon": "monitor",
-        "pages": ["newfile"]
-      },
-      {
-        "anchor": "Partner Integrations",
-        "icon": "puzzle",
-        "pages": ["newfile"]
-      }
-    ]
+        "anchors": [
+          {
+            "anchor": "Getting Started",
+            "icon": "layout",
+            "pages": ["getting-started"]
           },
           {
-            "item": "SDKs",
-            "icon": "code",
-            "description": "SDKs are used to interact with the API.",
-            "pages": [
-              "sdk/fetch",
-              "sdk/create",
-              "sdk/delete"
-            ]
+            "anchor": "Co-branded Storefronts",
+            "icon": "layout",
+            "pages": ["co-branded-storefronts"]
+          },
+          {
+            "anchor": "Co-branded Emails",
+            "icon": "mail",
+            "pages": ["co-branded-messaging"]
+          },
+          {
+            "anchor": "Enrichment Workflows",
+            "icon": "workflow",
+            "pages": ["enrichment-flows"]
+          },
+          {
+            "anchor": "Creator Message Flows",
+            "icon": "message-circle",
+            "pages": ["creator-messaging"]
+          },
+          {
+            "anchor": "Creator Dashboard",
+            "icon": "monitor",
+            "pages": ["creator-dashboard"]
+          },
+          {
+            "anchor": "Partner Integrations",
+            "icon": "puzzle",
+            "pages": ["partner-integrations"]
           }
-        ]
+        ],
+        "pages": ["newfile"]
       },
       {
         "tab": "SDKs",
         "icon": "code",
+        "description": "SDKs are used to interact with the API.",
         "pages": [
+          "sdk/fetch",
+          "sdk/create",
+          "sdk/delete",
           "newfile",
           "newfile",
           "newfile"
