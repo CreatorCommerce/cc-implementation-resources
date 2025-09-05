@@ -6,6 +6,31 @@
     "primary": "#ff0000"
   },
   "navigation": {
+     "tabs": [
+      {
+        "tab": "API reference",
+        "icon": "square-terminal",
+        "pages": [
+          "newfile",
+          "newfile",
+          "newfile"
+        ]
+      },
+      {
+        "tab": "SDKs",
+        "icon": "code",
+        "pages": [
+          "newfile",
+          "newfile",
+          "newfile"
+        ]
+      },
+      {
+        "tab": "Blog",
+        "icon": "newspaper",
+        "href": "https://external-link.com/blog"
+      }
+    ],
     "dropdowns": [
        {
         "dropdown": "Getting Started",
