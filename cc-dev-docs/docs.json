@@ -10,21 +10,50 @@
       {
         "tab": "API reference",
         "icon": "square-terminal",
-         "menu": [
-          {
-            "item": "API reference",
-            "icon": "rocket",
-            "groups": [
-              {
-                "group": "Core endpoints",
-                "icon": "square-terminal",
-                "pages": [
-                  "api-reference/get",
-                  "api-reference/post",
-                  "api-reference/delete"
-                ]
-              }
-            ]
+         "anchors": [
+       {
+        "anchor": "Getting Started",
+        "icon": "layout",
+        "description": "Build with CreatorCommerce",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Co-branded Storefronts",
+        "icon": "layout",
+        "description": "Personalize storefront UX around each creator",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Co-branded Emails",
+        "icon": "mail",
+        "description": "Personalize customer emails around each creator",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Enrichment Workflows",
+        "icon": "workflow",
+        "description": "Enhance & sync data based on events & schedules",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Creator Message Flows",
+        "icon": "message-circle",
+        "description": "Communicate with creators at scale",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Creator Dashboard",
+        "icon": "monitor",
+        "description": "Customize the creator dashboard experience",
+        "pages": ["newfile"]
+      },
+      {
+        "anchor": "Partner Integrations",
+        "icon": "puzzle",
+        "description": "Build & distribute a 3rd party integration",
+        "pages": ["newfile"]
+      }
+    ]
           },
           {
             "item": "SDKs",
