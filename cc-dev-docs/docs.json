@@ -10,45 +10,45 @@
       {
         "tab": "API reference",
         "icon": "square-terminal",
-         "anchors": [
+         "dropdowns": [
        {
-        "anchor": "Getting Started",
+        "dropdown": "Getting Started",
         "icon": "layout",
         "description": "Build with CreatorCommerce",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Co-branded Storefronts",
+        "dropdown": "Co-branded Storefronts",
         "icon": "layout",
         "description": "Personalize storefront UX around each creator",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Co-branded Emails",
+        "dropdown": "Co-branded Emails",
         "icon": "mail",
         "description": "Personalize customer emails around each creator",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Enrichment Workflows",
+        "dropdown": "Enrichment Workflows",
         "icon": "workflow",
         "description": "Enhance & sync data based on events & schedules",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Creator Message Flows",
+        "dropdown": "Creator Message Flows",
         "icon": "message-circle",
         "description": "Communicate with creators at scale",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Creator Dashboard",
+        "dropdown": "Creator Dashboard",
         "icon": "monitor",
         "description": "Customize the creator dashboard experience",
         "pages": ["newfile"]
       },
       {
-        "anchor": "Partner Integrations",
+        "dropdown": "Partner Integrations",
         "icon": "puzzle",
         "description": "Build & distribute a 3rd party integration",
         "pages": ["newfile"]
