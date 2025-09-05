@@ -10,10 +10,32 @@
       {
         "tab": "API reference",
         "icon": "square-terminal",
-        "pages": [
-          "newfile",
-          "newfile",
-          "newfile"
+         "menu": [
+          {
+            "item": "API reference",
+            "icon": "rocket",
+            "groups": [
+              {
+                "group": "Core endpoints",
+                "icon": "square-terminal",
+                "pages": [
+                  "api-reference/get",
+                  "api-reference/post",
+                  "api-reference/delete"
+                ]
+              }
+            ]
+          },
+          {
+            "item": "SDKs",
+            "icon": "code",
+            "description": "SDKs are used to interact with the API.",
+            "pages": [
+              "sdk/fetch",
+              "sdk/create",
+              "sdk/delete"
+            ]
+          }
         ]
       },
       {
@@ -29,50 +51,6 @@
         "tab": "Blog",
         "icon": "newspaper",
         "href": "https://external-link.com/blog"
-      }
-    ],
-    "dropdowns": [
-       {
-        "dropdown": "Getting Started",
-        "icon": "layout",
-        "description": "Build with CreatorCommerce",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Co-branded Storefronts",
-        "icon": "layout",
-        "description": "Personalize storefront UX around each creator",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Co-branded Emails",
-        "icon": "mail",
-        "description": "Personalize customer emails around each creator",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Enrichment Workflows",
-        "icon": "workflow",
-        "description": "Enhance & sync data based on events & schedules",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Creator Message Flows",
-        "icon": "message-circle",
-        "description": "Communicate with creators at scale",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Creator Dashboard",
-        "icon": "monitor",
-        "description": "Customize the creator dashboard experience",
-        "pages": ["newfile"]
-      },
-      {
-        "dropdown": "Partner Integrations",
-        "icon": "puzzle",
-        "description": "Build & distribute a 3rd party integration",
-        "pages": ["newfile"]
       }
     ]
   }
