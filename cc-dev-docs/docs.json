@@ -60,6 +60,22 @@
                            "temp3"
                         ]
                      },
+                    {
+                        "group":"SHOPIFY REFERENCE",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                    {
+                        "group":"SDKS",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
                      {
                         "group":"API REFERENCE",
                         "expanded":true,
@@ -83,14 +99,6 @@
                         ]
                      },
                      {
-                        "group":"SDKS",
-                        "expanded":true,
-                        "pages":[
-                           "temp2",
-                           "temp3"
-                        ]
-                     },
-                     {
                         "group":"WEBHOOKS",
                         "expanded":true,
                         "pages":[
@@ -109,14 +117,6 @@
                                  "temp2"
                               ]
                            }
-                        ]
-                     },
-                     {
-                        "group":"SHOPIFY DATA",
-                        "expanded":true,
-                        "pages":[
-                           "temp2",
-                           "temp3"
                         ]
                      }
                   ]
