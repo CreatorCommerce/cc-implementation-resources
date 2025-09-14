@@ -8,7 +8,75 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API reference",
+        "tab": "Developer Platform",
+        "icon": "square-terminal",
+        "anchors": [
+          {
+            "anchor": "Developer Guide",
+            "icon": "layout",
+             "groups": [
+      {
+        "group": "Getting started",
+        "icon": "play",
+        "expanded": true,
+        "pages": [
+          "quickstart",
+          {
+            "group": "Editing",
+            "icon": "pencil",
+            "pages": [
+              "installation",
+              "editor"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Writing content",
+        "icon": "notebook-text",
+        "tag": "NEW",
+        "pages": [
+          "writing-content/page",
+          "writing-content/text"
+        ]
+      }
+    ]
+          },
+          {
+            "anchor": "References",
+            "icon": "layout",
+             "groups": [
+      {
+        "group": "Getting started",
+        "icon": "play",
+        "expanded": true,
+        "pages": [
+          "quickstart",
+          {
+            "group": "Editing",
+            "icon": "pencil",
+            "pages": [
+              "installation",
+              "editor"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "Writing content",
+        "icon": "notebook-text",
+        "tag": "NEW",
+        "pages": [
+          "writing-content/page",
+          "writing-content/text"
+        ]
+      }
+    ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Platform",
         "icon": "square-terminal",
         "anchors": [
           {
