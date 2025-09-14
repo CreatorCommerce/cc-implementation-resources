@@ -16,36 +16,54 @@
                   "icon":"book-open",
                   "groups":[
                      {
-                        "group":"First steps",
+                        "group":"FIRST STEPS",
                         "expanded":true,
                         "pages":[
                            "getting-started",
-                          "glossary",
-                          "temp1"
-                        ]
-                     },
-                    {
-                        "group":"First steps",
-                        "expanded":true,
-                        "pages":[
-                           "getting-started",
-                          "glossary",
-                          "temp1"
+                           "glossary",
+                           "temp1"
                         ]
                      },
                      {
-                        "group":"Resources",
-                       "icon":"square-terminal",
+                        "group":"SHOPIFY",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"LEARN ABOUT CC",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"CABABILITIES",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"RESOURCES",
+                        "icon":"square-terminal",
                         "pages":[
                            "temp2",
                            "temp1",
-                                  {
+                           {
                               "group":"Release notes",
                               "pages":[
                                  "temp1",
                                  "temp2"
-                                  ]
-                                 }
+                              ]
+                           }
                         ]
                      }
                   ]
@@ -55,28 +73,69 @@
                   "icon":"layout",
                   "groups":[
                      {
-                        "group":"Getting started",
-                        "icon":"play",
+                        "group":"DATA MODEL",
                         "expanded":true,
                         "pages":[
-                           "quickstart",
+                           "getting-started",
+                           "glossary",
+                           "temp1"
+                        ]
+                     },
+                     {
+                        "group":"API REFERENCE",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
                            {
-                              "group":"Editing",
-                              "icon":"pencil",
+                              "group":"Release notes",
                               "pages":[
-                                 "installation",
-                                 "editor"
+                                 "temp1",
+                                 "temp2"
                               ]
                            }
                         ]
                      },
                      {
-                        "group":"Writing content",
-                        "icon":"notebook-text",
-                        "tag":"NEW",
+                        "group":"SDKS",
+                        "expanded":true,
                         "pages":[
-                           "writing-content/page",
-                           "writing-content/text"
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"WEBHOOKS",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"METAOBJECTS",
+                        "expanded":true,
+                        "pages":[
+                           "temp1",
+                           "temp2",
+                           "temp3"
+                        ]
+                     },
+                     {
+                        "group":"RESOURCES",
+                        "icon":"square-terminal",
+                        "pages":[
+                           "temp2",
+                           "temp1",
+                           {
+                              "group":"Release notes",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           }
                         ]
                      }
                   ]
@@ -84,8 +143,7 @@
             ]
          },
          {
-            "tab":"Developer Platform",
-            "icon":"square-terminal",
+            "tab":"Co-branding",
             "anchors":[
                {
                   "anchor":"Getting Started",
@@ -155,8 +213,27 @@
             ]
          },
          {
-            "tab":"Blog",
-            "icon":"newspaper",
+            "tab":"Creator UX",
+            "href":"https://external-link.com/blog"
+         },
+         {
+            "tab":"Partner Integrations",
+            "href":"https://external-link.com/blog"
+         },
+         {
+            "tab":"MCP (Coming Soon)",
+            "href":"https://external-link.com/blog"
+         },
+         {
+            "tab":"References",
+            "href":"https://external-link.com/blog"
+         },
+         {
+            "tab":"Resources",
+            "href":"https://external-link.com/blog"
+         },
+         {
+            "tab":"Release Notes",
             "href":"https://external-link.com/blog"
          }
       ]
