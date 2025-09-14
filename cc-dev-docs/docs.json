@@ -9,7 +9,6 @@
       "tabs":[
          {
             "tab":"Developer Platform",
-            "icon":"square-terminal",
             "anchors":[
                {
                   "anchor":"Developer Guide",
@@ -70,13 +69,13 @@
                },
                {
                   "anchor":"References",
-                  "icon":"layout",
+                  "icon":"square-terminal",
                   "groups":[
                      {
                         "group":"DATA MODEL",
                         "expanded":true,
                         "pages":[
-                           "getting-started",
+                           "temp2",
                            "glossary",
                            "temp1"
                         ]
@@ -227,10 +226,6 @@
          },
          {
             "tab":"Resources",
-            "href":"https://external-link.com/blog"
-         },
-         {
-            "tab":"Release Notes",
             "href":"https://external-link.com/blog"
          }
       ]
