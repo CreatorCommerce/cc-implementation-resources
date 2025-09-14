@@ -13,7 +13,7 @@
             "anchors":[
                {
                   "anchor":"Developer Guide",
-                  "icon":"album",
+                  "icon":"book-open",
                   "groups":[
                      {
                         "group":"First steps",
@@ -24,8 +24,18 @@
                           "temp1"
                         ]
                      },
+                    {
+                        "group":"First steps",
+                        "expanded":true,
+                        "pages":[
+                           "getting-started",
+                          "glossary",
+                          "temp1"
+                        ]
+                     },
                      {
                         "group":"Resources",
+                       "icon":"square-terminal",
                         "pages":[
                            "temp2",
                            "temp1",
