@@ -13,31 +13,29 @@
             "anchors":[
                {
                   "anchor":"Developer Guide",
-                  "icon":"layout",
+                  "icon":"album",
                   "groups":[
                      {
-                        "group":"Getting started",
-                        "icon":"play",
+                        "group":"First steps",
                         "expanded":true,
                         "pages":[
                            "getting-started",
-                           {
-                              "group":"Editing",
-                              "icon":"pencil",
-                              "pages":[
-                                 "installation",
-                                 "editor"
-                              ]
-                           }
+                          "glossary",
+                          "temp1"
                         ]
                      },
                      {
-                        "group":"Writing content",
-                        "icon":"notebook-text",
-                        "tag":"NEW",
+                        "group":"Resources",
                         "pages":[
-                           "writing-content/page",
-                           "writing-content/text"
+                           "temp2",
+                           "temp1",
+                                  {
+                              "group":"Release notes",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                                  ]
+                                 }
                         ]
                      }
                   ]
