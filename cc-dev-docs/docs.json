@@ -86,6 +86,13 @@
                         "pages":[
                            "temp1",
                            "temp2",
+                          {
+                              "group":"Shopify Flow actions",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           },
                            {
                               "group":"Release notes",
                               "pages":[
@@ -110,7 +117,20 @@
                         "pages":[
                            "temp1",
                            "temp2",
-                           "temp3"
+                          {
+                              "group":"Shopify Flow triggers",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           },
+                           {
+                              "group":"Klaviyo events",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           }
                         ]
                      },
                      {
