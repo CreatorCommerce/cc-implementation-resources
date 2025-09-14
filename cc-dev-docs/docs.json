@@ -42,7 +42,7 @@
                         "icon":"square-terminal",
                         "pages":[
                            "temp1",
-                          "release-notes"
+                           "release-notes"
                         ]
                      }
                   ]
@@ -60,7 +60,7 @@
                            "temp3"
                         ]
                      },
-                    {
+                     {
                         "group":"SHOPIFY REFERENCE",
                         "expanded":true,
                         "pages":[
@@ -68,7 +68,7 @@
                            "temp3"
                         ]
                      },
-                    {
+                     {
                         "group":"SDKS",
                         "expanded":true,
                         "pages":[
@@ -82,7 +82,7 @@
                         "pages":[
                            "temp3",
                            "temp2",
-                          {
+                           {
                               "group":"Shopify Flow actions",
                               "pages":[
                                  "temp3",
@@ -103,7 +103,7 @@
                         "expanded":true,
                         "pages":[
                            "temp2",
-                          {
+                           {
                               "group":"Shopify Flow triggers",
                               "pages":[
                                  "temp1",
@@ -124,7 +124,7 @@
             ]
          },
          {
-            "tab":"Co-branding",
+            "tab":"Co-branded Consumer UX",
             "anchors":[
                {
                   "anchor":"Getting Started",
