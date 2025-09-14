@@ -1,140 +1,156 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Your Docs",
-  "colors": {
-    "primary": "#ff0000"
-  },
-  "navigation": {
-    "tabs": [
-      {
-        "tab": "Developer Platform",
-        "icon": "square-terminal",
-        "anchors": [
-          {
-            "anchor": "Developer Guide",
-            "icon": "layout",
-             "groups": [
-      {
-        "group": "Getting started",
-        "icon": "play",
-        "expanded": true,
-        "pages": [
-          "quickstart",
-          {
-            "group": "Editing",
-            "icon": "pencil",
-            "pages": [
-              "installation",
-              "editor"
+   "$schema":"https://mintlify.com/docs.json",
+   "theme":"mint",
+   "name":"Your Docs",
+   "colors":{
+      "primary":"#ff0000"
+   },
+   "navigation":{
+      "tabs":[
+         {
+            "tab":"Developer Platform",
+            "icon":"square-terminal",
+            "anchors":[
+               {
+                  "anchor":"Developer Guide",
+                  "icon":"layout",
+                  "groups":[
+                     {
+                        "group":"Getting started",
+                        "icon":"play",
+                        "expanded":true,
+                        "pages":[
+                           "getting-started",
+                           {
+                              "group":"Editing",
+                              "icon":"pencil",
+                              "pages":[
+                                 "installation",
+                                 "editor"
+                              ]
+                           }
+                        ]
+                     },
+                     {
+                        "group":"Writing content",
+                        "icon":"notebook-text",
+                        "tag":"NEW",
+                        "pages":[
+                           "writing-content/page",
+                           "writing-content/text"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "anchor":"References",
+                  "icon":"layout",
+                  "groups":[
+                     {
+                        "group":"Getting started",
+                        "icon":"play",
+                        "expanded":true,
+                        "pages":[
+                           "quickstart",
+                           {
+                              "group":"Editing",
+                              "icon":"pencil",
+                              "pages":[
+                                 "installation",
+                                 "editor"
+                              ]
+                           }
+                        ]
+                     },
+                     {
+                        "group":"Writing content",
+                        "icon":"notebook-text",
+                        "tag":"NEW",
+                        "pages":[
+                           "writing-content/page",
+                           "writing-content/text"
+                        ]
+                     }
+                  ]
+               }
             ]
-          }
-        ]
-      },
-      {
-        "group": "Writing content",
-        "icon": "notebook-text",
-        "tag": "NEW",
-        "pages": [
-          "writing-content/page",
-          "writing-content/text"
-        ]
-      }
-    ]
-          },
-          {
-            "anchor": "References",
-            "icon": "layout",
-             "groups": [
-      {
-        "group": "Getting started",
-        "icon": "play",
-        "expanded": true,
-        "pages": [
-          "quickstart",
-          {
-            "group": "Editing",
-            "icon": "pencil",
-            "pages": [
-              "installation",
-              "editor"
+         },
+         {
+            "tab":"Developer Platform",
+            "icon":"square-terminal",
+            "anchors":[
+               {
+                  "anchor":"Getting Started",
+                  "icon":"layout",
+                  "pages":[
+                     "getting-started"
+                  ]
+               },
+               {
+                  "anchor":"Co-branded Storefronts",
+                  "icon":"layout",
+                  "pages":[
+                     "co-branded-storefronts"
+                  ]
+               },
+               {
+                  "anchor":"Co-branded Emails",
+                  "icon":"mail",
+                  "pages":[
+                     "co-branded-messaging"
+                  ]
+               },
+               {
+                  "anchor":"Enrichment Workflows",
+                  "icon":"workflow",
+                  "pages":[
+                     "enrichment-flows"
+                  ]
+               },
+               {
+                  "anchor":"Creator Message Flows",
+                  "icon":"message-circle",
+                  "pages":[
+                     "creator-messaging"
+                  ]
+               },
+               {
+                  "anchor":"Creator Dashboard",
+                  "icon":"monitor",
+                  "pages":[
+                     "creator-dashboard"
+                  ]
+               },
+               {
+                  "anchor":"Partner Integrations",
+                  "icon":"puzzle",
+                  "pages":[
+                     "partner-integrations"
+                  ]
+               }
+            ],
+            "pages":[
+               "newfile"
             ]
-          }
-        ]
-      },
-      {
-        "group": "Writing content",
-        "icon": "notebook-text",
-        "tag": "NEW",
-        "pages": [
-          "writing-content/page",
-          "writing-content/text"
-        ]
-      }
-    ]
-          }
-        ]
-      },
-      {
-        "tab": "Developer Platform",
-        "icon": "square-terminal",
-        "anchors": [
-          {
-            "anchor": "Getting Started",
-            "icon": "layout",
-            "pages": ["getting-started"]
-          },
-          {
-            "anchor": "Co-branded Storefronts",
-            "icon": "layout",
-            "pages": ["co-branded-storefronts"]
-          },
-          {
-            "anchor": "Co-branded Emails",
-            "icon": "mail",
-            "pages": ["co-branded-messaging"]
-          },
-          {
-            "anchor": "Enrichment Workflows",
-            "icon": "workflow",
-            "pages": ["enrichment-flows"]
-          },
-          {
-            "anchor": "Creator Message Flows",
-            "icon": "message-circle",
-            "pages": ["creator-messaging"]
-          },
-          {
-            "anchor": "Creator Dashboard",
-            "icon": "monitor",
-            "pages": ["creator-dashboard"]
-          },
-          {
-            "anchor": "Partner Integrations",
-            "icon": "puzzle",
-            "pages": ["partner-integrations"]
-          }
-        ],
-        "pages": ["newfile"]
-      },
-      {
-        "tab": "SDKs",
-        "icon": "code",
-        "description": "SDKs are used to interact with the API.",
-        "pages": [
-          "sdk/fetch",
-          "sdk/create",
-          "sdk/delete",
-          "newfile",
-          "newfile",
-          "newfile"
-        ]
-      },
-      {
-        "tab": "Blog",
-        "icon": "newspaper",
-        "href": "https://external-link.com/blog"
-      }
-    ]
-  }
+         },
+         {
+            "tab":"SDKs",
+            "icon":"code",
+            "description":"SDKs are used to interact with the API.",
+            "pages":[
+               "sdk/fetch",
+               "sdk/create",
+               "sdk/delete",
+               "newfile",
+               "newfile",
+               "newfile"
+            ]
+         },
+         {
+            "tab":"Blog",
+            "icon":"newspaper",
+            "href":"https://external-link.com/blog"
+         }
+      ]
+   }
 }
