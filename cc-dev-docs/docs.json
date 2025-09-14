@@ -20,16 +20,7 @@
                         "pages":[
                            "getting-started",
                            "glossary",
-                           "temp1"
-                        ]
-                     },
-                     {
-                        "group":"SHOPIFY",
-                        "expanded":true,
-                        "pages":[
-                           "temp1",
-                           "temp2",
-                           "temp3"
+                           "shopify-compatibility"
                         ]
                      },
                      {
@@ -56,13 +47,7 @@
                         "pages":[
                            "temp2",
                            "temp1",
-                           {
-                              "group":"Release notes",
-                              "pages":[
-                                 "temp1",
-                                 "temp2"
-                              ]
-                           }
+                          "release-notes"
                         ]
                      }
                   ]
@@ -134,27 +119,12 @@
                         ]
                      },
                      {
-                        "group":"METAOBJECTS",
+                        "group":"SHOPIFY DATA",
                         "expanded":true,
                         "pages":[
                            "temp1",
                            "temp2",
                            "temp3"
-                        ]
-                     },
-                     {
-                        "group":"RESOURCES",
-                        "icon":"square-terminal",
-                        "pages":[
-                           "temp2",
-                           "temp1",
-                           {
-                              "group":"Release notes",
-                              "pages":[
-                                 "temp1",
-                                 "temp2"
-                              ]
-                           }
                         ]
                      }
                   ]
