@@ -196,19 +196,6 @@
             ]
          },
          {
-            "tab":"SDKs",
-            "icon":"code",
-            "description":"SDKs are used to interact with the API.",
-            "pages":[
-               "sdk/fetch",
-               "sdk/create",
-               "sdk/delete",
-               "newfile",
-               "newfile",
-               "newfile"
-            ]
-         },
-         {
             "tab":"Creator UX",
             "href":"https://external-link.com/blog"
          },
