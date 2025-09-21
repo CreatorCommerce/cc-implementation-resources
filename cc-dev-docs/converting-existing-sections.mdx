@@ -1,0 +1,403 @@
+---
+title: "Converting Existing Sections to CreatorCommerce Co‑Branding"
+description: "A practical guide to add or preserve CreatorCommerce co‑branding in Shopify sections — where to inject variables for text vs media, and how to safely migrate existing co‑branded logic to a new section."
+---
+
+## Why this guide
+
+This playbook covers two common scenarios when working on Shopify sections in a co‑branded CreatorCommerce storefront:
+
+- **Neutral → Co‑branded**: A section has no creator data yet. You’ll add CreatorCommerce variables in the right spots (text vs media) with graceful fallbacks.
+- **Already Co‑branded → New version**: A section already uses CreatorCommerce. You’ll preserve all business logic and variables while migrating to a new variant.
+
+Everything follows the CreatorCommerce Co‑Branded UI Data Reference rules (source hierarchy, context resolution, fallbacks, escaping, and ID type conversion).
+
+---
+
+## 1) Convert a neutral section (no co‑branding yet)
+
+### Goal
+
+Introduce creator context, then selectively replace static copy and media with CreatorCommerce variables — always with neutral fallbacks and safe checks.
+
+### Step A — Resolve creator context once
+
+Prefer a compact `{% liquid %}` block near the top of the section/snippet to avoid long inline logic:
+
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  assign has_creator = cc_creator != blank
+%}
+```
+
+This yields a single `has_creator` flag and `cc_creator` object usable throughout.
+
+### Step B — Replace text copy with creator variables (with fallbacks)
+
+Use CreatorCommerce fields for names, bios, and shop text. Always escape user content and provide neutral defaults.
+
+```liquid
+{% liquid
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Featured Creator'
+  assign creator_bio  = cc_creator.bio | default: 'Discover products curated by our community.'
+%}
+
+<h2>{{ creator_name | escape }}</h2>
+<p>{{ creator_bio | escape }}</p>
+```
+
+For nested JSON fields stored under `data.value`:
+
+```liquid
+{% liquid
+  assign shop_tagline = cc_creator.data.value.cc-creator-shop-description | default: 'Shop our latest.'
+%}
+<p>{{ shop_tagline | escape }}</p>
+```
+
+### Step C — Replace media (images/video) with creator media
+
+Guard image usage and add alt text. Prefer Shopify image helpers, lazy loading, and size constraints.
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-profile-picture %}
+  <img
+    src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 640, height: 640, crop: 'center' }}"
+    alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}"
+    loading="lazy"
+    width="320"
+    height="320"
+  >
+{% endif %}
+```
+
+If your section has a hero background or featured media, introduce a conditional block that shows creator media when present, but keeps the original neutral media otherwise.
+
+### Step D — Optional: show creator drops/collections
+
+When the creator has drops, iterate safely. Check presence before looping.
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value %}
+  {% for drop in cc_creator.cc-creator-drops.value %}
+    <div class="creator-drop">
+      <h3>{{ drop['cc-creator-drop-title'] | default: 'Featured Drop' | escape }}</h3>
+      {% if drop['cc-featured-media'] %}
+        <img
+          src="{{ drop['cc-featured-media'] | image_url: width: 800, height: 450, crop: 'center' }}"
+          alt="{{ drop['cc-creator-drop-title'] | default: 'Featured Drop' | escape }}"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+  {% endfor %}
+{% endif %}
+```
+
+If you need to match products/collections by ID from JSON, always convert types:
+
+```liquid
+{% comment %} product.id is an integer; JSON may store strings {% endcomment %}
+{% if product.id | append: '' == drop['cc-creator-drop-product-shopify-id'] %}
+  <!-- render matched product UI -->
+{% endif %}
+```
+
+### Step E — Optional: discount/affiliate hints
+
+Only show discount UI if the creator has a code.
+
+```liquid
+{% if has_creator and cc_creator.cc-collab-discount-code %}
+  <p>Use code <strong>{{ cc_creator.cc-collab-discount-code | escape }}</strong> at checkout.</p>
+{% endif %}
+```
+
+### Step F — Optional: minimal JS handoff
+
+Expose only what’s needed.
+
+```javascript
+<script>
+window.__ccCreator = {
+  handle: {{ cc_creator.cc-creator-shop-handle | json }},
+  name: {{ cc_creator.cc-creator-first-name | json }},
+  discountCode: {{ cc_creator.cc-collab-discount-code | json }}
+};
+</script>
+```
+
+### Quick checklist (neutral → co‑branded)
+
+- **Context resolved**: `cc_creator` and `has_creator` set once with metaobject vs non‑metaobject branching.
+- **Text replaced safely**: creator name/bio/tagline with `| default` and `| escape`.
+- **Media guarded**: creator image only when present; size, crop, alt, `loading="lazy"`.
+- **Drops optional**: loop only when present; handle empty; type‑convert IDs on comparisons.
+- **Discount optional**: show/hide UI based on code presence.
+- **Minimal JS**: only handle, name, discount — no full metaobject dump.
+
+---
+
+## 2) Convert an already co‑branded section (preserve logic)
+
+### Goal
+
+You’re inheriting a section that already uses CreatorCommerce. You’ll migrate or rewrite it, but must keep all co‑branding behavior and data references intact.
+
+### Step A — Inventory current co‑branding logic
+
+Look for these patterns:
+
+- **Context resolution**: `cart.attributes['cc-creator-handle']`, `metaobjects.creator[...]`, or `metaobject` on metaobject templates.
+- **Field reads**: `cc_creator.cc-creator-first-name`, `cc_creator.bio`, `cc_creator.data.value.*`.
+- **Media**: `cc_creator.cc-creator-profile-picture` with `image_url` options.
+- **Drops/collections/products**: loops under `cc_creator.cc-creator-drops.value`, optional nested product arrays, type conversions on ID comparisons.
+- **Discount logic**: presence checks for `cc_creator.cc-collab-discount-code`.
+- **JS handoff**: small `window.__ccCreator` object.
+
+Copy these concerns into a dedicated `{% liquid %}` setup block at the top of your new section.
+
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Featured Creator'
+  assign creator_bio  = cc_creator.bio | default: ''
+%}
+```
+
+### Step B — Preserve source hierarchy and fallbacks
+
+- **Never hardcode a specific creator**; always use the handle‑based lookup.
+- Keep neutral defaults so the section renders when creator context is missing.
+- Escape unsafe strings and guard list iterations.
+
+### Step C — Maintain text and media bindings
+
+Port over the same text bindings and image logic. Confirm that alt text and sizing are still correct. Example:
+
+```liquid
+<h2>{{ creator_name | escape }}</h2>
+{% if has_creator and cc_creator.cc-creator-profile-picture %}
+  <img
+    src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 640, height: 640, crop: 'center' }}"
+    alt="{{ creator_name | escape }}"
+    loading="lazy"
+  >
+{% endif %}
+```
+
+### Step D — Keep business logic for drops/products intact
+
+Recreate loops and ID comparisons exactly, preserving type conversions:
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value %}
+  {% for drop in cc_creator.cc-creator-drops.value %}
+    {% assign wanted_product_id = drop['cc-creator-drop-product-shopify-id'] %}
+    {% if product and product.id and product.id | append: '' == wanted_product_id %}
+      <!-- Render matched product UI for this drop -->
+    {% endif %}
+  {% endfor %}
+{% endif %}
+```
+
+### Step E — Re‑establish optional discount and JS handoff
+
+```liquid
+{% if has_creator and cc_creator.cc-collab-discount-code %}
+  <p>Use code <strong>{{ cc_creator.cc-collab-discount-code | escape }}</strong> at checkout.</p>
+{% endif %}
+```
+
+```javascript
+<script>
+window.__ccCreator = {
+  handle: {{ cc_creator.cc-creator-shop-handle | json }},
+  name: {{ cc_creator.cc-creator-first-name | json }}
+};
+</script>
+```
+
+### Safe refactor tips
+
+- **Centralize variables**: Compute once in a `{% liquid %}` block; keep markup clean.
+- **Avoid inline complex logic**: Pre‑assign `creator_name`, `has_creator`, etc.
+- **Don’t change lookup semantics**: Keep handle‑based `metaobjects.creator[cc_handle]`.
+- **Retain ID conversions**: `object.id | append: '' == string_id`.
+- **Guard empty lists**: Check `.value` before loops; handle missing media.
+- **Keep neutral fallbacks**: The section must render without a creator.
+
+### Migration checklist (co‑branded → new version)
+
+- **Context & flags** copied: `cc_creator`, `has_creator`.
+- **Text bindings** preserved with defaults and escaping.
+- **Media logic** preserved (image guards, alt text, sizing, lazy load).
+- **Drops/product logic** preserved, including ID type conversions.
+- **Discount UI** preserved but remains optional.
+- **Minimal JS** preserved; no full metaobject exposure.
+- **No hardcoded creators**; handle‑based lookup remains.
+
+---
+
+## Quick reference snippets
+
+### Minimal context block
+
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  assign has_creator = cc_creator != blank
+%}
+```
+
+### Example: brand color tokens (optional)
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-shop-theme-primary-color %}
+  <style>
+    :root {
+      --cc-creator-color: {{ cc_creator.cc-creator-shop-theme-primary-color | default: '#000000' }};
+    }
+  </style>
+{% endif %}
+```
+
+### Example: safe image usage
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-profile-picture %}
+  <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 400, height: 400, crop: 'center' }}"
+       alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}"
+       loading="lazy">
+{% endif %}
+```
+
+---
+
+By following these steps and checklists, you can confidently co‑brand neutral sections and safely migrate existing co‑branded sections while preserving all CreatorCommerce logic and guardrails.
+
+---
+
+## One layer deeper: how to think about CreatorCommerce variables
+
+This section distills core ideas from these rules without diving into low‑level implementation:
+
+- CC file conversion: `cc-converting-existing-files`
+- Co‑branded data reference: `cc-referencing-co-branded-data`
+- Drops data thinking: `cc-referencing-drops-data`
+- Product data thinking: `cc-referencing-product-data`
+
+### A) Variables: where they live and how to find them
+
+- **Resolve creator once**: Think “establish context, then read values”.
+  - On creator metaobject templates, the creator is `metaobject`.
+  - Elsewhere, use the handle from cart attributes to look up `metaobjects.creator[handle]`.
+- **Two layers of fields**:
+  - Top‑level creator fields: treat like simple Liquid vars → `cc_creator.cc-creator-first-name`.
+  - JSON custom fields: nested under `cc_creator.data.value.FIELD` when you need ordered lists, rich drop config, or product‑level enhancements.
+- **Mental model**: “If it’s a general profile or brand token, it’s top‑level. If it’s drop/order/product‑specific, it’s JSON.”
+
+Minimal setup you’ll reuse:
+
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  assign has_creator = cc_creator != blank
+%}
+```
+
+### B) Placing variables: text vs media vs structure
+
+- **Text surfaces** (headings, subcopy, CTAs)
+  - Precompute names/taglines; use `| default` and `| escape`.
+  - Replace copy where it adds meaning; leave neutral copy as fallback.
+- **Media surfaces** (hero image, avatars, cards)
+  - Guard access (`if has_creator and image exists`).
+  - Add alt text; size and lazy‑load consistently.
+- **Structural surfaces** (lists, grids, carousels)
+  - Think “dual‑mode”: creator mode when data exists, otherwise fallback to original behavior.
+  - Keep original section fully intact inside the fallback branch.
+
+### C) Drops: think JSON for order, Collections for reality
+
+- **Two sources, one mental model**:
+  - JSON (`cc_creator.data.value['cc-creator-drops']`) preserves order and custom fields.
+  - Collections (`cc_creator.cc-creator-drops.value`) are the real Shopify objects with products.
+- **How to reason**:
+  - Iterate JSON to decide what to show and in what order.
+  - Resolve each JSON item to a real Collection to render actual products.
+  - If a product or collection is missing, skip gracefully; never break the UI.
+- **Where to place drop variables**:
+  - Titles/subtitles → section headings.
+  - Descriptions → supporting copy.
+  - Product notes/badges → inside card UI.
+
+### D) Product data: what’s trustworthy, what’s decorative
+
+- **Trust Shopify for price/availability**; treat JSON as enhancement (notes, variant hints, media).
+- **Always convert IDs to strings** before comparing: `product.id | append: ''`.
+- **Variant thinking**: If JSON hints a variant, resolve it; otherwise use first available.
+- **Minimalism**: Only pull what you need for the current card or PDP element.
+
+### E) Using CC variables like any other Liquid variable
+
+- **Precompute** values once in a `{% liquid %}` block.
+- **Guard and default**: `| default` for text, null checks for arrays.
+- **Escape by default** for displayed strings.
+- **Type convert for comparisons** with JSON values.
+- **Keep JS lean**: expose only small primitives (handle, name, discountCode) when needed.
+
+Tiny examples:
+
+```liquid
+{% liquid %}
+<h3>{{ cc_creator.cc-creator-first-name | default: 'Featured Creator' | escape }}</h3>
+```
+
+```liquid
+{% liquid
+  assign product_id_str = product.id | append: ''
+%}
+```
+
+### F) Dual‑mode mindset for conversions
+
+- **Never modify originals**: create a `CC` variant (e.g., `cc-hero.liquid`).
+- **Branch early**: creator mode if data present; otherwise paste the original logic as fallback.
+- **Same CSS hooks**: preserve class names so theme styles keep working.
+- **Multiple instances**: if a UI duplicates (e.g., multiple carousels), plan per‑instance IDs/classes conceptually; avoid global state.
+
+### G) Lightweight troubleshooting heuristics
+
+- Verify context first: does `cc_handle` exist? Is `cc_creator` non‑blank?
+- Print small JSON temporarily with `| json` to confirm presence, then remove.
+- Test four states: creator present with data, creator present missing fields, no creator context, metaobject page vs regular page.
+- If a comparison fails, suspect ID type mismatches; add `| append: ''`.
+
+The goal isn’t to memorize snippets — it’s to place the right variable in the right surface, with safety and fallbacks, the same way you already reason about any Liquid variable.
+
+

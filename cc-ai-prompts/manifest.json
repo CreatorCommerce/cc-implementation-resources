@@ -17,11 +17,11 @@
         "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
         "tags": ["pdp", "theme"]
       },
-      "product-template.txt": {
+      "sidekick-init.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
-        "type": ["cursor", "magic", "chatgpt", "claude", "gemini", "claude"],
-        "tags": ["pdp", "theme"]
+        "type": ["sidekick"],
+        "tags": ["init"]
       },
       "product-template.txt": {
         "title": "Prompt title",
