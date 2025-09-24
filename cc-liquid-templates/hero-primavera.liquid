@@ -1,0 +1,4922 @@
+<!-- Block Body -->
+{%- style -%}
+  /*=============================
+    Hero Section
+  =============================*/
+  #hero-section {
+    display: flex;
+    gap: {{ section.settings.center_gap_desktop }}px;
+    min-height: 60vh;
+    color: {{ section.settings.textcolor }};
+    width: 100%;
+    /* max-width: 1600px; */
+    margin: auto;
+    flex-direction: row;
+    background-size: cover;
+    background-position: center;
+    border-radius: {{ section.settings.container_border_radius }}px;
+     position: relative;
+  }
+
+  /* {% if section.settings.force_full_width %}
+  #super-background {
+    width: 100% !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    max-width: none !important;
+    overflow-x: hidden !important;
+  }
+  
+  #hero-section {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  #hero-section .container,
+  .container {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+
+  .hero-wrapper,
+  .section-wrapper,
+  .hero__container,
+  .hero__content-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  body,
+  html,
+  main {
+    overflow-x: hidden !important;
+  }
+  
+  {% endif %} */
+  
+  /* Hide carousel arrows for social carousel type */
+  {% if section.settings.carousel_type == 'social' %}
+  .story__next.swiper-button-next,
+  .story__prev.swiper-button-prev {
+    display: none !important;
+  }
+  {% endif %}
+   #hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    {% if section.settings.overlay_enabled %}
+    background: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0)' }};
+    opacity: {{ section.settings.overlay_opacity | default: 0.5 }};
+    {% else %}
+    background: transparent;
+    opacity: 0;
+    {% endif %}
+    z-index: 0;
+    border-radius: inherit;
+  }
+
+  /* Ensure all content appears above the overlay */
+  #hero-section > * {
+    position: relative;
+    z-index: 1;
+  }
+   {% if section.settings.background_image == blank %}
+      #hero-section{
+        background-color: {{ section.settings.background }};
+      }
+    {% endif %}
+  .certified-container {
+    width: 100% !important;
+   }
+  {% if section.settings.heading-font-family %}
+    #hero-section h1,
+    #hero-section h2,
+    #hero-section h3,
+    #hero-section h4,
+    #hero-section h5,
+    #hero-section h6 {
+    font-family: {{ section.settings.heading-font-family }} !important;
+  }
+  {% endif %}
+
+   {% if section.settings.body-font-family %}
+  #hero-section p,
+  #hero-section span,
+   #hero-section div{
+    font-family: {{ section.settings.body-font-family }} !important;
+  }
+    {% endif %}
+
+  {% if section.settings.cta-font-family %}
+  #hero-section button,
+  #hero-section .product-cta,
+  #hero-section .fallback-cta {
+    font-family: {{ section.settings.cta-font-family }} !important;
+  }
+  {% endif %}
+
+
+  .hero-header-copy p {
+    margin: 0;
+  }
+ .custom-section {
+      width: 100%;
+  }
+  .hero-content.center-content {
+    align-items: center !important;
+    flex: auto;
+    width: 100%;
+    max-width: 100%;
+    text-align: center !important;
+    display: flex !important;
+  }
+
+
+  .responsive-flex {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #hero-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* margin-right:15px !important; */
+  }
+
+  #image-width {
+    max-width: 500px;
+    max-height: 600px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-content {
+    /* flex: 1; */
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    padding-left: {% if section.settings.center_content_no_media and total_media_count == 0 %}0{% else %}{{ section.settings.padding_left }}{% endif %}px;
+    /* max-width: 1100px; */
+    box-sizing: border-box;
+    /* background-color: {{ section.settings.background }}; */
+  }
+
+  .hero-header-copy {
+    max-width: 750px;
+    line-height: 1.05em;
+    margin: 1.5vh 0 {{ section.settings.heading_margin_bottom }}px 0;
+    display: block;
+  }
+
+  #star-container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 8px;
+  }
+  .template-creator  main#MainContent {
+    padding: 0;
+}
+  {% for block in section.blocks %}
+    .product-card-featured {
+      display: flex;
+      width: 100%;
+      min-width: 350px;
+      flex-direction: row;
+      gap: 20px;
+      text-align: left;
+      padding: 10px;
+      border: {{ block.settings.product_border_width }}px solid {{ block.settings.product_border_color }};
+      border-radius: {{ block.settings.product_corner_radius }}px;
+      background-color: {{ block.settings.product_background }};
+      justify-content: flex-start;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 0.05);
+    }
+    .product-card-featured {
+    max-width: {{ block.settings.featured_product_max_width }}px !important;
+    width: 100%;
+    box-sizing: border-box;
+    }
+    
+    .product-card-grid {
+    max-width: {{ block.settings.grid_product_max_width }}px !important;
+    width: 100%;
+    box-sizing: border-box;
+    }
+
+    .product-card-grid {
+      display: flex;
+      height: {{ block.settings.product_card_grid_max_height }}px;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 10px 10px 15px;
+      border: {{ block.settings.product_border_width }}px solid {{ block.settings.product_border_color }};
+      border-radius: {{ block.settings.product_corner_radius }}px;
+      background-color: {{ block.settings.product_background }};
+      justify-content: space-between;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 0.05);
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: {{ block.settings.product_text_color }};
+    }
+
+    .product-card-grid .product-cta {
+      margin-top: auto;
+      align-self: center;
+    }
+
+    .featured-product-image {
+      width: 100%;
+      height: 100%;
+      min-width: 100px;
+      max-width: 125px;
+      object-fit:contain;
+      border-radius: {{ block.settings.product_corner_radius }}px;
+    }
+
+    .product-image-grid {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+      max-height: 150px;
+      object-fit: cover;
+      aspect-ratio: 1 / 1.2;
+      border-radius: {{ block.settings.product_corner_radius }}px;
+    }
+   #grid-container-grid {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.number_of_recommendations }}, 1fr);
+    gap: 10px;
+    max-width: 1200px;
+    margin: 20px 0;
+  }
+  h2.hero-header-copy.hide-on-mobile p{
+    font-weight:500 !important; 
+    font-size:{{ block.settings.heading_text_size }}px; 
+    line-height:{{ block.settings.heading_text_line_height | default: 1.2 }};
+  }
+  h2.hero-header-copy.hide-on-desktop p{
+    font-weight:500; 
+    font-size:{{ block.settings.mobile_heading_text_size }}px;
+    line-height:{{ block.settings.mobile_heading_text_line_height | default: 1.2 }};
+  }
+  
+  #star-text {
+    font-size: {{ block.settings.star_text_size }}px;
+    font-weight: 600;
+    margin-top:0;
+    padding-top: {{ block.settings.star_adjustment_spacing }}px;
+    margin-bottom:0;
+    line-height:{{ block.settings.star_text_line_height | default: 1.2 }};
+  }
+  .cc-logo .dynamic-text p{
+    font-size:{{ block.settings.text-size }}px; 
+    line-height:{{ block.settings.text-line-height-size }}px;
+ }
+  {% endfor %}
+testimonials-component {
+    visibility: visible !important;
+}
+  #grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    max-width: 520px;
+    margin: 0;
+    margin-top: 2.2vh auto;
+    margin-top:20px;
+  }
+
+ 
+
+  .hide-on-mobile {
+    display: flex !important;
+  }
+
+  .hide-on-desktop {
+    display: none !important;
+  }
+
+  .section-padding {
+    padding-top: {{ section.settings.padding_top }}rem;
+    padding-bottom: {{ section.settings.padding_bottom }}rem;
+  }
+
+  /*=============================
+    Video Slider
+  =============================*/
+  .unique-video-slider {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  {% if section.settings.background_image != blank and section.settings.section_background == 'rgba(0,0,0,0)' %}
+  #super-background{
+   background-image: url('{{ section.settings.background_image | image_url }}');
+    background-size: cover;
+    background-position: center;
+  }
+  {% else %}
+    #hero-section{
+      background-image: url('{{ section.settings.background_image | image_url }}'); 
+    }
+  {% endif %}
+
+  #super-background {
+    background-color: {{ section.settings.section_background }};
+    padding: {{ section.settings.section_padding_top_bottom }}px {{ section.settings.section_padding_left_right }}px;
+    width:100%;
+  }
+   
+{% if section.settings.background_image == blank %}
+  .unique-video-slider::before,
+  .unique-video-slider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .unique-video-slider::before {
+    left: 0;
+    width: 30px;
+    background: linear-gradient(to right, {{ section.settings.background }}, {{ section.settings.background | color_modify: 'alpha', 0 }}) !important;
+  }
+
+  .unique-video-slider::after {
+    right: 0;
+    width: 100px;
+    background: linear-gradient(to left, {{ section.settings.background }}, {{ section.settings.background | color_modify: 'alpha', 0 }}) !important;
+  }
+ {% endif %}
+  .unique-video-slider .unique-testimonial__image {
+ {% if section.settings.aspect_ratio != 'custom' %}
+     aspect-ratio: {{ section.settings.aspect_ratio }};
+    width:600px;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+   {% endif %}
+    /* height: 600px;
+    width: 400px; */
+    overflow: hidden;
+    border-radius: {{ section.settings.video_corner_radius }}px;
+    border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    position: relative;
+  }
+  .story .unique-testimonial__image{
+  {% if section.settings.aspect_ratio != 'custom' %}
+     aspect-ratio: {{ section.settings.aspect_ratio }};
+    width:600px;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+   {% endif %}
+     border-radius: {{ section.settings.video_corner_radius }}px;
+     border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+     overflow: hidden;
+  }
+  .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+    padding: 15px;
+}
+
+  .lazy-video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .lazy-video-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .unique-video-slider .media-wrapper {
+    margin-right: 0;
+  }
+
+  .unique-video-slider-item {
+    margin-left: 40px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  .unique-video-slider-list {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .unique-video-slider-list.dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .unique-video-slider-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Single media item centering */
+  .unique-video-slider-item.single-media-item {
+    margin: 0 auto !important;
+  }
+
+  /* Center single media items on mobile */
+  @media (max-width: 1100px) {
+    .unique-video-slider-item.single-media-item {
+      margin: 0 auto !important;
+    }
+    
+    .unique-video-slider-list:has(.single-media-item) {
+      justify-content: center;
+    }
+  }
+
+
+
+  /*=============================
+    Certified Section
+  =============================*/
+  .certified-feature-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .certified-feature-section .top-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* width: 100%; */
+    max-width: 100%;
+    padding: 20px;
+    text-align: left;
+    justify-content:center;
+  }
+
+  .certified-feature-section .images {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 30%;
+  }
+
+  .certified-feature-section .images img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .certified-feature-section .images img:not(:first-child) {
+    margin-left: -10px;
+  }
+
+  .certified-feature-section .count {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px;
+    border-radius: 50%;
+    margin-left: -10px;
+    width: 32px;
+    height: 32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .certified-feature-section .text-section {
+    /* flex-grow: 1; */
+    max-width: 100%;
+    text-align: center;
+    line-height: 1.3;
+    /* margin: auto; */
+  }
+
+  .certified-feature-section .text-section a {
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .certified-feature-section .bottom-section {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    margin-top: 10px;
+    max-width: 100%;
+    /* gap: 25px; */
+     gap: var(--desktop-gap);
+     flex-wrap:wrap;
+  }
+
+  .certified-feature-section .bottom-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    line-height: 1.1;
+    max-width: 50%;
+  }
+
+  .certified-feature-section .bottom-item span {
+    text-align: left;
+  }
+
+  .certified-feature-section .bottom-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .cc-logo-container p{
+    margin:0;
+  }
+  {% for block in section.blocks %}
+    .cc-logo-image {
+      width: {{ block.settings.logo_width }}px;
+      height: {{ block.settings.logo_width }}px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .cc-creator-image {
+      width: {{ block.settings.creator_image_width }}px;
+      height: {{ block.settings.creator_image_width }}px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .cc-logo-divider {
+      font-size: {{ block.settings.divider_text_size}}px;
+      color: {{ block.settings.divider_color }};
+      height: {{block.settings.logo_width }}px;
+      align-self: start;
+      align-content:center;
+    }
+
+    .cc-logo-container {
+      display: flex;
+      align-items: flex-start;
+      justify:start;
+      gap: {{ block.settings.horizontal-spacing}}px;
+      max-width:fit-content;
+      /* margin-top: 30px; */
+    }
+    .cc-logo-container .dynamic-text {
+        max-width: min-content;
+
+    }
+    .cc-logo {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      text-decoration: none;
+      text-align:center;
+    }
+    .cc-creator {
+     text-align: center;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+    }
+    .cc-creator .dynamic-text {
+      text-align: center;
+      width: 100%;
+    }
+    .cc-creator-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .cc-creator-profile .dynamic-text {
+      text-align: center;
+      width: 100%;
+    }
+   {% if block.type == 'certified' %}
+   .certified-feature-section .top-section{
+       background: {{ block.settings.certified_bg }};
+       border-radius: {{ block.settings.certified_border_radius | default: 10 }}px !important;
+   }
+   {% endif %}
+  {% endfor %}
+   #hero-section .container {
+    max-width: {{ section.settings.content_max_width }}px !important;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: {{ section.settings.inner_padding_left_right }}px;
+    padding-right: {{ section.settings.inner_padding_left_right }}px;
+    padding-top: {{ section.settings.inner_padding_top_bottom }}px;
+    padding-bottom: {{ section.settings.inner_padding_top_bottom }}px;
+  }
+@media screen and (min-width: 1760px){
+ #hero-section .container {
+    max-width: 1024px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+div#hero-image {
+    max-width: 1500px;
+}
+}
+  /*=============================
+    Responsive Styles
+  =============================*/
+  @media (max-width: 1100px) {
+    .unique-video-slider .unique-testimonial__image {
+      margin-left: 0;
+      height: 300px;
+      width: 180px;
+      border-radius: {{ section.settings.video_corner_radius }}px;
+      border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+    }
+    #super-background {
+      padding: {{ section.settings.section_padding_top_bottom_mobile }}px {{ section.settings.section_padding_left_right_mobile }}px;
+    }
+
+    .unique-video-slider {
+      margin-left: calc(-50vw + 50%);
+    }
+    /* {% if section.settings.force_full_width %}
+    .unique-video-slider {
+      margin-left: 0 !important;
+    }
+    {% endif %} */
+
+    .unique-video-slider::before {
+      width: 0px;
+    }
+
+    .unique-video-slider::after {
+      width: 50px;
+    }
+
+    #hero-section {
+      flex-direction: column;
+      height: auto;
+      gap: {{ section.settings.center_gap_mobile }}px;
+    }
+
+    /* {% if section.settings.force_full_width %}
+    #super-background {
+      width: 100% !important;
+      margin-left: calc(-50vw + 50%) !important;
+      margin-right: calc(-50vw + 50%) !important;
+      max-width: none !important;
+      overflow-x: hidden !important;
+    }
+    
+    #hero-section {
+      width: 100% !important;
+      max-width: none !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    #hero-section .container,
+    .container {
+      max-width: none !important;
+      width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    .hero-wrapper,
+    .section-wrapper,
+    .hero__container,
+    .hero__content-wrapper {
+      width: 100% !important;
+      max-width: none !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    body,
+    html,
+    main {
+      overflow-x: hidden !important;
+    }
+    
+    {% endif %} */
+    
+    /* Hide carousel arrows for social carousel type on mobile */
+    {% if section.settings.carousel_type == 'social' %}
+    .story__next.swiper-button-next,
+    .story__prev.swiper-button-prev {
+      display: none !important;
+    }
+    {% endif %}
+
+    .featured-product-image {
+      max-width: 75px;
+    }
+
+    /* Mobile Featured Product Card Responsive Sizing */
+         .product-card-featured {
+           min-width: unset !important;
+           width: 100% !important;
+           max-width: min({{ block.settings.featured_product_max_width }}px, calc(100vw - {{ section.settings.section_padding_left_right_mobile | default: 20 }}px * 2)) !important;
+           box-sizing: border-box !important;
+           margin: 0 auto !important;
+         }
+
+    /* Allow price text to wrap on narrow screens */
+    .product-card-featured .product-info {
+      flex-wrap: wrap !important;
+      min-width: 0 !important;
+    }
+
+    .product-card-featured .product-info p {
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+    }
+
+    /* Allow "With Creator's Code" text to wrap within flex container */
+    .product-card-featured div[style*="display: flex"][style*="flex-direction: row"] {
+      flex-wrap: wrap !important;
+    }
+
+    .product-card-featured div[style*="display: flex"][style*="flex-direction: row"] p {
+      flex-shrink: 1 !important;
+      min-width: 0 !important;
+      word-wrap: break-word !important;
+      overflow-wrap: break-word !important;
+      white-space: normal !important;
+    }
+
+    .hide-on-desktop {
+      display: flex !important;
+    }
+
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    .hero-content {
+      order: 1;
+      align-items: center;
+      padding: 0 20px;
+      text-align: center;
+      display:flex;
+    }
+
+    #hero-image {
+      order: -1;
+      display: flex;
+      align-items: center;
+       justify-content: flex-start;
+      min-height: 34vh;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .hero-header-copy {
+      font-size: 2em;
+      margin-bottom: 4vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #image-width {
+      width: 100%;
+    }
+
+    .responsive-flex {
+      flex-direction: column;
+    }
+
+    /* Ghost bottom section (when no certification block exists) - align with hero content breakpoint */
+    .ghost-certification .bottom-section {
+      align-items: center;
+      gap: 12px;
+      justify-content: center !important;
+    }
+
+
+    #grid-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    
+
+    #star-text {
+      font-size: 0.75em;
+    }
+
+    .star {
+      width: 16px;
+      height: 16px;
+    }
+    .certified-feature-section{
+      align-items:center;
+    }
+    #hero-section .container {
+    padding-left: {{ section.settings.inner_padding_left_right_mobile }}px !important;
+    padding-right: {{ section.settings.inner_padding_left_right_mobile }}px !important;
+    padding-top: {{ section.settings.inner_padding_top_bottom_mobile }}px !important;
+    padding-bottom: {{ section.settings.inner_padding_top_bottom_mobile }}px !important;
+  }
+  }
+
+  @media (max-width: 768px) {
+    .certified-feature-section {
+      padding: 15px;
+    }
+
+    /* Only affect the specific product grid container */
+    div#grid-container-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .certified-feature-section .top-section {
+      max-width: 100%;
+      text-align: center;
+      gap: 40px;
+    }
+
+    .certified-feature-section .images {
+      justify-content: center;
+      gap: 0;
+    }
+
+    .certified-feature-section .images img:not(:first-child) {
+      margin-left: -8px;
+    }
+
+    .certified-feature-section .count {
+      font-size: 12px;
+      padding: 5px;
+      background: #E6F4F1;
+      color: #000;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -5px;
+      min-width: 30px;
+      height: 30px;
+    }
+
+    .certified-feature-section .text-section strong {
+      display: block;
+    }
+
+    .certified-feature-section .bottom-section {
+      align-items: center;
+      gap: 12px;
+    }
+
+
+    .certified-feature-section .bottom-item {
+      max-width: 100%;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .certified-feature-section .bottom-item img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .unique-video-slider-item {
+          margin-left: 20px;
+      }
+    .certified-feature-section .bottom-section {
+        gap: var(--mobile-gap);
+        justify-content: center !important;
+    }
+  }
+
+  {% for block in section.blocks %}
+    @media screen and (max-width: 749px) {
+      .cc-logo-image {
+        width: {{ block.settings.logo_width_mobile }}px;
+        height: {{ block.settings.logo_width_mobile }}px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .cc-creator-image {
+        width: {{ block.settings.creator_image_width_mobile }}px;
+        height: {{ block.settings.creator_image_width_mobile }}px;
+      }
+
+      .cc-logo-divider {
+        height: {{ block.settings.logo_width_mobile }}px;
+        align-self: start;
+        display: flex;
+        align-items: center;
+      }
+
+      .media-wrapper--small {
+        border-radius: {{ section.settings.video_corner_radius }}px;
+        border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+      }
+
+      .story__slide {
+        border-radius: {{ section.settings.video_corner_radius }}px;
+        border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+      }
+      .slider--social {
+          max-width: 95% !important;
+          margin: 0 auto !important;
+      }
+      .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+          right: 0;
+          max-width: 90%;
+          margin: 0 auto;
+      }
+    }
+  {% endfor %}
+
+  @media (max-width: 420px) {
+    .certified-feature-section {
+      padding: 0;
+    }
+  }
+{%- endstyle -%}
+
+<div id="super-background">
+  {%- assign total_media_count = 0 -%}
+
+  {% comment %}
+    ============================================
+    MEDIA COUNT CALCULATION
+    ============================================
+    
+    IMPORTANT: If you add new media sources in the expansion point below,
+    you MUST also add corresponding count calculations here to ensure
+    the total_media_count is accurate for proper single-media-item styling.
+  {% endcomment %}
+
+  {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+    {%- for product in drop['cc-creator-drop-products'] -%}
+      {%- for media in product.enhancement.media -%}
+        {%- if media.mimeType contains 'video' or media.mimeType contains 'image' -%}
+          {%- assign total_media_count = total_media_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endfor -%}
+
+ {%- for block in section.blocks -%}
+  {% if block.type == 'testimonial' %}
+    {% if block.settings.video != blank or block.settings.p_image != blank %}
+      {%- assign total_media_count = total_media_count | plus: 1 -%}
+    {% endif %}
+  {% elsif block.type == 'testimonial-image' %}
+    {% if block.settings.image != blank %}
+      {%- assign total_media_count = total_media_count | plus: 1 -%}
+    {% endif %}
+  {% endif %}
+{%- endfor -%}
+
+  <div id="hero-section" class="section-padding" data-auto-contrast="{{ section.settings.auto_text_contrast }}">
+    <!-- Right/Top Panel (Now First) -->
+    <div class="container" style="align-content:center;">
+    <div class="hero-content{% if total_media_count == 0 and section.settings.center_content_no_media %} center-content{% endif %}">
+      {%- for block in section.blocks -%}
+       {% case block.type %}
+       {% when 'certified' %}
+        <div id="grid-container" class="certified-container" style="max-width:100%;">
+          <div class="certified-feature-section">
+          <div class="top-section" style="width:{{ block.settings.certified-box-width }}%;">
+              {% if block.settings.image_1 != blank or block.settings.image_2 != blank or block.settings.count_no != blank %}
+                <div class="images">
+                    {% if block.settings.image_1  %}<img src="{{ block.settings.image_1 |img_url :'master' }}" alt="Doctor 1">{% endif %}
+                    {% if block.settings.image_2  %}<img src="{{ block.settings.image_2 |img_url :'master' }}" alt="Doctor 2">{% endif %}
+                  {% if block.settings.image_3  %}<img src="{{ block.settings.image_3 |img_url :'master' }}" alt="Doctor 3">{% endif %}
+                    {% if block.settings.count_no != blank %}<span class="count" style="background:{{ block.settings.bg_count }};color:{{block.settings.color_count}};">{{ block.settings.count_no }}</span>{% endif %}
+                </div>
+              {% endif %}
+            {% if block.settings.txt_1  %}<div class="text-section" style="color:{{ block.settings.text_color }};font-size:{{ block.settings.certified_text_size }}px;line-height:{{ block.settings.certified_text_line_height | default: 1.2 }};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}{% if block.settings.count_no != blank or block.settings.image_1 != blank or block.settings.image_2 != blank or block.settings.image_3 != blank %}text-align:left;{% endif %}">{{ block.settings.txt_1 }}</div>{% endif %}
+          </div>
+         <div class="bottom-section" style="width:{{ block.settings.certified-box-width }}%;--desktop-gap: {{ section.settings.desktop_gap | default: '5' }}%;--mobile-gap: {{ section.settings.mobile_gap | default: '10' }}%;">
+          {% for icon_block in section.blocks %}
+            {% if icon_block.type == 'icon-text' %}
+              {% if icon_block.settings.image != blank or icon_block.settings.text != blank %}
+                <div class="bottom-item">
+                  {% if icon_block.settings.image %}
+                    <img src="{{ icon_block.settings.image | img_url: 'master' }}">
+                  {% endif %}
+                  {% if icon_block.settings.text %}
+                    <span class="dynamic-text"
+                      style="color:{{ icon_block.settings.text_color }}; font-size: {{ icon_block.settings.text_size | default: 15 }}px;line-height:{{ icon_block.settings.text_line_height | default: 1.2 }};{% if icon_block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                      {{ icon_block.settings.text }}
+                    </span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+          </div>
+        </div>
+      
+  
+        {% when 'cc-eyebrow' %}
+           <div style="max-width: fit-content; display: flex; align-items: center; margin-bottom: {{ block.settings.eyebrow_margin_bottom }}px; background-color: {{ block.settings.eyebrowbackground }}; border-radius: {{ block.settings.eyebrow_corner_radius }}px; padding: {{ block.settings.eyebrow_padding_top_bottom }}px {{ block.settings.eyebrow_padding_left_right }}px; border: {{block.settings.eyebrow_border_width}}px solid {{block.settings.eyebrowbordercolor}};">
+              <div style="font-size: {{ block.settings.eyebrow_text_size }}px; color: {{ block.settings.eyebrowtextcolor }};line-height:{{ block.settings.eyebrow_text_line_height | default: 1.2 }};display: flex;flex-direction:row;align-items: center;gap:10px;">
+                {% if metaobject['cc-creator-profile-picture'] %}
+                  <div
+                    style="
+                      border-radius: 100%;
+                      height: 32px;
+                      width: 32px;
+                      overflow: hidden;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <img
+                      src="{{ metaobject.cc-creator-profile-picture }}"
+                      alt="Creator Profile"
+                      style="height: 100%; width: 100%; object-fit: cover;"
+                    >
+                  </div>
+                {% endif %}
+                <div style="{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}" class="dynamic-text">
+                {{- block.settings.eyebrowcopy -}}
+                </div>
+              </div>
+            </div>
+   
+            {% when 'cc-header' %}
+              {%- assign move_header_mobile = block.settings.move_header_top_mobile -%}
+              <div class="{% if move_header_mobile %}hide-on-mobile{% endif %}">
+                  {%- if block.settings.title != blank -%}
+                    <div class="hero-header-copy hide-on-mobile dynamic-text" style="font-weight:500 !important; font-size:{{ block.settings.heading_text_size }}px; line-height:{{ block.settings.heading_text_line_height | default: 1.2 }}; margin-bottom: {{  block.settings.header_margin_bottom}}px;{% if block.settings.set-uppercase %}text-transform:uppercase !important;{% endif %}">
+                      {{ block.settings.title }}
+                    </div>
+                  {%- endif -%}
+                
+                  {%- if block.settings.title != blank -%}
+                    <div
+                      class="hero-header-copy hide-on-desktop dynamic-text"
+                      style="text-align: center; font-weight:500; font-size:{{ block.settings.mobile_heading_text_size }}px; line-height:{{ block.settings.mobile_heading_text_line_height | default: 1.2 }}; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %}text-transform:uppercase !important;{% endif %}"
+                    >
+                      {{ block.settings.title }}
+                    </div>
+                  {%- endif -%}
+                </div>
+
+               {% when 'cc-star' %}
+                  <div style="display: flex; flex-direction: row; align-items: center; margin-top:5px; margin-bottom:{{ block.settings.star_margin_bottom }}px;">
+                    {% if block.settings.show_stars %}
+                    <div id="star-container">
+                      {% for i in (1..5) %}
+                        <svg class="star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: {{ block.settings.star_size }}px; height: {{ block.settings.star_size }}px;">
+                          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="{{ block.settings.star_color }}"/>
+                        </svg>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                    <p id="star-text" class="dynamic-text" style="font-size:{{ block.settings.star_text_size }}px;line-height:{{ block.settings.star_text_line_height | default: 1.2 }};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">{{ block.settings.stars }}</p>
+                  </div>
+
+               {% when 'cc-text' %}
+                   <p class="dynamic-text" style="font-size: {{ block.settings.description_text_size }}px; line-height:{{ block.settings.description_text_line_height | default: 1.4 }}; max-width:650px; margin-top:0; margin-bottom:{{ block.settings.text_margin_bottom }}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                  {{ block.settings.subtitle }}
+                </p>   
+                
+                {% when 'cc-product' %}
+                   {%- liquid
+                      assign cc_handle = metaobject.data.value['cc-creator-handle']
+                      assign cc_creator = metaobjects.creator[cc_handle]
+                      assign n_c = metaobject.data.value['cc-creator-handle']
+                    -%}
+                        {% if block.settings.show_creator_products == true
+                        and metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products']
+                        and metaobject.data.value['cc-creator-drop-products'].size < 2
+                      %}
+                        <div id="grid-container" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                          {% for product in metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+                            <div class="product-card-featured">
+                              <img
+                                src="{{product.images[0].src}}"
+                                alt="Product 1"
+                                class="featured-product-image"
+                              >
+                              <div class="product-info">
+                                <p style="font-size: 0.8em; margin: 0 10px 10px 0; -webkit-line-clamp: 3; line-clamp: 3;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                  {{ product.title }}
+                                </p>
+                                <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
+                                  <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 600;">
+                                    {% if block.settings.apply_discount %}
+                                      {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                        and cc_creator != ''
+                                        and cc_creator != null
+                                      %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
+                                        {% assign discouned_amt = product.variants[0].price | times: discount %}
+                                        {{- product.variants[0].price | minus: discouned_amt | times: 100.00 | money }}
+                                      {% else %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                        {{- product.variants[0].price | minus: discount | times: 100.00 | money }}
+                                      {% endif %}
+                                    {% else %}
+                                      {{- product.variants[0].price | times: 100.00 | money -}}
+                                    {% endif %}
+                                  </p>
+                                  {% if block.settings.show_compare == 'true' %}
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
+                                      {{ product.variants[0].price | times: 100.00 | money }}
+                                    </p>
+                                  {% endif %}
+                                  {% if block.settings.show_discount_from_creator_code %}
+                                  <p style="font-size: 0.6em; margin: 2px 10px 10px 0px; font-weight: 400;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    (With {{ metaobject['cc-creator-first-name'] }}'s' Code)
+                                  </p>
+                                  {% endif %}
+                                </div>
+                                <a
+                                  href="{{ shop.url }}/products/{{ product.handle}}"
+                                  style="text-decoration: none;"
+                                >
+                                  {% if block.settings.productcta != blank %}
+                                    <button class="product-cta" style="background-color: {{block.settings.product_cta_background}}; font-weight:{{ block.settings.product_cta_font_weight }}; color: {{ block.settings.product_cta_text_color }}; padding: 8px 20px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      <p>{{ block.settings.productcta }}</p>
+                                    </button>
+                                  {%- endif %}
+                                </a>
+                              </div>
+                            </div>
+                          {% endfor %}
+                        </div>
+
+                      {% elsif block.settings.show_creator_products == true
+                        and metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products']
+                      %}
+                        {% comment %} Count actual products to display {% endcomment %}
+                        {% assign actual_count = 0 %}
+                        {% for product in metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+                          {% if actual_count < block.settings.number_of_recommendations %}
+                            {% assign actual_count = actual_count | plus: 1 %}
+                          {% endif %}
+                        {% endfor %}
+                        
+                        {% comment %} Show featured product card if only 1 product, otherwise show grid {% endcomment %}
+                        {% if actual_count == 1 %}
+                          {% comment %} Show single product as featured product card {% endcomment %}
+                          {% assign single_product = metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'][0] %}
+                          <div id="grid-container" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                            <div class="product-card-featured">
+                              <img
+                                src="{{ single_product.images[0].src }}"
+                                alt="{{ single_product.title | escape }}"
+                                class="featured-product-image"
+                              >
+                              <div class="product-info">
+                                <p style="font-size: 0.8em; margin: 0 10px 10px 0; -webkit-line-clamp: 3; line-clamp: 3;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                  {{ single_product.title }}
+                                </p>
+                                <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
+                                  <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 600;">
+                                    {% if block.settings.apply_discount %}
+                                      {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                        and cc_creator != ''
+                                        and cc_creator != null
+                                      %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
+                                        {% assign discouned_amt = single_product.variants[0].price | times: discount %}
+                                        {{- single_product.variants[0].price | minus: discouned_amt | times: 100.00 | money }}
+                                      {% else %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                        {{- single_product.variants[0].price | minus: discount | times: 100.00 | money }}
+                                      {% endif %}
+                                    {% else %}
+                                      {{- single_product.variants[0].price | times: 100.00 | money -}}
+                                    {% endif %}
+                                  </p>
+                                  {% if block.settings.show_compare == 'true' %}
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
+                                      {{- single_product.variants[0].price | times: 100.00 | money }}
+                                    </p>
+                                  {% endif %}
+                                  {% if block.settings.show_discount_from_creator_code %}
+                                  <p style="font-size: 0.6em; margin: 2px 10px 10px 0px; font-weight: 400;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    (With {{ metaobject['cc-creator-first-name'] }}'s' Code)
+                                  </p>
+                                  {% endif %}
+                                </div>
+                                <a
+                                  href="{{ shop.url }}/products/{{ single_product.handle }}"
+                                  style="text-decoration: none;"
+                                >
+                                  {% if block.settings.productcta != blank -%}
+                                    <button class="product-cta" style="background-color: {{block.settings.product_cta_background}}; font-weight:{{ block.settings.product_cta_font_weight }}; color: {{ block.settings.product_cta_text_color }}; padding: 8px 20px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      <p>{{ block.settings.productcta }}</p>
+                                    </button>
+                                  {%- endif %}
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        {% else %}
+                          {% comment %} Show multiple products as grid {% endcomment %}
+                          {% assign grid_columns = actual_count %}
+                          
+                          <div id="grid-container-grid" style="margin-bottom: {{ block.settings.product_margin_bottom }}px; grid-template-columns: repeat({{ grid_columns }}, minmax(0, {{ block.settings.grid_product_max_width }}px));">
+                            {% assign productcounter = 0 %}
+                            {% for product in metaobject.data.value['cc-creator-drops'][0]['cc-creator-drop-products'] %}
+                              {% if productcounter < block.settings.number_of_recommendations %}
+                                <div class="product-card-grid aaa">
+                                  <img
+                                    src="{{product.images[0].src}}"
+                                    alt="Product 1"
+                                    class="product-image-grid"
+                                  >
+                                  <p
+                                    style="
+                                      font-size: 0.7em;
+                                      margin: 0 0 10px 0;
+                                      color: {{ block.settings.product_text_color }};
+                                      position: relative;
+                                      line-height: 1.2em;
+                                      line-clamp: 3;
+                                      overflow: hidden;
+                                      height: 3.5em;
+                                    {% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}
+                                    "
+                                  >
+                                    <span
+                                      style="
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                        box-shadow: inset 0px -4px 8px {{ block.settings.product_background }}; /* Apply inner shadow to the span */
+                                      "
+                                    ></span>
+                                    {{ product.title }}
+                                  </p>
+                                  <div style="display: flex; flex-direction: row; justify-content: space-between; gap: 10px;">
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; color: {{block.settings.product_text_color}}; font-weight: 600;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      {% if block.settings.apply_discount %}
+                                        {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                          and cc_creator != ''
+                                          and cc_creator != null
+                                        %}
+                                          {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
+                                          {% assign discouned_amt = product.variants[0].price | times: discount %}
+                                          {{- product.variants[0].price | minus: discouned_amt | times: 100.00 | money }}
+                                        {% else %}
+                                          {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                          {{- product.variants[0].price | minus: discount | times: 100.00 | money }}
+                                        {% endif %}
+                                      {% else %}
+                                        {{- product.variants[0].price | times: 100.00 | money -}}
+                                      {% endif %}
+                                    </p>
+                                    {% if block.settings.show_compare == 'true' %}
+                                      <p style="font-size: 0.8em; margin: 0 0 10px 0; color: {{block.settings.product_text_color}}; font-weight: 400; text-decoration: line-through;">
+                                        {{ product.variants[0].price | times: 100.00 | money }}
+                                      </p>
+                                    {% endif %}
+                                  </div>
+                                  <a href="{{ shop.url }}/products/{{product.handle}}" style="text-decoration: none; margin-top: auto;">
+                                    {% if block.settings.productcta != blank -%}
+                                      <button class="product-cta" style="background-color: {{ block.settings.product_cta_background }}; border: {{ block.settings.product_cta_border_width }}px solid {{ block.settings.product_cta_border_color }}; color: {{ block.settings.product_cta_text_color }}; font-weight:{{ block.settings.product_cta_font_weight }}; padding: 8px 20px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                        <p>{{ block.settings.productcta }}</p>
+                                      </button>
+                                    {%- endif %}
+                                  </a>
+                                </div>
+                                {% assign productcounter = productcounter | plus: 1 %}
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                        {% endif %}
+                      {% elsif block.settings.hide_featured_product == true %}
+                        {% if block.settings.fallback_cta_collection != blank and block.settings.fallback_cta_text != blank %}
+                          <div style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                            <a href="{{ collections[block.settings.fallback_cta_collection].url }}" style="text-decoration: none;">
+                              <button class="fallback-cta" style="background-color: {{block.settings.product_cta_background}}; font-weight:{{ block.settings.fallback_cta_font_weight }}; color: {{ block.settings.product_cta_text_color }}; padding: {{ block.settings.fallback_cta_padding_top_bottom }}px {{ block.settings.fallback_cta_padding_left_right }}px; text-align: center; font-size: {{ block.settings.fallback_cta_text_size }}px; line-height:{{ block.settings.fallback_cta_text_line_height | default: 1.2 }}; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                <p>{{ block.settings.fallback_cta_text }}</p>
+                              </button>
+                            </a>
+                          </div>
+                        {% endif %}
+                      {% else %}
+                        <div
+                          class="js-product"
+                          data-section-type="main-product"
+                          data-section-id="{{ section.id }}"
+                          id="main-product-section"
+                        >
+                          <div id="grid-container" style="margin-bottom: {{ block.settings.product_margin_bottom }}px;">
+                            <div class="product-card-featured">
+                              <img
+                                src="{{ block.settings.featured-product | image_url: width: 200 }}"
+                                alt="{{ block.settings.featured-product.title | escape }}"
+                                class="featured-product-image"
+                              >
+                              <div class="product-info">
+                                <p style="font-size: 0.8em; margin: 0 10px 10px 0; -webkit-line-clamp: 3; line-clamp: 3;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                  {{ block.settings.featured-product.title }}
+                                </p>
+                                <div style="display: flex; flex-direction: row; justify-content: flex-start; gap: 10px;">
+                                  <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 600;">
+                                    {% if block.settings.apply_discount %}
+                                      {% if cc_creator['cc-collab-discount-type'] == 'Percentage'
+                                        and cc_creator != ''
+                                        and cc_creator != null
+                                      %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
+                                        {% assign discouned_amt = block.settings.featured-product.price | times: discount %}
+                                        {{- block.settings.featured-product.price | minus: discouned_amt | times: 100.00 | money }}
+                                      {% else %}
+                                        {% assign discount = cc_creator['cc-collab-discount-amount'] %}
+                                        {{- block.settings.featured-product.price | minus: discount | times: 100.00 | money }}
+                                      {% endif %}
+                                    {% else %}
+                                      {{- block.settings.featured-product.price | times: 100.00 | money -}}
+                                    {% endif %}
+                                  </p>
+                                  {% if block.settings.show_compare == 'true' %}
+                                    <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
+                                      {{- block.settings.featured-product.price | times: 100.00 | money }}
+                                    </p>
+                                  {% endif %}
+                                  {% if block.settings.show_discount_from_creator_code %}
+                                  <p style="font-size: 0.6em; margin: 2px 10px 10px 0px; font-weight: 400;{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                    (With {{ metaobject['cc-creator-first-name'] }}'s' Code)
+                                  </p>
+                                  {% endif %}
+                                </div>
+                                <a
+                                  href="{{ block.settings.featured-product.url }}"
+                                  style="text-decoration: none;{% if block.settings.featured-product == blank %}cursor: text;pointer-events: none;{% endif %}"
+                                >
+                                  {% if block.settings.productcta != blank -%}
+                                    <button class="product-cta" style="background-color: {{block.settings.product_cta_background}}; font-weight:{{ block.settings.product_cta_font_weight }}; color: {{ block.settings.product_cta_text_color }}; padding: 8px 20px; text-align: center; font-size: 0.7em; cursor: pointer; border-radius: {{ block.settings.product_cta_corner_radius }}px; border: {{block.settings.product_cta_border_width}}px solid {{block.settings.product_cta_border_color}};{% if block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                                      <p>{{ block.settings.productcta }}</p>
+                                    </button>
+                                  {%- endif %}
+                                </a>
+                              </div>
+                            </div>
+                            {% assign custom_featured_product = block.settings.featured-product %}
+                            {% assign product_form_id = 'product-form-' | append: section.id %}
+                          </div>
+                        </div>
+                      {% endif %}
+
+            {% when 'cc-logo' %}
+               {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+                {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+                {% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+                    <div class="cc-logo-container" {{ block.shopify_attributes }} style="margin-bottom:{{ block.settings.collab_margin_bottom }}px;">
+                    {% if block.settings.logo %}
+                      <div class="cc-logo">
+                        <img
+                          src="{{ block.settings.logo | image_url: width: 500 }}"
+                          alt="{{ block.settings.logo.alt | default: shop.name | escape }}"
+                          width="{{ block.settings.logo.width }}"
+                          height="{{ block.settings.logo.height }}"
+                          loading="lazy"
+                          class="cc-logo-image"
+                        >
+                      <div class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px; line-height:{{ block.settings.text-line-height-size }}px; text-align:center; margin:auto;margin-top:{{ block.settings.vertical-spacing }}px;">
+                        {{ block.settings.logo_text }}
+                        </div>
+                        </div>
+                    {% else %}
+                      <div class="cc-logo">
+                        <span class="h2">{{ shop.name }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% assign first_name = metaobject['cc-creator-first-name'] | default: '' %}
+                    {% assign last_name = metaobject['cc-creator-last-name'] | default: '' %}
+                    {% assign first_initial = first_name | slice: 0, 1 | upcase %}
+                    {% assign last_initial = last_name | slice: 0, 1 | upcase %}
+                    {% assign initials = first_initial | append: last_initial %}
+
+                    {% if metaobject['cc-creator-profile-picture'] %}
+                      <span class="cc-logo-divider">{{ block.settings.divider_text }}</span>
+                      <div class="cc-creator">
+                        <img
+                          src="{{ metaobject.cc-creator-profile-picture }}"
+                          alt="{{ first_name  | default: 'Creator' | escape }}"
+                          loading="lazy"
+                          class="cc-creator-image"
+                        >
+                      <p class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px;line-height:{{ block.settings.text-line-height-size }}px;text-align:center; margin:auto;margin-top:{{ block.settings.vertical-spacing }}px;">{% if block.settings.creator_name_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: metaobject.cc-creator-first-name }}{% else %}{{ metaobject.cc-creator-first-name }}{% endif %}</p>
+                      </div>
+
+                      {% else %}
+
+                      <span class="cc-logo-divider">{{ block.settings.divider_text }}</span>
+                       <div class="cc-creator-profile" style="align-self:start; text-align: center; height:100%;">
+                      <div class="cc-creator-image" style="
+                        background-color: {{ block.settings.fallback_bg_color }};
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto;
+                      ">
+                        <h4 style="
+                          color: {{ block.settings.initials_font_color }};
+                          font-size: {{ block.settings.initials_font_size }}px;
+                          font-weight: bold;
+                          text-transform: uppercase;
+                        ">{{ initials }}</h4>
+                      </div>
+                      <p class="dynamic-text" style="color:{{ block.settings.text_color }}; text-transform:{{ block.settings.text-case }}; font-size:{{ block.settings.text-size }}px; text-align:center; margin-top:{{ block.settings.vertical-spacing }}px;">{% if block.settings.creator_name_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: first_name }}{% else %}{{ first_name }}{% endif %}</p>
+                    </div>
+                    {% endif %}
+                  </div>
+
+      {% endcase %}
+      {% endfor %}
+
+      {% comment %} Create ghost certification block for icons if no certification block exists but icons do {% endcomment %}
+      {% assign has_certification_block = false %}
+      {% assign has_icon_blocks = false %}
+      {% for block in section.blocks %}
+        {% if block.type == 'certified' %}
+          {% assign has_certification_block = true %}
+        {% endif %}
+        {% if block.type == 'icon-text' %}
+          {% assign has_icon_blocks = true %}
+        {% endif %}
+      {% endfor %}
+      
+      {% if has_icon_blocks == true and has_certification_block == false %}
+        {% comment %} Determine alignment based on media carousel and center content setting {% endcomment %}
+        {% assign icon_justify_content = 'center' %}
+        {% if total_media_count > 0 %}
+          {% assign icon_justify_content = 'flex-start' %}
+        {% elsif section.settings.center_content_no_media == false %}
+          {% assign icon_justify_content = 'flex-start' %}
+        {% endif %}
+        
+        <div id="grid-container" class="certified-container" style="max-width:100%;">
+          <div class="certified-feature-section ghost-certification">
+            <div class="bottom-section" style="width:100%;--desktop-gap: {{ section.settings.desktop_gap | default: '5' }}%;--mobile-gap: {{ section.settings.mobile_gap | default: '10' }}%;justify-content: {{ icon_justify_content }};">
+              {% for icon_block in section.blocks %}
+                {% if icon_block.type == 'icon-text' %}
+                  {% if icon_block.settings.image != blank or icon_block.settings.text != blank %}
+                    <div class="bottom-item">
+                      {% if icon_block.settings.image %}
+                        <img src="{{ icon_block.settings.image | img_url: 'master' }}">
+                      {% endif %}
+                      {% if icon_block.settings.text %}
+                        <span class="dynamic-text"
+                          style="color:{{ icon_block.settings.text_color }}; font-size: {{ icon_block.settings.text_size | default: 15 }}px;line-height:{{ icon_block.settings.text_line_height | default: 1.2 }};{% if icon_block.settings.set-uppercase %}text-transform:uppercase;{% endif %}">
+                          {{ icon_block.settings.text }}
+                        </span>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+    <!-- Left/Bottom Panel (Now Second) -->
+     {% if total_media_count > 0 %}
+    <div id="hero-image" class="slider--{{ section.settings.carousel_type }}">
+    {%- assign blocks = section.blocks | where: 'type', 'cc-header' -%}
+        {%- for block in blocks -%}
+          {%- assign move_header_mobile = block.settings.move_header_top_mobile -%}
+
+      {% if move_header_mobile %}
+          <div class="mobile-header-top-wrapper hide-on-desktop">
+            {%- if block.settings.title != blank -%}
+              <div
+                class="hero-header-copy hide-on-mobile dynamic-text"
+                style="font-weight: 500 !important; font-size: {{ block.settings.heading_text_size }}px; line-height:{{ block.settings.heading_text_line_height | default: 1.2 }}; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %} text-transform: uppercase !important;{% endif %}"
+              >
+                {{ block.settings.title }}
+              </div>
+            {%- endif -%}
+        
+            {%- if block.settings.title != blank -%}
+              <div
+                class="hero-header-copy hide-on-desktop dynamic-text"
+                style="text-align: center; font-weight: 500; font-size: {{ block.settings.mobile_heading_text_size }}px; line-height:{{ block.settings.mobile_heading_text_line_height | default: 1.2 }}; margin-bottom: {{  block.settings.header_margin_bottom}}px; {% if block.settings.set-uppercase %} text-transform: uppercase !important;{% endif %}"
+              >
+                {{ block.settings.title }}
+              </div>
+            {%- endif -%}
+          </div>
+          {% endif %}
+        {%- endfor -%}
+
+ 
+      {% if section.settings.carousel_type == 'social' %}
+      <div class="story">
+        <div class="story__slider swiper">
+          <div class="story__wrapper swiper-wrapper">
+
+            {%- assign block_count = 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+                {%- assign block_count = block_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- assign has_ugc_videos = false -%}
+           
+
+              {%- assign counter = 0 -%}
+
+              {%- assign first_video_found = false -%}
+              {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+                {%- for product in drop['cc-creator-drop-products'] -%}
+                  {%- for media in product.enhancement.media -%}
+                    {%- if media.mimeType contains 'video' and section.settings.include_creator_videos -%}
+                      {%- assign is_first_video = false -%}
+                      {%- if first_video_found == false -%}
+                        {%- assign is_first_video = true -%}
+                        {%- assign first_video_found = true -%}
+                      {%- endif -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video %} playing{% endif %}" tabindex="0">
+                          <video {% if is_first_video %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                            <source src="{{ media.url }}" type="video/mp4">
+                          </video>
+                          <div class="pause-icon{% if is_first_video %} first-video{% endif %}">
+                            <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <div class="play-icon{% if is_first_video %} first-video{% endif %}">
+                             <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <button class="mute-toggle"
+                          style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                              >🔇</button>
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- elsif media.mimeType contains 'image' and section.settings.include_creator_images -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                          <img src="{{ media.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endfor -%}
+              {%- endfor -%}
+
+              {%- for block in section.blocks -%}
+                {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+                  <div class="story__slide swiper-slide" {{ block.shopify_attributes }}>
+                    {%- if block.type == 'testimonial' -%}
+                      {% assign new_video_url = block.settings.video.sources | where: 'format', 'mp4' | first %}
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first %} playing {% endif %}" tabindex="0">
+                        {% if block.settings.p_image != blank and forloop.first == false %}
+                          <div class="lazy-video-container" data-video-src="{{ new_video_url.url }}" data-poster="{{ block.settings.p_image | image_url: width: 1000 }}">
+                            <img src="{{ block.settings.p_image | img_url:'master' }}" alt="Video preview" style="object-position: center;">
+                          </div>
+                        {% else %}
+                          {% assign video_poster = block.settings.video.preview_image | image_url: width: 2000 %}
+                          {% if forloop.first %}
+                            {{ block.settings.video | video_tag: image_size: '3840px', muted: true, autoplay: true, loop: true, playsinline: true, preload: 'none', class: 'autoplay-first' }}
+                          {% else %}
+                            {{ block.settings.video | video_tag: image_size: '3840px', muted: true, autoplay: false, loop: true, playsinline: true, poster: video_poster, preload: 'none' }}
+                          {% endif %}
+                        {% endif %}
+                        <!-- Play/Pause -->
+                        <div class="play-icon{% if forloop.first %} first-video{% endif %}">
+                           <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                        </div>
+                        <div class="pause-icon{% if forloop.first %} first-video{% endif %}"> <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg></div>
+                        <button class="mute-toggle"
+                         style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                        >🔇</button>
+                      </div>
+                    {%- elsif block.type == 'testimonial-image' -%}
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                        <img src="{{ block.settings.image | img_url: 'master' }}" style="height:100%;width:100%;object-fit: cover;object-position: center;" />
+                      </div>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              {%- endfor -%}
+
+           
+          </div>
+
+          <!-- Swiper Controls -->
+          <div class="story__next swiper-button-next"></div>
+          <div class="story__prev swiper-button-prev"></div>
+          <div class="story__pagination swiper-pagination"></div>
+
+        </div>
+      </div>
+
+                
+        {% else %}
+      <!-- Video Slider -->
+      <div class="unique-video-slider">
+        <div class="unique-testimonials">
+          {%- assign block_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'testimonial' or block.type == 'testimonial-image' -%}
+              {%- assign block_count = block_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- assign has_ugc_videos = false -%}
+         
+            {% assign counter = 0 %}
+            <testimonials-component
+              data-slider="{% if block_count > 1 %}true{% else %}false{% endif %}"
+              data-autorotate="{{ section.settings.autorotate }}"
+              data-autorotate-speed="{{ section.settings.autorotate_speed | times: 1000 }}"
+              style="--block-count: {{ block_count | minus: 1 }};"
+            >
+              <div class="unique-testimonial__list-wrapper">
+                <div class="unique-video-slider-list" id="Testimonials">
+               
+                  {%- assign first_video_found_list = false -%}
+                  {%- assign creator_media_count = 0 -%}
+                  {%- assign displayed_media_urls = '' -%}
+                  {%- assign single_media_displayed = false -%}
+                  {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+                    {%- for product in drop['cc-creator-drop-products'] -%}
+                      {%- for media in product.enhancement.media -%}
+                        {%- if media.mimeType contains 'video' or media.mimeType contains 'image' -%}
+                          {%- assign creator_media_count = creator_media_count | plus: 1 -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endfor -%}
+                  {%- endfor -%}
+                  
+                  {%- unless total_media_count == 1 and creator_media_count == 0 -%}
+                  {% for drop in metaobject.data.value['cc-creator-drops'] %}
+                    {% for product in drop['cc-creator-drop-products'] %}
+                      {% for media in product.enhancement.media %}
+                        {% unless displayed_media_urls contains media.url %}
+                        {% unless total_media_count == 1 and single_media_displayed %}
+                        {% if media.mimeType and media.mimeType contains 'video' and section.settings.include_creator_videos %}
+                          {%- assign is_first_video_list = false -%}
+                          {%- if first_video_found_list == false -%}
+                            {%- assign is_first_video_list = true -%}
+                            {%- assign first_video_found_list = true -%}
+                          {%- endif -%}
+                          <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}
+                        tabindex="0"
+                            >
+                              <video
+                              {% if is_first_video_list %}
+                                  autoplay
+                                  class="autoplay-first" 
+                                {% endif %}
+                                muted
+                                playsinline
+                                loop
+                                style="height:100%;width:100%;object-fit: cover;object-position: center;"
+                              >
+                                <source src="{{ media.url }}" type="video/mp4">
+                              </video>
+                              <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                              </div>
+                          <div class="play-icon{% if is_first_video_list %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                              </div>
+                              <button
+                                class="mute-toggle"
+                                style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                              >
+                                🔇
+                              </button>
+                              {%- assign has_ugc_videos = true -%}
+                              {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
+                              {%- if total_media_count == 1 -%}
+                                {%- assign single_media_displayed = true -%}
+                              {%- endif -%}
+                            </div>
+                          </div>
+                         {% elsif media.mimeType and media.mimeType contains 'image' and section.settings.include_creator_images %}
+                          <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small
+                          tabindex="0"
+                            >
+                            <img
+                            src="{{ media.url }}"
+                            style="height:100%;width:100%;object-fit: cover;object-position: center;"
+                          >
+                                    {%- assign has_ugc_videos = true -%}
+                                    {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
+                                    {%- if total_media_count == 1 -%}
+                                      {%- assign single_media_displayed = true -%}
+                                    {%- endif -%}
+                                     </div>
+                          </div>
+                        {%- endif -%}
+                        {%- endunless -%}
+                        {%- endunless -%}
+                      {% endfor %}
+                    {% endfor %}
+                  {% endfor %}
+                  {%- endunless -%}
+                 
+
+                  {% comment %}
+                    ============================================
+                    FUTURE MEDIA SOURCES EXPANSION POINT
+                    ============================================
+                    
+                    To add additional media sources beyond creator drops, 
+                    add new loops here before the section blocks loop.
+                    
+                    Examples of additional sources you could loop through:
+                    
+                    1. Creator's direct media uploads:
+                       {% for media in metaobject.data.value['cc-creator-media'] %}
+                         {% if media.mimeType contains 'video' or media.mimeType contains 'image' %}
+                           <!-- Add media slide here -->
+                         {% endif %}
+                       {% endfor %}
+                    
+                    2. Creator's social media content:
+                       {% for post in metaobject.data.value['cc-creator-social-posts'] %}
+                         {% for media in post.media %}
+                           <!-- Add media slide here -->
+                         {% endfor %}
+                       {% endfor %}
+                    
+                    3. Creator's featured lookbooks:
+                       {% for book in metaobject.data.value['cc-creator-lookbooks'] %}
+                           {% for media in book.media %}
+                             <!-- Add media slide here -->
+                           {% endfor %}
+                       {% endfor %}
+                    
+                    4. Creator's testimonials/reviews:
+                       {% for testimonial in metaobject.data.value['cc-creator-testimonials'] %}
+                         {% if testimonial.video %}
+                           <!-- Add video slide here -->
+                         {% elsif testimonial.image %}
+                           <!-- Add image slide here -->
+                         {% endif %}
+                       {% endfor %}
+                    
+                    Remember to:
+                    - Update total_media_count calculation at the top
+                    - Use the same displayed_media_urls tracking to avoid duplicates
+                    - Follow the same media item structure with unique-video-slider-item class
+                    - Maintain logic for autoplaying first video from the loop
+                    - Maintain the same conditional logic for single media items
+                  {% endcomment %}
+
+                  {%- unless total_media_count == 1 and creator_media_count > 0 -%}
+                  {%- for block in section.blocks -%}
+                    {% if block.type == 'testimonial' %}
+                      <div
+                        class="unique-video-slider-item{% if section.blocks.first == true or block_count == 1 %} is-selected{% endif %}{% if total_media_count == 1 %} single-media-item{% endif %}"
+                        style="{% if total_media_count == 1 %}margin: 0 auto;{% elsif block_count == 1 and has_ugc_videos == false%}margin-left:0;margin:auto{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if forloop.first %} playing {% endif %}" tabindex="0">
+                          {% if block.settings.p_image != blank and forloop.first == false %}
+                            {% comment %}{%- assign video_poster = block.settings.p_image | image_url: width: 2000 -%}{% endcomment %}
+                            {% assign new_video_url = block.settings.video.sources | where: 'format', 'mp4' | first %}
+                            <div
+                              class="lazy-video-container"
+                              data-video-src="{{ new_video_url.url }}"
+                              data-poster="{{ block.settings.p_image | image_url: width: 1000 }}"
+                            >
+                              <img src="{{ block.settings.p_image | image_url: width: 1000 }}" alt="Video preview" style="object-position: center;">
+                            </div>
+                          {% else %}
+                            {%- assign video_poster = block.settings.video.preview_image | image_url: width: 2000 -%}
+                            {% if block.settings.video != blank and counter == 0 %}
+                              {% assign video_class = '' %}
+                                {% assign autoplay_value = false %}
+                                
+                                {% if forloop.first %}
+                                  {% assign video_class = 'autoplay-first' %}
+                                  {% assign autoplay_value = true %}
+                                {% endif %}
+                              {% if forloop.first %}
+                                {{
+                                  block.settings.video
+                                  | video_tag:
+                                    image_size: '3840px',
+                                    muted: true,
+                                    autoplay: true,
+                                    loop: true,
+                                    playsinline: true,
+                                    preload: 'none',
+                                    class: 'autoplay-first'
+                                }}
+                              {% else %}
+                                {{
+                                  block.settings.video
+                                  | video_tag:
+                                    image_size: '3840px',
+                                    muted: true,
+                                    autoplay: false,
+                                    loop: true,
+                                    playsinline: true,
+                                    poster: video_poster,
+                                    preload: 'none'
+                                }}
+                              {% endif %}
+
+                            {%- else -%}
+                              {{
+                                block.settings.video
+                                | video_tag:
+                                  image_size: '3840px',
+                                  muted: true,
+                                  autoplay: false,
+                                  loop: true,
+                                  playsinline: true,
+                                  poster: video_poster,
+                                  preload: 'none'
+                              }}
+                            {%- endif -%}
+                          {% endif %}
+
+                          <div class="play-icon{% if forloop.first%} first-video{% endif %}">
+                            <svg
+                              width="50"
+                              height="50"
+                              viewBox="0 0 24 24"
+                              fill="white"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                            </svg>
+                          </div>
+                          <div class="pause-icon{% if forloop.first%} first-video{% endif %}">
+                            <svg
+                              width="50"
+                              height="50"
+                              viewBox="0 0 24 24"
+                              fill="white"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                              <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                            </svg>
+                          </div>
+                          <button
+                            class="mute-toggle"
+                            style="
+                              position: absolute;
+                              bottom: 10px;
+                              right: 10px;
+                              z-index: 10;
+                              padding: 6px 10px;
+                              background: rgba(0,0,0,0.5);
+                              color: white;
+                              border: none;
+                              border-radius: 16px;
+                              cursor: pointer;
+                            "
+                          >
+                            🔇
+                          </button>
+                          {%- assign has_ugc_videos = true -%}
+                        </div>
+                      </div>
+                      {% assign counter = counter | plus: 1 %}
+                    {% elsif block.type == 'testimonial-image' %}
+                      <div
+                        class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}"
+                        style="{% if total_media_count == 1 %}margin: 0 auto;{% elsif block_count == 1 and has_ugc_videos == false%}margin-left:0;margin:auto{% endif %}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <div
+                          class="unique-testimonial__image media-wrapper media-wrapper--small"
+                          tabindex="0"
+                          style=""
+                        >
+                          <img
+                            src="{{ block.settings.image | img_url: 'master'}}"
+                            style="height:100%;width:100%;object-fit: cover;object-position: center;"
+                          >
+                        </div>
+                        {%- assign has_ugc_videos = true -%}
+                      </div>
+                      {% assign counter = counter | plus: 1 %}
+                    {% endif %}
+                  {%- endfor -%}
+                  {%- endunless -%}
+                </div>
+              </div>
+            </testimonials-component>
+          
+        </div>
+         {% unless total_media_count == 1 %}
+         <button class="slider-arrow right-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><title>Right</title><polyline points="9 18 15 12 9 6"></polyline></svg>
+         </button>
+         {% endunless %}
+      </div>
+      {% endif %}
+      <!-- End of Video Slider -->
+    </div>
+    {% endif %}
+  </div>
+</div>
+<style>
+  .unique-testimonial__image .play-icon,
+  .unique-testimonial__image .pause-icon {
+     position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+  }
+    .play-icon svg, .pause-icon svg {
+        width: 40px;
+        height: 40px;
+        color: white;
+    }
+  /* .unique-testimonial__image.playing:first-child:hover .pause-icon.first-video{display:flex;} */
+  .unique-testimonial__image .pause-icon , .unique-testimonial__image:first-child .play-icon.first-video{display:none;}
+  .unique-testimonial__image:hover .play-icon,
+  .unique-testimonial__image.playing:hover .pause-icon  {
+   display: flex;
+  }
+  
+  /* Media wrapper small - ensure proper container dimensions for centering */
+  .media-wrapper--small {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: {{ section.settings.video_corner_radius }}px;
+    border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  }
+  
+  /* Remove border from media-wrapper when inside story slide to prevent double borders */
+  .story__slide .media-wrapper--small {
+    border: none;
+    border-radius: 0;
+  }
+  
+  .media-wrapper--small video,
+  .media-wrapper--small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* Ensure story slide containers have proper height */
+  .story__slide .unique-testimonial__image {
+   {% if section.settings.aspect_ratio != 'custom' %}
+     aspect-ratio: {{ section.settings.aspect_ratio }};
+    width:600px;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+   {% endif %}
+    /* Border removed - handled by parent .story__slide */
+  }
+</style>
+<script>
+  // Comprehensive mute button system
+  class MuteButtonManager {
+    constructor() {
+      this.init();
+    }
+
+    init() {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.setupMuteButtons());
+      } else {
+        this.setupMuteButtons();
+      }
+    }
+
+    setupMuteButtons() {
+      
+      // Step 1: Force mute ALL videos by default
+      this.forceMuteAllVideos();
+      
+      // Step 2: Ensure every video has a working mute button
+      this.ensureAllVideosHaveMuteButtons();
+      
+    }
+
+    recheckMuteButtons() {
+      
+      // Force mute any new videos
+      this.forceMuteAllVideos();
+      
+      // Ensure all videos have working mute buttons
+      this.ensureAllVideosHaveMuteButtons();
+      
+    }
+
+    forceMuteAllVideos() {
+      const allVideos = document.querySelectorAll('video');
+      
+      allVideos.forEach((video, index) => {
+        // Force mute every video
+        video.muted = true;
+        video.setAttribute('muted', '');
+        
+        // Ensure autoplay compatibility
+        if (video.hasAttribute('autoplay')) {
+          video.setAttribute('playsinline', '');
+        }
+        
+      });
+    }
+
+    ensureAllVideosHaveMuteButtons() {
+      const allVideos = document.querySelectorAll('video');
+      
+      allVideos.forEach((video, index) => {
+        
+        // Find the container for this video
+        const container = this.findVideoContainer(video);
+        
+        if (!container) {
+          return;
+        }
+        
+        // Check if container already has a mute button
+        let existingButton = container.querySelector('.mute-toggle');
+        
+        // If no button exists, create one
+        if (!existingButton) {
+          existingButton = this.createMuteButton();
+          container.style.position = 'relative';
+          container.appendChild(existingButton);
+        }
+        
+        // Always rebind the button to ensure it works (this handles both new and existing buttons)
+        this.bindMuteButton(existingButton);
+        
+      });
+    }
+
+    findVideoContainer(video) {
+      // Try different container selectors
+      const selectors = [
+        '.unique-testimonial__image',
+        '.media-wrapper',
+        '.story__slide',
+        '.swiper-slide'
+      ];
+      
+      
+      for (const selector of selectors) {
+        const container = video.closest(selector);
+        if (container) {
+          return container;
+        }
+      }
+      
+      // Fallback: use parent element
+      const parentContainer = video.parentElement;
+      return parentContainer;
+    }
+
+    createMuteButton() {
+      const button = document.createElement('button');
+      button.className = 'mute-toggle';
+      button.textContent = '🔇';
+      button.setAttribute('type', 'button');
+      
+      // Apply consistent styling
+      Object.assign(button.style, {
+        position: 'absolute',
+        bottom: '10px',
+        right: '10px',
+        zIndex: '10',
+        padding: '6px 10px',
+        background: 'rgba(0,0,0,0.5)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      });
+      
+      return button;
+    }
+
+    bindMuteButton(button) {
+      
+      const container = button.closest('.unique-testimonial__image, .media-wrapper, .story__slide, .swiper-slide') || button.parentElement;
+      
+      const video = container ? container.querySelector('video') : null;
+      
+      if (!video) {
+        return;
+      }
+      
+      // Remove any existing event listeners to prevent duplicates
+      const newButton = button.cloneNode(true);
+      button.parentNode.replaceChild(newButton, button);
+      
+      // Ensure video is muted initially
+      video.muted = true;
+      video.setAttribute('muted', '');
+      newButton.textContent = '🔇';
+      
+      
+      // Add click event listener to the new button
+      newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        
+        // Toggle mute state
+        video.muted = !video.muted;
+        
+        // Update button text
+        newButton.textContent = video.muted ? '🔇' : '🔊';
+        
+        
+        // If unmuting, try to play the video (regardless of autoplay status)
+        if (!video.muted) {
+          video.play().catch(err => {
+            // Video play failed, continue silently
+          });
+        }
+      });
+      
+      // Add event listeners to handle video state changes
+      video.addEventListener('loadstart', () => {
+        // Ensure it's muted when it starts loading
+        video.muted = true;
+        video.setAttribute('muted', '');
+        newButton.textContent = '🔇';
+      });
+      
+    }
+  }
+
+  // Initialize the mute button manager
+  const muteManager = new MuteButtonManager();
+  
+  // Watch for dynamically added videos (like lazy-loaded videos)
+  const observer = new MutationObserver((mutations) => {
+    let shouldRecheck = false;
+    
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1) { // Element node
+            // Check if a video was added
+            if (node.tagName === 'VIDEO' || node.querySelector('video')) {
+              shouldRecheck = true;
+            }
+          }
+        });
+      }
+    });
+    
+    if (shouldRecheck) {
+      setTimeout(() => {
+        muteManager.recheckMuteButtons();
+      }, 100);
+    }
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero - Primavera",
+  "tag": "section",
+  "class": "custom-section",
+  "settings": [
+     {
+      "type": "header",
+      "content": "The Primavera Hero Section",
+      "info": "The Primavera Hero Section is your storefront’s bold first impression—an immersive, co-branded canvas that fuses video, images, and creator content into one dynamic experience. It’s built to grab attention, showcase credibility, and highlight your brand and collaborators in a way that feels both aspirational and authentic. With flexible layouts, trust badges, and rich carousels, this section transforms your hero area into a content-forward stage that drives conversions.",
+    },
+     {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. You can use Dynamic Sources with any section/block input (select the icon to the top right of each input) to inject co-branded content without addition developement or code."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator’s affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context. Bonus tip: in App embeds on the left side of this screen, switch the CreatorCommerce SDK to ON."
+    },
+    {
+      "type": "header",
+      "content": "Background & Visual Design",
+      "info": "Customize the section background, colors, and visual appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default":"#818181",
+      "info": "Main background color for the section"
+    },
+    {
+      "type":"image_picker",
+      "id":"background_image",
+      "label":"Background Image",
+      "info": "Optional background image (will show behind content)"
+    },
+    {
+    "type": "color",
+    "id": "overlay_color",
+    "label": "Overlay Color",
+    "default": "#00000080",
+    "info": "Color for the overlay on top of background image"
+    },
+    {
+    "type": "range",
+    "id": "overlay_opacity",
+    "label": "Overlay Opacity",
+    "min": 0,
+    "max": 1,
+    "step": 0.1,
+    "default": 0.5,
+    "info": "Transparency of the overlay (0 = invisible, 1 = opaque)"
+    },
+    {
+    "type": "checkbox",
+    "id": "overlay_enabled",
+    "label": "Enable Overlay",
+    "default": false,
+    "info": "Show overlay on top of background image"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "label": "Default Text Color",
+      "default":"#ffffff",
+      "info": "Default color for all text in the section"
+    },
+    {
+      "type": "header",
+      "content": "Typography",
+      "info": "Customize fonts and text styling for different elements"
+    },
+    {
+      "type":"text",
+      "id":"heading-font-family",
+      "label":"Heading Font Family",
+      "info": "Font family for headings (e.g., 'Arial', 'Helvetica', 'Georgia')"
+    },
+    {
+      "type":"text",
+      "id":"body-font-family",
+      "label":"Body Font Family",
+      "info": "Font family for body text and descriptions"
+    },
+    {
+      "type":"text",
+      "id":"cta-font-family",
+      "label":"Button Font Family",
+      "info": "Font family for call-to-action buttons"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Bottom Spacing",
+      "default": 16,
+      "info": "Space below the main heading"
+    },
+    {
+      "type": "header",
+        "content": "Media Carousel",
+        "info": "Configure the video and image carousel display"
+      },
+      {
+        "type": "select",
+        "id": "carousel_type",
+        "label": "Carousel Display Type",
+        "default": "inline",
+        "info": "Choose how the carousel is displayed",
+        "options": [
+          {
+            "value": "social",
+            "label": "Social (Full-screen style)"
+          },
+          {
+            "value": "inline",
+            "label": "Inline (Side-by-side with content)"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "auto_text_contrast",
+        "label": "Auto-adjust text contrast",
+        "default": false,
+        "info": "Automatically adjust text colors for best readability"
+      },
+        {
+      "type": "color",
+      "id": "border_color",
+      "label": "Media Border Color",
+       "default":"#ffffff",
+       "info": "Color for borders around videos and images"
+     },
+      {
+      "type": "number",
+      "id": "border_width",
+      "label": "Media Border Width",
+        "default":1,
+        "info": "Thickness of borders around media (0 = no border)"
+    },
+          {
+      "type": "range",
+      "id": "video_corner_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Media Corner Radius",
+      "default": 8,
+      "info": "Roundness of media corners (0 = square corners)"
+    },
+     {
+      "type": "checkbox",
+      "id": "include_creator_videos",
+      "label": "Include creator videos",
+      "default": true,
+      "info": "Show videos from the creator's content in the carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "include_creator_images",
+      "label": "Include creator images",
+      "default": true,
+      "info": "Show images from the creator's content in the carousel"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Media Aspect Ratio",
+      "default": "custom",
+      "info": "Choose the aspect ratio for videos and images",
+      "options": [
+        { "value": "1/1", "label": "1:1 (Square)" },
+        { "value": "4/3", "label": "4:3 (Standard)" },
+        { "value": "16/9", "label": "16:9 (Widescreen)" },
+        { "value": "21/9", "label": "21:9 (Cinematic)" },
+        { "value": "custom", "label": "Custom Size" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom Width",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 400,
+      "info": "Width for custom aspect ratio"
+    },
+    {
+      "type": "range",
+      "id": "custom_height",
+      "label": "Custom Height",
+      "min": 100,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "default": 600,
+      "info": "Height for custom aspect ratio"
+    },
+    {
+      "type": "header",
+      "content": "Icon Spacing",
+      "info": "Control spacing between icons and text elements"
+    },
+     {
+      "type": "text",
+      "id": "desktop_gap",
+      "label": "Desktop Icon Spacing",
+      "default": "5",
+      "info": "Space between icons on desktop (percentage)"
+    },
+    {
+      "type": "text",
+      "id": "mobile_gap",
+      "label": "Mobile Icon Spacing",
+      "default": "10",
+      "info": "Space between icons on mobile (percentage)"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Spacing",
+      "info": "Control the overall layout and spacing of the section"
+    },
+    {
+        "type": "range",
+        "id": "content_max_width",
+        "label": "Content Max Width",
+        "min": 0,
+        "max": 1400,
+        "step": 50,
+        "unit": "px",
+        "default": 750,
+        "info": "Maximum width of the content area"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_content_no_media",
+      "label": "Center content when no media",
+      "default": true,
+      "info": "Center content when there's no media carousel"
+      },
+    {
+      "type": "range",
+      "id": "center_gap_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Content Gap",
+      "default": 96,
+      "info": "Space between content and media on desktop"
+    },
+     {
+      "type": "range",
+      "id": "center_gap_mobile",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Content Gap",
+      "default": 12,
+      "info": "Space between content and media on mobile"
+    },
+    {
+        "type": "range",
+        "id": "inner_padding_left_right",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Inner Left/Right Padding (Desktop)",
+        "default": 24,
+        "info": "Inner padding for content blocks on desktop"
+    },
+    {
+        "type": "range",
+        "id": "inner_padding_top_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Inner Top/Bottom Padding (Desktop)",
+        "default": 24,
+        "info": "Inner padding for content blocks on desktop"
+    },
+    {
+        "type": "range",
+        "id": "inner_padding_left_right_mobile",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Inner Left/Right Padding (Mobile)",
+        "default": 12,
+        "info": "Inner padding for content blocks on mobile"
+    },
+    {
+        "type": "range",
+        "id": "inner_padding_top_bottom_mobile",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Inner Top/Bottom Padding (Mobile)",
+        "default": 12,
+        "info": "Inner padding for content blocks on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Container Styling",
+      "info": "Customize the appearance of the main content container"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Section Background Color",
+       "default":"#000000",
+       "info": "Background color for the entire section"
+    },
+    {
+      "type": "range",
+      "id": "container_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Container Corner Radius",
+      "default": 0,
+      "info": "Roundness of the content container corners"
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Left Padding (Desktop)",
+      "default": 0,
+      "info": "Left padding for the content container on desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 6,
+      "step": 0.2,
+      "unit": "rem",
+      "label": "Top Padding (All Devices)",
+      "default": 2.6,
+      "info": "Top padding for the content container"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 6,
+      "step": 0.2,
+      "unit": "rem",
+      "label": "Bottom Padding (All Devices)",
+      "default": 2.6,
+      "info": "Bottom padding for the content container"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_left_right_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Left/Right Super Padding",
+      "default": 0,
+      "info": "Left and right super padding on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile Top/Bottom Super Padding",
+      "default": 0,
+      "info": "Top and bottom super padding on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_left_right",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Left/Right Super Padding",
+      "default": 0,
+      "info": "Left and right super padding on desktop"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Desktop Top/Bottom Super Padding",
+      "default": 0,
+      "info": "Top and bottom super padding on desktop"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays a video in the media carousel. Videos can be uploaded directly or you can use Dynamic Sources to pull videos from the creator's content. The first video will autoplay by default."
+        },
+        {
+          "type": "header",
+          "content": "Video Content",
+          "info": "Upload your video file and preview image"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video File",
+          "info": "Upload the video file to display in the carousel"
+        },
+        {
+          "type": "image_picker",
+          "id": "p_image",
+          "label": "Preview Thumbnail",
+          "info": "Image shown before video plays (optional)"
+        }
+      ]
+    },
+    {
+      "type": "testimonial-image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays an image in the media carousel. Images can be uploaded directly or you can use Dynamic Sources to pull images from the creator's content or product galleries."
+        },
+        {
+          "type": "header",
+          "content": "Image Content",
+          "info": "Upload an image to display in the carousel"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image File",
+          "info": "Upload the image file to display in the carousel"
+        }
+      ]
+    },
+    {
+      "type": "certified",
+      "name": "Certification Badge",
+      "limit":1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays trust badges, certifications, or social proof elements. It can show up to 3 images with optional counter text and descriptive heading. Perfect for building credibility and trust with visitors."
+        },
+        {
+          "type": "header",
+          "content": "Certification Images",
+          "info": "Upload up to 3 certification or trust badge images"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Certification Image 1",
+          "info": "First certification or trust badge image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Certification Image 2",
+          "info": "Second certification or trust badge image (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_3",
+          "label": "Certification Image 3",
+          "info": "Third certification or trust badge image (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Statistics Counter",
+          "info": "Display a number or statistic with your certifications"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "count_no",
+          "label": "Counter Number",
+          "info": "Enter the number to display (e.g., '10,000+', '5★', '99%')"
+        },
+        {
+          "type": "color",
+          "id": "color_count",
+          "label": "Counter Text Color",
+          "default":"#000000",
+          "info": "Color of the counter number text"
+        },
+        {
+          "type": "color",
+          "id": "bg_count",
+          "label": "Counter Background Color",
+          "default":"#FFFFFF",
+          "info": "Background color behind the counter number"
+        },
+        {
+          "type": "header",
+          "content": "Certification Text",
+          "info": "Add descriptive text for your certifications"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "txt_1",
+          "label": "Certification Heading",
+          "default":"Approved by Professionals Everywhere",
+          "info": "Main text describing your certifications (e.g., 'Trusted by thousands')"
+        },
+        {
+          "type":"checkbox",
+          "id":"set-uppercase",
+          "label":"Make text uppercase",
+          "info": "Convert the certification heading to uppercase"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default":"#FFFFFF",
+          "info": "Color of the certification heading text"
+        },
+        {
+          "type": "range",
+          "id": "certified_text_size",
+          "min": 2,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Text Size",
+          "default": 14,
+          "info": "Size of the certification heading text"
+        },
+        {
+          "type": "range",
+          "id": "certified_text_line_height",
+          "min": 0.1,
+          "max": 2.0,
+          "step": 0.1,
+          "label": "Text Line Height",
+          "default": 1.2,
+          "info": "Line height for the certification heading text"
+        },
+        {
+          "type": "header",
+          "content": "Layout & Styling",
+          "info": "Customize the appearance and layout of the certification section"
+        },
+        {
+          "type": "color",
+          "id": "certified_bg",
+          "label": "Background Color",
+          "default":"#000000",
+          "info": "Background color of the entire certification section"
+        },
+        {
+          "type": "range",
+          "id": "certified_border_radius",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Border Radius",
+          "default": 10,
+          "info": "Corner radius for the certification section background"
+        },
+        {
+          "type":"text",
+          "id":"certified-box-width",
+          "label":"Section Width (%)",
+          "info": "Width of the certification section as a percentage (e.g., '80' for 80%)"
+        }
+      ]
+    },
+    {
+        "type":"cc-eyebrow",
+        "name":"Creator Badge",
+        "settings":[
+          {
+            "type": "header",
+            "content": "About This Block",
+            "info": "This block creates a small badge that highlights the creator or recommendation. It automatically pulls the creator's name from the metaobject data and can be styled with custom colors, borders, and spacing. Perfect for establishing the co-branded context."
+          },
+          {
+            "type": "header",
+            "content": "Badge Content",
+            "info": "Create a small badge that highlights the creator or recommendation"
+          },
+          {
+            "type": "inline_richtext",
+            "id": "eyebrowcopy",
+            "default": "Recommended by",
+            "label": "Badge Text",
+            "info": "Text to display in the creator badge (e.g., 'Recommended by Sarah')"
+          },
+          {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Make text uppercase",
+            "info": "Convert the badge text to uppercase"
+          },
+          {
+            "type": "header",
+            "content": "Typography",
+            "info": "Customize the text appearance"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Text Size",
+            "default": 16,
+            "info": "Size of the badge text"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_text_line_height",
+            "min": 0.1,
+            "max": 2.0,
+            "step": 0.1,
+            "label": "Text Line Height",
+            "default": 1.2,
+            "info": "Line height for the badge text"
+          },
+          {
+            "type": "header",
+            "content": "Badge Styling",
+            "info": "Customize the appearance of the badge container"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_corner_radius",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "Corner Radius",
+            "default": 4,
+            "info": "Roundness of the badge corners (100 = fully rounded)"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbackground",
+            "label": "Background Color",
+            "default": "#000000",
+            "info": "Background color of the badge"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowtextcolor",
+            "label": "Text Color",
+            "default": "#ffffff",
+            "info": "Color of the badge text"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbordercolor",
+            "label": "Border Color",
+            "info": "Color of the badge border (if border width is set)"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_border_width",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "label": "Border Width",
+            "default": 0,
+            "info": "Thickness of the badge border (0 = no border)"
+          },
+          {
+            "type": "header",
+            "content": "Spacing",
+            "info": "Control the spacing around the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_margin_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Bottom Spacing",
+            "default": 10,
+            "info": "Space below the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_padding_top_bottom",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Top/Bottom Padding",
+            "default": 8,
+            "info": "Internal padding for top and bottom of the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_padding_left_right",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Left/Right Padding",
+            "default": 8,
+            "info": "Internal padding for left and right sides of the badge"
+          }
+        ]
+      },
+    {
+      "type":"cc-header",
+      "name": "Main Heading",
+      "settings":[
+          {
+            "type": "header",
+            "content": "About This Block",
+            "info": "This block displays the main heading for the hero section. It can pull the creator's name from metaobject data using Dynamic Sources, and supports custom typography, sizing, and mobile-specific adjustments."
+          },
+          {
+            "type": "richtext",
+            "id": "title",
+            "default": "<h1>Shop with a big massive leader in something cool</h1>",
+            "label": "Hero title"
+          },
+          {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Set text to uppercase"
+          },
+          {
+            "type": "range",
+            "id": "heading_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Heading Exact Size",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "heading_text_line_height",
+            "min": 0.1,
+            "max": 2.0,
+            "step": 0.1,
+            "label": "Heading Line Height",
+            "default": 0.8,
+            "info": "Line height for the heading text"
+          },
+          {
+              "type": "range",
+              "id": "mobile_heading_text_size",
+              "min": 0,
+              "max": 100,
+              "step": 2,
+              "unit": "px",
+              "label": "Mobile Heading Size",
+              "default": 30
+            },
+            {
+              "type": "range",
+              "id": "mobile_heading_text_line_height",
+              "min": 0.1,
+              "max": 2.0,
+              "step": 0.1,
+              "label": "Mobile Heading Line Height",
+              "default": 1.3,
+              "info": "Line height for the mobile heading text"
+            },
+          {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+              {
+                "value": "h2",
+                "label": "h1"
+              },
+              {
+                "value": "h1",
+                "label": "h2"
+              },
+              {
+                "value": "h3",
+                "label": "h3"
+              }
+            ],
+            "default": "h1",
+            "label": "Heading size"
+          },
+        {
+            "type": "checkbox",
+            "id": "move_header_top_mobile",
+            "label": "Move header to top of section on mobile",
+            "default": false
+        },
+         {
+          "type": "range",
+          "id": "header_margin_bottom",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Header Margin Bottom",
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type":"cc-star",
+      "name":"Trust Indicators",
+      "settings":[
+         {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays trust indicators like star ratings, customer counts, or social proof text. It can show stars with custom text and styling to build credibility and encourage conversions."
+        },
+         {
+      "type": "inline_richtext",
+      "id": "stars",
+      "default": "Trusted by 10,000 others",
+      "label": "Star Copy"
+    },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show Stars",
+      "default":true
+    },
+    {
+      "type": "range",
+      "id": "star_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Star Text Size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "star_text_line_height",
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Star Text Line Height",
+      "default": 1.2,
+      "info": "Line height for the star text"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": -20,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Adjustment Spacing",
+      "default": 0,
+      "info": "Adjust spacing above the star text (negative values move text up, positive values move text down)"
+    },
+     {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default":"#ffffff"
+    },
+        {
+      "type": "range",
+      "id": "star_margin_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Margin Bottom",
+      "default": 20
+    }
+      ]
+    },
+    {
+      "type":"cc-text",
+      "name":"Description Text",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays descriptive text or a subtitle for the hero section. It can include information about discounts, creator recommendations, or any supporting copy to enhance the main heading."
+        },
+      {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "default": "Get a discount by shopping from my curated collections.",
+      "label": "Hero Subtitle"
+     },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+      {
+      "type": "range",
+      "id": "description_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Description Exact Size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "description_text_line_height",
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Description Line Height",
+      "default": 1.4,
+      "info": "Line height for the description text"
+    },
+    {
+      "type": "range",
+      "id": "text_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Text Margin Bottom",
+      "default": 28
+    }
+      ]
+    },
+    {
+      "type":"cc-product",
+      "name":"Product Recommendations",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays product recommendations from the creator's drops. It can show a featured product and additional recommendations from the creator's curated collections. Products are automatically pulled from the creator's metaobject data when available."
+        },
+        {
+        "type": "header",
+        "content": "Featured Product Settings",
+        "info": "Configure the main featured product display"
+      },
+      {
+        "type": "product",
+        "id": "featured-product",
+        "label": "Featured Product",
+        "info": "Select the main product to feature in this section"
+      },
+      {
+        "type": "range",
+        "id": "featured_product_max_width",
+        "label": "Featured Product Max Width",
+        "min": 200,
+        "max": 600,
+        "step": 20,
+        "unit": "px",
+        "default": 320,
+        "info": "Maximum width for the featured product card"
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_featured_product",
+        "label": "Hide featured product card",
+        "default":false,
+        "info": "Hide the main featured product card"
+      },
+      {
+        "type": "checkbox",
+        "id": "apply_discount",
+        "label": "Show discounted pricing",
+        "default":false,
+        "info": "Display the discounted price alongside the original price"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_discount_from_creator_code",
+        "label": "Show discount is from creator code",
+        "default": true,
+        "info": "Display the '(With Creator's Code)' text on product cards"
+      },
+      {
+        "type": "header",
+        "content": "Product Grid Settings",
+        "info": "Configure the product recommendations grid"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_creator_products",
+        "label": "Show Recent Recommendations",
+        "default":true,
+        "info": "Display products from the creator's recent recommendations"
+      },
+      {
+        "type": "range",
+        "id": "number_of_recommendations",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "label": "Number of recommendations",
+        "default": 3,
+        "info": "How many product recommendations to display"
+      },
+      {
+        "type": "range",
+        "id": "grid_product_max_width",
+        "label": "Grid Product Max Width",
+        "min": 200,
+        "max": 600,
+        "step": 20,
+        "unit": "px",
+        "default": 280,
+        "info": "Maximum width for product cards in the grid"
+      },
+      {
+        "type": "range",
+        "id": "product_card_grid_max_height",
+        "label": "Product Card Grid Item Height",
+        "min": 200,
+        "max": 500,
+        "step": 20,
+        "unit": "px",
+        "default": 300,
+        "info": "Height for product grid cards"
+      },
+      {
+        "type": "header",
+        "content": "Product Styling",
+        "info": "Customize the appearance of product cards"
+      },
+      {
+        "type": "inline_richtext",
+        "id": "productcta",
+        "default": "Get 20% Off",
+        "info": "Text for the call-to-action button on product cards",
+        "label": "Product CTA Copy"
+      },
+      {
+        "type":"checkbox",
+        "id":"set-uppercase",
+        "label":"Set text to uppercase"
+      },
+      {
+        "type": "range",
+        "id": "product_cta_font_weight",
+        "min": 100,
+        "max": 900,
+        "step": 100,
+        "label": "Product CTA Font Weight",
+        "default": 600,
+        "info": "Font weight for the product CTA buttons (100 = thin, 400 = normal, 600 = semi-bold, 700 = bold, 900 = black)"
+      },
+      {
+        "type": "select",
+        "id": "show_compare",
+        "options": [
+          {
+            "value": "true",
+            "label": "Yes"
+          },
+          {
+            "value": "false",
+            "label": "No"
+          }
+        ],
+        "default": "false",
+        "label": "Show Compare at Price"
+      },
+      {
+        "type": "range",
+        "id": "product_corner_radius",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Product Corner Radius",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "product_cta_corner_radius",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Product CTA Corner Radius",
+        "default": 4
+      },
+      {
+        "type": "color",
+        "id": "product_background",
+        "label": "Product Background Color",
+        "default":"#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "product_text_color",
+        "label": "Product Text Color",
+        "default":"#000000"
+      },
+      {
+        "type": "color",
+        "id": "product_border_color",
+        "label": "Product Border Color"
+      },
+      {
+        "type": "range",
+        "id": "product_border_width",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "Product Border Width",
+        "default": 0
+      },
+      {
+        "type": "color",
+        "id": "product_cta_background",
+        "label": "Product CTA Background Color",
+        "default":"#000000"
+      },
+      {
+        "type": "color",
+        "id": "product_cta_text_color",
+        "label": "Product CTA Text Color",
+        "default":"#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "product_cta_border_color",
+        "label": "Product CTA Border Color"
+      },
+      {
+        "type": "range",
+        "id": "product_cta_border_width",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "Product CTA Border Width",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "product_margin_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Product Margin Bottom",
+        "default": 10
+      },
+    {
+      "type": "header",
+      "content": "Fallback CTA Settings",
+      "info": "Settings for fallback CTA when no products are shown"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_cta_collection",
+      "label": "Fallback CTA Collection",
+      "info": "Collection to link to when no products are shown"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "fallback_cta_text",
+      "default": "Shop Collection",
+      "info": "Text for the fallback CTA button",
+      "label": "Fallback CTA Text"
+    },
+    {
+      "type": "range",
+      "id": "fallback_cta_text_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Fallback CTA Text Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "fallback_cta_text_line_height",
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Fallback CTA Line Height",
+      "default": 1.2,
+      "info": "Line height for the fallback CTA text"
+    },
+    {
+      "type": "range",
+      "id": "fallback_cta_font_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Fallback CTA Font Weight",
+      "default": 600,
+      "info": "Font weight for the fallback CTA text (100 = thin, 400 = normal, 600 = semi-bold, 700 = bold, 900 = black)"
+    },
+    {
+      "type": "range",
+      "id": "fallback_cta_padding_top_bottom",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Fallback CTA Padding (Top & Bottom)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "fallback_cta_padding_left_right",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Fallback CTA Padding (Left & Right)",
+      "default": 28
+    }
+      ]
+    },
+    {
+      "type": "icon-text",
+      "name": "Feature Icon",
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays an icon or image with accompanying text. It's perfect for highlighting key features, benefits, or trust signals like 'Dermatologist Reviewed' or 'Cruelty Free'. Multiple instances can be added to create a list of features."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "info": "Text to display next to the icon",
+          "default":"Practitioner Reviewed"
+        },
+        {
+          "type":"checkbox",
+          "id":"set-uppercase",
+          "label":"Set text to uppercase"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default":"#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "text_size",
+          "min": 8,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Text Size",
+          "default": 15,
+          "info": "Size of the text next to the icon"
+        },
+        {
+          "type": "range",
+          "id": "text_line_height",
+          "min": 0.1,
+          "max": 2.0,
+          "step": 0.1,
+          "label": "Text Line Height",
+          "default": 1.2,
+          "info": "Line height for the text next to the icon"
+        }
+      ]
+    },
+    {
+      "type":"cc-logo",
+      "name":"Collaboration Highlight",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block highlights the collaboration between the brand and creator. It displays the creator's profile picture (automatically pulled from metaobject data) alongside brand logos or text. Perfect for showcasing the partnership and building trust through co-branding."
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Upload the brand or creator logo image"
+        },
+        {
+         "type":"richtext",
+          "id":"logo_text",
+          "label":"Logo Text",
+          "info": "Text to display with the logo (supports HTML formatting)"
+        },
+        {
+          "type": "select",
+          "id":"text-case",
+          "label": "Text Transformation",
+          "default": "uppercase",
+          "options": [
+            {
+              "label": "Uppercase",
+              "value": "uppercase"
+            },
+            {
+              "value": "lowercase",
+              "label": "Lowercase"
+            },
+            {
+              "label": "Capitalize",
+              "value": "capitalize"
+            }
+          ]
+        },
+        {
+          "type":"text",
+          "id":"text-size",
+          "label":"Text Size"
+        },
+         {
+          "type":"text",
+          "id":"text-line-height-size",
+          "label":"Text Line Height"
+        },
+        {
+          "type":"color",
+          "id":"text_color",
+          "label":"Text Color"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "logo_width_mobile",
+          "min": 50,
+          "max": 200,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width on mobile",
+          "default": 80
+        },
+        {
+          "type":"text",
+          "id":"horizontal-spacing",
+          "label":"Horizontal Spacing"
+        },
+        {
+          "type":"text",
+          "id":"vertical-spacing",
+          "label":"Vertical Spacing"
+        },
+        {
+          "type": "header",
+          "content": "Creator Collaboration Settings"
+        },
+        {
+          "type": "select",
+          "id": "creator_name_display",
+          "label": "Creator Name Display",
+          "default": "first_name",
+          "info": "Choose whether to show the creator's first name or shop title",
+          "options": [
+            {
+              "value": "first_name",
+              "label": "First Name (cc-creator-first-name)"
+            },
+            {
+              "value": "shop_title",
+              "label": "Shop Title (cc-creator-shop-title)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "divider_text",
+          "label": "Divider text",
+          "default": "×"
+        },
+        {
+          "type":"text",
+          "id":"divider_text_size",
+          "label":"Divider Size"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "fallback_bg_color",
+          "label": "Fallback Background Color",
+          "default": "#cccccc"
+        },
+        {
+          "type":"color",
+          "id":"initials_font_color",
+          "label":"Initials Font Color"
+        },
+        {
+          "type": "range",
+          "id": "initials_font_size",
+          "label": "Initials Font Size",
+          "min": 10,
+          "max": 60,
+          "step": 1,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width",
+          "min": 30,
+          "max": 150,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size",
+          "default": 60
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width_mobile",
+          "min": 30,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size on mobile",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "collab_margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Collab Margin Bottom",
+          "default": 10
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Primavera",
+      "blocks": [
+        {
+          "type": "cc-eyebrow"
+        },
+        {
+          "type": "cc-header"
+        },
+        {
+          "type": "cc-text"
+        },
+        {
+          "type": "cc-product"
+        },
+        {
+          "type": "certified"
+        },
+         {
+          "type": "icon-text"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  }
+}
+{% endschema %}
+
+{% comment %} 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          playIcon.style.display = "flex";
+          pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            pauseIcon.style.display = "none";
+            return;
+          }
+
+          // Show pause icon if playing
+          if (video && !video.paused) {
+            pauseIcon.style.display = "flex";
+            setTimeout(() => {
+              pauseIcon.style.display = "none";
+            }, 2000);
+          }
+        });
+      }
+    });
+  });
+</script> {% endcomment %}
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        // Attributes for autoplay inline on mobile
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        // ALSO set properties (needed on iOS Safari sometimes)
+        lazyVideo.playsInline = true;
+        lazyVideo.muted = true;
+        lazyVideo.autoplay = true;
+        lazyVideo.loop = true;
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          if (playIcon) playIcon.style.display = "none";
+          if (pauseIcon) pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          if (playIcon) playIcon.style.display = "flex";
+          if (pauseIcon) pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now and ensure properties
+      if (video) {
+        video.playsInline = true;
+        video.muted = true;
+        bindVideoEvents(video);
+      }
+
+      // PLAY icon handlers
+      const onPlayTap = async (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.();
+
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      };
+      playIcon?.addEventListener("click", onPlayTap);
+      playIcon?.addEventListener("touchstart", onPlayTap, { passive: false });
+
+      // PAUSE icon handlers (call video.pause() directly)
+      const onPauseTap = (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.(); // prevent slider / wrapper handlers
+        const vid = video || wrapper.querySelector("video");
+        if (vid) vid.pause();
+      };
+      pauseIcon?.addEventListener("click", onPauseTap);
+      pauseIcon?.addEventListener("touchstart", onPauseTap, { passive: false });
+
+      // Make sure pause icon is clickable above overlays/sliders
+      if (pauseIcon) {
+        pauseIcon.style.pointerEvents = "auto";
+        pauseIcon.style.touchAction = "manipulation";
+      }
+      if (playIcon) {
+        playIcon.style.pointerEvents = "auto";
+        playIcon.style.touchAction = "manipulation";
+      }
+
+      // Mobile: Show pause icon briefly on touch (not when tapping icons)
+      const isMobileTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768;
+
+      if (isMobileTouch) {
+        wrapper.addEventListener("touchstart", (e) => {
+          // If tapping on play/pause icons (or their children), do nothing here
+          if (
+            (pauseIcon && (e.target === pauseIcon || pauseIcon.contains(e.target))) ||
+            (playIcon && (e.target === playIcon || playIcon.contains(e.target)))
+          ) {
+            return;
+          }
+
+          // Show pause icon if video is playing
+          const vid = video || wrapper.querySelector("video");
+          if (vid && !vid.paused) {
+            if (pauseIcon) {
+              pauseIcon.style.display = "flex";
+              setTimeout(() => {
+                // Only hide if still playing
+                if (!vid.paused) {
+                  pauseIcon.style.display = "none";
+                }
+              }, 2000);
+            }
+          }
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".story__slide");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          playIcon.style.display = "none";
+          pauseIcon.style.display = "flex";
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          playIcon.style.display = "flex";
+          pauseIcon.style.display = "none";
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            pauseIcon.style.display = "none";
+            return;
+          }
+
+          // Show pause icon if playing
+          if (video && !video.paused) {
+            pauseIcon.style.display = "flex";
+            setTimeout(() => {
+              pauseIcon.style.display = "none";
+            }, 2000);
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  function getContrastYIQ(hexColor) {
+    hexColor = hexColor.replace("#", "");
+    if (hexColor.length === 3) {
+      hexColor = hexColor.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? 'black' : 'white';
+  }
+
+  document.querySelectorAll('#hero-section').forEach(section => {
+    const autoContrast = section.dataset.autoContrast === "true";
+    if (!autoContrast) return;
+
+    const bgColor = window.getComputedStyle(section).backgroundColor;
+
+    // Convert rgb to hex
+    const rgbToHex = (rgb) => {
+      const result = rgb.match(/\d+/g);
+      if (!result) return '#ffffff';
+      return (
+        "#" +
+        result
+          .slice(0, 3)
+          .map((x) => {
+            const hex = parseInt(x).toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+          })
+          .join("")
+      );
+    };
+
+    const hexColor = rgbToHex(bgColor);
+    const textColor = getContrastYIQ(hexColor);
+
+    section.querySelectorAll('.dynamic-text').forEach(el => {
+      el.style.color = textColor;
+    });
+
+    // Apply same contrast color to star fills
+    section.querySelectorAll('.star path').forEach(star => {
+      star.style.fill = textColor;
+    });
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const slider = document.querySelector('.unique-video-slider-list');
+  const slidermain = slider ? slider.closest(".unique-video-slider") : null;
+  if (!slider || !slidermain) return;
+
+  const items = Array.from(slider.querySelectorAll(".unique-video-slider-item"));
+  let slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+
+  // ----------------------------
+  // Active item update (no blinking)
+  // ----------------------------
+  let lastActiveIndex = null;
+
+  function updateActiveItemdrag() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const visibleCenter = wrapperRect.left + wrapperRect.width / 2;
+    const offsetPercent = 0.15;
+    let activeItem = null;
+    let minDiff = Infinity;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const offset = rect.width * offsetPercent;
+      const triggerPoint = rect.right - offset;
+      const diff = Math.abs(visibleCenter - triggerPoint);
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeItem = { item, index };
+      }
+    });
+
+    if (!activeItem) return;
+
+    const activeIndex = activeItem.index;
+
+    // ✅ Only update when slide actually changes
+    if (activeIndex === lastActiveIndex) return;
+    lastActiveIndex = activeIndex;
+
+    slider.querySelectorAll(".unique-video-slider-item").forEach((item, index) => {
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+
+      if (index === activeIndex) {
+        item.classList.add("is-active");
+      } else if (index < activeIndex - 1) {
+        item.classList.add("fade-out-left");
+      } else if (index === activeIndex - 1) {
+        item.classList.add("fade-left");
+      } else if (index > activeIndex) {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  // ----------------------------
+  // Smooth scroll helper
+  // ----------------------------
+  function smoothScrollBy(element, distance, duration, callback) {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    function scroll() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeInOutQuad = progress < 0.5 
+        ? 2 * progress * progress 
+        : -1 + (4 - 2 * progress) * progress;
+
+      element.scrollLeft = start + distance * easeInOutQuad;
+      updateActiveItemdrag();
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      } else {
+        if (callback) callback();
+      }
+    }
+
+    requestAnimationFrame(scroll);
+  }
+
+  // ----------------------------
+  // Infinite loop
+  // ----------------------------
+  let infiniteLoopEnabled = false;
+
+  function createInfiniteLoop() {
+    if (infiniteLoopEnabled) return;
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.classList.remove("is-active", "fade-left", "fade-out-left", "slide-forward");
+      slider.appendChild(clone);
+    });
+    infiniteLoopEnabled = true;
+  }
+
+  function handleInfiniteScroll() {
+    if (!infiniteLoopEnabled) return;
+    const currentScroll = slider.scrollLeft;
+    const totalWidth = slideWidth * items.length;
+    if (currentScroll >= totalWidth) {
+      slider.scrollLeft = 0;
+      updateActiveItemdrag();
+    }
+  }
+
+  function initInfiniteLoop() {
+    if (window.innerWidth > 1100 && items.length > 1) {
+      createInfiniteLoop();
+      infiniteLoopEnabled = true;
+    } else {
+      infiniteLoopEnabled = false;
+    }
+  }
+
+  // ----------------------------
+  // Right arrow → next slide
+  // ----------------------------
+  const rightArrow = document.querySelector(".right-arrow");
+  const fadeDuration = 300;
+  const smoothDuration = 500;
+
+  function twoStepScroll(distance) {
+    setTimeout(() => {
+      smoothScrollBy(slider, distance, smoothDuration, () => {
+        handleInfiniteScroll(); 
+      });
+    }, fadeDuration);
+  }
+
+  if (rightArrow) {
+    rightArrow.addEventListener("click", () => {
+      twoStepScroll(slideWidth * 1.1);
+    });
+  }
+
+  // ----------------------------
+  // Dragging
+  // ----------------------------
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('dragging');
+    slidermain.classList.add('dragslider');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      handleInfiniteScroll();
+    }
+  });
+
+  slider.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      updateActiveItemdrag();
+      handleInfiniteScroll();
+    }
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 1.1;
+    slider.scrollLeft = scrollLeft - walk;
+    updateActiveItemdrag();
+  });
+
+  // ----------------------------
+  // Wheel scroll
+  // ----------------------------
+  slider.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      slider.scrollLeft += e.deltaX;
+      updateActiveItemdrag();
+      handleInfiniteScroll();
+    }
+  }, { passive: false });
+
+  // ----------------------------
+  // Init
+  // ----------------------------
+  slider.querySelectorAll('img').forEach(img => img.setAttribute('draggable', false));
+  initInfiniteLoop();
+  window.addEventListener("resize", () => {
+    slideWidth = items.length > 0 ? items[0].getBoundingClientRect().width : 0;
+    updateActiveItemdrag();
+    initInfiniteLoop();
+  });
+  setTimeout(updateActiveItemdrag, 100);
+
+  // periodic loop check
+  setInterval(() => {
+    if (window.innerWidth > 1100) {
+      handleInfiniteScroll();
+    }
+  }, 1000);
+});
+</script>
+
+
+<style>
+    button.mute-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: auto !important;
+    }
+      @media only screen and (min-width: 1101px) {
+      .unique-video-slider {
+        position: relative;
+        overflow-x: hidden;
+        width: 100%;
+      }
+  
+      .unique-video-slider-item {
+        flex: 0 0 auto;
+        transition:
+        opacity 0.3s ease-out,        
+        transform 0.5s ease-out,       
+        filter 0.5s ease-out;         
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1) translateX(0);
+        position: relative;
+        z-index: 1;
+
+      }
+
+    .unique-video-slider-item.is-active {
+        opacity: 1;
+        filter: blur(0);
+        z-index: 3;
+    }
+
+    .unique-video-slider-item.fade-out-left {
+    opacity: 0;
+      filter: blur(2px);
+      transform: scale(0.8) translateX(-40px);
+      pointer-events: none;
+      z-index: 0;  
+    }
+
+    .unique-video-slider-item.fade-left {
+      opacity: 0.3;
+      filter: blur(3px);
+      transform: scale(0.92) translateX(-20px);
+      z-index: 0; 
+    }
+
+      .unique-video-slider-item.slide-forward {
+        opacity: 1;
+      filter: blur(0);
+        transform: scale(1) translateX(20px);
+        z-index: 2; 
+      }
+      .unique-video-slider-item.transitioning {
+        transition: none;
+      }
+    }
+
+      .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+    .slider-arrow svg{
+      width:20px;
+      height:20px;
+    }
+
+    .slider-arrow:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+      .right-arrow {
+      right: 10px;
+      height:40px;
+      z-index: 9999999999999999999999999999999999;
+    }
+</style>
+
+<style>
+.story__slider {
+  {% if section.settings.aspect_ratio != 'custom' %}
+    aspect-ratio: {{ section.settings.aspect_ratio }};
+    width: 600px;
+    max-width: 100%;
+   {% else %}
+     width: {{ section.settings.custom_width }}px;
+     height: {{ section.settings.custom_height }}px;
+     max-width: 100%;
+   {% endif %}
+  height: auto;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.story__slide {
+  position: relative;
+  border-radius: {{ section.settings.video_corner_radius }}px;
+  border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }};
+  overflow: hidden;
+}
+
+.story__slide video,
+.story__slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+  .story__pagination {
+  bottom: unset !important;
+  top: 8px !important;
+  display: flex;
+  padding: 0 4px;
+}
+
+.story__pagination .swiper-pagination-bullet {
+  flex-grow: 1;
+  border-radius: 100vh;
+  height: 3px;
+  margin: 0 2px !important;
+  background-color: rgba(247, 247, 245, 0.4);
+  opacity: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.story__pagination .swiper-pagination-bullet .swiper-pagination-progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 100vh;
+  background-color: #f7f7f5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Mobile responsiveness for social carousel */
+@media screen and (max-width: 768px) {
+  .story__slider {
+    {% if section.settings.aspect_ratio != 'custom' %}
+      width: 100%;
+      max-width: 400px;
+    {% else %}
+      width: 100%;
+      max-width: min({{ section.settings.custom_width }}px, 400px);
+      height: auto;
+    {% endif %}
+  }
+  
+  .slider--social {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .story__slider {
+    {% if section.settings.aspect_ratio != 'custom' %}
+      width: 100%;
+      max-width: 320px;
+    {% else %}
+      width: 100%;
+      max-width: min({{ section.settings.custom_width }}px, 320px);
+      height: auto;
+    {% endif %}
+  }
+  
+  .slider--social {
+    padding: 0 12px;
+  }
+}
+
+  .story__prev,
+  .story__next {
+  height: 100%;
+  width: 50%;
+  top: 0;
+  margin-top: 0;
+  position: absolute;
+  z-index: 15;
+}
+
+  .story__prev::after,
+  .story__next::after {
+  content: none;
+}
+
+.story__prev {
+  left: 0;
+}
+
+.story__next {
+  right: 0;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Only initialize if we're in social mode
+  if (!document.querySelector('.story__slider')) {
+    return;
+  }
+
+  const totalSlides = document.querySelectorAll('.story__slide').length;
+
+  const slider = new Swiper(".story__slider", {
+  speed: 1,
+  watchSlidesProgress: true,
+  loop: totalSlides > 1,
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false
+  },
+  slidesPerView: 1,
+  navigation: {
+    nextEl: ".story__next",
+    prevEl: ".story__prev",
+  },
+  pagination: {
+    el: '.story__pagination',
+    renderBullet: function (index, className) {
+      return '<div class="' + className + '"><div class="swiper-pagination-progress"></div></div>';
+    }
+  },
+  on: {
+    autoplayTimeLeft(swiper, time, progress) {
+      let currentSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.activeIndex];
+      let currentBullet = document.querySelectorAll('.story__slider .swiper-pagination-progress')[swiper.realIndex];
+      let fullTime = currentSlide.dataset.swiperAutoplay ? parseInt(currentSlide.dataset.swiperAutoplay) : swiper.params.autoplay.delay;
+      let percentage = Math.min(Math.max(parseFloat(((fullTime - time) * 100 / fullTime).toFixed(1)), 0), 100) + '%';
+      gsap.set(currentBullet, { width: percentage });
+    },
+    transitionEnd(swiper) {
+      let allBullets = $('.story__slider .swiper-pagination-progress');
+      let bulletsBefore = allBullets.slice(0, swiper.realIndex);
+      let bulletsAfter = allBullets.slice(swiper.realIndex, allBullets.length);
+      if (bulletsBefore.length) { gsap.set(bulletsBefore, { width: '100%' }) }
+      if (bulletsAfter.length) { gsap.set(bulletsAfter, { width: '0%' }) }
+
+      let activeSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.realIndex];
+      if (activeSlide.querySelector('video')) {
+        activeSlide.querySelector('video').currentTime = 0;
+      }
+    },
+    slideChange(swiper) {
+      // Reset progress bars when reaching the beginning after loop
+      if (swiper.realIndex === 0 && swiper.params.loop) {
+        let allBullets = $('.story__slider .swiper-pagination-progress');
+        gsap.set(allBullets, { width: '0%' });
+      }
+    },
+  }
+});
+
+// Function to attach autoplay control events to videos
+function attachVideoEvents(video) {
+  if (video.__eventsBound) return; // prevent double-binding
+  video.__eventsBound = true;
+
+  video.addEventListener('play', () => slider.autoplay.stop());
+  video.addEventListener('pause', () => slider.autoplay.start());
+  video.addEventListener('ended', () => slider.autoplay.start());
+}
+
+// Attach to any videos already present
+document.querySelectorAll('.story__slide video').forEach(attachVideoEvents);
+
+// Watch for dynamically injected videos (from lazy-video-container click)
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.tagName === 'VIDEO') {
+        attachVideoEvents(node);
+      } else if (node.querySelectorAll) {
+        node.querySelectorAll('video').forEach(attachVideoEvents);
+      }
+    });
+  });
+});
+
+// Observe only inside the slider
+// observer.observe(document.querySelector('.story__slider'), {
+//   childList: true,
+//   subtree: true
+// });
+
+const sliderEl = document.querySelector('.story__slider');
+if (sliderEl) {
+  observer.observe(sliderEl, {
+    childList: true,
+    subtree: true
+  });
+}
+
+function isClickOnControl(el) {
+  if (!el) return false;
+  const controlTags = ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA', 'LABEL'];
+  let node = el;
+
+  while (node && node !== sliderEl && node.nodeType === 1) {
+    // tag-based interactive elements
+    if (controlTags.includes(node.tagName)) return true;
+
+    // explicit attribute to opt-out
+    if (node.hasAttribute && node.hasAttribute('data-no-skip')) return true;
+
+    // class-name heuristics (catch common control class names)
+    const cls = node.className || '';
+    if (typeof cls === 'string' && /(^|\s)(play|pause|mute|volume|control|controls|btn|button|icon|seek|timeline|progress|vjs-|plyr|video-controls|story__controls|story__play)/i.test(cls)) {
+      return true;
+    }
+
+    node = node.parentElement;
+  }
+
+  return false;
+}
+
+/* Prevent skipping when user was interacting with a control */
+if (sliderEl) {
+  sliderEl.addEventListener('click', function (e) {
+    // only consider primary button / normal taps
+    if (e.button && e.button !== 0) return;
+
+    // if the click originated from a control (button, link, input, or marked element), don't skip
+    if (isClickOnControl(e.target)) {
+      return;
+    }
+
+    // Optional: if you'd like a 50/50 left-right split (Instagram style), change width/3 → width/2 below.
+    const rect = sliderEl.getBoundingClientRect();
+    const x = e.clientX - rect.left; // click/tap X position relative to slider
+    const width = rect.width || 1;
+
+    // Left third → previous, Right two-thirds → next (adjust as you like)
+    if (x < width / 3) {
+      slider.slidePrev();
+    } else {
+      slider.slideNext();
+    }
+  }, { passive: true });
+}
+
+}); // End of DOMContentLoaded
+</script>
+
+
+
+
+

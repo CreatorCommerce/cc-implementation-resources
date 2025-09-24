@@ -23,6 +23,12 @@
         "type": ["sidekick"],
         "tags": ["init"]
       },
+      "sidekick-init.txt": {
+        "title": "Prompt title",
+        "description": "Description of the prompt",
+        "type": ["sidekick"],
+        "tags": ["campaign"]
+      },
       "product-template.txt": {
         "title": "Prompt title",
         "description": "Description of the prompt",
