@@ -545,7 +545,7 @@ testimonials-component {
     padding-top: 10px;
     margin-top: 10px;
     max-width: 100%;
-    /* gap: 25px; */
+    gap: 12px;
      gap: var(--desktop-gap);
      flex-wrap:wrap;
   }
@@ -939,6 +939,7 @@ div#hero-image {
       }
     .certified-feature-section .bottom-section {
         gap: var(--mobile-gap);
+        gap: 12px;
         justify-content: center !important;
     }
   }
@@ -1385,18 +1386,18 @@ div#hero-image {
                                       %}
                                         {% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00 %}
                                         {% assign discouned_amt = block.settings.featured-product.price | times: discount %}
-                                        {{- block.settings.featured-product.price | minus: discouned_amt | times: 100.00 | money }}
+                                        {{- block.settings.featured-product.price | minus: discouned_amt | times: 10.00 | money }}
                                       {% else %}
                                         {% assign discount = cc_creator['cc-collab-discount-amount'] %}
-                                        {{- block.settings.featured-product.price | minus: discount | times: 100.00 | money }}
+                                        {{- block.settings.featured-product.price | minus: discount | times: 10.00 | money }}
                                       {% endif %}
                                     {% else %}
-                                      {{- block.settings.featured-product.price | times: 100.00 | money -}}
+                                      {{- block.settings.featured-product.price | times: 10.00 | money -}}
                                     {% endif %}
                                   </p>
                                   {% if block.settings.show_compare == 'true' %}
                                     <p style="font-size: 0.8em; margin: 0 0 10px 0; font-weight: 400; text-decoration: line-through;">
-                                      {{- block.settings.featured-product.price | times: 100.00 | money }}
+                                      {{- block.settings.featured-product.price | times: 10.00 | money }}
                                     </p>
                                   {% endif %}
                                   {% if block.settings.show_discount_from_creator_code %}
@@ -4915,7 +4916,6 @@ if (sliderEl) {
 
 }); // End of DOMContentLoaded
 </script>
-
 
 
 
