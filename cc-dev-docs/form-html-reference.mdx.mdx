@@ -1,0 +1,404 @@
+---
+title: "HTML Reference for Creator Forms"
+description: "Description of your new file."
+---
+
+
+# HTML Reference Guide for Form Creators
+
+## Introduction
+
+As a form creator, you can enhance your form questions with HTML formatting in labels and descriptions. This allows you to create more visually engaging and organized forms while maintaining security through our strict content sanitization system.
+
+**Key Benefits:**
+- Style your questions with rich text formatting
+- Add structure with headings and lists
+- Include links to external resources
+- Apply custom CSS classes and IDs for brand consistency
+- Create professional, accessible forms
+
+---
+
+## Security & Sanitization
+
+### How We Keep Your Forms Safe
+
+All HTML content you add to your forms is automatically sanitized before rendering. Our system:
+
+- **Prevents XSS attacks** by removing dangerous scripts and event handlers
+- **Strips harmful attributes** like `onclick`, `onerror`, and `onload`
+- **Blocks unsafe tags** such as `<script>`, `<iframe>`, and `<object>`
+- **Allows only formatting tags** that enhance visual presentation
+- **Preserves safe attributes** including `class`, `id`, `href`, and `style`
+
+You can confidently use HTML knowing that your forms and respondents are protected.
+
+---
+
+## Allowed HTML Tags
+
+### Text Formatting
+
+**`<b>` and `<strong>`** - Bold text  
+Use for important terms or emphasis.
+```html
+<strong>Required:</strong> Please provide your full name
+```
+
+**`<i>` and `<em>`** - Italic text  
+Use for citations, definitions, or subtle emphasis.
+```html
+Answer in <em>your own words</em>
+```
+
+**`<u>`** - Underlined text  
+Use sparingly for emphasis.
+```html
+<u>Do not</u> include personal information
+```
+
+**`<mark>`** - Highlighted text  
+Use to draw attention to specific content.
+```html
+<mark>New question added for 2025</mark>
+```
+
+**`<small>`** - Smaller text  
+Use for fine print or supplementary information.
+```html
+<small>(Optional)</small>
+```
+
+**`<sup>` and `<sub>`** - Superscript and subscript  
+Use for mathematical notation or footnotes.
+```html
+H<sub>2</sub>O or E=mc<sup>2</sup>
+```
+
+### Structure & Organization
+
+**`<p>`** - Paragraphs  
+Separate content into readable blocks.
+```html
+<p>This is the first paragraph with important context.</p>
+<p>This is the second paragraph with additional details.</p>
+```
+
+**`<br>`** - Line breaks  
+Add single line breaks within text.
+```html
+Name: _____________<br>
+Date: _____________
+```
+
+**`<hr>`** - Horizontal rule  
+Create visual separators.
+```html
+<hr>
+```
+
+**`<div>` and `<span>`** - Generic containers  
+Group content for styling with classes or IDs.
+```html
+<div class="highlight-box">Important information here</div>
+<span class="required-field">*</span>
+```
+
+### Headings
+
+**`<h1>` through `<h6>`** - Section headings  
+Organize content hierarchically.
+```html
+<h3>Personal Information</h3>
+<h4>Contact Details</h4>
+```
+
+**Best Practice:** Use h3-h6 in form labels to maintain proper document hierarchy.
+
+### Lists
+
+**`<ul>`** - Unordered (bulleted) lists
+```html
+<ul>
+  <li>First option</li>
+  <li>Second option</li>
+  <li>Third option</li>
+</ul>
+```
+
+**`<ol>`** - Ordered (numbered) lists
+```html
+<ol>
+  <li>Step one: Review the guidelines</li>
+  <li>Step two: Complete the form</li>
+  <li>Step three: Submit your response</li>
+</ol>
+```
+
+### Links
+
+**`<a href="...">`** - Hyperlinks  
+Link to external resources or documentation.
+```html
+<a href="https://example.com/privacy">Read our privacy policy</a>
+```
+
+**Attributes allowed:** `href`, `target`, `title`, `class`, `id`
+
+```html
+<a href="https://example.com" target="_blank" class="external-link">
+  Click here for more information
+</a>
+```
+
+### Code & Preformatted Text
+
+**`<code>`** - Inline code
+```html
+Enter the value <code>API_KEY</code> from your dashboard
+```
+
+**`<pre>`** - Preformatted text  
+Preserves spacing and line breaks.
+```html
+<pre>
+function example() {
+  return true;
+}
+</pre>
+```
+
+### Tables
+
+**`<table>`, `<tr>`, `<td>`, `<th>`** - Data tables  
+Display structured information.
+```html
+<table>
+  <tr>
+    <th>Option</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Option A</td>
+    <td>First choice</td>
+  </tr>
+  <tr>
+    <td>Option B</td>
+    <td>Second choice</td>
+  </tr>
+</table>
+```
+
+---
+
+## Using Classes and IDs
+
+### CSS Classes
+
+Apply custom styling by adding `class` attributes to your HTML elements. Classes allow you to maintain consistent branding and visual hierarchy across your forms.
+
+**Syntax:**
+```html
+<p class="your-class-name">Content here</p>
+<div class="highlight primary-color">Important notice</div>
+```
+
+**Multiple classes:**
+```html
+<span class="required-field bold red-text">*</span>
+```
+
+**Common use cases:**
+- Brand colors and typography
+- Spacing and layout control
+- Visual emphasis and highlighting
+- Responsive design adjustments
+
+### IDs
+
+Use `id` attributes to uniquely identify specific elements, useful for linking or JavaScript interactions.
+
+**Syntax:**
+```html
+<div id="unique-identifier">Content</div>
+<h3 id="section-personal-info">Personal Information</h3>
+```
+
+**Best practices:**
+- IDs must be unique within the form
+- Use descriptive, lowercase names with hyphens
+- Avoid starting IDs with numbers
+
+---
+
+## Practical Examples
+
+### Example 1: Required Field with Emphasis
+
+**Input:**
+```html
+<strong class="required-label">Email Address</strong>
+<span class="required-asterisk">*</span>
+<br>
+<small>We'll never share your email with anyone else.</small>
+```
+
+**Result:**  
+Creates a bold required label with an asterisk and explanatory text below.
+
+---
+
+### Example 2: Instruction List
+
+**Input:**
+```html
+<h4>Before you begin:</h4>
+<ul class="instruction-list">
+  <li>Have your employee ID ready</li>
+  <li>Allocate 10-15 minutes to complete</li>
+  <li>Ensure you have supporting documents</li>
+</ul>
+```
+
+**Result:**  
+Creates a clear set of instructions with a heading and bulleted list.
+
+---
+
+### Example 3: External Resource Link
+
+**Input:**
+```html
+<p>Please review our 
+<a href="https://example.com/guidelines" target="_blank" class="external-link">
+  submission guidelines
+</a> before completing this section.</p>
+```
+
+**Result:**  
+Embedded link that opens in a new tab with custom styling.
+
+---
+
+### Example 4: Formatted Description
+
+**Input:**
+```html
+<div class="question-description">
+  <p><strong>Context:</strong> This question relates to your experience in Q4 2024.</p>
+  <p><em>Rate your satisfaction from 1 (Very Dissatisfied) to 5 (Very Satisfied)</em></p>
+  <hr>
+  <small>Your response is confidential and will only be used for internal analysis.</small>
+</div>
+```
+
+**Result:**  
+Well-structured description with context, instructions, and privacy notice.
+
+---
+
+### Example 5: Highlighted Notice
+
+**Input:**
+```html
+<div class="alert-box warning">
+  <p><mark><strong>Important:</strong></mark> Changes cannot be made after submission.</p>
+</div>
+```
+
+**Result:**  
+Eye-catching alert box for critical information.
+
+---
+
+## Best Practices
+
+### Accessibility
+
+1. **Use semantic HTML** - Use headings, lists, and paragraphs appropriately
+2. **Provide link context** - Make link text descriptive (avoid "click here")
+3. **Add title attributes** - Provide additional context for links and abbreviations
+4. **Maintain color contrast** - Ensure text is readable against backgrounds
+5. **Structure content logically** - Use proper heading hierarchy
+
+### Styling Guidelines
+
+1. **Keep it simple** - Don't over-format your questions
+2. **Be consistent** - Use the same classes throughout your form
+3. **Test responsiveness** - Ensure formatting works on mobile devices
+4. **Use meaningful class names** - Make them descriptive and maintainable
+5. **Prioritize readability** - Formatting should enhance, not distract
+
+### Content Organization
+
+1. **Break up long text** - Use paragraphs and lists
+2. **Highlight key information** - Use bold or mark for important details
+3. **Provide context** - Use descriptions to explain what you're asking
+4. **Include examples** - Show respondents what format you expect
+5. **Add helpful links** - Reference external resources when needed
+
+---
+
+## Prohibited Elements
+
+For security reasons, the following are automatically removed:
+
+- `<script>` tags and JavaScript code
+- `<iframe>` and embedded content
+- `<form>` and form input elements
+- `<object>`, `<embed>`, `<applet>` tags
+- Event handlers (`onclick`, `onload`, `onerror`, etc.)
+- `<style>` tags (inline styles via `style` attribute are allowed)
+- `<base>` tags that could redirect links
+- `<meta>` tags and other document-level elements
+
+---
+
+## Troubleshooting
+
+### My HTML isn't appearing
+
+**Possible causes:**
+- You're using a prohibited tag that was removed during sanitization
+- There's a syntax error in your HTML (unclosed tags, missing quotes)
+- The content exceeds character limits
+
+**Solution:** Validate your HTML and ensure you're only using allowed tags.
+
+### My classes aren't styling the content
+
+**Possible causes:**
+- The CSS classes aren't defined in your form's stylesheet
+- Class names have typos or don't match exactly
+- Styles are being overridden by more specific selectors
+
+**Solution:** Verify class names and check with your form administrator about available styles.
+
+### Links aren't working
+
+**Possible causes:**
+- Missing `http://` or `https://` protocol in href
+- Invalid URL format
+- Relative URLs that don't resolve correctly
+
+**Solution:** Always use complete URLs with protocol (https://example.com).
+
+---
+
+## Additional Resources
+
+- Contact your form administrator for available CSS classes
+- Test your HTML in the form preview before publishing
+- Review submitted forms to ensure formatting displays correctly
+- Keep a library of commonly used HTML snippets for consistency
+
+---
+
+## Need Help?
+
+If you encounter issues or have questions about HTML formatting in your forms, please contact your system administrator or support team. They can provide information about:
+
+- Custom CSS classes available in your organization
+- Specific formatting requirements for your forms
+- Technical limitations or restrictions
+- Training resources for advanced HTML usage
