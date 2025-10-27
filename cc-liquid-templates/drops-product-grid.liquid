@@ -1,0 +1,1081 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .cc-section-content {
+    padding: 0 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-section-title {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-tagline-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .cc-tagline {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+
+  #shopify-section-{{ section.id }} .cc-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-main-title {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    width: 320px;
+    position: relative;
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-button {
+    background: rgb(var(--color-background));
+    border: 1px solid rgba(var(--color-foreground), 0.2);
+    border-radius: 100px;
+    padding: 15px 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-text {
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scaleY(-1);
+  }
+
+  /* Dropdown arrow - points up when closed, down when open */
+  #shopify-section-{{ section.id }} .cc-dropdown-icon svg {
+    width: 14px;
+    height: 8px;
+    transform: rotate(180deg); /* Points up */
+    transition: transform 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown.open .cc-dropdown-icon svg {
+    transform: rotate(0deg); /* Points down when open */
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgb(var(--color-background));
+    border: 1px solid rgba(var(--color-foreground), 0.1);
+    border-radius: 16px;
+    margin-top: 4px;
+    z-index: 10;
+    backdrop-filter: blur(50px);
+    display: none;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-menu.open {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: rgb(var(--color-foreground));
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option:first-child {
+    padding-top: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option:last-child {
+    padding-bottom: 16px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option:hover {
+    background: rgba(var(--color-foreground), 0.05);
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option.selected {
+    background: rgba(var(--color-foreground), 0.05);
+    justify-content: space-between;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-option-text {
+    flex: 1;
+    text-align: left;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-check-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-bundle-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  #shopify-section-{{ section.id }} .cc-benefits-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  /* Dynamic benefits visibility */
+  #shopify-section-{{ section.id }} .cc-drop-benefits {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+    display: flex;
+  }
+
+  #shopify-section-{{ section.id }} .cc-benefit-item {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-benefit-check {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  #shopify-section-{{ section.id }} .cc-benefit-text {
+    color: rgb(var(--color-foreground));
+    white-space: nowrap;
+  }
+
+  #shopify-section-{{ section.id }} .cc-products-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-products-wrapper {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-products-grid {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* Product grid layout */
+  #shopify-section-{{ section.id }} .cc-drop-products {
+    display: none;
+  }
+
+  #shopify-section-{{ section.id }} .cc-drop-products.active {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: var(--grid-desktop-horizontal-spacing);
+    row-gap: var(--grid-desktop-vertical-spacing);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Product card wrapper */
+  #shopify-section-{{ section.id }} .cc-product-card {
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .cc-add-bundle {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #shopify-section-{{ section.id }} .cc-add-bundle-btn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  @media (max-width: 990px) {
+    #shopify-section-{{ section.id }} .cc-section-content {
+      padding: 0 0px;
+    }
+    #shopify-section-{{ section.id }} .cc-drop-products.active {
+      grid-template-columns: repeat({{ section.settings.columns_tablet }}, 1fr);
+    }
+
+    #shopify-section-{{ section.id }} .cc-benefits-row,
+    #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #shopify-section-{{ section.id }} .cc-benefit-item {
+      flex-basis: calc(50% - 8px);
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 749px) {
+    /* Remove page-width padding on mobile */
+    #shopify-section-{{ section.id }} .page-width {
+      padding-left: 0;
+      padding-right: 0;
+      margin-left: 0;
+      margin-right: 0;
+      max-width: 100%;
+    }
+    
+    #shopify-section-{{ section.id }} .cc-section-content {
+      padding: 0;
+    }
+    
+    /* Mobile carousel */
+    #shopify-section-{{ section.id }} .cc-products-wrapper {
+      overflow: hidden;
+      margin: 0 0 0 20px;
+      padding: 0;
+      width: calc(100% - 20px);
+    }
+    
+    #shopify-section-{{ section.id }} .cc-drop-products.active {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 16px;
+      padding: 0 40px 20px 0;
+      margin: 0;
+    }
+    
+    #shopify-section-{{ section.id }} .cc-drop-products.active::-webkit-scrollbar {
+      display: none;
+    }
+    
+    #shopify-section-{{ section.id }} .cc-drop-products.active .cc-product-card {
+      flex: 0 0 calc(100vw - 76px);
+      max-width: calc(100vw - 76px);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    #shopify-section-{{ section.id }} .cc-benefits-row,
+    #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+      gap: 16px;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #shopify-section-{{ section.id }} .cc-benefit-item {
+      justify-content: center;
+    }
+    #shopify-section-{{ section.id }} .cc-dropdown-wrapper {
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+assign cc_creator = metaobject
+
+  assign has_creator = false
+  if cc_creator != blank
+    assign has_creator = true
+  endif
+  assign drops_json = nil
+  assign drops_collections = nil
+
+  if has_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign drops_json = cc_creator.data.value['cc-creator-drops']
+  endif
+  if has_creator and cc_creator['cc-creator-drops'] and cc_creator['cc-creator-drops'].value
+    assign drops_collections = cc_creator['cc-creator-drops'].value
+  endif
+
+  assign has_drops = false
+  if drops_json and drops_json.size > 0 and drops_collections
+    assign has_drops = true
+  endif
+
+  assign selected_drop = nil
+  assign selected_drop_collection = nil
+  if has_drops
+    assign selected_drop = drops_json[0]
+    assign selected_drop_id = selected_drop['cc-creator-drop-collection-id']
+    if selected_drop_id != blank
+      for c in drops_collections
+        assign c_id = c.id | append: ''
+        if c_id == selected_drop_id
+          assign selected_drop_collection = c
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+<div id="drops-anchor" class="color-{{ section.settings.color_scheme }} isolate gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="cc-section-content">
+      <div class="cc-section-title">
+        {%- if section.settings.tagline != blank -%}
+          <div class="cc-tagline-wrapper">
+            <p class="cc-tagline">{{ section.settings.tagline }}</p>
+          </div>
+        {%- endif -%}
+        <div class="cc-content">
+          <h2 class="cc-main-title {{ section.settings.heading_size }}">
+            {%- if section.settings.title != blank -%}
+              {{ section.settings.title }}
+              {%- if section.settings.title_line_break -%}<br>{%- endif -%}
+            {%- endif -%}
+            {%- if section.settings.show_creator_name and has_creator -%}
+              {{ section.settings.creator_prefix }} {{ cc_creator.cc-creator-first-name | escape }} {{ cc_creator.cc-creator-last-name | escape }}
+            {%- endif -%}
+          </h2>
+        </div>
+
+        {%- if has_drops -%}
+          <div class="cc-dropdown-wrapper">
+            <div class="cc-dropdown" id="cc-bundle-dropdown-{{ section.id }}">
+              <button class="cc-dropdown-button" id="cc-dropdown-button-{{ section.id }}">
+                <span class="cc-dropdown-text" id="cc-selected-bundle-{{ section.id }}">
+                  {{ selected_drop['cc-creator-drop-title'] | default: selected_drop_collection.title | escape }}
+                </span>
+                <div class="cc-dropdown-icon">
+                  <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L7 7L13 1" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </button>
+              <div class="cc-dropdown-menu" id="cc-dropdown-menu-{{ section.id }}">
+                {%- for json_drop in drops_json -%}
+                  {%- liquid
+                    assign drop_id = json_drop['cc-creator-drop-collection-id']
+                    assign drop_collection = nil
+                    if drop_id != blank
+                      for c in drops_collections
+                        assign c_id = c.id | append: ''
+                        if c_id == drop_id
+                          assign drop_collection = c
+                          break
+                        endif
+                      endfor
+                    endif
+                    assign drop_title = json_drop['cc-creator-drop-title'] | default: drop_collection.title
+                  -%}
+                  {%- if drop_collection and drop_collection.products_count > 0 -%}
+                    <div class="cc-dropdown-option{% if forloop.index0 == 0 %} selected{% endif %}" 
+                         data-drop-id="{{ drop_id | escape }}" 
+                         data-drop-index="{{ forloop.index0 }}">
+                      <span class="cc-option-text">{{ drop_title | escape }}</span>
+                      {%- if forloop.index0 == 0 -%}
+                        <svg class="cc-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M20 6L9 17L4 12" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Bundle benefits section - commented out for now {%- endcomment -%}
+        {%- comment -%}
+        <div class="cc-bundle-benefits" id="cc-bundle-benefits-{{ section.id }}">
+          {%- if has_drops -%}
+            {%- for json_drop in drops_json -%}
+                {%- liquid
+                  assign drop_id = json_drop['cc-creator-drop-collection-id']
+                  assign bundle_benefits = nil
+                  if cc_creator and cc_creator.cc_bundle_summaries and cc_creator.cc_bundle_summaries.value and drop_id != blank
+                    for bundle_summary in cc_creator.cc_bundle_summaries.value
+                      assign summary_collection_id = bundle_summary[1]['cc-creator-drop-collection-id']
+                      if summary_collection_id == drop_id
+                        assign bundle_benefits = bundle_summary[1]
+                        break
+                      endif
+                    endfor
+                  endif
+                -%}
+              <div class="cc-benefits-row cc-drop-benefits{% if forloop.index0 == 0 %} active{% endif %}" 
+                   id="cc-benefits-{{ section.id }}-{{ drop_id }}" 
+                   data-drop-id="{{ drop_id | escape }}">
+                {%- if bundle_benefits and bundle_benefits.items and bundle_benefits.items.size > 0 -%}
+                  {%- for benefit_text in bundle_benefits.items -%}
+                    <div class="cc-benefit-item">
+                      <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                        <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <div class="cc-benefit-text">{{ benefit_text | escape }}</div>
+                    </div>
+                  {%- endfor -%}
+                {%- else -%}
+                  {%- comment -%} Fallback benefits if no bundle summaries exist {%- endcomment -%}
+                  <div class="cc-benefit-item">
+                    <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                      <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="cc-benefit-text">Expert Curated Selection</div>
+                  </div>
+                  <div class="cc-benefit-item">
+                    <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                      <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="cc-benefit-text">Premium Quality Products</div>
+                  </div>
+                  <div class="cc-benefit-item">
+                    <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                      <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="cc-benefit-text">Comprehensive Wellness</div>
+                  </div>
+                  <div class="cc-benefit-item">
+                    <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                      <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="cc-benefit-text">Trusted Recommendations</div>
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            {%- comment -%} Fallback when no drops exist {%- endcomment -%}
+            <div class="cc-benefits-row">
+              <div class="cc-benefit-item">
+                <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                  <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="cc-benefit-text">Expert Curated Selection</div>
+              </div>
+              <div class="cc-benefit-item">
+                <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                  <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="cc-benefit-text">Premium Quality Products</div>
+              </div>
+              <div class="cc-benefit-item">
+                <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                  <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="cc-benefit-text">Comprehensive Wellness</div>
+              </div>
+              <div class="cc-benefit-item">
+                <svg class="cc-benefit-check" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="#111111" stroke-width="2"/>
+                  <path d="M6.5 10L9 12.5L13.5 8" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="cc-benefit-text">Trusted Recommendations</div>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+        {%- endcomment -%}
+      </div>
+
+      {%- if has_drops -%}
+        <div class="cc-products-container">
+          <div class="cc-products-wrapper">
+            {%- for json_drop in drops_json -%}
+              {%- liquid
+                assign drop_id = json_drop['cc-creator-drop-collection-id']
+                assign drop_collection = nil
+                if drop_id != blank
+                  for c in drops_collections
+                    assign c_id = c.id | append: ''
+                    if c_id == drop_id
+                      assign drop_collection = c
+                      break
+                    endif
+                  endfor
+                endif
+              -%}
+              {%- if drop_collection and drop_collection.products_count > 0 -%}
+                <div class="cc-products-grid cc-drop-products{% if forloop.index0 == 0 %} active{% endif %}" id="cc-products-{{ section.id }}-{{ drop_id }}" data-drop-id="{{ drop_id | escape }}">
+                {%- for json_product in json_drop['cc-creator-drop-products'] -%}
+                  {%- liquid
+                    assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+                    assign card_product = nil
+                    if wanted_id != blank
+                      for p in drop_collection.products
+                        assign p_id = p.id | append: ''
+                        if p_id == wanted_id
+                          assign card_product = p
+                          break
+                        endif
+                      endfor
+                    endif
+                  -%}
+                  {%- if card_product -%}
+                    <div class="cc-product-card">
+                      {% render 'product-card',
+                        card_product: card_product,
+                        media_aspect_ratio: section.settings.image_ratio,
+                        image_shape: section.settings.image_shape,
+                        show_secondary_image: section.settings.show_secondary_image,
+                        show_vendor: section.settings.show_vendor,
+                        show_rating: section.settings.show_rating,
+                        section_id: section.id
+                      %}
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="cc-add-bundle">
+            <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
+              {{ section.settings.button_text | default: 'Add Bundle to Cart' }}
+            </button>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const sectionId = '{{ section.id }}';
+    const dropdown = document.getElementById('cc-bundle-dropdown-' + sectionId);
+    const button = document.getElementById('cc-dropdown-button-' + sectionId);
+    const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
+    const selectedText = document.getElementById('cc-selected-bundle-' + sectionId);
+    const addBundleBtn = document.getElementById('cc-add-bundle-' + sectionId);
+
+    // Store drops data for cart functionality
+    const dropsData = {
+      {%- for json_drop in drops_json -%}
+        {%- liquid
+          assign drop_id = json_drop['cc-creator-drop-collection-id']
+          assign drop_collection = nil
+          if drop_id != blank
+            for c in drops_collections
+              assign c_id = c.id | append: ''
+              if c_id == drop_id
+                assign drop_collection = c
+                break
+              endif
+            endfor
+          endif
+        -%}
+        {%- if drop_collection and drop_collection.products_count > 0 -%}
+          '{{ drop_id }}': {
+            title: {{ json_drop['cc-creator-drop-title'] | default: drop_collection.title | json }},
+            products: [
+              {%- for json_product in json_drop['cc-creator-drop-products'] -%}
+                {%- liquid
+                  assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+                  assign card_product = nil
+                  if wanted_id != blank
+                    for p in drop_collection.products
+                      assign p_id = p.id | append: ''
+                      if p_id == wanted_id
+                        assign card_product = p
+                        break
+                      endif
+                    endfor
+                  endif
+                -%}
+                {%- if card_product -%}
+                  {
+                    id: {{ card_product.id }},
+                    variantId: {{ card_product.selected_or_first_available_variant.id }},
+                    available: {{ card_product.available | json }}
+                  }{% unless forloop.last %},{% endunless %}
+                {%- endif -%}
+              {%- endfor -%}
+            ]
+          }{% unless forloop.last %},{% endunless %}
+        {%- endif -%}
+      {%- endfor -%}
+    };
+
+    if (dropdown && button && menu) {
+      // Toggle dropdown
+      button.addEventListener('click', function() {
+        dropdown.classList.toggle('open');
+        menu.classList.toggle('open');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('open');
+          menu.classList.remove('open');
+        }
+      });
+
+      // Handle option selection
+      menu.addEventListener('click', function(e) {
+        const option = e.target.closest('.cc-dropdown-option');
+        if (option) {
+          const dropId = option.dataset.dropId;
+          const dropTitle = option.querySelector('.cc-option-text').textContent.trim();
+
+          // Update selected text
+          selectedText.textContent = dropTitle;
+
+          // Update selected state
+          menu.querySelectorAll('.cc-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+            const checkIcon = opt.querySelector('.cc-check-icon');
+            if (checkIcon) checkIcon.remove();
+          });
+          option.classList.add('selected');
+          option.innerHTML += '<svg class="cc-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+          // Close dropdown
+          dropdown.classList.remove('open');
+          menu.classList.remove('open');
+
+          // Update button data attribute
+          if (addBundleBtn) {
+            addBundleBtn.dataset.dropId = dropId;
+          }
+
+          // Show/hide product grids
+          switchToDrop(dropId);
+        }
+      });
+    }
+
+    // Function to switch between product grids
+    function switchToDrop(dropId) {
+      const allGrids = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-products');
+      const targetGrid = document.getElementById('cc-products-' + sectionId + '-' + dropId);
+
+      // Hide all grids
+      allGrids.forEach(grid => {
+        grid.classList.remove('active');
+      });
+
+      // Show target grid
+      if (targetGrid) {
+        targetGrid.classList.add('active');
+      }
+
+      // Switch benefits to match the selected drop
+      switchBenefits(dropId);
+    }
+
+    // Function to switch benefits based on selected drop
+    function switchBenefits(dropId) {
+      const allBenefits = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-benefits');
+      const targetBenefits = document.getElementById('cc-benefits-' + sectionId + '-' + dropId);
+
+      // Hide all benefit sets
+      allBenefits.forEach(benefits => {
+        benefits.classList.remove('active');
+      });
+
+      // Show target benefit set
+      if (targetBenefits) {
+        targetBenefits.classList.add('active');
+      }
+    }
+
+    // Add bundle to cart functionality
+    if (addBundleBtn) {
+      addBundleBtn.addEventListener('click', async function() {
+        const dropId = this.dataset.dropId;
+        if (!dropId || !dropsData[dropId]) return;
+
+        const dropData = dropsData[dropId];
+        const items = dropData.products.filter(p => p.available).map(p => ({
+          id: p.variantId,
+          quantity: 1
+        }));
+
+        if (!items.length) return;
+
+        try {
+          this.disabled = true;
+          this.textContent = 'Adding...';
+
+          // Get cart drawer reference
+          const cartDrawer = document.querySelector('cart-drawer');
+          const cartNotification = document.querySelector('cart-notification');
+          const cartElement = cartDrawer || cartNotification;
+
+          // Use FormData for the add to cart request (matching product-form.js)
+          const formData = new FormData();
+          
+          // For multiple items, add each variant with items[index][id] and items[index][quantity]
+          items.forEach((item, index) => {
+            formData.append(`items[${index}][id]`, item.id);
+            formData.append(`items[${index}][quantity]`, item.quantity);
+          });
+
+          // Add sections to render (match product-form.js exactly)
+          if (cartElement && cartElement.getSectionsToRender) {
+            formData.append(
+              'sections',
+              cartElement.getSectionsToRender().map((section) => section.id)
+            );
+            formData.append('sections_url', window.location.pathname);
+            if (cartElement.setActiveElement) {
+              cartElement.setActiveElement(document.activeElement);
+            }
+          }
+
+          const res = await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.description || 'Failed to add items');
+          }
+
+          const response = await res.json();
+          
+          if (response.status) {
+            // Error response
+            throw new Error(response.description || 'Failed to add items');
+          }
+          
+          this.textContent = 'Added!';
+          
+          // Publish cart update event (exactly like product-form.js)
+          if (typeof publish !== 'undefined' && typeof PUB_SUB_EVENTS !== 'undefined') {
+            publish(PUB_SUB_EVENTS.cartUpdate, {
+              source: 'bundle-add',
+              cartData: response,
+            });
+          }
+          
+          // Render cart contents (exactly like product-form.js line 95-97)
+          if (cartElement && cartElement.renderContents) {
+            cartElement.renderContents(response);
+          }
+          
+          // Remove is-empty class if present
+          if (cartElement && cartElement.classList.contains('is-empty')) {
+            cartElement.classList.remove('is-empty');
+          }
+          
+          // Reset button after a brief delay
+          setTimeout(() => {
+            this.textContent = 'Add Bundle to Cart';
+            this.disabled = false;
+          }, 2000);
+        } catch (err) {
+          console.error(err);
+          this.textContent = err.message || 'Try Again';
+          this.disabled = false;
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "CC Creator Drops",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Content"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "EXPERT RECOMMENDATIONS"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Carefully Crafted"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h3",
+          "label": "Small"
+        },
+        {
+          "value": "h2",
+          "label": "Medium"
+        },
+        {
+          "value": "h1",
+          "label": "Large"
+        },
+        {
+          "value": "h0",
+          "label": "Extra Large"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_line_break",
+      "label": "Add line break after heading",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_creator_name",
+      "label": "Show creator name",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "creator_prefix",
+      "label": "Creator name prefix",
+      "default": "Bundles by",
+      "info": "Text shown before the creator's name (e.g., 'Bundles by')"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add Bundle to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Product Cards"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "square"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "label": "Image shape",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "arch",
+          "label": "Arch"
+        },
+        {
+          "value": "blob",
+          "label": "Blob"
+        },
+        {
+          "value": "chevronleft",
+          "label": "Chevron left"
+        },
+        {
+          "value": "chevronright",
+          "label": "Chevron right"
+        },
+        {
+          "value": "diamond",
+          "label": "Diamond"
+        },
+        {
+          "value": "parallelogram",
+          "label": "Parallelogram"
+        },
+        {
+          "value": "round",
+          "label": "Round"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Show second image on hover",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Show product rating",
+      "default": false,
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/page-types#product-grid-section-settings)"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "label": "Number of columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_tablet",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Number of columns on tablet",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Section Settings"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "presets": [
+    { 
+      "name": "CC Creator Drops"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["metaobject"]
+  }
+}
+{% endschema %}

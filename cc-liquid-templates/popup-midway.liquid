@@ -1,0 +1,1217 @@
+{% comment %}
+  Creator Commerce Lead Capture Popup
+  Portable, standalone section with no theme dependencies
+  Displays when a creator context is present
+{% endcomment %}
+
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign show_popup = false
+%}
+
+{% liquid
+  if section.settings.preview_mode
+    assign show_popup = true
+  elsif cc_creator
+    assign show_popup = true
+  endif
+  
+  assign popup_id = 'cc-lead-popup-' | append: section.id
+  assign cookie_name = 'cc-lead-popup-' | append: section.id
+%}
+
+{% comment %} Get accent color based on source selection {% endcomment %}
+{% liquid
+  if cc_creator
+    if section.settings.accent_color_source == 'brandkit'
+      assign accent_color = cc_creator.cc-channel-brandkit-primary-color | default: '#000000'
+    else
+      assign accent_color = cc_creator.cc-creator-shop-theme-primary-color | default: '#000000'
+    endif
+  else
+    assign accent_color = '#000000'
+  endif
+%}
+
+{% comment %} Process text fields with dynamic variables [field-name] {% endcomment %}
+{% liquid
+  assign header_text = section.settings.header_text
+  assign subheader_text = section.settings.subheader_text
+  assign input_placeholder = section.settings.input_placeholder
+  assign button_text = section.settings.button_text
+  assign success_message = section.settings.success_message
+  
+  if header_text contains '['
+    assign parts = header_text | split: '['
+    assign header_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign header_text = header_text | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign header_text = header_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if subheader_text contains '['
+    assign parts = subheader_text | split: '['
+    assign subheader_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign subheader_text = subheader_text | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign subheader_text = subheader_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if input_placeholder contains '['
+    assign parts = input_placeholder | split: '['
+    assign input_placeholder = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign input_placeholder = input_placeholder | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign input_placeholder = input_placeholder | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if button_text contains '['
+    assign parts = button_text | split: '['
+    assign button_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign button_text = button_text | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign button_text = button_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if success_message contains '['
+    assign parts = success_message | split: '['
+    assign success_message = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign success_message = success_message | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign success_message = success_message | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+%}
+
+{% if show_popup %}
+
+<style>
+  /* Reset and base styles */
+  #{{ popup_id }} * {
+    box-sizing: border-box;
+  }
+  
+  /* Popup container */
+  #{{ popup_id }} {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease;
+    {% unless section.settings.background_image %}
+    /* Fallback gradient when no background image */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    {% endunless %}
+  }
+  
+  #{{ popup_id }}.cc-popup-open {
+    display: block !important;
+    opacity: 1 !important;
+  }
+  
+  /* Force override any parent section hiding */
+  .shopify-section:has(#{{ popup_id }}.cc-popup-open) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Overlay */
+  #{{ popup_id }} .cc-popup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+    z-index: 1;
+  }
+  
+  /* Background image container */
+  #{{ popup_id }} .cc-popup-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  #{{ popup_id }} .cc-popup-background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* Content wrapper */
+  #{{ popup_id }} .cc-popup-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    padding: 2rem;
+  }
+  
+  /* Content container */
+  #{{ popup_id }} .cc-popup-content {
+    background: {{ section.settings.content_bg_color }};
+    max-width: 600px;
+    width: 100%;
+    padding: {{ section.settings.content_padding }}px;
+    border-radius: {{ section.settings.button_border_radius | at_most: 32 }}px;
+    text-align: {{ section.settings.text_alignment }} !important;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Collaboration Circles */
+  #{{ popup_id }} .cc-collab-circles {
+    display: flex;
+    justify-content: {{ section.settings.text_alignment | replace: 'left', 'flex-start' | replace: 'center', 'center' }};
+    align-items: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    height: 80px;
+  }
+  
+  #{{ popup_id }} .cc-collab-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: absolute;
+    border: 3px solid {{ section.settings.content_bg_color }};
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  {% if section.settings.text_alignment == 'center' %}
+  #{{ popup_id }} .cc-collab-circle-left {
+    left: calc(50% - 60px);
+    z-index: 2;
+    background: {{ accent_color }};
+  }
+  
+  #{{ popup_id }} .cc-collab-circle-right {
+    left: calc(50% - 10px);
+    z-index: 1;
+    background: #ffffff;
+  }
+  {% else %}
+  #{{ popup_id }} .cc-collab-circle-left {
+    left: 0;
+    z-index: 2;
+    background: {{ accent_color }};
+  }
+  
+  #{{ popup_id }} .cc-collab-circle-right {
+    left: 50px;
+    z-index: 1;
+    background: #ffffff;
+  }
+  {% endif %}
+  
+  #{{ popup_id }} .cc-collab-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  #{{ popup_id }} .cc-collab-initials {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--button-text-color);
+    text-transform: uppercase;
+  } 
+  
+  /* Header */
+  #{{ popup_id }} .cc-popup-header {
+    font-size: {{ section.settings.header_font_size }}px;
+    font-weight: {{ section.settings.header_font_weight }};
+    color: {{ section.settings.header_color }};
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+    text-align: {{ section.settings.text_alignment }} !important;
+  }
+  
+  /* Subheader */
+  #{{ popup_id }} .cc-popup-subheader {
+    font-size: {{ section.settings.button_font_size }}px;
+    color: {{ section.settings.header_color }};
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+    text-align: {{ section.settings.text_alignment }} !important;
+  }
+  
+  /* Form */
+  #{{ popup_id }} .cc-popup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: {{ section.settings.text_alignment | replace: 'left', 'flex-start' | replace: 'center', 'center' }};
+  }
+  
+  /* Input */
+  #{{ popup_id }} .cc-popup-input {
+    padding: {{ section.settings.button_padding }}px;
+    font-size: {{ section.settings.button_font_size }}px;
+    border: 1px solid {{ section.settings.input_border_color }};
+    border-radius: {{ section.settings.button_border_radius }}px;
+    background: transparent;
+    color: {{ section.settings.header_color }};
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s, border-width 0.2s;
+    text-align: {{ section.settings.text_alignment }} !important;
+  }
+  
+  #{{ popup_id }} .cc-popup-input:focus {
+    border-color: {{ accent_color }};
+    border-width: 2px;
+  }
+  
+  #{{ popup_id }} .cc-popup-input::placeholder {
+    color: {{ section.settings.input_border_color }};
+  }
+  
+  /* Button */
+  #{{ popup_id }} .cc-popup-button {
+    padding: {{ section.settings.button_padding }}px;
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: {{ section.settings.button_font_weight }};
+    background: {{ accent_color }};
+    color: var(--button-text-color);
+    border: none;
+    border-radius: {{ section.settings.button_border_radius }}px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, background 0.3s ease;
+    width: 100%;
+    text-align: center !important;
+  }
+  
+  #{{ popup_id }} .cc-popup-button:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+  
+  #{{ popup_id }} .cc-popup-button:active:not(:disabled) {
+    opacity: 0.85;
+  }
+  
+  #{{ popup_id }} .cc-popup-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  #{{ popup_id }} .cc-popup-button.success {
+    /* Uses same colors as CTA - no style override needed */
+  }
+  
+  /* Success message (hidden - now shown in button) */
+  #{{ popup_id }} .cc-popup-success {
+    display: none;
+  }
+  
+  /* Close button */
+  #{{ popup_id }} .cc-popup-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: {{ section.settings.header_color }};
+    transition: transform 0.2s;
+    z-index: 3;
+  }
+  
+  #{{ popup_id }} .cc-popup-close:hover {
+    transform: scale(1.1);
+  }
+  
+  #{{ popup_id }} .cc-popup-close svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    #{{ popup_id }} .cc-popup-wrapper {
+      padding: 1rem;
+    }
+    
+    #{{ popup_id }} .cc-popup-content {
+      padding: 3rem 1.5rem 2rem;
+    }
+    
+    #{{ popup_id }} .cc-popup-header {
+      font-size: {{ section.settings.header_font_size | times: 0.8 }}px;
+    }
+    
+    #{{ popup_id }} .cc-popup-subheader {
+      font-size: {{ section.settings.button_font_size | times: 0.9 }}px;
+    }
+    
+    #{{ popup_id }} .cc-popup-close {
+      top: 1rem;
+      right: 1rem;
+    }
+  }
+  
+  /* Hide body scroll when popup open */
+  body.cc-popup-scroll-lock {
+    overflow: hidden;
+  }
+</style>
+
+<div id="{{ popup_id }}" class="cc-creator-popup">
+  <div class="cc-popup-overlay"></div>
+  
+  {% if section.settings.background_image %}
+    <div class="cc-popup-background">
+      {{ section.settings.background_image | image_url: width: 1920 | image_tag: loading: 'eager' }}
+    </div>
+  {% endif %}
+  
+  <div class="cc-popup-wrapper">
+    <div class="cc-popup-content">
+      <button type="button" class="cc-popup-close" aria-label="Close popup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6L18 18" stroke-linecap="round"/>
+        </svg>
+      </button>
+      
+      {% if section.settings.show_collab_circles %}
+        <div class="cc-collab-circles">
+          {% comment %} Left circle - Creator {% endcomment %}
+          <div class="cc-collab-circle cc-collab-circle-left">
+            {% if cc_creator and cc_creator.data.value.cc-creator-profile-picture %}
+              <img src="{{ cc_creator.data.value.cc-creator-profile-picture }}" alt="{{ cc_creator.cc-creator-first-name | escape }}" loading="lazy">
+            {% elsif cc_creator %}
+              {% liquid
+                assign first_initial = cc_creator.cc-creator-first-name | slice: 0 | default: ''
+                assign last_initial = cc_creator.cc-creator-last-name | slice: 0 | default: ''
+                assign initials = first_initial | append: last_initial
+              %}
+              <span class="cc-collab-initials">{{ initials | default: 'CC' }}</span>
+            {% else %}
+              <span class="cc-collab-initials">CC</span>
+            {% endif %}
+          </div>
+          
+          {% comment %} Right circle - Brand {% endcomment %}
+          <div class="cc-collab-circle cc-collab-circle-right">
+            {% if cc_creator and cc_creator.data.value.cc-channel-brandkit-primary-logo %}
+              <img src="{{ cc_creator.data.value.cc-channel-brandkit-primary-logo }}" alt="Brand logo" loading="lazy">
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+      
+      {% if header_text != blank %}
+        <h2 class="cc-popup-header">{{ header_text }}</h2>
+      {% endif %}
+      
+      {% if subheader_text != blank %}
+        <p class="cc-popup-subheader">{{ subheader_text }}</p>
+      {% endif %}
+      
+      <form class="cc-popup-form" id="{{ popup_id }}-form" action="/contact#contact_form" method="post" accept-charset="UTF-8">
+        <input type="hidden" name="form_type" value="customer">
+        <input type="hidden" name="utf8" value="✓">
+        <input type="hidden" name="contact[tags]" value="CreatorCommerce,{{ section.settings.form_tag }}{% if cc_creator and cc_creator.data.value.cc-creator-shop-handle %},cc-creator-marketing-opt-in-{{ cc_creator.data.value.cc-creator-shop-handle }}{% endif %}">
+        <input type="hidden" name="contact[accepts_marketing]" value="1">
+        <input type="hidden" name="return_to" value="/pages/thank-you?popup=success">
+        
+        <input
+          type="email"
+          name="contact[email]"
+          class="cc-popup-input"
+          placeholder="{{ input_placeholder }}"
+          required
+          autocomplete="email"
+          aria-label="Email address"
+        >
+        
+        <button type="submit" class="cc-popup-button" aria-label="Submit email">
+          {{ button_text }}
+        </button>
+        
+        <div class="cc-popup-success" id="{{ popup_id }}-success" role="status" aria-live="polite">
+          {{ success_message }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  const POPUP_ID = '{{ popup_id }}';
+  const COOKIE_NAME = '{{ cookie_name }}';
+  const PREVIEW_MODE = {{ section.settings.preview_mode }};
+  const TRIGGER_VALUE = {{ section.settings.trigger_delay }};
+  const TRIGGER_DELAY = TRIGGER_VALUE * 1000; // Convert to milliseconds
+  const SCROLL_PERCENTAGE = TRIGGER_VALUE * 10; // Convert to percentage (3 = 30%, 8 = 80%)
+  const LIMIT_DISPLAY = {{ section.settings.limit_display }};
+  const COOKIE_LIFETIME = 30; // 30 days
+  const ACCENT_COLOR = '{{ accent_color }}';
+  
+  // Calculate contrasting text color for button
+  function getContrastColor(hexColor) {
+    // Remove # if present
+    const hex = hexColor.replace('#', '');
+    
+    // Convert to RGB
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Calculate relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return white for dark backgrounds, black for light backgrounds
+    return luminance > 0.5 ? '#000000' : '#ffffff';
+  }
+  
+  // Set button text color based on background
+  function setButtonTextColor() {
+    const textColor = getContrastColor(ACCENT_COLOR);
+    document.documentElement.style.setProperty('--button-text-color', textColor);
+  }
+  
+  // Cookie utilities
+  function getCookie(name) {
+    const matches = document.cookie.match(new RegExp(
+      '(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)'
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+  
+  function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = 'expires=' + date.toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + ';' + expires + ';path=/;SameSite=Lax';
+  }
+  
+  // Check if popup should be shown
+  function shouldShowPopup() {
+    // Preview mode: always show, bypass ALL checks
+    if (PREVIEW_MODE) {
+      return true;
+    }
+    
+    // Check if already submitted (permanent block)
+    const submittedCookie = getCookie(COOKIE_NAME + '-submitted');
+    if (submittedCookie === 'true') {
+      return false;
+    }
+    
+    // Check view count limit (0 = unlimited)
+    if (LIMIT_DISPLAY > 0) {
+      const viewCount = parseInt(getCookie(COOKIE_NAME) || '0');
+      if (viewCount >= LIMIT_DISPLAY) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  // Open popup
+  function openPopup() {
+    // CRITICAL: Double-check if popup should show
+    // This prevents scroll lock if cookies block display
+    if (!shouldShowPopup()) {
+      console.log('Popup blocked by shouldShowPopup() - not showing');
+      // Ensure scroll is NOT locked
+      document.body.classList.remove('cc-popup-scroll-lock');
+      return;
+    }
+    
+    const popup = document.getElementById(POPUP_ID);
+    if (!popup) {
+      console.error('❌ Popup element not found:', POPUP_ID);
+      return;
+    }
+    
+    // Force parent section to be visible
+    let parent = popup.parentElement;
+    while (parent && !parent.classList.contains('shopify-section')) {
+      parent = parent.parentElement;
+    }
+    if (parent) {
+      parent.style.display = 'block';
+      parent.style.visibility = 'visible';
+      parent.style.opacity = '1';
+      parent.removeAttribute('aria-hidden');
+      parent.classList.remove('cc-popup-blocked');
+    }
+    
+    // Move to body root to escape any parent hiding
+    if (popup.parentElement !== document.body) {
+      document.body.appendChild(popup);
+    }
+    
+    // Force display with inline styles
+    popup.style.display = 'block';
+    popup.style.opacity = '1';
+    popup.classList.add('cc-popup-open');
+    
+    // ONLY lock scroll after popup is confirmed to show
+    document.body.classList.add('cc-popup-scroll-lock');
+    
+    // Increment view count (skip in preview mode)
+    if (!PREVIEW_MODE) {
+      const viewCount = parseInt(getCookie(COOKIE_NAME) || '0') + 1;
+      setCookie(COOKIE_NAME, viewCount, COOKIE_LIFETIME);
+    }
+  }
+  
+  // Close popup
+  function closePopup() {
+    const popup = document.getElementById(POPUP_ID);
+    if (!popup) return;
+    
+    popup.classList.remove('cc-popup-open');
+    document.body.classList.remove('cc-popup-scroll-lock');
+  }
+  
+  // Initialize triggers
+  function initTriggers() {
+    // Preview mode: show popup immediately (bypass all checks)
+    if (PREVIEW_MODE) {
+      console.log('✅ Preview mode enabled: showing popup immediately');
+      openPopup();
+      return;
+    }
+    
+    // CRITICAL: Check if popup can be shown BEFORE registering listeners
+    // This prevents triggers from firing if cookies block the popup
+    if (!shouldShowPopup()) {
+      console.log('🚫 Popup blocked by cookies/limits - NO triggers registered, NO scroll lock');
+      // Ensure scroll lock is removed (defensive)
+      document.body.classList.remove('cc-popup-scroll-lock');
+      return;
+    }
+    
+    console.log('✅ Popup eligible - setting up triggers');
+    
+    // Dual trigger: time delay OR scroll percentage (whichever happens first)
+    let triggered = false;
+    
+    // Time delay trigger
+    setTimeout(function() {
+      if (!triggered) {
+        triggered = true;
+        // Re-check before opening (cookie could have changed)
+        if (shouldShowPopup()) {
+          openPopup();
+        } else {
+          console.log('⏱️ Timer fired but popup now blocked - not showing');
+        }
+      }
+    }, TRIGGER_DELAY);
+    
+    // Scroll percentage trigger with cleanup
+    const scrollHandler = function() {
+      if (triggered) {
+        // Cleanup listener after triggered to prevent unnecessary calculations
+        window.removeEventListener('scroll', scrollHandler);
+        return;
+      }
+      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercent >= SCROLL_PERCENTAGE) {
+        triggered = true;
+        // Cleanup listener
+        window.removeEventListener('scroll', scrollHandler);
+        // Re-check before opening (cookie could have changed)
+        if (shouldShowPopup()) {
+          openPopup();
+        } else {
+          console.log('📜 Scroll trigger fired but popup now blocked - not showing');
+        }
+      }
+    };
+    window.addEventListener('scroll', scrollHandler);
+  }
+  
+  // Form submission - using hidden iframe to avoid CAPTCHA issues
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const button = form.querySelector('.cc-popup-button');
+    const emailInput = form.querySelector('.cc-popup-input');
+    const originalButtonText = button.textContent;
+    
+    // Validate email
+    if (!emailInput.value || !emailInput.validity.valid) {
+      emailInput.focus();
+      return;
+    }
+    
+    button.disabled = true;
+    button.textContent = 'Submitting...';
+    
+    // Create hidden iframe for form submission (bypasses CAPTCHA requirement)
+    let iframe = document.getElementById('cc-form-iframe');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'cc-form-iframe';
+      iframe.name = 'cc-form-iframe';
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+    }
+    
+    // Set form to submit to iframe
+    form.target = 'cc-form-iframe';
+    
+    // Listen for iframe load (indicates submission complete)
+    iframe.onload = function() {
+      // Success! Form submitted
+      console.log('Form submitted successfully to iframe');
+      
+      // Set submission cookie - never show popup again (skip in preview mode)
+      if (!PREVIEW_MODE) {
+        setCookie(COOKIE_NAME + '-submitted', 'true', 365);
+      }
+      
+      // Show success message in button
+      button.classList.add('success');
+      button.textContent = '{{ success_message }}';
+      emailInput.value = '';
+      button.disabled = false;
+      
+      // Reset form target
+      form.target = '';
+      
+      // Auto-close after success (4 seconds)
+      setTimeout(closePopup, 4000);
+    };
+    
+    // Handle errors
+    iframe.onerror = function() {
+      console.error('Form submission error in iframe');
+      button.disabled = false;
+      button.textContent = 'Error - Try Again';
+      
+      // Reset form target
+      form.target = '';
+      
+      // Reset button text after 3 seconds
+      setTimeout(() => {
+        if (button.textContent === 'Error - Try Again') {
+          button.textContent = originalButtonText;
+        }
+      }, 3000);
+    };
+    
+    // Submit the form (will load in iframe)
+    setTimeout(() => {
+      form.submit();
+    }, 100);
+  }
+  
+  // Block other popups when this creator popup is active
+  function blockOtherPopups() {
+    // Get popup selectors from section settings
+    const POPUP_SELECTORS = '{{ section.settings.blocked_popup_selectors }}'
+      .split(',')
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
+    
+    const HIDDEN_CLASS = 'cc-popup-blocked';
+    
+    let styleInjected = false;
+    let observerActive = false;
+    
+    function injectStyles() {
+      if (styleInjected) return;
+      const style = document.createElement('style');
+      style.textContent = `.${HIDDEN_CLASS} { display: none !important; }`;
+      document.head.appendChild(style);
+      styleInjected = true;
+    }
+    
+    function hidePopups(root = document) {
+      POPUP_SELECTORS.forEach(selector => {
+        try {
+          const elements = root.querySelectorAll(selector);
+          elements.forEach(el => {
+            // Don't hide our own popup or its parent section
+            if (el.id === POPUP_ID || 
+                el.closest('#' + POPUP_ID) ||
+                el.querySelector('#' + POPUP_ID) ||
+                el.classList.contains('cc-creator-lead-popup-section')) {
+              return;
+            }
+            
+            if (!el.classList.contains(HIDDEN_CLASS)) {
+              el.classList.add(HIDDEN_CLASS);
+              el.setAttribute('aria-hidden', 'true');
+              el.style.setProperty('display', 'none', 'important');
+            }
+          });
+        } catch (e) {
+          // Fail gracefully on invalid selectors
+        }
+      });
+    }
+    
+    function initObserver() {
+      if (observerActive || !window.MutationObserver) return;
+      
+      const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === 1) {
+              try {
+                hidePopups(node);
+                hidePopups(node.parentElement);
+              } catch (e) {
+                // Ignore Shadow DOM errors
+              }
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      
+      observerActive = true;
+    }
+    
+    injectStyles();
+    hidePopups();
+    initObserver();
+    console.log('Creator popup: Blocking other popups to prioritize creator funnel');
+  }
+  
+  // Initialize
+  function init() {
+    console.log('🚀 POPUP INITIALIZATION STARTED');
+    console.log('Looking for popup element with ID:', POPUP_ID);
+    
+    // CRITICAL: Ensure scroll is never locked on page load
+    document.body.classList.remove('cc-popup-scroll-lock');
+    
+    const popup = document.getElementById(POPUP_ID);
+    if (!popup) {
+      console.error('❌ CRITICAL: Popup element not found:', POPUP_ID);
+      console.log('This means the Liquid show_popup condition is false');
+      console.log('Check: 1) Is preview_mode enabled? 2) Does cc_creator exist?');
+      return;
+    }
+    
+    console.log('✅ Popup element found successfully');
+    
+    // Debug logging
+    console.log('🔧 Creator popup configuration:', {
+      popupId: POPUP_ID,
+      previewMode: PREVIEW_MODE,
+      triggerValue: TRIGGER_VALUE,
+      triggerDelay: TRIGGER_DELAY + 'ms',
+      scrollPercentage: SCROLL_PERCENTAGE + '%',
+      cookieName: COOKIE_NAME,
+      limitDisplay: LIMIT_DISPLAY,
+      accentColor: ACCENT_COLOR
+    });
+    
+    // Set button text color based on accent color
+    setButtonTextColor();
+    
+    // Block other popups when creator popup is present
+    blockOtherPopups();
+    
+    // DEFENSIVE: Monitor and prevent invalid scroll lock
+    // If popup isn't visible but scroll is locked, unlock it
+    setInterval(function() {
+      if (document.body.classList.contains('cc-popup-scroll-lock')) {
+        const popup = document.getElementById(POPUP_ID);
+        if (!popup || !popup.classList.contains('cc-popup-open')) {
+          console.warn('⚠️ Scroll locked but popup not open - UNLOCKING');
+          document.body.classList.remove('cc-popup-scroll-lock');
+        }
+      }
+    }, 500);
+    
+    // Close button (always enabled)
+    const closeBtn = popup.querySelector('.cc-popup-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closePopup);
+    }
+    
+    // Overlay click (always enabled)
+    const overlay = popup.querySelector('.cc-popup-overlay');
+    if (overlay) {
+      overlay.addEventListener('click', closePopup);
+    }
+    
+    // ESC key (always enabled)
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && popup.classList.contains('cc-popup-open')) {
+        closePopup();
+      }
+    });
+    
+    // Form submit
+    const form = document.getElementById(POPUP_ID + '-form');
+    if (form) {
+      form.addEventListener('submit', handleFormSubmit);
+    }
+    
+    // Initialize triggers
+    initTriggers();
+  }
+  
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  
+  // DEBUGGING: Expose openPopup globally for manual testing
+  window.__ccDebugOpenPopup = function() {
+    console.log('🔧 MANUAL POPUP OPEN TRIGGERED');
+    const popup = document.getElementById(POPUP_ID);
+    if (!popup) {
+      console.error('Popup not found!');
+      return;
+    }
+    
+    // Force show with maximum overrides
+    popup.style.cssText = 'display: block !important; opacity: 1 !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 9999999 !important; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; pointer-events: all !important; visibility: visible !important;';
+    popup.classList.add('cc-popup-open');
+    document.body.classList.add('cc-popup-scroll-lock');
+    
+    // Move to body if not already there
+    if (popup.parentElement !== document.body) {
+      console.log('Moving popup to body...');
+      document.body.appendChild(popup);
+    }
+    
+    console.log('Popup forced open. Check screen.');
+    console.log('Computed style:', window.getComputedStyle(popup).display);
+  };
+  
+  console.log('💡 Manual test available: Run window.__ccDebugOpenPopup() in console to force popup open');
+})();
+</script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Pop-up - Ventana",
+  "class": "cc-creator-lead-popup-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "📋 CreatorCommerce Ventana lead capture popup. Displays when a creator context is present. Fully standalone with no theme dependencies. Customers auto-opt into marketing with tags: CreatorCommerce, cc-creator-lead, and cc-creator-marketing-opt-in-{creator-handle}."
+    },
+    {
+      "type": "header",
+      "content": "⚙️ Display Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "preview_mode",
+      "label": "Preview Mode",
+      "default": false,
+      "info": "⚠️ TESTING ONLY: Shows popup immediately, ignoring all triggers. Turn OFF before publishing!"
+    },
+    {
+      "type": "range",
+      "id": "trigger_delay",
+      "label": "Show After",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "info": "Dual trigger: Shows after X seconds OR X0% page scroll, whichever happens first. (3 = 3sec or 30% scroll)"
+    },
+    {
+      "type": "range",
+      "id": "limit_display",
+      "label": "Max Displays Per User",
+      "min": 0,
+      "max": 10,
+      "default": 3,
+      "info": "0 = unlimited (not recommended). Popup is hidden permanently after email submission. Cookie lifetime: 30 days."
+    },
+    {
+      "type": "header",
+      "content": "📝 Content"
+    },
+    {
+      "type": "text",
+      "id": "header_text",
+      "label": "Header",
+      "default": "Get Exclusive Tips",
+      "info": "Dynamic values: Use [field-name] syntax. Example: Shop with [cc-creator-first-name]"
+    },
+    {
+      "type": "textarea",
+      "id": "subheader_text",
+      "label": "Subheader",
+      "default": "Join our community and get expert advice delivered to your inbox",
+      "info": "Dynamic values: Use [field-name] syntax. Example: Get tips from [cc-creator-first-name]"
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Email Placeholder",
+      "default": "Enter your email address",
+      "info": "Dynamic values: Use [field-name] syntax"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Get Tips",
+      "info": "Dynamic values: Use [field-name] syntax"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success Message",
+      "default": "Thanks! Check your email for exclusive tips.",
+      "info": "Shown after successful submission. Dynamic values: Use [field-name] syntax"
+    },
+    {
+      "type": "header",
+      "content": "🎨 Styling & Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left",
+      "info": "Affects all text and collaboration circles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collab_circles",
+      "label": "Show Collaboration Circles",
+      "default": true,
+      "info": "Displays overlapping creator + brand circles above header"
+    },
+    {
+      "type": "select",
+      "id": "accent_color_source",
+      "label": "Accent Color Source",
+      "options": [
+        { "value": "creator", "label": "Creator Shop Color" },
+        { "value": "brandkit", "label": "Channel BrandKit Color" }
+      ],
+      "default": "creator",
+      "info": "Used for button background, input focus border, and creator circle. Button text auto-adjusts for contrast."
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Text Color",
+      "default": "#000000",
+      "info": "Applies to header, subheader, input text, and close button"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input Border & Placeholder",
+      "default": "#cccccc",
+      "info": "Used for both input border and placeholder text color"
+    },
+    {
+      "type": "range",
+      "id": "header_font_size",
+      "label": "Header Font Size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "default": 32,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "header_font_weight",
+      "label": "Header Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Body Font Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "default": 16,
+      "unit": "px",
+      "info": "Shared by subheader, input field, and button"
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "label": "Input & Button Padding",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 14,
+      "unit": "px",
+      "info": "Shared padding for input field and button"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "default": 8,
+      "unit": "px",
+      "info": "Applies to input, button, and container (capped at 32px for container)"
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Container Padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 40,
+      "unit": "px",
+      "info": "Inner spacing of content box. Max width: 600px (fixed)"
+    },
+    {
+      "type": "color",
+      "id": "content_bg_color",
+      "label": "Container Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "🖼️ Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Image",
+      "info": "Full-screen background behind content. Leave empty for gradient fallback."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Dark Overlay",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 60,
+      "unit": "%",
+      "info": "Darkens background for better content readability"
+    },
+    {
+      "type": "header",
+      "content": "📧 Form Configuration"
+    },
+    {
+      "type": "text",
+      "id": "form_tag",
+      "label": "Customer Tag",
+      "default": "cc-creator-lead",
+      "info": "Additional tag applied on submission (along with 'newsletter' and dynamic creator tag)"
+    },
+    {
+      "type": "header",
+      "content": "🚫 Advanced: Popup Blocking"
+    },
+    {
+      "type": "paragraph",
+      "content": "Automatically hides other popups to prioritize the creator funnel. Uses CSS selectors to detect and hide competing popups."
+    },
+    {
+      "type": "textarea",
+      "id": "blocked_popup_selectors",
+      "label": "CSS Selectors to Block",
+      "default": ".klaviyo-form, .justuno-pop, #privy-container, .newsletter-modal, .popup-modal, [class*=\"popup\"], [id*=\"popup\"]",
+      "info": "Comma-separated list. Add your site's popup classes/IDs (e.g., .my-popup, #email-modal)",
+      "placeholder": ".custom-popup, #promo-modal"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pop-up - Ventana"
+    }
+  ]
+}
+{% endschema %}
+

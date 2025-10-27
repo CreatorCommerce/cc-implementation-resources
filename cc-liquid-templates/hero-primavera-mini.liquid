@@ -1,0 +1,4353 @@
+{% comment %}
+  Hero - Primavera Section
+  Supports dynamic text replacement using [field-name] syntax
+  Example: "Shop with [cc-creator-first-name]" becomes "Shop with Sarah"
+{% endcomment %}
+
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+
+{% comment %} Process text fields with dynamic variables [field-name] {% endcomment %}
+{% liquid
+  assign eyebrowcopy = section.settings.eyebrowcopy
+  assign title = section.settings.title
+  assign subtitle = section.settings.subtitle
+  assign stars = section.settings.stars
+  assign cta_text = section.settings.cta_text
+  
+  if eyebrowcopy contains '['
+    assign parts = eyebrowcopy | split: '['
+    assign eyebrowcopy = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign eyebrowcopy = eyebrowcopy | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign eyebrowcopy = eyebrowcopy | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if title contains '['
+    assign parts = title | split: '['
+    assign title = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign title = title | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign title = title | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if subtitle contains '['
+    assign parts = subtitle | split: '['
+    assign subtitle = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign subtitle = subtitle | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign subtitle = subtitle | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if stars contains '['
+    assign parts = stars | split: '['
+    assign stars = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign stars = stars | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign stars = stars | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if cta_text contains '['
+    assign parts = cta_text | split: '['
+    assign cta_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign cta_text = cta_text | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign cta_text = cta_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+%}
+
+<!-- Block Body -->
+{%- style -%}
+  /*=============================
+    Hero Section
+  =============================*/
+  #hero-section {
+    display: flex;
+    gap: 48px;
+    min-height: 60vh;
+    color: {{ section.settings.textcolor }};
+    width: 100%;
+    /* max-width: 1600px; */
+    margin: auto;
+    flex-direction: row;
+    background-size: cover;
+    background-position: center;
+     position: relative;
+  }
+  
+  /* Hide carousel arrows for social carousel type */
+  {% if section.settings.carousel_type == 'social' %}
+  .story__next.swiper-button-next,
+  .story__prev.swiper-button-prev {
+    display: none !important;
+  }
+  {% endif %}
+  {% if section.settings.background_image != blank %}
+   #hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+    border-radius: inherit;
+  }
+  {% endif %}
+
+  /* Ensure all content appears above the overlay */
+  #hero-section > * {
+    position: relative;
+    z-index: 1;
+  }
+   {% if section.settings.background_image == blank %}
+      #hero-section{
+        background-color: {{ section.settings.background }};
+      }
+    {% endif %}
+  .certified-container {
+    width: 100% !important;
+   }
+  /* Font family classes preserved for CSS styling */
+    #hero-section h1,
+    #hero-section h2,
+    #hero-section h3,
+    #hero-section h4,
+    #hero-section h5,
+    #hero-section h6 {
+    /* Heading font family - can be overridden with CSS */
+  }
+
+  #hero-section p,
+  #hero-section span,
+  #hero-section div {
+    /* Body font family - can be overridden with CSS */
+  }
+
+  #hero-section button,
+  #hero-section .product-cta,
+  #hero-section .fallback-cta,
+  #hero-section .hero-cta-button {
+    /* Button font family and font weight (700) - can be overridden with CSS */
+  }
+
+
+  .hero-header-copy p {
+    margin: 0;
+  }
+ .custom-section {
+      width: 100%;
+  }
+  .hero-content.center-content {
+    align-items: center !important;
+    flex: auto;
+    width: 100%;
+    max-width: 100%;
+    text-align: center !important;
+    display: flex !important;
+  }
+
+
+  .responsive-flex {
+    display: flex;
+    flex-direction: row;
+  }
+
+  #hero-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+    /* margin-right:15px !important; */
+  }
+
+  #image-width {
+    max-width: 500px;
+    max-height: 600px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero-content {
+    /* flex: 1; */
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    padding-left: {% if total_media_count == 0 %}0{% else %}{{ section.settings.padding_left }}{% endif %}px;
+    /* max-width: 1100px; */
+    box-sizing: border-box;
+    /* background-color: {{ section.settings.background }}; */
+  }
+
+  .hero-header-copy {
+    max-width: 750px;
+    margin: 1.5vh 0 {{ section.settings.heading_margin_bottom }}px 0;
+    display: block;
+  }
+
+  #star-container {
+    display: flex;
+    flex-direction: row;
+    margin-right: 8px;
+  }
+  .template-creator  main#MainContent {
+    padding: 0;
+}
+  h2.hero-header-copy.hide-on-mobile p{
+    font-weight:500 !important; 
+    line-height: 1.2;
+  }
+  h2.hero-header-copy.hide-on-desktop p{
+    font-weight:500; 
+  }
+  
+  #star-text {
+    font-weight: 600;
+    margin-top:0;
+    padding-top: {{ section.settings.star_adjustment_spacing }}px;
+    margin-bottom:0;
+    line-height: 1;
+  }
+  
+  .hero-star-icon path {
+    /* Star icon color - can be overridden with CSS */
+ }
+testimonials-component {
+    visibility: visible !important;
+}
+  #grid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    max-width: 520px;
+    margin: 0;
+    margin-top: 2.2vh auto;
+    margin-top:20px;
+  }
+
+ 
+
+  .hide-on-mobile {
+    display: flex !important;
+  }
+
+  .hide-on-desktop {
+    display: none !important;
+  }
+
+  .section-padding {
+    padding-top: {{ section.settings.padding_vertical }}rem;
+    padding-bottom: {{ section.settings.padding_vertical }}rem;
+  }
+
+  /*=============================
+    Video Slider
+  =============================*/
+  .unique-video-slider {
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+  }
+  {% if section.settings.background_image != blank %}
+    #hero-section{
+      background-image: url('{{ section.settings.background_image | image_url }}'); 
+    }
+  {% endif %}
+   
+{% if section.settings.background_image == blank %}
+  .unique-video-slider::before,
+  .unique-video-slider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .unique-video-slider::before {
+    left: 0;
+    width: 30px;
+    background: linear-gradient(to right, {{ section.settings.background }}, {{ section.settings.background | color_modify: 'alpha', 0 }}) !important;
+  }
+
+  .unique-video-slider::after {
+    right: 0;
+    width: 100px;
+    background: linear-gradient(to left, {{ section.settings.background }}, {{ section.settings.background | color_modify: 'alpha', 0 }}) !important;
+  }
+ {% endif %}
+  .unique-video-slider .unique-testimonial__image {
+    aspect-ratio: 9/14;
+    width: 400px;
+    overflow: hidden;
+    border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+    border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+    position: relative;
+  }
+  .story .unique-testimonial__image{
+    aspect-ratio: 9/14;
+    width: 400px;
+    border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+    border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+     overflow: hidden;
+  }
+  .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+    padding: 15px;
+}
+
+  .lazy-video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .lazy-video-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .unique-video-slider .media-wrapper {
+    margin-right: 0;
+  }
+
+  .unique-video-slider-item {
+    margin-left: 40px;
+    margin-right: 0;
+    flex-shrink: 0;
+  }
+
+  .unique-video-slider-list {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+
+  .unique-video-slider-list.dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .unique-video-slider-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Single media item centering */
+  .unique-video-slider-item.single-media-item {
+    margin: 0 auto !important;
+  }
+
+  /* Center single media items on mobile */
+  @media (max-width: 1100px) {
+    .unique-video-slider-item.single-media-item {
+      margin: 0 auto !important;
+    }
+    
+    .unique-video-slider-list:has(.single-media-item) {
+      justify-content: center;
+    }
+  }
+
+
+
+
+  .cc-logo-container p{
+    margin:0;
+  }
+    .cc-logo-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .cc-creator-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .cc-logo-divider {
+      font-size: 35px;
+      color: {{ section.settings.textcolor }};
+      height: 80px;
+      align-self: start;
+      align-content:center;
+      font-weight: 500;
+    }
+
+    .cc-logo-container {
+      display: flex;
+      align-items: flex-start;
+      justify:start;
+      gap: 24px;
+      max-width:fit-content;
+    }
+    .cc-logo-container .dynamic-text {
+        max-width: min-content;
+
+    }
+    .cc-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+      height: auto;
+      text-decoration: none;
+      text-align: center;
+    }
+    .cc-creator {
+     text-align: center;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+    }
+    .cc-creator .dynamic-text {
+      text-align: center;
+      width: 100%;
+    }
+    .cc-creator-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .cc-creator-profile .dynamic-text {
+      text-align: center;
+      width: 100%;
+    }
+   #hero-section .container {
+    max-width: 750px !important;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+@media screen and (min-width: 1760px){
+ #hero-section .container {
+    max-width: 1024px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+div#hero-image {
+    max-width: 1500px;
+}
+}
+  /*=============================
+    Responsive Styles
+  =============================*/
+  @media (max-width: 1100px) {
+    .unique-video-slider .unique-testimonial__image {
+      margin-left: 0;
+      height: 300px;
+      width: 180px;
+      border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+      border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+    }
+
+    .unique-video-slider {
+      margin-left: calc(-50vw + 50%);
+    }
+
+    .unique-video-slider::before {
+      width: 0px;
+    }
+
+    .unique-video-slider::after {
+      width: 50px;
+    }
+
+    #hero-section {
+      flex-direction: column;
+      height: auto;
+      gap: {{ section.settings.padding_vertical }}rem;
+    }
+    
+    /* Hide carousel arrows for social carousel type on mobile */
+    {% if section.settings.carousel_type == 'social' %}
+    .story__next.swiper-button-next,
+    .story__prev.swiper-button-prev {
+      display: none !important;
+    }
+    {% endif %}
+
+    .hide-on-desktop {
+      display: flex !important;
+    }
+
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    .hero-content {
+      order: 1;
+      align-items: center;
+      padding: 0 20px;
+      text-align: center;
+      display:flex;
+    }
+
+    #hero-image {
+      order: -1;
+      display: flex;
+      align-items: center;
+       justify-content: flex-start;
+      min-height: 34vh;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .hero-header-copy {
+      font-size: 2em;
+      margin-bottom: 4vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #image-width {
+      width: 100%;
+    }
+
+    .responsive-flex {
+      flex-direction: column;
+    }
+
+    /* Ghost bottom section (when no certification block exists) - align with hero content breakpoint */
+    .ghost-certification .bottom-section {
+      align-items: center;
+      gap: 12px;
+      justify-content: center !important;
+    }
+
+
+    #grid-container {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    
+
+
+    .star {
+      width: 16px;
+      height: 16px;
+    }
+    .certified-feature-section{
+      align-items:center;
+    }
+    #hero-section .container {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  }
+
+  @media (max-width: 768px) {
+    .certified-feature-section {
+      padding: 15px;
+    }
+
+    .certified-feature-section .top-section {
+      max-width: 100%;
+      text-align: center;
+      gap: 40px;
+    }
+
+    .certified-feature-section .images {
+      justify-content: center;
+      gap: 0;
+    }
+
+    .certified-feature-section .images img:not(:first-child) {
+      margin-left: -8px;
+    }
+
+    .certified-feature-section .count {
+      font-size: 12px;
+      padding: 5px;
+      background: #E6F4F1;
+      color: #000;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: -5px;
+      min-width: 30px;
+      height: 30px;
+    }
+
+    .certified-feature-section .text-section strong {
+      display: block;
+    }
+
+    .certified-feature-section .bottom-section {
+      align-items: center;
+      gap: 12px;
+    }
+
+
+    .certified-feature-section .bottom-item {
+      max-width: 100%;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .certified-feature-section .bottom-item img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .unique-video-slider-item {
+          margin-left: 20px;
+      }
+    .certified-feature-section .bottom-section {
+        gap: var(--mobile-gap);
+        gap: 12px;
+        justify-content: center !important;
+    }
+  }
+
+    @media screen and (max-width: 749px) {
+      .cc-logo-image {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      .cc-creator-image {
+        width: 75px;
+        height: 75px;
+      }
+
+      .cc-logo-divider {
+        height: 75px;
+        align-self: start;
+        display: flex;
+        align-items: center;
+      }
+
+      .media-wrapper--small {
+        border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+        border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+      }
+
+      .story__slide {
+        border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+        border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+      }
+      .slider--social {
+          max-width: 95% !important;
+          margin: 0 auto !important;
+      }
+      .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+          right: 0;
+          max-width: 90%;
+          margin: 0 auto;
+      }
+    }
+
+  @media (max-width: 420px) {
+    .certified-feature-section {
+      padding: 0;
+    }
+  }
+{%- endstyle -%}
+
+  {%- assign total_media_count = 0 -%}
+
+  {% comment %}
+    ============================================
+    DYNAMIC MEDIA COUNT CALCULATION
+    ============================================
+    
+    This system dynamically searches through metaobject.data.value for ALL arrays
+    containing media with assets.drops.shop URLs. Priority order:
+    1. Product-level media (in drops > products)
+    2. Drop-level media (in drops)
+    3. Top-level media (in data.value)
+    
+    Only media with assets.drops.shop URLs are included.
+  {% endcomment %}
+
+  {%- assign creator_media_count = 0 -%}
+  
+  {% comment %} 1. PRIORITY: Count product-level media {% endcomment %}
+  {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+    {%- for product in drop['cc-creator-drop-products'] -%}
+      {%- for media in product.enhancement.media -%}
+        {%- if media.url contains 'assets.drops.shop' -%}
+        {%- if media.mimeType contains 'video' or media.mimeType contains 'image' -%}
+          {%- assign total_media_count = total_media_count | plus: 1 -%}
+            {%- assign creator_media_count = creator_media_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      
+      {% comment %} Check for any other arrays in product with drops.shop media {% endcomment %}
+      {%- for field in product -%}
+        {%- assign field_value = field[1] -%}
+        {%- if field_value.first -%}
+          {%- for item in field_value -%}
+            {%- if item.url contains 'assets.drops.shop' -%}
+              {%- if item.mimeType contains 'video' or item.mimeType contains 'image' -%}
+                {%- assign total_media_count = total_media_count | plus: 1 -%}
+                {%- assign creator_media_count = creator_media_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+
+    {% comment %} 2. Count drop-level media {% endcomment %}
+    {%- for field in drop -%}
+      {%- assign field_value = field[1] -%}
+      {%- if field_value.first -%}
+        {%- for item in field_value -%}
+          {%- if item.url contains 'assets.drops.shop' -%}
+            {%- if item.mimeType contains 'video' or item.mimeType contains 'image' -%}
+              {%- assign total_media_count = total_media_count | plus: 1 -%}
+              {%- assign creator_media_count = creator_media_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+  
+  {% comment %} 3. Count top-level media from data.value {% endcomment %}
+  {%- for field in metaobject.data.value -%}
+    {%- assign field_value = field[1] -%}
+    {%- if field_value.first -%}
+      {%- for item in field_value -%}
+        {%- if item.url contains 'assets.drops.shop' -%}
+          {%- if item.mimeType contains 'video' or item.mimeType contains 'image' -%}
+            {%- assign total_media_count = total_media_count | plus: 1 -%}
+            {%- assign creator_media_count = creator_media_count | plus: 1 -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+ {% comment %} Count section-level videos and images only if no creator media exists {% endcomment %}
+  {% if creator_media_count == 0 %}
+    {% if section.settings.video_1 != blank %}
+      {%- assign total_media_count = total_media_count | plus: 1 -%}
+    {% endif %}
+  {% endif %}
+
+  <div id="hero-section" class="section-padding" data-auto-contrast="{{ section.settings.auto_text_contrast }}">
+    <!-- Right/Top Panel (Now First) -->
+    <div class="container" style="align-content:center;margin-top:auto;margin-bottom:auto;">
+    <div class="hero-content{% if total_media_count == 0 %} center-content{% endif %}">
+      
+       {% if eyebrowcopy != blank %}
+           {% comment %} Calculate eyebrow text color based on background {% endcomment %}
+           {% assign eyebrow_bg_raw = section.settings.eyebrowbackground | downcase %}
+           {% if eyebrow_bg_raw == blank or eyebrow_bg_raw == 'transparent' or eyebrow_bg_raw contains 'rgba(0,0,0,0)' or eyebrow_bg_raw contains 'rgba(255,255,255,0)' %}
+             {% assign eyebrow_text_color = section.settings.textcolor %}
+           {% else %}
+             {% assign eyebrow_bg = section.settings.eyebrowbackground | remove: '#' | upcase %}
+             {% assign hex_chars = 'ABCDEF' %}
+             {% assign r_hex = eyebrow_bg | slice: 0, 2 %}
+             {% assign g_hex = eyebrow_bg | slice: 2, 2 %}
+             {% assign b_hex = eyebrow_bg | slice: 4, 2 %}
+             {% assign r1 = r_hex | slice: 0, 1 %}
+             {% assign r2 = r_hex | slice: 1, 1 %}
+             {% if hex_chars contains r1 %}{% assign r1_val = hex_chars | split: '' | index: r1 | plus: 10 %}{% else %}{% assign r1_val = r1 | times: 1 %}{% endif %}
+             {% if hex_chars contains r2 %}{% assign r2_val = hex_chars | split: '' | index: r2 | plus: 10 %}{% else %}{% assign r2_val = r2 | times: 1 %}{% endif %}
+             {% assign r = r1_val | times: 16 | plus: r2_val %}
+             {% assign g1 = g_hex | slice: 0, 1 %}
+             {% assign g2 = g_hex | slice: 1, 1 %}
+             {% if hex_chars contains g1 %}{% assign g1_val = hex_chars | split: '' | index: g1 | plus: 10 %}{% else %}{% assign g1_val = g1 | times: 1 %}{% endif %}
+             {% if hex_chars contains g2 %}{% assign g2_val = hex_chars | split: '' | index: g2 | plus: 10 %}{% else %}{% assign g2_val = g2 | times: 1 %}{% endif %}
+             {% assign g = g1_val | times: 16 | plus: g2_val %}
+             {% assign b1 = b_hex | slice: 0, 1 %}
+             {% assign b2 = b_hex | slice: 1, 1 %}
+             {% if hex_chars contains b1 %}{% assign b1_val = hex_chars | split: '' | index: b1 | plus: 10 %}{% else %}{% assign b1_val = b1 | times: 1 %}{% endif %}
+             {% if hex_chars contains b2 %}{% assign b2_val = hex_chars | split: '' | index: b2 | plus: 10 %}{% else %}{% assign b2_val = b2 | times: 1 %}{% endif %}
+             {% assign b = b1_val | times: 16 | plus: b2_val %}
+             {% assign eyebrow_brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000 %}
+             {% if eyebrow_brightness > 128 %}
+               {% assign eyebrow_text_color = '#000000' %}
+             {% else %}
+               {% assign eyebrow_text_color = '#ffffff' %}
+             {% endif %}
+           {% endif %}
+           <div style="max-width: fit-content; display: flex; align-items: center; margin-bottom: 20px; background-color: {{ section.settings.eyebrowbackground }}; border-radius: {{ section.settings.border_radius }}px; padding: 8px 8px; border: {{section.settings.border_width_general}}px solid {{section.settings.eyebrowbordercolor}};">
+              <div style="font-size: {{ section.settings.accent_text_size }}px; color: {{ eyebrow_text_color }};line-height:1.2;display: flex;flex-direction:row;align-items: center;gap:10px;font-weight:400;{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %}">
+                {% if metaobject['cc-creator-profile-picture'] %}
+                  <div
+                    style="
+                      border-radius: 100%;
+                      height: 32px;
+                      width: 32px;
+                      overflow: hidden;
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <img
+                      src="{{ metaobject.cc-creator-profile-picture }}"
+                      alt="Creator Profile"
+                      style="height: 100%; width: 100%; object-fit: cover;"
+                    >
+                  </div>
+                {% endif %}
+                <div style="{% if section.settings.eyebrow_set_uppercase %}text-transform:uppercase;{% endif %}" class="dynamic-text badge-text">
+                {{- eyebrowcopy -}}
+                </div>
+              </div>
+            </div>
+       {% endif %}
+   
+            {% if title != blank %}
+              {%- assign move_header_mobile = true -%}
+              <div class="{% if move_header_mobile and total_media_count > 0 %}hide-on-mobile{% endif %}">
+                    <div class="hero-header-copy hide-on-mobile dynamic-text" style="font-weight:500 !important; margin-bottom: 20px;">
+                      {{ title }}
+                    </div>
+                
+                    <div
+                      class="hero-header-copy hide-on-desktop dynamic-text"
+                      style="text-align: center; font-weight:500; margin-bottom: 20px;"
+                    >
+                      {{ title }}
+                    </div>
+                </div>
+              {% endif %}
+
+               {% if stars != blank %}
+                  <div style="display: flex; flex-direction: row; align-items: center; margin-top:5px; margin-bottom: 25px;">
+                    <div id="star-container">
+                      {% for i in (1..5) %}
+                        <svg class="star hero-star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
+                          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="{{ section.settings.textcolor }}"/>
+                        </svg>
+                      {% endfor %}
+                    </div>
+                    <p id="star-text" class="dynamic-text" style="font-size: {{ section.settings.accent_text_size }}px; line-height: 1;font-weight:600;{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %}">{{ stars }}</p>
+                  </div>
+               {% endif %}
+
+               {% if subtitle != blank %}
+                   <p class="dynamic-text" style="line-height: 1.4; max-width:650px; margin-top:0; margin-bottom: 40px;">
+                  {{ subtitle }}
+                </p>   
+                  {% endif %}
+
+            {% if section.settings.collab_highlight_display != 'no' %}
+                {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+                {% assign cc_creator = metaobjects.creator[cc_handle] %}
+                {% assign brand_logo = metaobject.data.value['cc-channel-brandkit-primary-logo'] %}
+                {% assign brand_title = metaobject.data.value['cc-channel-brandkit-title'] %}
+
+                    <div class="cc-logo-container cc-collab-highlight" style="margin-bottom: 40px;">
+                    {% if brand_logo %}
+                      <div class="cc-logo">
+                        <img
+                          src="{{ brand_logo }}"
+                          alt="{{ brand_title | default: shop.name | escape }}"
+                          loading="lazy"
+                          class="cc-logo-image"
+                        >
+                      <p class="cc-logo-text dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">
+                        {{ brand_title }}
+                        </p>
+                        </div>
+                    {% else %}
+                      <div class="cc-logo">
+                        <span class="h2">{{ shop.name }}</span>
+                      </div>
+                    {% endif %}
+
+                    {% assign first_name = metaobject['cc-creator-first-name'] | default: '' %}
+                    {% assign last_name = metaobject['cc-creator-last-name'] | default: '' %}
+                    {% assign first_initial = first_name | slice: 0, 1 | upcase %}
+                    {% assign last_initial = last_name | slice: 0, 1 | upcase %}
+                    {% assign initials = first_initial | append: last_initial %}
+                    {% assign fallback_bg = metaobject.data.value['cc-channel-brandkit-primary-color'] | default: '#cccccc' %}
+                    
+                    {% comment %} Calculate contrast color for initials based on brandkit primary color {% endcomment %}
+                    {% assign bg_color = fallback_bg | remove: '#' | upcase %}
+                    
+                    {% comment %} Manual hex to decimal conversion for RGB {% endcomment %}
+                    {% assign hex_chars = 'ABCDEF' %}
+                    {% assign r_hex = bg_color | slice: 0, 2 %}
+                    {% assign g_hex = bg_color | slice: 2, 2 %}
+                    {% assign b_hex = bg_color | slice: 4, 2 %}
+                    
+                    {% comment %} Convert first hex pair (R) {% endcomment %}
+                    {% assign r1 = r_hex | slice: 0, 1 %}
+                    {% assign r2 = r_hex | slice: 1, 1 %}
+                    {% if hex_chars contains r1 %}{% assign r1_val = hex_chars | split: '' | index: r1 | plus: 10 %}{% else %}{% assign r1_val = r1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains r2 %}{% assign r2_val = hex_chars | split: '' | index: r2 | plus: 10 %}{% else %}{% assign r2_val = r2 | times: 1 %}{% endif %}
+                    {% assign r = r1_val | times: 16 | plus: r2_val %}
+                    
+                    {% comment %} Convert second hex pair (G) {% endcomment %}
+                    {% assign g1 = g_hex | slice: 0, 1 %}
+                    {% assign g2 = g_hex | slice: 1, 1 %}
+                    {% if hex_chars contains g1 %}{% assign g1_val = hex_chars | split: '' | index: g1 | plus: 10 %}{% else %}{% assign g1_val = g1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains g2 %}{% assign g2_val = hex_chars | split: '' | index: g2 | plus: 10 %}{% else %}{% assign g2_val = g2 | times: 1 %}{% endif %}
+                    {% assign g = g1_val | times: 16 | plus: g2_val %}
+                    
+                    {% comment %} Convert third hex pair (B) {% endcomment %}
+                    {% assign b1 = b_hex | slice: 0, 1 %}
+                    {% assign b2 = b_hex | slice: 1, 1 %}
+                    {% if hex_chars contains b1 %}{% assign b1_val = hex_chars | split: '' | index: b1 | plus: 10 %}{% else %}{% assign b1_val = b1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains b2 %}{% assign b2_val = hex_chars | split: '' | index: b2 | plus: 10 %}{% else %}{% assign b2_val = b2 | times: 1 %}{% endif %}
+                    {% assign b = b1_val | times: 16 | plus: b2_val %}
+                    
+                    {% comment %} Calculate brightness using standard luminance formula {% endcomment %}
+                    {% assign brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000 %}
+                    {% if brightness > 128 %}
+                      {% assign initials_color = '#000000' %}
+                    {% else %}
+                      {% assign initials_color = '#ffffff' %}
+                    {% endif %}
+
+                    {% if metaobject['cc-creator-profile-picture'] %}
+                      <span class="cc-logo-divider cc-divider">×</span>
+                      <div class="cc-creator">
+                        <img
+                          src="{{ metaobject.cc-creator-profile-picture }}"
+                          alt="{{ first_name  | default: 'Creator' | escape }}"
+                          loading="lazy"
+                          class="cc-creator-image"
+                        >
+                      <p class="cc-creator-name dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: metaobject.cc-creator-first-name }}{% else %}{{ metaobject.cc-creator-first-name }}{% endif %}</p>
+                      </div>
+
+                      {% else %}
+
+                      <span class="cc-logo-divider cc-divider">×</span>
+                       <div class="cc-creator-profile" style="align-self:start; text-align: center; height:100%;">
+                      <div class="cc-creator-image cc-creator-initials" style="
+                        background-color: {{ fallback_bg }};
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto;
+                      ">
+                        <h4 class="cc-initials-text" style="
+                          color: {{ initials_color }};
+                          font-size: 24px;
+                          font-weight: bold;
+                          text-transform: uppercase;
+                          margin: 0;
+                        ">{{ initials }}</h4>
+                      </div>
+                      <p class="cc-creator-name dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: first_name }}{% else %}{{ first_name }}{% endif %}</p>
+                    </div>
+                    {% endif %}
+                  </div>
+            {% endif %}
+
+                {% if cta_text != blank %}
+                  {% comment %} Calculate button text color based on background {% endcomment %}
+                  {% assign cta_bg_raw = section.settings.cta_background | downcase %}
+                  {% if cta_bg_raw == blank or cta_bg_raw == 'transparent' or cta_bg_raw contains 'rgba(0,0,0,0)' or cta_bg_raw contains 'rgba(255,255,255,0)' %}
+                    {% assign cta_text_color = section.settings.textcolor %}
+                  {% else %}
+                    {% assign cta_bg = section.settings.cta_background | remove: '#' | upcase %}
+                    {% assign hex_chars = 'ABCDEF' %}
+                    {% assign r_hex = cta_bg | slice: 0, 2 %}
+                    {% assign g_hex = cta_bg | slice: 2, 2 %}
+                    {% assign b_hex = cta_bg | slice: 4, 2 %}
+                    {% assign r1 = r_hex | slice: 0, 1 %}
+                    {% assign r2 = r_hex | slice: 1, 1 %}
+                    {% if hex_chars contains r1 %}{% assign r1_val = hex_chars | split: '' | index: r1 | plus: 10 %}{% else %}{% assign r1_val = r1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains r2 %}{% assign r2_val = hex_chars | split: '' | index: r2 | plus: 10 %}{% else %}{% assign r2_val = r2 | times: 1 %}{% endif %}
+                    {% assign r = r1_val | times: 16 | plus: r2_val %}
+                    {% assign g1 = g_hex | slice: 0, 1 %}
+                    {% assign g2 = g_hex | slice: 1, 1 %}
+                    {% if hex_chars contains g1 %}{% assign g1_val = hex_chars | split: '' | index: g1 | plus: 10 %}{% else %}{% assign g1_val = g1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains g2 %}{% assign g2_val = hex_chars | split: '' | index: g2 | plus: 10 %}{% else %}{% assign g2_val = g2 | times: 1 %}{% endif %}
+                    {% assign g = g1_val | times: 16 | plus: g2_val %}
+                    {% assign b1 = b_hex | slice: 0, 1 %}
+                    {% assign b2 = b_hex | slice: 1, 1 %}
+                    {% if hex_chars contains b1 %}{% assign b1_val = hex_chars | split: '' | index: b1 | plus: 10 %}{% else %}{% assign b1_val = b1 | times: 1 %}{% endif %}
+                    {% if hex_chars contains b2 %}{% assign b2_val = hex_chars | split: '' | index: b2 | plus: 10 %}{% else %}{% assign b2_val = b2 | times: 1 %}{% endif %}
+                    {% assign b = b1_val | times: 16 | plus: b2_val %}
+                    {% assign cta_brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000 %}
+                    {% if cta_brightness > 128 %}
+                      {% assign cta_text_color = '#000000' %}
+                    {% else %}
+                      {% assign cta_text_color = '#ffffff' %}
+                    {% endif %}
+                  {% endif %}
+                    <div style="margin-bottom: 0px;">
+                      <a href="{{ section.settings.cta_url }}" style="text-decoration: none;">
+                      <button class="fallback-cta hero-cta-button" style="background-color: {{section.settings.cta_background}}; color: {{ cta_text_color }}; padding: 24px 42px; text-align: center; line-height: 1.2; cursor: pointer; border-radius: {{ section.settings.border_radius }}px; border: {{section.settings.border_width_general}}px solid {{section.settings.cta_border_color}};{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %}">
+                          <p>{{ cta_text }}</p>
+                        </button>
+                      </a>
+                    </div>
+                  {% endif %}
+
+    </div>
+  </div>
+    <!-- Left/Bottom Panel (Now Second) -->
+     {% if total_media_count > 0 %}
+    <div id="hero-image" class="slider--{{ section.settings.carousel_type }}">
+          {%- assign move_header_mobile = true -%}
+
+      {% if move_header_mobile and title != blank %}
+          <div class="mobile-header-top-wrapper hide-on-desktop" style="padding-bottom: {{ section.settings.padding_vertical }}rem;">
+              <div
+                class="hero-header-copy hide-on-mobile dynamic-text"
+                style="font-weight: 500 !important; margin-bottom: 20px;"
+              >
+                {{ title }}
+              </div>
+        
+              <div
+                class="hero-header-copy hide-on-desktop dynamic-text"
+                style="text-align: center; font-weight: 500; margin-bottom: 0px;"
+              >
+                {{ title }}
+              </div>
+          </div>
+          {% endif %}
+
+ 
+      {% if section.settings.carousel_type == 'social' %}
+      <div class="story">
+        <div class="story__slider swiper">
+          <div class="story__wrapper swiper-wrapper">
+
+            {%- assign media_count = 0 -%}
+            {% if creator_media_count == 0 %}
+              {% if section.settings.video_1 != blank %}{%- assign media_count = media_count | plus: 1 -%}{% endif %}
+            {% endif %}
+
+            {%- assign has_ugc_videos = false -%}
+           
+
+              {%- assign counter = 0 -%}
+
+              {%- assign first_video_found = false -%}
+              {% comment %} 1. PRIORITY: Render product-level media {% endcomment %}
+              {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+                {%- for product in drop['cc-creator-drop-products'] -%}
+                  {%- for media in product.enhancement.media -%}
+                    {%- if media.url contains 'assets.drops.shop' -%}
+                    {%- if media.mimeType contains 'video' and true -%}
+                      {%- assign is_first_video = false -%}
+                      {%- if first_video_found == false -%}
+                        {%- assign is_first_video = true -%}
+                        {%- assign first_video_found = true -%}
+                      {%- endif -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                          <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                            <source src="{{ media.url }}" type="video/mp4">
+                          </video>
+                          <div class="pause-icon">
+                            <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <div class="play-icon">
+                             <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                          </div>
+                          <button class="mute-toggle"
+                          style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                              >🔇</button>
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- elsif media.mimeType contains 'image' and true -%}
+                      <div class="story__slide swiper-slide">
+                        <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                          <img src="{{ media.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                        </div>
+                      </div>
+                      {%- assign has_ugc_videos = true -%}
+                    {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  
+                  {% comment %} Check for any other arrays in product with drops.shop media {% endcomment %}
+                  {%- for field in product -%}
+                    {%- assign field_value = field[1] -%}
+                    {%- if field_value.first -%}
+                      {%- for item in field_value -%}
+                        {%- if item.url contains 'assets.drops.shop' -%}
+                          {%- if item.mimeType contains 'video' and true -%}
+                            {%- assign is_first_video = false -%}
+                            {%- if first_video_found == false -%}
+                              {%- assign is_first_video = true -%}
+                              {%- assign first_video_found = true -%}
+                            {%- endif -%}
+                            <div class="story__slide swiper-slide">
+                              <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                                <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                  <source src="{{ item.url }}" type="video/mp4">
+                                </video>
+                                <div class="pause-icon">
+                                  <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                    <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                  </svg>
+                                </div>
+                                <div class="play-icon">
+                                  <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                  </svg>
+                                </div>
+                                <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                              </div>
+                            </div>
+                            {%- assign has_ugc_videos = true -%}
+                          {%- elsif item.mimeType contains 'image' and true -%}
+                            <div class="story__slide swiper-slide">
+                              <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                                <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                              </div>
+                            </div>
+                            {%- assign has_ugc_videos = true -%}
+                          {%- endif -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                {%- endfor -%}
+              {%- endfor -%}
+
+                {% comment %} 2. Render drop-level media {% endcomment %}
+                {%- for field in drop -%}
+                  {%- assign field_value = field[1] -%}
+                  {%- if field_value.first -%}
+                    {%- for item in field_value -%}
+                      {%- if item.url contains 'assets.drops.shop' -%}
+                        {%- if item.mimeType contains 'video' and true -%}
+                          {%- assign is_first_video = false -%}
+                          {%- if first_video_found == false -%}
+                            {%- assign is_first_video = true -%}
+                            {%- assign first_video_found = true -%}
+                          {%- endif -%}
+                          <div class="story__slide swiper-slide">
+                            <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                              <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                <source src="{{ item.url }}" type="video/mp4">
+                              </video>
+                              <div class="pause-icon">
+                                <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                          </div>
+                              <div class="play-icon">
+                                <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                        </div>
+                              <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                            </div>
+                          </div>
+                          {%- assign has_ugc_videos = true -%}
+                        {%- elsif item.mimeType contains 'image' and true -%}
+                          <div class="story__slide swiper-slide">
+                            <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                              <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                            </div>
+                          </div>
+                          {%- assign has_ugc_videos = true -%}
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endfor -%}
+              
+              {% comment %} 3. Render top-level media from data.value {% endcomment %}
+              {%- for field in metaobject.data.value -%}
+                {%- assign field_value = field[1] -%}
+                {%- if field_value.first -%}
+                  {%- for item in field_value -%}
+                    {%- if item.url contains 'assets.drops.shop' -%}
+                      {%- if item.mimeType contains 'video' and true -%}
+                        {%- assign is_first_video = false -%}
+                        {%- if first_video_found == false -%}
+                          {%- assign is_first_video = true -%}
+                          {%- assign first_video_found = true -%}
+                        {%- endif -%}
+                        <div class="story__slide swiper-slide">
+                          <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                            <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                              <source src="{{ item.url }}" type="video/mp4">
+                            </video>
+                            <div class="pause-icon">
+                              <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                              </svg>
+                      </div>
+                              <div class="play-icon">
+                                <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                              </div>
+                            <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                          </div>
+                        </div>
+                        {%- assign has_ugc_videos = true -%}
+                      {%- elsif item.mimeType contains 'image' and true -%}
+                        <div class="story__slide swiper-slide">
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                            <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                      </div>
+                  </div>
+                        {%- assign has_ugc_videos = true -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {% comment %} Render section-level video only if no creator media exists {% endcomment %}
+              {%- if creator_media_count == 0 and section.settings.video_1 != blank -%}
+                {%- assign is_first_section_video = true -%}
+                <div class="story__slide swiper-slide">
+                  <div class="unique-testimonial__image media-wrapper media-wrapper--small playing" tabindex="0">
+                    {{ section.settings.video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, class: 'autoplay-first' }}
+                    <div class="play-icon first-video">
+                       <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                        </div>
+                    <div class="pause-icon first-video">
+                      <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                        </svg>
+                      </div>
+                    <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                  </div>
+                  </div>
+                {%- endif -%}
+
+           
+          </div>
+
+          <!-- Swiper Controls -->
+          <div class="story__next swiper-button-next"></div>
+          <div class="story__prev swiper-button-prev"></div>
+          <div class="story__pagination swiper-pagination"></div>
+
+        </div>
+      </div>
+
+                
+        {% else %}
+      <!-- Video Slider -->
+      <div class="unique-video-slider">
+        <div class="unique-testimonials">
+            {%- assign inline_media_count = 0 -%}
+            {% if creator_media_count == 0 %}
+              {% if section.settings.video_1 != blank %}{%- assign inline_media_count = inline_media_count | plus: 1 -%}{% endif %}
+            {% endif %}
+
+          {%- assign has_ugc_videos = false -%}
+         
+            {% assign counter = 0 %}
+            <testimonials-component
+              data-slider="{% if inline_media_count > 1 %}true{% else %}false{% endif %}"
+              data-autorotate="{{ section.settings.autorotate }}"
+              data-autorotate-speed="{{ section.settings.autorotate_speed | times: 1000 }}"
+              style="--block-count: {{ inline_media_count | minus: 1 }};"
+            >
+              <div class="unique-testimonial__list-wrapper">
+                <div class="unique-video-slider-list" id="Testimonials">
+               
+                  {%- assign first_video_found_list = false -%}
+                  {%- assign displayed_media_urls = '' -%}
+                  {%- assign single_media_displayed = false -%}
+                  
+                  {%- unless total_media_count == 1 and creator_media_count == 0 -%}
+                  {% comment %} 1. PRIORITY: Render product-level media {% endcomment %}
+                  {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
+                    {%- for product in drop['cc-creator-drop-products'] -%}
+                      {%- for media in product.enhancement.media -%}
+                        {%- if media.url contains 'assets.drops.shop' -%}
+                        {% unless displayed_media_urls contains media.url %}
+                        {% unless total_media_count == 1 and single_media_displayed %}
+                        {% if media.mimeType and media.mimeType contains 'video' and true %}
+                          {%- assign is_first_video_list = false -%}
+                          {%- if first_video_found_list == false -%}
+                            {%- assign is_first_video_list = true -%}
+                            {%- assign first_video_found_list = true -%}
+                          {%- endif -%}
+                          <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}
+                        tabindex="0"
+                            >
+                              <video
+                              {% if is_first_video_list %}
+                                  autoplay
+                                  class="autoplay-first" 
+                                {% endif %}
+                                muted
+                                playsinline
+                                loop
+                                style="height:100%;width:100%;object-fit: cover;object-position: center;"
+                              >
+                                <source src="{{ media.url }}" type="video/mp4">
+                              </video>
+                              <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                  <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                </svg>
+                              </div>
+                          <div class="play-icon{% if is_first_video_list %} first-video{% endif %}">
+                                <svg
+                                  width="50"
+                                  height="50"
+                                  viewBox="0 0 24 24"
+                                  fill="white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                </svg>
+                              </div>
+                              <button
+                                class="mute-toggle"
+                                style="
+                                  position: absolute;
+                                  bottom: 10px;
+                                  right: 10px;
+                                  z-index: 10;
+                                  padding: 6px 10px;
+                                  background: rgba(0,0,0,0.5);
+                                  color: white;
+                                  border: none;
+                                  border-radius: 16px;
+                                  cursor: pointer;
+                                "
+                              >
+                                🔇
+                              </button>
+                              {%- assign has_ugc_videos = true -%}
+                              {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
+                              {%- if total_media_count == 1 -%}
+                                {%- assign single_media_displayed = true -%}
+                              {%- endif -%}
+                            </div>
+                          </div>
+                         {% elsif media.mimeType and media.mimeType contains 'image' and true %}
+                          <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                            <div
+                              class="unique-testimonial__image media-wrapper media-wrapper--small
+                          tabindex="0"
+                            >
+                            <img
+                            src="{{ media.url }}"
+                            style="height:100%;width:100%;object-fit: cover;object-position: center;"
+                          >
+                                    {%- assign has_ugc_videos = true -%}
+                                    {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
+                                    {%- if total_media_count == 1 -%}
+                                      {%- assign single_media_displayed = true -%}
+                                    {%- endif -%}
+                                     </div>
+                          </div>
+                        {%- endif -%}
+                        {%- endunless -%}
+                        {%- endunless -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      
+                      {% comment %} Check for any other arrays in product with drops.shop media {% endcomment %}
+                      {%- for field in product -%}
+                        {%- assign field_value = field[1] -%}
+                        {%- if field_value.first -%}
+                          {%- for item in field_value -%}
+                            {%- if item.url contains 'assets.drops.shop' -%}
+                              {% unless displayed_media_urls contains item.url %}
+                              {% unless total_media_count == 1 and single_media_displayed %}
+                              {% if item.mimeType and item.mimeType contains 'video' and true %}
+                                {%- assign is_first_video_list = false -%}
+                                {%- if first_video_found_list == false -%}
+                                  {%- assign is_first_video_list = true -%}
+                                  {%- assign first_video_found_list = true -%}
+                                {%- endif -%}
+                                <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                                  <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
+                                    <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                      <source src="{{ item.url }}" type="video/mp4">
+                                    </video>
+                                    <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
+                                      <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                        <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                      </svg>
+                                    </div>
+                                    <div class="play-icon{% if is_first_video_list %} first-video{% endif %}">
+                                      <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                        <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                      </svg>
+                                    </div>
+                                    <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                                    {%- assign has_ugc_videos = true -%}
+                                    {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                    {%- if total_media_count == 1 -%}
+                                      {%- assign single_media_displayed = true -%}
+                                    {%- endif -%}
+                                  </div>
+                                </div>
+                              {%- elsif item.mimeType and item.mimeType contains 'image' and true -%}
+                                <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                                  <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                                    <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                    {%- assign has_ugc_videos = true -%}
+                                    {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                    {%- if total_media_count == 1 -%}
+                                      {%- assign single_media_displayed = true -%}
+                                    {%- endif -%}
+                                  </div>
+                                </div>
+                              {%- endif -%}
+                  {%- endunless -%}
+                              {%- endunless -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endfor -%}
+                    
+                    {% comment %} 2. Render drop-level media {% endcomment %}
+                    {%- for field in drop -%}
+                      {%- assign field_value = field[1] -%}
+                      {%- if field_value.first -%}
+                        {%- for item in field_value -%}
+                          {%- if item.url contains 'assets.drops.shop' -%}
+                            {% unless displayed_media_urls contains item.url %}
+                            {% unless total_media_count == 1 and single_media_displayed %}
+                            {% if item.mimeType and item.mimeType contains 'video' and true %}
+                              {%- assign is_first_video_list = false -%}
+                              {%- if first_video_found_list == false -%}
+                                {%- assign is_first_video_list = true -%}
+                                {%- assign first_video_found_list = true -%}
+                              {%- endif -%}
+                              <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                                <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
+                                  <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                    <source src="{{ item.url }}" type="video/mp4">
+                                  </video>
+                                  <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
+                                    <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                      <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                      <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                    </svg>
+                                  </div>
+                                  <div class="play-icon{% if is_first_video_list %} first-video{% endif %}">
+                                    <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                      <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                    </svg>
+                                  </div>
+                                  <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                                  {%- assign has_ugc_videos = true -%}
+                                  {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                  {%- if total_media_count == 1 -%}
+                                    {%- assign single_media_displayed = true -%}
+                                  {%- endif -%}
+                                </div>
+                              </div>
+                            {%- elsif item.mimeType and item.mimeType contains 'image' and true -%}
+                              <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                                <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                                  <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                  {%- assign has_ugc_videos = true -%}
+                                  {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                  {%- if total_media_count == 1 -%}
+                                    {%- assign single_media_displayed = true -%}
+                                  {%- endif -%}
+                                </div>
+                              </div>
+                            {%- endif -%}
+                            {%- endunless -%}
+                            {%- endunless -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endfor -%}
+                  
+                  {% comment %} 3. Render top-level media from data.value {% endcomment %}
+                  {%- for field in metaobject.data.value -%}
+                    {%- assign field_value = field[1] -%}
+                    {%- if field_value.first -%}
+                      {%- for item in field_value -%}
+                        {%- if item.url contains 'assets.drops.shop' -%}
+                          {% unless displayed_media_urls contains item.url %}
+                          {% unless total_media_count == 1 and single_media_displayed %}
+                          {% if item.mimeType and item.mimeType contains 'video' and true %}
+                            {%- assign is_first_video_list = false -%}
+                            {%- if first_video_found_list == false -%}
+                              {%- assign is_first_video_list = true -%}
+                              {%- assign first_video_found_list = true -%}
+                            {%- endif -%}
+                            <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                              <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
+                                <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                  <source src="{{ item.url }}" type="video/mp4">
+                                </video>
+                                <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
+                                  <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                                    <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                                  </svg>
+                                </div>
+                                <div class="play-icon{% if is_first_video_list %} first-video{% endif %}">
+                                  <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                                  </svg>
+                                </div>
+                                <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                                {%- assign has_ugc_videos = true -%}
+                                {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                {%- if total_media_count == 1 -%}
+                                  {%- assign single_media_displayed = true -%}
+                                {%- endif -%}
+                              </div>
+                            </div>
+                          {%- elsif item.mimeType and item.mimeType contains 'image' and true -%}
+                            <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
+                              <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
+                                <img src="{{ item.url }}" style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                {%- assign has_ugc_videos = true -%}
+                                {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
+                                {%- if total_media_count == 1 -%}
+                                  {%- assign single_media_displayed = true -%}
+                                {%- endif -%}
+                              </div>
+                            </div>
+                          {%- endif -%}
+                          {%- endunless -%}
+                          {%- endunless -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  {%- endunless -%}
+                 
+
+                  {% comment %}
+                    ============================================
+                    FUTURE MEDIA SOURCES EXPANSION POINT
+                    ============================================
+                    
+                    To add additional media sources beyond creator drops, 
+                    add new loops here before the section blocks loop.
+                    
+                    Examples of additional sources you could loop through:
+                    
+                    1. Creator's direct media uploads:
+                       {% for media in metaobject.data.value['cc-creator-media'] %}
+                         {% if media.mimeType contains 'video' or media.mimeType contains 'image' %}
+                           <!-- Add media slide here -->
+                         {% endif %}
+                       {% endfor %}
+                    
+                    2. Creator's social media content:
+                       {% for post in metaobject.data.value['cc-creator-social-posts'] %}
+                         {% for media in post.media %}
+                           <!-- Add media slide here -->
+                         {% endfor %}
+                       {% endfor %}
+                    
+                    3. Creator's featured lookbooks:
+                       {% for book in metaobject.data.value['cc-creator-lookbooks'] %}
+                           {% for media in book.media %}
+                             <!-- Add media slide here -->
+                           {% endfor %}
+                       {% endfor %}
+                    
+                    4. Creator's testimonials/reviews:
+                       {% for testimonial in metaobject.data.value['cc-creator-testimonials'] %}
+                         {% if testimonial.video %}
+                           <!-- Add video slide here -->
+                         {% elsif testimonial.image %}
+                           <!-- Add image slide here -->
+                         {% endif %}
+                       {% endfor %}
+                    
+                    Remember to:
+                    - Update total_media_count calculation at the top
+                    - Use the same displayed_media_urls tracking to avoid duplicates
+                    - Follow the same media item structure with unique-video-slider-item class
+                    - Maintain logic for autoplaying first video from the loop
+                    - Maintain the same conditional logic for single media items
+                  {% endcomment %}
+
+                  {%- unless total_media_count == 1 and creator_media_count > 0 -%}
+                  
+                  {% comment %} Render section-level video in inline carousel only if no creator media exists {% endcomment %}
+                  {%- if creator_media_count == 0 and section.settings.video_1 != blank -%}
+                    {%- assign is_first_inline_video = true -%}
+                    <div class="unique-video-slider-item is-selected{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% elsif inline_media_count == 1 and has_ugc_videos == false %}margin-left:0;margin:auto{% endif %}">
+                      <div class="unique-testimonial__image media-wrapper media-wrapper--small playing" tabindex="0">
+                        {{ section.settings.video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, class: 'autoplay-first' }}
+                        <div class="play-icon first-video">
+                          <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                              <polygon points="8,5 19,12 8,19" fill="currentColor"/>
+                            </svg>
+                          </div>
+                        <div class="pause-icon first-video">
+                          <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                              <rect x="6" y="5" width="4" height="14" fill="currentColor"/>
+                              <rect x="14" y="5" width="4" height="14" fill="currentColor"/>
+                            </svg>
+                          </div>
+                        <button class="mute-toggle" style="position: absolute; bottom: 10px; right: 10px; z-index: 10; padding: 6px 10px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 16px; cursor: pointer;">🔇</button>
+                          {%- assign has_ugc_videos = true -%}
+                        </div>
+                      </div>
+                      {% assign counter = counter | plus: 1 %}
+                  {%- endif -%}
+                  
+                  {% comment %} Render section-level image in inline carousel only if no creator media exists {% endcomment %}
+                  
+                  {%- endunless -%}
+                </div>
+              </div>
+            </testimonials-component>
+          
+        </div>
+         {% unless total_media_count == 1 %}
+         <button class="slider-arrow right-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><title>Right</title><polyline points="9 18 15 12 9 6"></polyline></svg>
+         </button>
+         {% endunless %}
+      </div>
+      {% endif %}
+      <!-- End of Video Slider -->
+    </div>
+    {% endif %}
+</div>
+<style>
+  .unique-testimonial__image .play-icon,
+  .unique-testimonial__image .pause-icon {
+     position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+  }
+    .play-icon svg, .pause-icon svg {
+        width: 40px;
+        height: 40px;
+        color: white;
+    }
+  /* Default state: show play icon, hide pause icon */
+  .unique-testimonial__image .pause-icon {
+    display: none;
+  }
+  
+  .unique-testimonial__image .play-icon {
+   display: flex;
+  }
+  
+  /* When video is playing: hide play icon, hide pause icon by default */
+  .unique-testimonial__image.playing .play-icon {
+    display: none;
+  }
+  
+  .unique-testimonial__image.playing .pause-icon {
+    display: none;
+  }
+  
+  /* When video is playing AND hovering: show pause icon */
+  .unique-testimonial__image.playing:hover .pause-icon {
+    display: flex !important;
+  }
+  
+  /* Media wrapper small - ensure proper container dimensions for centering */
+  .media-wrapper--small {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+    border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+  }
+  
+  /* Remove border from media-wrapper when inside story slide to prevent double borders */
+  .story__slide .media-wrapper--small {
+    border: none;
+  }
+  
+  .media-wrapper--small video,
+  .media-wrapper--small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* Ensure story slide containers have proper height */
+  .story__slide .unique-testimonial__image {
+    aspect-ratio: 9/14;
+    width: 400px;
+    /* Border removed - handled by parent .story__slide */
+  }
+
+  /* Custom CSS */
+  {% if section.settings.custom_css != blank %}
+    {{ section.settings.custom_css }}
+  {% endif %}
+</style>
+<script>
+  // Comprehensive mute button system
+  class MuteButtonManager {
+    constructor() {
+      this.init();
+    }
+
+    init() {
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.setupMuteButtons());
+      } else {
+        this.setupMuteButtons();
+      }
+    }
+
+    setupMuteButtons() {
+      
+      // Step 1: Force mute ALL videos by default
+      this.forceMuteAllVideos();
+      
+      // Step 2: Ensure every video has a working mute button
+      this.ensureAllVideosHaveMuteButtons();
+      
+    }
+
+    recheckMuteButtons() {
+      
+      // Force mute any new videos
+      this.forceMuteAllVideos();
+      
+      // Ensure all videos have working mute buttons
+      this.ensureAllVideosHaveMuteButtons();
+      
+    }
+
+    forceMuteAllVideos() {
+      const allVideos = document.querySelectorAll('video');
+      
+      allVideos.forEach((video, index) => {
+        // Force mute every video
+        video.muted = true;
+        video.setAttribute('muted', '');
+        
+        // Ensure autoplay compatibility
+        if (video.hasAttribute('autoplay')) {
+          video.setAttribute('playsinline', '');
+        }
+        
+      });
+    }
+
+    ensureAllVideosHaveMuteButtons() {
+      const allVideos = document.querySelectorAll('video');
+      
+      allVideos.forEach((video, index) => {
+        
+        // Find the container for this video
+        const container = this.findVideoContainer(video);
+        
+        if (!container) {
+          return;
+        }
+        
+        // Check if container already has a mute button
+        let existingButton = container.querySelector('.mute-toggle');
+        
+        // If no button exists, create one
+        if (!existingButton) {
+          existingButton = this.createMuteButton();
+          container.style.position = 'relative';
+          container.appendChild(existingButton);
+        }
+        
+        // Always rebind the button to ensure it works (this handles both new and existing buttons)
+        this.bindMuteButton(existingButton);
+        
+      });
+    }
+
+    findVideoContainer(video) {
+      // Try different container selectors
+      const selectors = [
+        '.unique-testimonial__image',
+        '.media-wrapper',
+        '.story__slide',
+        '.swiper-slide'
+      ];
+      
+      
+      for (const selector of selectors) {
+        const container = video.closest(selector);
+        if (container) {
+          return container;
+        }
+      }
+      
+      // Fallback: use parent element
+      const parentContainer = video.parentElement;
+      return parentContainer;
+    }
+
+    createMuteButton() {
+      const button = document.createElement('button');
+      button.className = 'mute-toggle';
+      button.textContent = '🔇';
+      button.setAttribute('type', 'button');
+      
+      // Apply consistent styling
+      Object.assign(button.style, {
+        position: 'absolute',
+        bottom: '10px',
+        right: '10px',
+        zIndex: '10',
+        padding: '6px 10px',
+        background: 'rgba(0,0,0,0.5)',
+        color: 'white',
+        border: 'none',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: 'bold'
+      });
+      
+      return button;
+    }
+
+    bindMuteButton(button) {
+      
+      const container = button.closest('.unique-testimonial__image, .media-wrapper, .story__slide, .swiper-slide') || button.parentElement;
+      
+      const video = container ? container.querySelector('video') : null;
+      
+      if (!video) {
+        return;
+      }
+      
+      // Remove any existing event listeners to prevent duplicates
+      const newButton = button.cloneNode(true);
+      button.parentNode.replaceChild(newButton, button);
+      
+      // Ensure video is muted initially
+      video.muted = true;
+      video.setAttribute('muted', '');
+      newButton.textContent = '🔇';
+      
+      
+      // Add click event listener to the new button
+      newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        
+        // Toggle mute state
+        video.muted = !video.muted;
+        
+        // Update button text
+        newButton.textContent = video.muted ? '🔇' : '🔊';
+        
+        
+        // If unmuting, try to play the video (regardless of autoplay status)
+        if (!video.muted) {
+          video.play().catch(err => {
+            // Video play failed, continue silently
+          });
+        }
+      });
+      
+      // Add event listeners to handle video state changes
+      video.addEventListener('loadstart', () => {
+        // Ensure it's muted when it starts loading
+        video.muted = true;
+        video.setAttribute('muted', '');
+        newButton.textContent = '🔇';
+      });
+      
+    }
+  }
+
+  // Initialize the mute button manager
+  const muteManager = new MuteButtonManager();
+  
+  // Watch for dynamically added videos (like lazy-loaded videos)
+  const observer = new MutationObserver((mutations) => {
+    let shouldRecheck = false;
+    
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1) { // Element node
+            // Check if a video was added
+            if (node.tagName === 'VIDEO' || node.querySelector('video')) {
+              shouldRecheck = true;
+            }
+          }
+        });
+      }
+    });
+    
+    if (shouldRecheck) {
+      setTimeout(() => {
+        muteManager.recheckMuteButtons();
+      }, 100);
+    }
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero - Primavera",
+  "tag": "section",
+  "class": "custom-section",
+  "settings": [
+     {
+      "type": "header",
+      "content": "The Primavera Hero Section",
+      "info": "The Primavera Hero Section is your storefront's bold first impression—an immersive, co-branded canvas that fuses video, images, and creator content into one dynamic experience. It's built to grab attention, showcase credibility, and highlight your brand and collaborators in a way that feels both aspirational and authentic. With flexible layouts, trust badges, and rich carousels, this section transforms your hero area into a content-forward stage that drives conversions."
+    },
+     {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. You can use Dynamic Sources with any section/block input (select the icon to the top right of each input) to inject co-branded content without addition developement or code."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context. Bonus tip: in App embeds on the left side of this screen, switch the CreatorCommerce SDK to ON."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements, messaging, and content for your hero section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "eyebrowcopy",
+      "label": "Creator Badge Text",
+      "default": "Recommended by [cc-creator-first-name]",
+      "info": "Text to display in the creator badge (leave empty to hide badge). Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Heading Text",
+      "default": "<h1>Shop with a big massive leader like [cc-creator-first-name] for something cool</h1>",
+      "info": "Main heading for the section. Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Description Text",
+      "default": "Get a [cc-collab-discount-amount]% discount by shopping from my curated collections.",
+      "info": "Description text below the heading. Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "stars",
+      "label": "Trust Indicator Text",
+      "default": "Trusted by 10,000 others",
+      "info": "Text to show next to star rating (leave empty to hide trust indicators). Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "Shop Now",
+      "info": "Leave empty to hide button. Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+      },
+      {
+        "type": "select",
+      "id": "collab_highlight_display",
+      "label": "Show Collab Highlight",
+      "default": "first_name",
+      "info": "Display brand logo and creator name from metaobject data",
+        "options": [
+        {"label": "Using First Name", "value": "first_name"},
+        {"label": "Using Shop Title", "value": "shop_title"},
+        {"label": "No", "value": "no"}
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors, typography, layout, spacing, and visual appearance"
+      },
+        {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default":"#818181",
+      "info": "Main background color for the section"
+    },
+    {
+      "type":"image_picker",
+      "id":"background_image",
+      "label":"Background Image",
+      "info": "Optional background image (will show behind content)"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "label": "Text Color",
+      "default":"#ffffff",
+      "info": "Controls all text color in the section (heading, description, trust indicators, and collaboration highlight text). Note: Initials automatically adjust to black or white based on contrast with the brand color."
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_text_contrast",
+      "label": "Auto-adjust text contrast",
+      "default": false,
+      "info": "Automatically adjust text colors for best readability against background"
+    },
+    {
+      "type": "range",
+      "id": "accent_text_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Accent Text Size",
+      "default": 13,
+      "info": "Controls size for collaboration highlight names and trust indicator text"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase_accent_text",
+      "label": "Uppercase Accent Text",
+      "default": false,
+      "info": "Makes creator badge, collaboration highlight, trust indicator, and button text uppercase"
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": -10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Vertical Adjustment",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "eyebrowbackground",
+      "label": "Badge Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "eyebrowbordercolor",
+      "label": "Badge Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_border_color",
+      "label": "Button Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "border_width_general",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Border Width",
+      "default": 0,
+      "info": "Controls border width for buttons and badges"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Border Radius",
+      "default": 8,
+      "info": "Controls roundness of corners for creator badge, button, and media items (0 = square corners, 32 = very rounded)"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 6,
+      "step": 0.2,
+      "unit": "rem",
+      "label": "Vertical Padding (All Devices)",
+      "default": 2.6,
+      "info": "Top and bottom padding for the content container"
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Left Padding (Desktop)",
+      "default": 80,
+      "info": "Left padding for the content container on desktop"
+    },
+    {
+      "type": "select",
+      "id": "carousel_type",
+      "label": "Carousel Display Type",
+      "default": "inline",
+      "info": "Choose how the carousel is displayed",
+      "options": [
+        {
+          "value": "social",
+          "label": "Social (Full-screen style)"
+        },
+        {
+          "value": "inline",
+          "label": "Inline (Side-by-side with content)"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "id": "video_1",
+      "label": "Fallback Video",
+      "info": "Upload a video file to display in the carousel. Creator media from drops will automatically be included if available."
+    },
+    {
+      "type": "header",
+      "content": "Custom CSS",
+      "info": "Add custom CSS to override any styles in this section"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Add custom CSS rules here. Example: .hero-content { padding: 20px; }"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Primavera"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.overlay"]
+  }
+}
+{% endschema %}
+
+{% comment %} OLD BLOCK SCHEMA REMOVED {% endcomment %}
+
+{% comment %}
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays a video in the media carousel. Videos can be uploaded directly or you can use Dynamic Sources to pull videos from the creator's content. The first video will autoplay by default."
+        },
+        {
+          "type": "header",
+          "content": "Video Content",
+          "info": "Upload your video file and preview image"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video File",
+          "info": "Upload the video file to display in the carousel"
+        },
+        {
+          "type": "image_picker",
+          "id": "p_image",
+          "label": "Preview Thumbnail",
+          "info": "Image shown before video plays (optional)"
+        }
+      ]
+    },
+    {
+      "type": "testimonial-image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays an image in the media carousel. Images can be uploaded directly or you can use Dynamic Sources to pull images from the creator's content or product galleries."
+        },
+        {
+          "type": "header",
+          "content": "Image Content",
+          "info": "Upload an image to display in the carousel"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image File",
+          "info": "Upload the image file to display in the carousel"
+        }
+      ]
+    },
+    {
+        "type":"cc-eyebrow",
+        "name":"Creator Badge",
+        "settings":[
+          {
+            "type": "header",
+            "content": "About This Block",
+            "info": "This block creates a small badge that highlights the creator or recommendation. It automatically pulls the creator's name from the metaobject data and can be styled with custom colors, borders, and spacing. Perfect for establishing the co-branded context."
+          },
+          {
+            "type": "header",
+            "content": "Badge Content",
+            "info": "Create a small badge that highlights the creator or recommendation"
+          },
+          {
+            "type": "inline_richtext",
+            "id": "eyebrowcopy",
+            "default": "Recommended by",
+            "label": "Badge Text",
+            "info": "Text to display in the creator badge (e.g., 'Recommended by Sarah')"
+          },
+          {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Make text uppercase",
+            "info": "Convert the badge text to uppercase"
+          },
+          {
+            "type": "header",
+            "content": "Typography",
+            "info": "Customize the text appearance"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Text Size",
+            "default": 16,
+            "info": "Size of the badge text"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_text_line_height",
+            "min": 0.1,
+            "max": 2.0,
+            "step": 0.1,
+            "label": "Text Line Height",
+            "default": 1.2,
+            "info": "Line height for the badge text"
+          },
+          {
+            "type": "header",
+            "content": "Badge Styling",
+            "info": "Customize the appearance of the badge container"
+          },
+          {
+            "type": "range",
+            "id": "border_radius",
+            "min": 0,
+            "max": 32,
+            "step": 2,
+            "unit": "px",
+            "label": "Border Radius",
+            "default": 8,
+            "info": "Roundness of corners (controlled globally)"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbackground",
+            "label": "Background Color",
+            "default": "#000000",
+            "info": "Background color of the badge"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowtextcolor",
+            "label": "Text Color",
+            "default": "#ffffff",
+            "info": "Color of the badge text"
+          },
+          {
+            "type": "color",
+            "id": "eyebrowbordercolor",
+            "label": "Border Color",
+            "info": "Color of the badge border (if border width is set)"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_border_width",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "unit": "px",
+            "label": "Border Width",
+            "default": 0,
+            "info": "Thickness of the badge border (0 = no border)"
+          },
+          {
+            "type": "header",
+            "content": "Spacing",
+            "info": "Control the spacing around the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_margin_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Bottom Spacing",
+            "default": 10,
+            "info": "Space below the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_padding_top_bottom",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Top/Bottom Padding",
+            "default": 8,
+            "info": "Internal padding for top and bottom of the badge"
+          },
+          {
+            "type": "range",
+            "id": "eyebrow_padding_left_right",
+            "min": 0,
+            "max": 50,
+            "step": 1,
+            "unit": "px",
+            "label": "Left/Right Padding",
+            "default": 8,
+            "info": "Internal padding for left and right sides of the badge"
+          }
+        ]
+      },
+    {
+      "type":"cc-header",
+      "name": "Main Heading",
+      "settings":[
+          {
+            "type": "header",
+            "content": "About This Block",
+            "info": "This block displays the main heading for the hero section. It can pull the creator's name from metaobject data using Dynamic Sources, and supports custom typography, sizing, and mobile-specific adjustments."
+          },
+          {
+            "type": "richtext",
+            "id": "title",
+            "default": "<h1>Shop with a big massive leader in something cool</h1>",
+            "label": "Hero title"
+          },
+          {
+            "type":"checkbox",
+            "id":"set-uppercase",
+            "label":"Set text to uppercase"
+          },
+          {
+            "type": "range",
+            "id": "heading_text_size",
+            "min": 0,
+            "max": 100,
+            "step": 2,
+            "unit": "px",
+            "label": "Heading Exact Size",
+            "default": 42
+          },
+          {
+            "type": "range",
+            "id": "heading_text_line_height",
+            "min": 0.1,
+            "max": 2.0,
+            "step": 0.1,
+            "label": "Heading Line Height",
+            "default": 0.8,
+            "info": "Line height for the heading text"
+          },
+          {
+              "type": "range",
+              "id": "mobile_heading_text_size",
+              "min": 0,
+              "max": 100,
+              "step": 2,
+              "unit": "px",
+              "label": "Mobile Heading Size",
+              "default": 30
+            },
+            {
+              "type": "range",
+              "id": "mobile_heading_text_line_height",
+              "min": 0.1,
+              "max": 2.0,
+              "step": 0.1,
+              "label": "Mobile Heading Line Height",
+              "default": 1.3,
+              "info": "Line height for the mobile heading text"
+            },
+          {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+              {
+                "value": "h2",
+                "label": "h1"
+              },
+              {
+                "value": "h1",
+                "label": "h2"
+              },
+              {
+                "value": "h3",
+                "label": "h3"
+              }
+            ],
+            "default": "h1",
+            "label": "Heading size"
+          },
+        {
+            "type": "checkbox",
+            "id": "move_header_top_mobile",
+            "label": "Move header to top of section on mobile",
+            "default": false
+        },
+         {
+          "type": "range",
+          "id": "header_margin_bottom",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Header Margin Bottom",
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type":"cc-star",
+      "name":"Trust Indicators",
+      "settings":[
+         {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays trust indicators like star ratings, customer counts, or social proof text. It can show stars with custom text and styling to build credibility and encourage conversions."
+        },
+         {
+      "type": "inline_richtext",
+      "id": "stars",
+      "default": "Trusted by 10,000 others",
+      "label": "Star Copy"
+    },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Show Stars",
+      "default":true
+    },
+    {
+      "type": "range",
+      "id": "star_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Star Text Size",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "star_text_line_height",
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Star Text Line Height",
+      "default": 1.2,
+      "info": "Line height for the star text"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": -20,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Adjustment Spacing",
+      "default": 0,
+      "info": "Adjust spacing above the star text (negative values move text up, positive values move text down)"
+    },
+     {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default":"#ffffff"
+    },
+        {
+      "type": "range",
+      "id": "star_margin_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Margin Bottom",
+      "default": 20
+    }
+      ]
+    },
+    {
+      "type":"cc-text",
+      "name":"Description Text",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays descriptive text or a subtitle for the hero section. It can include information about discounts, creator recommendations, or any supporting copy to enhance the main heading."
+        },
+      {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "default": "Get a discount by shopping from my curated collections.",
+      "label": "Hero Subtitle"
+     },
+    {
+      "type":"checkbox",
+      "id":"set-uppercase",
+      "label":"Set text to uppercase"
+    },
+      {
+      "type": "range",
+      "id": "description_text_size",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Description Exact Size",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "description_text_line_height",
+      "min": 0.1,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Description Line Height",
+      "default": 1.4,
+      "info": "Line height for the description text"
+    },
+    {
+      "type": "range",
+      "id": "text_margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Text Margin Bottom",
+      "default": 28
+    }
+      ]
+    },
+    {
+      "type":"cc-cta",
+      "name":"Call-to-Action Button",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block displays a customizable call-to-action button that can link to any destination. Perfect for driving visitors to product pages, collections, or custom pages."
+        },
+        {
+          "type": "header",
+          "content": "CTA Settings",
+          "info": "Configure the button destination and appearance"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "Button Link",
+          "info": "The URL the button will link to"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "cta_text",
+          "default": "Shop Now",
+          "info": "Text to display on the button",
+          "label": "Button Text"
+        },
+        {
+          "type":"checkbox",
+          "id":"set-uppercase",
+          "label":"Make text uppercase"
+        },
+        {
+          "type": "header",
+          "content": "Button Styling",
+          "info": "Customize the button's appearance"
+        },
+        {
+          "type": "color",
+          "id": "cta_background",
+          "label": "Button Background Color",
+          "default":"#000000"
+        },
+        {
+          "type": "color",
+          "id": "cta_text_color",
+          "label": "Button Text Color",
+          "default":"#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "cta_border_color",
+          "label": "Button Border Color"
+        },
+        {
+          "type": "range",
+          "id": "cta_border_width",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "px",
+          "label": "Border Width",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "border_radius",
+          "min": 0,
+          "max": 32,
+          "step": 2,
+          "unit": "px",
+          "label": "Border Radius",
+          "default": 8
+        },
+        {
+          "type": "header",
+          "content": "Typography",
+          "info": "Customize the button text style"
+        },
+        {
+          "type": "range",
+          "id": "cta_text_size",
+          "min": 10,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Text Size",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "cta_text_line_height",
+          "min": 0.1,
+          "max": 2.0,
+          "step": 0.1,
+          "label": "Text Line Height",
+          "default": 1.2
+        },
+        {
+          "type": "range",
+          "id": "cta_font_weight",
+          "min": 100,
+          "max": 900,
+          "step": 100,
+          "label": "Font Weight",
+          "default": 600,
+          "info": "Font weight (100 = thin, 400 = normal, 600 = semi-bold, 700 = bold, 900 = black)"
+        },
+        {
+          "type": "header",
+          "content": "Spacing",
+          "info": "Control padding and margins"
+        },
+        {
+          "type": "range",
+          "id": "cta_padding_top_bottom",
+          "min": 4,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Padding (Top & Bottom)",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "cta_padding_left_right",
+          "min": 8,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "label": "Padding (Left & Right)",
+          "default": 28
+        },
+        {
+          "type": "range",
+          "id": "cta_margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Bottom Margin",
+          "default": 10
+        }
+      ]
+    },
+    {
+      "type":"cc-logo",
+      "name":"Collaboration Highlight",
+      "settings":[
+        {
+          "type": "header",
+          "content": "About This Block",
+          "info": "This block highlights the collaboration between the brand and creator. It displays the creator's profile picture (automatically pulled from metaobject data) alongside brand logos or text. Perfect for showcasing the partnership and building trust through co-branding."
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo",
+          "info": "Upload the brand or creator logo image"
+        },
+        {
+         "type":"richtext",
+          "id":"logo_text",
+          "label":"Logo Text",
+          "info": "Text to display with the logo (supports HTML formatting)"
+        },
+        {
+          "type": "select",
+          "id":"text-case",
+          "label": "Text Transformation",
+          "default": "uppercase",
+          "options": [
+            {
+              "label": "Uppercase",
+              "value": "uppercase"
+            },
+            {
+              "value": "lowercase",
+              "label": "Lowercase"
+            },
+            {
+              "label": "Capitalize",
+              "value": "capitalize"
+            }
+          ]
+        },
+        {
+          "type":"text",
+          "id":"text-size",
+          "label":"Text Size"
+        },
+         {
+          "type":"text",
+          "id":"text-line-height-size",
+          "label":"Text Line Height"
+        },
+        {
+          "type":"color",
+          "id":"text_color",
+          "label":"Text Color"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "logo_width_mobile",
+          "min": 50,
+          "max": 200,
+          "step": 10,
+          "unit": "px",
+          "label": "Logo width on mobile",
+          "default": 80
+        },
+        {
+          "type":"text",
+          "id":"horizontal-spacing",
+          "label":"Horizontal Spacing"
+        },
+        {
+          "type":"text",
+          "id":"vertical-spacing",
+          "label":"Vertical Spacing"
+        },
+        {
+          "type": "header",
+          "content": "Creator Collaboration Settings"
+        },
+        {
+          "type": "select",
+          "id": "creator_name_display",
+          "label": "Creator Name Display",
+          "default": "first_name",
+          "info": "Choose whether to show the creator's first name or shop title",
+          "options": [
+            {
+              "value": "first_name",
+              "label": "First Name (cc-creator-first-name)"
+            },
+            {
+              "value": "shop_title",
+              "label": "Shop Title (cc-creator-shop-title)"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "divider_text",
+          "label": "Divider text",
+          "default": "×"
+        },
+        {
+          "type":"text",
+          "id":"divider_text_size",
+          "label":"Divider Size"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "fallback_bg_color",
+          "label": "Fallback Background Color",
+          "default": "#cccccc"
+        },
+        {
+          "type":"color",
+          "id":"initials_font_color",
+          "label":"Initials Font Color"
+        },
+        {
+          "type": "range",
+          "id": "initials_font_size",
+          "label": "Initials Font Size",
+          "min": 10,
+          "max": 60,
+          "step": 1,
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width",
+          "min": 30,
+          "max": 150,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size",
+          "default": 60
+        },
+        {
+          "type": "range",
+          "id": "creator_image_width_mobile",
+          "min": 30,
+          "max": 100,
+          "step": 5,
+          "unit": "px",
+          "label": "Creator image size on mobile",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "collab_margin_bottom",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Collab Margin Bottom",
+          "default": 10
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Primavera",
+      "blocks": [
+        {
+          "type": "cc-eyebrow"
+        },
+        {
+          "type": "cc-header"
+        },
+        {
+          "type": "cc-text"
+        },
+        {
+          "type": "cc-cta"
+{% endcomment %}
+
+{% comment %} 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            return;
+          }
+
+          // CSS will handle showing/hiding pause icon via .playing class and :hover
+        });
+      }
+    });
+  });
+</script> {% endcomment %}
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".unique-video-slider-item");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        // Attributes for autoplay inline on mobile
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        // ALSO set properties (needed on iOS Safari sometimes)
+        lazyVideo.playsInline = true;
+        lazyVideo.muted = true;
+        lazyVideo.autoplay = true;
+        lazyVideo.loop = true;
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now and ensure properties
+      if (video) {
+        video.playsInline = true;
+        video.muted = true;
+        bindVideoEvents(video);
+      }
+
+      // PLAY icon handlers
+      const onPlayTap = async (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.();
+
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      };
+      playIcon?.addEventListener("click", onPlayTap);
+      playIcon?.addEventListener("touchstart", onPlayTap, { passive: false });
+
+      // PAUSE icon handlers (call video.pause() directly)
+      const onPauseTap = (e) => {
+        e.preventDefault?.();
+        e.stopPropagation?.(); // prevent slider / wrapper handlers
+        const vid = video || wrapper.querySelector("video");
+        if (vid) vid.pause();
+      };
+      pauseIcon?.addEventListener("click", onPauseTap);
+      pauseIcon?.addEventListener("touchstart", onPauseTap, { passive: false });
+
+      // Make sure pause icon is clickable above overlays/sliders
+      if (pauseIcon) {
+        pauseIcon.style.pointerEvents = "auto";
+        pauseIcon.style.touchAction = "manipulation";
+      }
+      if (playIcon) {
+        playIcon.style.pointerEvents = "auto";
+        playIcon.style.touchAction = "manipulation";
+      }
+
+      // Mobile: Show pause icon briefly on touch (not when tapping icons)
+      const isMobileTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768;
+
+      if (isMobileTouch) {
+        wrapper.addEventListener("touchstart", (e) => {
+          // If tapping on play/pause icons (or their children), do nothing here
+          if (
+            (pauseIcon && (e.target === pauseIcon || pauseIcon.contains(e.target))) ||
+            (playIcon && (e.target === playIcon || playIcon.contains(e.target)))
+          ) {
+            return;
+          }
+
+          // CSS will handle showing/hiding pause icon via .playing class and :hover
+        }, { passive: true });
+      }
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const videoWrappers = document.querySelectorAll(".story__slide");
+
+    videoWrappers.forEach(wrapper => {
+      const playIcon = wrapper.querySelector(".play-icon");
+      const pauseIcon = wrapper.querySelector(".pause-icon");
+      const videoContainer = wrapper.querySelector(".unique-testimonial__image");
+      const lazyContainer = videoContainer?.querySelector(".lazy-video-container");
+
+      let video = wrapper.querySelector("video");
+
+      // Skip image-only slides
+      if (!lazyContainer && !video) return;
+
+      const createLazyVideo = () => {
+        const videoUrl = lazyContainer?.getAttribute("data-video-src");
+        const posterUrl = lazyContainer?.getAttribute("data-poster");
+        if (!videoUrl) return null;
+
+        const lazyVideo = document.createElement("video");
+
+        Object.assign(lazyVideo.style, {
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          borderRadius: "var(--video-border-radius, 0px)",
+          border: "var(--video-border, 0px solid transparent)"
+        });
+
+        lazyVideo.setAttribute("playsinline", "");
+        lazyVideo.setAttribute("muted", "");
+        lazyVideo.setAttribute("autoplay", "");
+        lazyVideo.setAttribute("loop", "");
+        lazyVideo.setAttribute("preload", "none");
+        if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
+
+        const source = document.createElement("source");
+        source.setAttribute("src", videoUrl);
+        source.setAttribute("type", "video/mp4");
+        lazyVideo.appendChild(source);
+
+        lazyVideo.classList.add("lazy-loaded-video");
+
+        lazyContainer.innerHTML = ""; // Clear existing image
+        lazyContainer.appendChild(lazyVideo);
+
+        return lazyVideo;
+      };
+
+      const bindVideoEvents = (vid) => {
+        if (!vid) return;
+
+        vid.addEventListener("play", () => {
+          videoContainer?.classList.add("playing");
+        });
+
+        vid.addEventListener("pause", () => {
+          videoContainer?.classList.remove("playing");
+        });
+      };
+
+      // If initial video exists, bind now
+      if (video) {
+        bindVideoEvents(video);
+      }
+
+      playIcon?.addEventListener("click", async () => {
+        // If lazy, create video first
+        if (!video && lazyContainer) {
+          video = createLazyVideo();
+          bindVideoEvents(video);
+        }
+
+        if (!video) return;
+
+        try {
+          await video.play();
+        } catch (err) {
+          console.error("Play error:", err);
+        }
+      });
+
+      pauseIcon?.addEventListener("click", () => {
+        if (video) {
+          video.pause();
+        }
+      });
+
+      // Mobile: Show pause icon briefly on touch
+      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches && window.innerWidth <= 768) {
+        wrapper.addEventListener("touchstart", async (e) => {
+          if (pauseIcon?.contains(e.target)) {
+            pauseIcon.click();
+            return;
+          }
+
+          // CSS will handle showing/hiding pause icon via .playing class and :hover
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  function getContrastYIQ(hexColor) {
+    hexColor = hexColor.replace("#", "");
+    if (hexColor.length === 3) {
+      hexColor = hexColor.split('').map(c => c + c).join('');
+    }
+    const r = parseInt(hexColor.substr(0, 2), 16);
+    const g = parseInt(hexColor.substr(2, 2), 16);
+    const b = parseInt(hexColor.substr(4, 2), 16);
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128 ? 'black' : 'white';
+  }
+
+  document.querySelectorAll('#hero-section').forEach(section => {
+    const autoContrast = section.dataset.autoContrast === "true";
+    if (!autoContrast) return;
+
+    const bgColor = window.getComputedStyle(section).backgroundColor;
+
+    // Convert rgb to hex
+    const rgbToHex = (rgb) => {
+      const result = rgb.match(/\d+/g);
+      if (!result) return '#ffffff';
+      return (
+        "#" +
+        result
+          .slice(0, 3)
+          .map((x) => {
+            const hex = parseInt(x).toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+          })
+          .join("")
+      );
+    };
+
+    const hexColor = rgbToHex(bgColor);
+    const textColor = getContrastYIQ(hexColor);
+
+    section.querySelectorAll('.dynamic-text').forEach(el => {
+      // Skip badge text - it has its own contrast calculation
+      if (el.classList.contains('badge-text')) return;
+      el.style.color = textColor;
+    });
+
+    // Apply same contrast color to star fills
+    section.querySelectorAll('.star path').forEach(star => {
+      star.style.fill = textColor;
+    });
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const slider = document.querySelector('.unique-video-slider-list');
+  const slidermain = slider ? slider.closest(".unique-video-slider") : null;
+  if (!slider || !slidermain) return;
+
+  const items = Array.from(slider.querySelectorAll(".unique-video-slider-item"));
+  const originalItemCount = items.length; // Store original count before cloning
+  
+  // Calculate slideWidth including margins
+  function getSlideWidth() {
+    if (items.length === 0) return 0;
+    const item = items[0];
+    const rect = item.getBoundingClientRect();
+    const style = window.getComputedStyle(item);
+    const marginLeft = parseFloat(style.marginLeft) || 0;
+    const marginRight = parseFloat(style.marginRight) || 0;
+    return rect.width + marginLeft + marginRight;
+  }
+  
+  let slideWidth = getSlideWidth();
+
+  // ----------------------------
+  // Active item update (no blinking)
+  // ----------------------------
+  let lastActiveIndex = null;
+
+  function updateActiveItemdrag() {
+    const wrapperRect = slidermain.getBoundingClientRect();
+    const visibleCenter = wrapperRect.left + wrapperRect.width / 2;
+    const offsetPercent = 0.15;
+    const threshold = 5; // 5px threshold to prevent false fading
+    let activeItem = null;
+    let minDiff = Infinity;
+
+    // Query fresh DOM items instead of using cached array
+    const currentItems = Array.from(slider.querySelectorAll(".unique-video-slider-item"));
+
+    currentItems.forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const offset = rect.width * offsetPercent;
+      const triggerPoint = rect.right - offset;
+      const diff = Math.abs(visibleCenter - triggerPoint);
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        activeItem = { item, index };
+      }
+    });
+
+    if (!activeItem) return;
+
+    const activeIndex = activeItem.index;
+
+    // ✅ Only update when slide actually changes
+    if (activeIndex === lastActiveIndex) return;
+    lastActiveIndex = activeIndex;
+
+    currentItems.forEach((item, index) => {
+      const rect = item.getBoundingClientRect();
+      const wrapperLeft = wrapperRect.left;
+      const leftDiff = rect.left - wrapperLeft;
+
+      item.classList.remove("fade-left", "fade-out-left", "is-active", "slide-forward");
+
+      if (index === activeIndex) {
+        item.classList.add("is-active");
+      } else if (leftDiff < -threshold) {
+        // Use threshold to prevent false fading on first item
+        item.classList.add("fade-left");
+      } else if (index > activeIndex) {
+        item.classList.add("slide-forward");
+      }
+    });
+  }
+
+  // ----------------------------
+  // Smooth scroll helper
+  // ----------------------------
+  function smoothScrollBy(element, distance, duration, callback) {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    function scroll() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const easeInOutQuad = progress < 0.5 
+        ? 2 * progress * progress 
+        : -1 + (4 - 2 * progress) * progress;
+
+      element.scrollLeft = start + distance * easeInOutQuad;
+      updateActiveItemdrag();
+
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      } else {
+        if (callback) callback();
+      }
+    }
+
+    requestAnimationFrame(scroll);
+  }
+
+  // ----------------------------
+  // Infinite loop
+  // ----------------------------
+  let infiniteLoopEnabled = false;
+
+  function createInfiniteLoop() {
+    if (infiniteLoopEnabled) return;
+    items.forEach(item => {
+      const clone = item.cloneNode(true);
+      clone.classList.remove("is-active", "fade-left", "fade-out-left", "slide-forward");
+      slider.appendChild(clone);
+    });
+    infiniteLoopEnabled = true;
+    // Initialize active item state after clones are created
+    updateActiveItemdrag();
+  }
+
+  function handleInfiniteScroll() {
+    if (!infiniteLoopEnabled) return;
+    const currentScroll = slider.scrollLeft;
+    const totalWidth = slideWidth * originalItemCount; // Use original count for loop calculations
+    
+    // Reset scroll position when we've scrolled past the original items
+    // Use modulo to maintain the exact position within the loop
+    if (currentScroll >= totalWidth) {
+      const offset = currentScroll % totalWidth;
+      slider.scrollLeft = offset;
+      updateActiveItemdrag();
+    } else if (currentScroll < 0) {
+      // Handle backward scrolling (shouldn't happen but just in case)
+      slider.scrollLeft = totalWidth + (currentScroll % totalWidth);
+      updateActiveItemdrag();
+    }
+  }
+
+  function initInfiniteLoop() {
+    if (window.innerWidth > 1100 && items.length > 1) {
+      createInfiniteLoop();
+      infiniteLoopEnabled = true;
+    } else {
+      infiniteLoopEnabled = false;
+    }
+  }
+
+  // ----------------------------
+  // Right arrow → next slide
+  // ----------------------------
+  const rightArrow = document.querySelector(".right-arrow");
+  const fadeDuration = 300;
+  const smoothDuration = 500;
+
+  function twoStepScroll(distance) {
+    setTimeout(() => {
+      smoothScrollBy(slider, distance, smoothDuration, () => {
+        handleInfiniteScroll(); 
+      });
+    }, fadeDuration);
+  }
+
+  if (rightArrow) {
+    rightArrow.addEventListener("click", () => {
+      twoStepScroll(slideWidth);
+    });
+  }
+
+  // ----------------------------
+  // Dragging
+  // ----------------------------
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('dragging');
+    slidermain.classList.add('dragslider');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      handleInfiniteScroll();
+    }
+  });
+
+  slider.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      slider.classList.remove('dragging');
+      slidermain.classList.remove('dragslider');
+      updateActiveItemdrag();
+      handleInfiniteScroll();
+    }
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX);
+    slider.scrollLeft = scrollLeft - walk;
+    updateActiveItemdrag();
+  });
+
+  // ----------------------------
+  // Wheel scroll
+  // ----------------------------
+  slider.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault();
+      slider.scrollLeft += e.deltaX;
+      updateActiveItemdrag();
+      handleInfiniteScroll();
+    }
+  }, { passive: false });
+
+  // ----------------------------
+  // Init
+  // ----------------------------
+  slider.querySelectorAll('img').forEach(img => img.setAttribute('draggable', false));
+  initInfiniteLoop();
+  window.addEventListener("resize", () => {
+    slideWidth = getSlideWidth();
+    updateActiveItemdrag();
+    initInfiniteLoop();
+  });
+  setTimeout(updateActiveItemdrag, 100);
+
+  // periodic loop check
+  setInterval(() => {
+    if (window.innerWidth > 1100) {
+      handleInfiniteScroll();
+    }
+  }, 1000);
+});
+</script>
+
+
+<style>
+    button.mute-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: auto !important;
+    }
+      @media only screen and (min-width: 1101px) {
+      .unique-video-slider {
+        position: relative;
+        overflow-x: hidden;
+        width: 100%;
+      }
+  
+      .unique-video-slider-item {
+        flex: 0 0 auto;
+        transition:
+        opacity 0.3s ease-out,        
+        transform 0.5s ease-out,       
+        filter 0.5s ease-out;         
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1) translateX(0);
+        position: relative;
+        z-index: 1;
+
+      }
+
+    .unique-video-slider-item.is-active {
+        opacity: 1;
+        filter: blur(0);
+        z-index: 3;
+    }
+
+    .unique-video-slider-item.fade-out-left {
+    opacity: 0;
+      filter: blur(2px);
+      transform: scale(0.8) translateX(-40px);
+      pointer-events: none;
+      z-index: 0;  
+    }
+
+    .unique-video-slider-item.fade-left {
+      opacity: 0.3;
+      filter: blur(3px);
+      transform: scale(0.92) translateX(-20px);
+      z-index: 0; 
+    }
+
+      .unique-video-slider-item.slide-forward {
+        opacity: 1;
+      filter: blur(0);
+        transform: scale(1) translateX(20px);
+        z-index: 2; 
+      }
+      .unique-video-slider-item.transitioning {
+        transition: none;
+      }
+    }
+
+      .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: white;
+      font-size: 14px;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s ease;
+    }
+    .slider-arrow svg{
+      width:20px;
+      height:20px;
+    }
+
+    .slider-arrow:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+      .right-arrow {
+      right: 10px;
+      height:40px;
+      z-index: 9999999999999999999999999999999999;
+    }
+</style>
+
+<style>
+/* CRITICAL: Swiper core layout - must load immediately */
+.swiper {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  overflow: hidden;
+  list-style: none;
+  padding: 0;
+  z-index: 1;
+  display: block;
+}
+
+.swiper-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  transition-property: transform;
+  box-sizing: content-box;
+}
+
+.swiper-slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition-property: transform;
+}
+
+.story__slider {
+  aspect-ratio: 9/14;
+  width: 400px;
+    max-width: 100%;
+  height: auto;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.story__slide {
+  position: relative;
+  border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
+  border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+  overflow: hidden;
+}
+
+.story__slide video,
+.story__slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+  .story__pagination {
+  bottom: unset !important;
+  top: 8px !important;
+  display: flex;
+  padding: 0 4px;
+}
+
+.story__pagination .swiper-pagination-bullet {
+  flex-grow: 1;
+  border-radius: 100vh;
+  height: 3px;
+  margin: 0 2px !important;
+  background-color: rgba(247, 247, 245, 0.4);
+  opacity: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.story__pagination .swiper-pagination-bullet .swiper-pagination-progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 100vh;
+  background-color: #f7f7f5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Mobile responsiveness for social carousel */
+@media screen and (max-width: 768px) {
+  .story__slider {
+      width: 100%;
+    max-width: 350px;
+    aspect-ratio: 9/14;
+  }
+  
+  .slider--social {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 16px;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+  .story__slider {
+      width: 100%;
+    max-width: 350px;
+    aspect-ratio: 9/14;
+  }
+
+
+    .story {
+       padding-left:20px;
+    padding-right:20px;
+  }
+  
+  .slider--social {
+    padding: 0 12px;
+  }
+  
+
+}
+
+  .story__prev,
+  .story__next {
+  height: 100%;
+  width: 50%;
+  top: 0;
+  margin-top: 0;
+  position: absolute;
+  z-index: 15;
+}
+
+  .story__prev::after,
+  .story__next::after {
+  content: none;
+}
+
+.story__prev {
+  left: 0;
+}
+
+.story__next {
+  right: 0;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://unpkg.co/gsap@3/dist/gsap.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Only initialize if we're in social mode
+  if (!document.querySelector('.story__slider')) {
+    return;
+  }
+
+  const totalSlides = document.querySelectorAll('.story__slide').length;
+
+  const slider = new Swiper(".story__slider", {
+  speed: 100,
+  effect: 'fade',
+  fadeEffect: {
+    crossFade: true
+  },
+  watchSlidesProgress: true,
+  loop: totalSlides > 1,
+  autoplay: {
+    delay: 4000,
+    disableOnInteraction: false
+  },
+  slidesPerView: 1,
+  spaceBetween: 0,
+  navigation: {
+    nextEl: ".story__next",
+    prevEl: ".story__prev",
+  },
+  pagination: {
+    el: '.story__pagination',
+    renderBullet: function (index, className) {
+      return '<div class="' + className + '"><div class="swiper-pagination-progress"></div></div>';
+    }
+  },
+  on: {
+    slideChangeTransitionStart(swiper) {
+      // Stop all progress bar animations
+      let allBullets = document.querySelectorAll('.story__slider .swiper-pagination-progress');
+      allBullets.forEach(bullet => {
+        gsap.killTweensOf(bullet);
+      });
+    },
+    slideChangeTransitionEnd(swiper) {
+      let allBullets = document.querySelectorAll('.story__slider .swiper-pagination-progress');
+      
+      // Set completed bullets to 100%
+      allBullets.forEach((bullet, index) => {
+        if (index < swiper.realIndex) {
+          gsap.set(bullet, { width: '100%' });
+        } else if (index > swiper.realIndex) {
+          gsap.set(bullet, { width: '0%' });
+        }
+      });
+      
+      // Animate current bullet
+      let currentBullet = allBullets[swiper.realIndex];
+      if (currentBullet) {
+        gsap.set(currentBullet, { width: '0%' });
+        gsap.to(currentBullet, { 
+          width: '100%', 
+          duration: swiper.params.autoplay.delay / 1000,
+          ease: 'none'
+        });
+      }
+
+      // Reset video if present
+      let activeSlide = document.querySelectorAll('.story__slider .swiper-slide')[swiper.realIndex];
+      if (activeSlide && activeSlide.querySelector('video')) {
+        activeSlide.querySelector('video').currentTime = 0;
+      }
+    },
+    init(swiper) {
+      // Initialize all progress bars to 0%
+      let allBullets = document.querySelectorAll('.story__slider .swiper-pagination-progress');
+        gsap.set(allBullets, { width: '0%' });
+      
+      // Force start autoplay and progress bar after a short delay
+      setTimeout(() => {
+        swiper.autoplay.start();
+        let firstBullet = allBullets[0];
+        if (firstBullet) {
+          gsap.to(firstBullet, { 
+            width: '100%', 
+            duration: swiper.params.autoplay.delay / 1000,
+            ease: 'none'
+          });
+        }
+      }, 100);
+    },
+    autoplayStart(swiper) {
+      // This handles when autoplay restarts (not first load)
+      let allBullets = document.querySelectorAll('.story__slider .swiper-pagination-progress');
+      let currentBullet = allBullets[swiper.realIndex];
+      if (currentBullet) {
+        gsap.killTweensOf(currentBullet);
+        gsap.set(currentBullet, { width: '0%' });
+        gsap.to(currentBullet, { 
+          width: '100%', 
+          duration: swiper.params.autoplay.delay / 1000,
+          ease: 'none'
+        });
+      }
+    }
+  }
+});
+
+// Function to attach autoplay control events to videos
+function attachVideoEvents(video) {
+  if (video.__eventsBound) return; // prevent double-binding
+  video.__eventsBound = true;
+
+  video.addEventListener('play', () => {
+    // Pause the slide timer when video is playing
+    slider.autoplay.stop();
+    
+    // Pause the progress bar animation
+    let allBullets = document.querySelectorAll('.story__slider .swiper-pagination-progress');
+    let currentBullet = allBullets[slider.realIndex];
+    if (currentBullet) {
+      gsap.pauseAll();
+    }
+  });
+  
+  video.addEventListener('pause', () => {
+    // Resume the slide timer when video is paused
+    slider.autoplay.start();
+    
+    // Resume the progress bar animation
+    gsap.resumeAll();
+  });
+  
+  video.addEventListener('ended', () => {
+    // Resume when video ends
+    slider.autoplay.start();
+    gsap.resumeAll();
+  });
+}
+
+// Attach to any videos already present
+document.querySelectorAll('.story__slide video').forEach(attachVideoEvents);
+
+// Watch for dynamically injected videos (from lazy-video-container click)
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.tagName === 'VIDEO') {
+        attachVideoEvents(node);
+      } else if (node.querySelectorAll) {
+        node.querySelectorAll('video').forEach(attachVideoEvents);
+      }
+    });
+  });
+});
+
+// Observe only inside the slider
+// observer.observe(document.querySelector('.story__slider'), {
+//   childList: true,
+//   subtree: true
+// });
+
+const sliderEl = document.querySelector('.story__slider');
+if (sliderEl) {
+  observer.observe(sliderEl, {
+    childList: true,
+    subtree: true
+  });
+}
+
+function isClickOnControl(el) {
+  if (!el) return false;
+  const controlTags = ['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA', 'LABEL'];
+  let node = el;
+
+  while (node && node !== sliderEl && node.nodeType === 1) {
+    // tag-based interactive elements
+    if (controlTags.includes(node.tagName)) return true;
+
+    // explicit attribute to opt-out
+    if (node.hasAttribute && node.hasAttribute('data-no-skip')) return true;
+
+    // class-name heuristics (catch common control class names)
+    const cls = node.className || '';
+    if (typeof cls === 'string' && /(^|\s)(play|pause|mute|volume|control|controls|btn|button|icon|seek|timeline|progress|vjs-|plyr|video-controls|story__controls|story__play)/i.test(cls)) {
+      return true;
+    }
+
+    node = node.parentElement;
+  }
+
+  return false;
+}
+
+/* Prevent skipping when user was interacting with a control */
+if (sliderEl) {
+  sliderEl.addEventListener('click', function (e) {
+    // only consider primary button / normal taps
+    if (e.button && e.button !== 0) return;
+
+    // if the click originated from a control (button, link, input, or marked element), don't skip
+    if (isClickOnControl(e.target)) {
+      return;
+    }
+
+    // Optional: if you'd like a 50/50 left-right split (Instagram style), change width/3 → width/2 below.
+    const rect = sliderEl.getBoundingClientRect();
+    const x = e.clientX - rect.left; // click/tap X position relative to slider
+    const width = rect.width || 1;
+
+    // Left third → previous, Right two-thirds → next (adjust as you like)
+    if (x < width / 3) {
+      slider.slidePrev();
+    } else {
+      slider.slideNext();
+    }
+  }, { passive: true });
+}
+
+}); // End of DOMContentLoaded
+</script>
+
+<style>
+/* CRITICAL: Core Swiper CSS - must load first and override theme */
+.swiper {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  position: relative !important;
+  overflow: hidden !important;
+  list-style: none !important;
+  padding: 0 !important;
+  z-index: 1 !important;
+  display: block !important;
+}
+
+.swiper-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  transition-property: transform !important;
+  box-sizing: content-box !important;
+}
+
+.swiper-slide {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+  transition-property: transform !important;
+  display: block !important;
+}
+
+/* Story container - override theme styles */
+.story {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+.story__slider {
+  aspect-ratio: 9/14 !important;
+  width: 400px !important;
+    max-width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  margin: 0 auto !important;
+  position: relative !important;
+  padding: {{ section.settings.border_width_general }}px !important;
+}
+
+.story__wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+.story__slider .swiper-wrapper {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: stretch !important;
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+.story__slider .swiper-slide {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.story__slider .swiper-slide-active {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.story__slide {
+  position: relative !important;
+  border-radius: {{ section.settings.border_radius | at_most: 40 }}px !important;
+  border: {{ section.settings.border_width }}px solid {{ section.settings.border_color }} !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  aspect-ratio: 9/14 !important;
+}
+
+.story__slide .unique-testimonial__image,
+.story__slide .media-wrapper--small {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.story__slide video,
+.story__slide img {
+  height: 100% !important;
+  width: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
+  .story__pagination {
+  bottom: unset !important;
+  top: 8px !important;
+  display: flex;
+  padding: 0 4px;
+}
+
+.story__pagination .swiper-pagination-bullet {
+  flex-grow: 1;
+  border-radius: 100vh;
+  height: 3px;
+  margin: 0 2px !important;
+  background-color: rgba(247, 247, 245, 0.4);
+  opacity: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.story__pagination .swiper-pagination-bullet .swiper-pagination-progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 100vh;
+  background-color: #f7f7f5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Mobile responsiveness for social carousel */
+@media screen and (max-width: 768px) {
+  .story__slider {
+      width: 100%;
+    max-width: 250px;
+    aspect-ratio: 9/14;
+  }
+  
+  .slider--social {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 16px;
+  }
+  
+  .slider--social .story__slider {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .story__slider {
+      width: 100%;
+    max-width: 250px;
+    aspect-ratio: 9/14;
+  }
+  
+  .slider--social {
+    padding: 0 12px;
+  }
+  
+  .slider--social .story__slider {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+  .story__prev,
+  .story__next {
+  height: 100%;
+  width: 50%;
+  top: 0;
+  margin-top: 0;
+  position: absolute;
+  z-index: 15;
+}
+
+  .story__prev::after,
+  .story__next::after {
+  content: none;
+}
+
+.story__prev {
+  left: 0;
+}
+
+.story__next {
+  right: 0;
+}
+
+</style>
