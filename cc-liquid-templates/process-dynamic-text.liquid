@@ -1,0 +1,35 @@
+{% comment %}
+  Process Dynamic Text Snippet
+  Handles dynamic text replacement using [field-name] syntax
+  Usage: {% render 'process-dynamic-text', input_text: section.settings.title, output_var: 'title' %}
+{% endcomment %}
+
+{% liquid
+  assign processed_text = input_text
+  if processed_text contains '['
+    assign parts = processed_text | split: '['
+    assign processed_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      if cc_creator.data.value[field_name]
+        assign processed_text = processed_text | append: cc_creator.data.value[field_name] | append: subparts[1]
+      else
+        assign processed_text = processed_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+%}
+
+{% case output_var %}
+  {% when 'eyebrowcopy' %}
+    {% assign eyebrowcopy = processed_text %}
+  {% when 'title' %}
+    {% assign title = processed_text %}
+  {% when 'subtitle' %}
+    {% assign subtitle = processed_text %}
+  {% when 'stars' %}
+    {% assign stars = processed_text %}
+  {% when 'cta_text' %}
+    {% assign cta_text = processed_text %}
+{% endcase %}

@@ -252,6 +252,80 @@
     width: 100%;
   }
 
+  /* Default product card styles */
+  #shopify-section-{{ section.id }} .product-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+  }
+
+  #shopify-section-{{ section.id }} .product-card-link:hover {
+    opacity: 0.9;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: rgb(var(--color-background));
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__price {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  #shopify-section-{{ section.id }} .price-sale {
+    color: rgb(var(--color-foreground));
+    font-weight: 600;
+  }
+
+  #shopify-section-{{ section.id }} .price-compare {
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-left: 8px;
+    font-size: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .product-card__badge {
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(var(--color-foreground), 0.1);
+    border-radius: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  #shopify-section-{{ section.id }} .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+  }
+
   #shopify-section-{{ section.id }} .cc-add-bundle {
     display: flex;
     flex-direction: column;
@@ -289,48 +363,10 @@
   }
 
   @media (max-width: 749px) {
-    /* Remove page-width padding on mobile */
-    #shopify-section-{{ section.id }} .page-width {
-      padding-left: 0;
-      padding-right: 0;
-      margin-left: 0;
-      margin-right: 0;
-      max-width: 100%;
-    }
-    
-    #shopify-section-{{ section.id }} .cc-section-content {
-      padding: 0;
-    }
-    
-    /* Mobile carousel */
-    #shopify-section-{{ section.id }} .cc-products-wrapper {
-      overflow: hidden;
-      margin: 0 0 0 20px;
-      padding: 0;
-      width: calc(100% - 20px);
-    }
-    
+    /* Mobile grid layout */
     #shopify-section-{{ section.id }} .cc-drop-products.active {
-      display: flex;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
+      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
       gap: 16px;
-      padding: 0 40px 20px 0;
-      margin: 0;
-    }
-    
-    #shopify-section-{{ section.id }} .cc-drop-products.active::-webkit-scrollbar {
-      display: none;
-    }
-    
-    #shopify-section-{{ section.id }} .cc-drop-products.active .cc-product-card {
-      flex: 0 0 calc(100vw - 76px);
-      max-width: calc(100vw - 76px);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
     }
 
     #shopify-section-{{ section.id }} .cc-benefits-row,
@@ -348,6 +384,11 @@
       margin: 0 auto;
     }
   }
+
+  /* Custom CSS */
+  {%- if section.settings.custom_css != blank -%}
+    {{ section.settings.custom_css }}
+  {%- endif -%}
 {%- endstyle -%}
 
 {%- liquid
@@ -593,16 +634,35 @@ assign cc_creator = metaobject
                     endif
                   -%}
                   {%- if card_product -%}
+                    {%- assign product = card_product -%}
                     <div class="cc-product-card">
-                      {% render 'product-card',
-                        card_product: card_product,
-                        media_aspect_ratio: section.settings.image_ratio,
-                        image_shape: section.settings.image_shape,
-                        show_secondary_image: section.settings.show_secondary_image,
-                        show_vendor: section.settings.show_vendor,
-                        show_rating: section.settings.show_rating,
-                        section_id: section.id
-                      %}
+                      {%- if section.settings.product_card_snippet != blank -%}
+                        {{ section.settings.product_card_snippet }}
+                      {%- else -%}
+                        <a href="{{ product.url }}" class="product-card-link">
+                          <div class="product-card__image">
+                            {%- if product.featured_image -%}
+                              <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="600">
+                            {%- else -%}
+                              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                            {%- endif -%}
+                          </div>
+                          <div class="product-card__info">
+                            <h3 class="product-card__title">{{ product.title }}</h3>
+                            <div class="product-card__price">
+                              {%- if product.compare_at_price > product.price -%}
+                                <span class="price-sale">{{ product.price | money }}</span>
+                                <span class="price-compare">{{ product.compare_at_price | money }}</span>
+                              {%- else -%}
+                                {{ product.price | money }}
+                              {%- endif -%}
+                            </div>
+                            {%- unless product.available -%}
+                              <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
+                            {%- endunless -%}
+                          </div>
+                        </a>
+                      {%- endif -%}
                     </div>
                   {%- endif -%}
                 {%- endfor -%}
@@ -870,19 +930,37 @@ assign cc_creator = metaobject
   "settings": [
     {
       "type": "header",
-      "content": "Section Content"
+      "content": "The Creator Drops Section",
+      "info": "The Creator Drops Section displays curated product bundles from your creators in an elegant, switchable grid. Each creator can have multiple 'drops' (collections of products), and customers can seamlessly toggle between them using a dropdown selector. This section is perfect for showcasing expert recommendations, themed bundles, or seasonal collections—all with one-click 'Add Bundle to Cart' functionality that makes purchasing effortless."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured with products assigned. The section will automatically pull in all drops and their associated products from the metaobject data."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context with their drops displayed. Switch between drops using the dropdown to test the product grid switching functionality."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements, messaging, and content for your drops section"
     },
     {
       "type": "text",
       "id": "tagline",
       "label": "Tagline",
-      "default": "EXPERT RECOMMENDATIONS"
+      "default": "EXPERT RECOMMENDATIONS",
+      "info": "Small uppercase text displayed above the main heading"
     },
     {
       "type": "text",
       "id": "title",
       "label": "Heading",
-      "default": "Carefully Crafted"
+      "default": "Carefully Crafted",
+      "info": "Main heading text (will be followed by creator name if enabled below)"
     },
     {
       "type": "select",
@@ -912,113 +990,52 @@ assign cc_creator = metaobject
       "type": "checkbox",
       "id": "title_line_break",
       "label": "Add line break after heading",
-      "default": true
+      "default": true,
+      "info": "Puts the creator name on a new line"
     },
     {
       "type": "checkbox",
       "id": "show_creator_name",
       "label": "Show creator name",
-      "default": true
+      "default": true,
+      "info": "Display the creator's first and last name after the heading"
     },
     {
       "type": "text",
       "id": "creator_prefix",
       "label": "Creator name prefix",
       "default": "Bundles by",
-      "info": "Text shown before the creator's name (e.g., 'Bundles by')"
+      "info": "Text shown before the creator's name (e.g., 'Bundles by Sarah Johnson')"
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "Button text",
-      "default": "Add Bundle to Cart"
+      "default": "Add Bundle to Cart",
+      "info": "Text displayed on the add to cart button"
     },
     {
       "type": "header",
-      "content": "Product Cards"
+      "content": "Product Card",
+      "info": "Customize how product cards are rendered in the grid"
     },
     {
-      "type": "select",
-      "id": "image_ratio",
-      "label": "Image ratio",
-      "options": [
-        {
-          "value": "adapt",
-          "label": "Adapt to image"
-        },
-        {
-          "value": "portrait",
-          "label": "Portrait"
-        },
-        {
-          "value": "square",
-          "label": "Square"
-        }
-      ],
-      "default": "square"
-    },
-    {
-      "type": "select",
-      "id": "image_shape",
-      "label": "Image shape",
-      "options": [
-        {
-          "value": "default",
-          "label": "Default"
-        },
-        {
-          "value": "arch",
-          "label": "Arch"
-        },
-        {
-          "value": "blob",
-          "label": "Blob"
-        },
-        {
-          "value": "chevronleft",
-          "label": "Chevron left"
-        },
-        {
-          "value": "chevronright",
-          "label": "Chevron right"
-        },
-        {
-          "value": "diamond",
-          "label": "Diamond"
-        },
-        {
-          "value": "parallelogram",
-          "label": "Parallelogram"
-        },
-        {
-          "value": "round",
-          "label": "Round"
-        }
-      ],
-      "default": "default"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_secondary_image",
-      "label": "Show second image on hover",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show vendor",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_rating",
-      "label": "Show product rating",
-      "default": false,
-      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/page-types#product-grid-section-settings)"
+      "type": "liquid",
+      "id": "product_card_snippet",
+      "label": "Product card snippet",
+      "default": "<a href=\"{{ product.url }}\" class=\"product-card-link\">\n  <div class=\"product-card__image\">\n    <img src=\"{{ product.featured_image | image_url: width: 600 }}\" alt=\"{{ product.title | escape }}\" loading=\"lazy\" width=\"600\" height=\"600\">\n  </div>\n  <div class=\"product-card__info\">\n    <h3 class=\"product-card__title\">{{ product.title }}</h3>\n    <div class=\"product-card__price\">{{ product.price | money }}</div>\n  </div>\n</a>",
+      "info": "Liquid code to render each product card. Use 'product' as the variable name. For Dawn theme, use: render 'card-product', card_product: product, media_aspect_ratio: 'square', show_secondary_image: false. For modern themes with block-based product cards, create a wrapper snippet. Do not include {% %} tags."
     },
     {
       "type": "header",
-      "content": "Layout"
+      "content": "Design & Styling",
+      "info": "Customize colors, layout, spacing, and visual appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
     },
     {
       "type": "range",
@@ -1039,14 +1056,13 @@ assign cc_creator = metaobject
       "default": 2
     },
     {
-      "type": "header",
-      "content": "Section Settings"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color scheme",
-      "default": "scheme-1"
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Number of columns on mobile",
+      "default": 2
     },
     {
       "type": "range",
@@ -1067,6 +1083,17 @@ assign cc_creator = metaobject
       "unit": "px",
       "label": "Bottom padding",
       "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Custom CSS",
+      "info": "Add custom CSS to override any styles in this section"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-main-title { color: #ff0000; }"
     }
   ],
   "presets": [
