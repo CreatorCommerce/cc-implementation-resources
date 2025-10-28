@@ -14,12 +14,24 @@
     }
   }
 
+  #shopify-section-{{ section.id }} .page-width {
+    padding-left: {{ section.settings.padding_horizontal_desktop }}px;
+    padding-right: {{ section.settings.padding_horizontal_desktop }}px;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} .page-width {
+      padding-left: {{ section.settings.padding_horizontal_mobile }}px;
+      padding-right: {{ section.settings.padding_horizontal_mobile }}px;
+    }
+  }
+
   #shopify-section-{{ section.id }} .cc-section-content {
     padding: 0 0px;
     display: flex;
     flex-direction: column;
     gap: 40px;
-    align-items: center;
+    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
@@ -27,8 +39,8 @@
   #shopify-section-{{ section.id }} .cc-section-title {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    align-items: center;
+    gap:20px;
+    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
@@ -36,13 +48,19 @@
   #shopify-section-{{ section.id }} .cc-tagline-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
   }
 
   #shopify-section-{{ section.id }} .cc-tagline {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     opacity: 0.7;
+    margin: 0;
+    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
+  }
+
+  #shopify-section-{{ section.id }} .cc-tagline p {
+    margin: 0;
   }
 
   #shopify-section-{{ section.id }} .cc-content {
@@ -55,8 +73,13 @@
   }
 
   #shopify-section-{{ section.id }} .cc-main-title {
-    text-align: center;
+    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
     width: 100%;
+    max-width: {{ section.settings.header_max_width }}px;
+    margin: {% if section.settings.content_alignment == 'left' %}0{% else %}0 auto{% endif %};
+  }
+
+  #shopify-section-{{ section.id }} .cc-main-title > * {
     margin: 0;
   }
 
@@ -64,28 +87,52 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    align-items: center;
+    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
-    width: 320px;
+    width: 360px;
+    {% if section.settings.content_alignment == 'left' -%}
+      padding: 0;
+      margin: 0;
+    {%- else -%}
+      margin: 0 auto;
+    {%- endif %}
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown {
     position: relative;
-    margin: 0 auto;
+    width: 100%;
   }
 
   #shopify-section-{{ section.id }} .cc-dropdown-button {
     background: rgb(var(--color-background));
-    border: 1px solid rgba(var(--color-foreground), 0.2);
-    border-radius: 100px;
+    color: rgb(var(--color-foreground));
+    border: {{ section.settings.dropdown_border_width }}px solid {{ section.settings.dropdown_border_color }};
+    border-radius: {{ section.settings.dropdown_border_radius }}px;
     padding: 15px 20px;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     cursor: pointer;
-    position: relative;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
   }
 
   #shopify-section-{{ section.id }} .cc-dropdown-text {
     color: rgb(var(--color-foreground));
+    flex: 1;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
   }
 
   #shopify-section-{{ section.id }} .cc-dropdown-icon {
@@ -95,6 +142,8 @@
     align-items: center;
     justify-content: center;
     transform: scaleY(-1);
+    flex-shrink: 0;
+    color: rgb(var(--color-foreground));
   }
 
   /* Dropdown arrow - points up when closed, down when open */
@@ -103,6 +152,10 @@
     height: 8px;
     transform: rotate(180deg); /* Points up */
     transition: transform 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-icon svg path {
+    stroke: currentColor;
   }
 
   #shopify-section-{{ section.id }} .cc-dropdown.open .cc-dropdown-icon svg {
@@ -115,8 +168,8 @@
     left: 0;
     right: 0;
     background: rgb(var(--color-background));
-    border: 1px solid rgba(var(--color-foreground), 0.1);
-    border-radius: 16px;
+    border: {{ section.settings.dropdown_border_width }}px solid {{ section.settings.dropdown_border_color }};
+    border-radius: {{ section.settings.dropdown_border_radius }}px;
     margin-top: 4px;
     z-index: 10;
     backdrop-filter: blur(50px);
@@ -165,6 +218,35 @@
     width: 24px;
     height: 24px;
     flex-shrink: 0;
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-check-icon path {
+    stroke: currentColor;
+  }
+
+  #shopify-section-{{ section.id }} .cc-collection-description {
+    margin-top: 16px;
+    padding: {% if section.settings.content_alignment == 'left' %}0{% else %}0 16px{% endif %};
+    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
+    color: rgb(var(--color-foreground));
+    opacity: 0.8;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: {{ section.settings.description_max_width }}px;
+    margin-left: {% if section.settings.content_alignment == 'left' %}0{% else %}auto{% endif %};
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .cc-collection-description.quote-style {
+    font-style: italic;
+  }
+
+  #shopify-section-{{ section.id }} .cc-description-attribution {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    opacity: 0.7;
   }
 
   #shopify-section-{{ section.id }} .cc-bundle-benefits {
@@ -216,7 +298,7 @@
     display: flex;
     flex-direction: column;
     gap: 40px;
-    align-items: center;
+    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
@@ -239,8 +321,7 @@
   #shopify-section-{{ section.id }} .cc-drop-products.active {
     display: grid;
     grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
-    gap: var(--grid-desktop-horizontal-spacing);
-    row-gap: var(--grid-desktop-vertical-spacing);
+    gap: {{ section.settings.grid_gap_desktop }}px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -270,7 +351,7 @@
     aspect-ratio: 1/1;
     overflow: hidden;
     background: rgb(var(--color-background));
-    border-radius: 8px;
+    border-radius: {{ section.settings.product_card_border_radius }}px;
     margin-bottom: 12px;
   }
 
@@ -288,26 +369,20 @@
 
   #shopify-section-{{ section.id }} .product-card__title {
     margin: 0;
-    font-size: 14px;
-    font-weight: 500;
     line-height: 1.4;
   }
 
   #shopify-section-{{ section.id }} .product-card__price {
-    font-size: 14px;
-    font-weight: 600;
   }
 
   #shopify-section-{{ section.id }} .price-sale {
     color: rgb(var(--color-foreground));
-    font-weight: 600;
   }
 
   #shopify-section-{{ section.id }} .price-compare {
     text-decoration: line-through;
     opacity: 0.6;
     margin-left: 8px;
-    font-size: 12px;
   }
 
   #shopify-section-{{ section.id }} .product-card__badge {
@@ -330,7 +405,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-items: center;
+    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
   }
 
@@ -347,7 +422,7 @@
       padding: 0 0px;
     }
     #shopify-section-{{ section.id }} .cc-drop-products.active {
-      grid-template-columns: repeat({{ section.settings.columns_tablet }}, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     #shopify-section-{{ section.id }} .cc-benefits-row,
@@ -366,7 +441,7 @@
     /* Mobile grid layout */
     #shopify-section-{{ section.id }} .cc-drop-products.active {
       grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
-      gap: 16px;
+      gap: {{ section.settings.grid_gap_mobile }}px;
     }
 
     #shopify-section-{{ section.id }} .cc-benefits-row,
@@ -380,8 +455,10 @@
     }
     #shopify-section-{{ section.id }} .cc-dropdown-wrapper {
       width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
+      {% if section.settings.content_alignment == 'center' -%}
+        max-width: 320px;
+        margin: 0 auto;
+      {%- endif %}
     }
   }
 
@@ -393,7 +470,7 @@
 
 {%- liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-assign cc_creator = metaobject
+  assign cc_creator = metaobject
 
   assign has_creator = false
   if cc_creator != blank
@@ -414,6 +491,24 @@ assign cc_creator = metaobject
     assign has_drops = true
   endif
 
+  assign show_section = true
+  assign use_fallback = false
+  assign fallback_collection = nil
+  
+  if has_drops == false
+    if section.settings.no_drops_behavior == 'hide'
+      assign show_section = false
+    elsif section.settings.no_drops_behavior == 'fallback' and section.settings.fallback_collection != blank
+      assign use_fallback = true
+      assign fallback_collection = collections[section.settings.fallback_collection]
+      if fallback_collection and fallback_collection.products_count > 0
+        assign show_section = true
+      else
+        assign show_section = false
+      endif
+    endif
+  endif
+
   assign selected_drop = nil
   assign selected_drop_collection = nil
   if has_drops
@@ -431,25 +526,72 @@ assign cc_creator = metaobject
   endif
 -%}
 
+{%- comment -%} Process bracket variables in text fields {%- endcomment -%}
+{%- liquid
+  assign tagline = section.settings.tagline
+  assign header = section.settings.header
+  assign button_text = section.settings.button_text
+  
+  if tagline contains '['
+    assign parts = tagline | split: '['
+    assign tagline = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
+      if field_value != blank
+        assign tagline = tagline | append: field_value | append: subparts[1]
+      else
+        assign tagline = tagline | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if header contains '['
+    assign parts = header | split: '['
+    assign header = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
+      if field_value != blank
+        assign header = header | append: field_value | append: subparts[1]
+      else
+        assign header = header | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+  
+  if button_text contains '['
+    assign parts = button_text | split: '['
+    assign button_text = parts[0]
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign field_name = subparts[0]
+      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
+      if field_value != blank
+        assign button_text = button_text | append: field_value | append: subparts[1]
+      else
+        assign button_text = button_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
+      endif
+    endfor
+  endif
+-%}
+
+{%- if show_section -%}
 <div id="drops-anchor" class="color-{{ section.settings.color_scheme }} isolate gradient section-{{ section.id }}-padding">
   <div class="page-width">
     <div class="cc-section-content">
       <div class="cc-section-title">
-        {%- if section.settings.tagline != blank -%}
+        {%- if tagline != blank -%}
           <div class="cc-tagline-wrapper">
-            <p class="cc-tagline">{{ section.settings.tagline }}</p>
+            <div class="cc-tagline">{{ tagline }}</div>
           </div>
         {%- endif -%}
         <div class="cc-content">
-          <h2 class="cc-main-title {{ section.settings.heading_size }}">
-            {%- if section.settings.title != blank -%}
-              {{ section.settings.title }}
-              {%- if section.settings.title_line_break -%}<br>{%- endif -%}
-            {%- endif -%}
-            {%- if section.settings.show_creator_name and has_creator -%}
-              {{ section.settings.creator_prefix }} {{ cc_creator.cc-creator-first-name | escape }} {{ cc_creator.cc-creator-last-name | escape }}
-            {%- endif -%}
-          </h2>
+          {%- if header != blank -%}
+            <div class="cc-main-title">{{ header }}</div>
+          {%- endif -%}
         </div>
 
         {%- if has_drops -%}
@@ -461,7 +603,7 @@ assign cc_creator = metaobject
                 </span>
                 <div class="cc-dropdown-icon">
                   <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L7 7L13 1" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M1 1L7 7L13 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </div>
               </button>
@@ -488,7 +630,7 @@ assign cc_creator = metaobject
                       <span class="cc-option-text">{{ drop_title | escape }}</span>
                       {%- if forloop.index0 == 0 -%}
                         <svg class="cc-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M20 6L9 17L4 12" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                       {%- endif -%}
                     </div>
@@ -497,6 +639,32 @@ assign cc_creator = metaobject
               </div>
             </div>
           </div>
+
+          {%- comment -%} Collection description {%- endcomment -%}
+          {%- if selected_drop_collection and selected_drop_collection.description != blank -%}
+            {%- liquid
+              assign description_style = section.settings.description_display_style
+              assign quote_class = ''
+              assign formatted_description = selected_drop_collection.description
+              assign attribution = ''
+              
+              if description_style == 'quote_first_name' and has_creator
+                assign quote_class = ' quote-style'
+                assign formatted_description = '"' | append: selected_drop_collection.description | append: '"'
+                assign attribution = '— ' | append: cc_creator.cc-creator-first-name
+              elsif description_style == 'quote_shop_title' and has_creator and cc_creator.cc-creator-shop-title
+                assign quote_class = ' quote-style'
+                assign formatted_description = '"' | append: selected_drop_collection.description | append: '"'
+                assign attribution = '— ' | append: cc_creator.cc-creator-shop-title
+              endif
+            -%}
+            <div class="cc-collection-description{{ quote_class }}" id="cc-collection-description-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
+              {{ formatted_description }}
+              {%- if attribution != blank -%}
+                <span class="cc-description-attribution">{{ attribution | escape }}</span>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
         {%- endif -%}
 
         {%- comment -%} Bundle benefits section - commented out for now {%- endcomment -%}
@@ -600,10 +768,69 @@ assign cc_creator = metaobject
         {%- endcomment -%}
       </div>
 
-      {%- if has_drops -%}
+      {%- if has_drops or use_fallback -%}
         <div class="cc-products-container">
           <div class="cc-products-wrapper">
-            {%- for json_drop in drops_json -%}
+            {%- if use_fallback -%}
+              {%- comment -%} Fallback collection display {%- endcomment -%}
+              <div class="cc-products-grid cc-drop-products active">
+                {%- for product in fallback_collection.products limit: section.settings.products_to_show -%}
+                  {%- liquid
+                    # Calculate creator discount pricing
+                    if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
+                      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
+                      assign discount_multiplier = 1 | minus: discount
+                      assign display_price = product.price | times: discount_multiplier
+                      assign display_compare_price = product.price
+                      assign has_creator_discount = true
+                    elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
+                      assign discount = cc_creator['cc-collab-discount-amount'] | times: 100
+                      assign display_price = product.price | minus: discount
+                      if display_price < 0
+                        assign display_price = 0
+                      endif
+                      assign display_compare_price = product.price
+                      assign has_creator_discount = true
+                    else
+                      assign display_price = product.price
+                      assign display_compare_price = product.compare_at_price
+                      assign has_creator_discount = false
+                    endif
+                  -%}
+                  <div class="cc-product-card">
+                    {%- if section.settings.product_card_snippet != blank -%}
+                      {{ section.settings.product_card_snippet }}
+                    {%- else -%}
+                      <a href="{{ product.url }}" class="product-card-link">
+                        <div class="product-card__image">
+                          {%- if product.featured_image -%}
+                            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="600">
+                          {%- else -%}
+                            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          {%- endif -%}
+                        </div>
+                        <div class="product-card__info">
+                          <p class="product-card__title">{{ product.title }}</p>
+                          <div class="product-card__price">
+                            {%- if has_creator_discount or display_compare_price > display_price -%}
+                              <span class="price-sale">{{ display_price | money }}</span>
+                              <span class="price-compare">{{ display_compare_price | money }}</span>
+                            {%- else -%}
+                              {{ display_price | money }}
+                            {%- endif -%}
+                          </div>
+                          {%- unless product.available -%}
+                            <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
+                          {%- endunless -%}
+                        </div>
+                      </a>
+                    {%- endif -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- else -%}
+              {%- comment -%} Regular drops display {%- endcomment -%}
+              {%- for json_drop in drops_json -%}
               {%- liquid
                 assign drop_id = json_drop['cc-creator-drop-collection-id']
                 assign drop_collection = nil
@@ -635,6 +862,28 @@ assign cc_creator = metaobject
                   -%}
                   {%- if card_product -%}
                     {%- assign product = card_product -%}
+                    {%- liquid
+                      # Calculate creator discount pricing
+                      if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
+                        assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
+                        assign discount_multiplier = 1 | minus: discount
+                        assign display_price = product.price | times: discount_multiplier
+                        assign display_compare_price = product.price
+                        assign has_creator_discount = true
+                      elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
+                        assign discount = cc_creator['cc-collab-discount-amount'] | times: 100
+                        assign display_price = product.price | minus: discount
+                        if display_price < 0
+                          assign display_price = 0
+                        endif
+                        assign display_compare_price = product.price
+                        assign has_creator_discount = true
+                      else
+                        assign display_price = product.price
+                        assign display_compare_price = product.compare_at_price
+                        assign has_creator_discount = false
+                      endif
+                    -%}
                     <div class="cc-product-card">
                       {%- if section.settings.product_card_snippet != blank -%}
                         {{ section.settings.product_card_snippet }}
@@ -648,13 +897,13 @@ assign cc_creator = metaobject
                             {%- endif -%}
                           </div>
                           <div class="product-card__info">
-                            <h3 class="product-card__title">{{ product.title }}</h3>
+                            <p class="product-card__title">{{ product.title }}</p>
                             <div class="product-card__price">
-                              {%- if product.compare_at_price > product.price -%}
-                                <span class="price-sale">{{ product.price | money }}</span>
-                                <span class="price-compare">{{ product.compare_at_price | money }}</span>
+                              {%- if has_creator_discount or display_compare_price > display_price -%}
+                                <span class="price-sale">{{ display_price | money }}</span>
+                                <span class="price-compare">{{ display_compare_price | money }}</span>
                               {%- else -%}
-                                {{ product.price | money }}
+                                {{ display_price | money }}
                               {%- endif -%}
                             </div>
                             {%- unless product.available -%}
@@ -669,18 +918,22 @@ assign cc_creator = metaobject
                 </div>
               {%- endif -%}
             {%- endfor -%}
+            {%- endif -%}
           </div>
 
-          <div class="cc-add-bundle">
-            <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
-              {{ section.settings.button_text | default: 'Add Bundle to Cart' }}
-            </button>
-          </div>
+          {%- if has_drops -%}
+            <div class="cc-add-bundle">
+              <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
+                {{ button_text | default: 'Add Bundle to Cart' }}
+              </button>
+            </div>
+          {%- endif -%}
         </div>
       {%- endif -%}
     </div>
   </div>
 </div>
+{%- endif -%}
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -690,6 +943,34 @@ assign cc_creator = metaobject
     const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
     const selectedText = document.getElementById('cc-selected-bundle-' + sectionId);
     const addBundleBtn = document.getElementById('cc-add-bundle-' + sectionId);
+
+    // Section settings
+    const buttonText = {{ button_text | default: 'Add Bundle to Cart' | json }};
+    const descriptionStyle = {{ section.settings.description_display_style | json }};
+    const creatorFirstName = {{ cc_creator.cc-creator-first-name | json }};
+    const creatorShopTitle = {{ cc_creator.cc-creator-shop-title | json }};
+
+    // Format description based on display style
+    function formatDescription(description) {
+      if (!description || description.trim() === '') return '';
+      
+      if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
+        return '"' + description + '"';
+      } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
+        return '"' + description + '"';
+      }
+      return description;
+    }
+
+    // Get attribution text based on display style
+    function getAttribution() {
+      if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
+        return '— ' + creatorFirstName;
+      } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
+        return '— ' + creatorShopTitle;
+      }
+      return '';
+    }
 
     // Store drops data for cart functionality
     const dropsData = {
@@ -710,6 +991,7 @@ assign cc_creator = metaobject
         {%- if drop_collection and drop_collection.products_count > 0 -%}
           '{{ drop_id }}': {
             title: {{ json_drop['cc-creator-drop-title'] | default: drop_collection.title | json }},
+            description: {{ drop_collection.description | json }},
             products: [
               {%- for json_product in json_drop['cc-creator-drop-products'] -%}
                 {%- liquid
@@ -771,7 +1053,19 @@ assign cc_creator = metaobject
             if (checkIcon) checkIcon.remove();
           });
           option.classList.add('selected');
-          option.innerHTML += '<svg class="cc-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17L4 12" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          const checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          checkIcon.setAttribute('class', 'cc-check-icon');
+          checkIcon.setAttribute('width', '24');
+          checkIcon.setAttribute('height', '24');
+          checkIcon.setAttribute('viewBox', '0 0 24 24');
+          checkIcon.setAttribute('fill', 'none');
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', 'M20 6L9 17L4 12');
+          path.setAttribute('stroke-width', '2');
+          path.setAttribute('stroke-linecap', 'round');
+          path.setAttribute('stroke-linejoin', 'round');
+          checkIcon.appendChild(path);
+          option.appendChild(checkIcon);
 
           // Close dropdown
           dropdown.classList.remove('open');
@@ -803,6 +1097,35 @@ assign cc_creator = metaobject
         targetGrid.classList.add('active');
       }
 
+      // Update collection description
+      const descriptionEl = document.getElementById('cc-collection-description-' + sectionId);
+      if (descriptionEl && dropsData[dropId]) {
+        const description = dropsData[dropId].description;
+        if (description && description.trim() !== '') {
+          // Format description and add attribution
+          const formattedDesc = formatDescription(description);
+          const attribution = getAttribution();
+          
+          // Update class for quote styling
+          if (descriptionStyle === 'quote_first_name' || descriptionStyle === 'quote_shop_title') {
+            descriptionEl.classList.add('quote-style');
+          } else {
+            descriptionEl.classList.remove('quote-style');
+          }
+          
+          // Set content
+          if (attribution) {
+            descriptionEl.innerHTML = formattedDesc + '<span class="cc-description-attribution">' + attribution + '</span>';
+          } else {
+            descriptionEl.textContent = formattedDesc;
+          }
+          
+          descriptionEl.style.display = 'block';
+        } else {
+          descriptionEl.style.display = 'none';
+        }
+      }
+
       // Switch benefits to match the selected drop
       switchBenefits(dropId);
     }
@@ -823,7 +1146,7 @@ assign cc_creator = metaobject
       }
     }
 
-    // Add bundle to cart functionality
+    // Add bundle to cart functionality - Universal compatibility
     if (addBundleBtn) {
       addBundleBtn.addEventListener('click', async function() {
         const dropId = this.dataset.dropId;
@@ -835,87 +1158,125 @@ assign cc_creator = metaobject
           quantity: 1
         }));
 
-        if (!items.length) return;
+        if (!items.length) {
+          alert('No available products in this bundle');
+          return;
+        }
 
         try {
           this.disabled = true;
+          const originalText = this.textContent;
           this.textContent = 'Adding...';
 
-          // Get cart drawer reference
-          const cartDrawer = document.querySelector('cart-drawer');
-          const cartNotification = document.querySelector('cart-notification');
-          const cartElement = cartDrawer || cartNotification;
-
-          // Use FormData for the add to cart request (matching product-form.js)
-          const formData = new FormData();
-          
-          // For multiple items, add each variant with items[index][id] and items[index][quantity]
-          items.forEach((item, index) => {
-            formData.append(`items[${index}][id]`, item.id);
-            formData.append(`items[${index}][quantity]`, item.quantity);
-          });
-
-          // Add sections to render (match product-form.js exactly)
-          if (cartElement && cartElement.getSectionsToRender) {
-            formData.append(
-              'sections',
-              cartElement.getSectionsToRender().map((section) => section.id)
-            );
-            formData.append('sections_url', window.location.pathname);
-            if (cartElement.setActiveElement) {
-              cartElement.setActiveElement(document.activeElement);
-            }
-          }
-
-          const res = await fetch('/cart/add.js', {
+          // Use JSON API (universal across all Shopify stores)
+          const res = await fetch(window.Shopify.routes.root + 'cart/add.js', {
             method: 'POST',
             headers: { 
-              'X-Requested-With': 'XMLHttpRequest'
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
             },
-            body: formData
+            body: JSON.stringify({ items: items })
           });
-
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.description || 'Failed to add items');
-          }
 
           const response = await res.json();
           
-          if (response.status) {
-            // Error response
-            throw new Error(response.description || 'Failed to add items');
+          // Check for errors in response
+          if (!res.ok || response.status === 422 || response.status === 'error') {
+            throw new Error(response.description || response.message || 'Failed to add items to cart');
           }
           
           this.textContent = 'Added!';
           
-          // Publish cart update event (exactly like product-form.js)
-          if (typeof publish !== 'undefined' && typeof PUB_SUB_EVENTS !== 'undefined') {
-            publish(PUB_SUB_EVENTS.cartUpdate, {
+          // Universal cart update approaches (try multiple methods)
+          
+          // 1. Modern Shopify Ajax Cart API event
+          if (window.Shopify && window.Shopify.onItemAdded) {
+            window.Shopify.onItemAdded(response);
+          }
+          
+          // 2. Try Dawn/modern theme pub-sub pattern
+          if (typeof window.publish !== 'undefined' && typeof window.PUB_SUB_EVENTS !== 'undefined') {
+            window.publish(window.PUB_SUB_EVENTS.cartUpdate, {
               source: 'bundle-add',
-              cartData: response,
+              cartData: response
             });
           }
           
-          // Render cart contents (exactly like product-form.js line 95-97)
-          if (cartElement && cartElement.renderContents) {
-            cartElement.renderContents(response);
+          // 3. Try to find and update cart drawer/notification (Dawn, Debut, etc.)
+          const cartDrawer = document.querySelector('cart-drawer');
+          const cartNotification = document.querySelector('cart-notification');
+          const cartElement = cartDrawer || cartNotification;
+          
+          if (cartElement) {
+            // Try modern render method
+            if (typeof cartElement.renderContents === 'function') {
+              cartElement.renderContents(response);
+            }
+            // Remove empty class
+            if (cartElement.classList && cartElement.classList.contains('is-empty')) {
+              cartElement.classList.remove('is-empty');
+            }
+            // Try to open the cart
+            if (typeof cartElement.open === 'function') {
+              cartElement.open();
+            }
           }
           
-          // Remove is-empty class if present
-          if (cartElement && cartElement.classList.contains('is-empty')) {
-            cartElement.classList.remove('is-empty');
+          // 4. Trigger jQuery events (for older themes)
+          if (typeof jQuery !== 'undefined') {
+            jQuery(document.body).trigger('added.ajaxProduct', [response]);
+            jQuery(document.body).trigger('cart.requestComplete', [response]);
+          }
+          
+          // 5. Dispatch native DOM event (for custom implementations)
+          document.dispatchEvent(new CustomEvent('cart:updated', { 
+            detail: { cart: response, items: items }
+          }));
+          
+          // 6. Refresh cart count in header (universal selector approach)
+          try {
+            const cartCountResponse = await fetch(window.Shopify.routes.root + 'cart.js');
+            const cartData = await cartCountResponse.json();
+            
+            // Update cart count badges (common selectors across themes)
+            const countSelectors = [
+              '.cart-count-bubble',
+              '.cart-count',
+              '[data-cart-count]',
+              '.cart__count',
+              '#cart-icon-bubble',
+              '.header__icon--cart .count'
+            ];
+            
+            countSelectors.forEach(selector => {
+              const elements = document.querySelectorAll(selector);
+              elements.forEach(el => {
+                if (el) {
+                  el.textContent = cartData.item_count;
+                  if (el.classList) {
+                    el.classList.remove('hidden');
+                  }
+                }
+              });
+            });
+          } catch (e) {
+            // Cart count update failed, but items are added
+            console.log('Cart count update failed:', e);
           }
           
           // Reset button after a brief delay
           setTimeout(() => {
-            this.textContent = 'Add Bundle to Cart';
+            this.textContent = originalText;
             this.disabled = false;
           }, 2000);
+          
         } catch (err) {
-          console.error(err);
-          this.textContent = err.message || 'Try Again';
-          this.disabled = false;
+          console.error('Error adding bundle to cart:', err);
+          this.textContent = err.message || 'Error - Try Again';
+          setTimeout(() => {
+            this.textContent = buttonText;
+            this.disabled = false;
+          }, 3000);
         }
       });
     }
@@ -924,19 +1285,19 @@ assign cc_creator = metaobject
 
 {% schema %}
 {
-  "name": "CC Creator Drops",
+  "name": "Products - Curated Lists",
   "tag": "section",
   "class": "section",
   "settings": [
     {
       "type": "header",
-      "content": "The Creator Drops Section",
-      "info": "The Creator Drops Section displays curated product bundles from your creators in an elegant, switchable grid. Each creator can have multiple 'drops' (collections of products), and customers can seamlessly toggle between them using a dropdown selector. This section is perfect for showcasing expert recommendations, themed bundles, or seasonal collections—all with one-click 'Add Bundle to Cart' functionality that makes purchasing effortless."
+      "content": "The Curated Lists Block",
+      "info": "The Curated Lists Block displays curated product lists from your creators in an elegant, switchable grid. Each creator can have multiple 'drops' (collections of products), and customers can seamlessly toggle between them using a dropdown selector. This section is perfect for showcasing expert recommendations, themed bundles, or seasonal collections—all with one-click 'Add Bundle to Cart' functionality that makes purchasing effortless."
     },
     {
       "type": "header",
       "content": "Before Building",
-      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured with products assigned. The section will automatically pull in all drops and their associated products from the metaobject data."
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template, and review the product card and potentially paste in a new snippet. Ensure your creator has drops configured with products assigned. The section will automatically pull in all drops and their associated products from the metaobject data."
     },
     {
       "type": "header",
@@ -949,93 +1310,172 @@ assign cc_creator = metaobject
       "info": "Configure all text elements, messaging, and content for your drops section"
     },
     {
-      "type": "text",
+      "type": "richtext",
       "id": "tagline",
       "label": "Tagline",
-      "default": "EXPERT RECOMMENDATIONS",
-      "info": "Small uppercase text displayed above the main heading"
+      "default": "<p>EXPERT RECOMMENDATIONS</p>",
+      "info": "Small uppercase text displayed above the main heading. Supports dynamic text: use [cc-creator-first-name], [cc-creator-last-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data."
     },
     {
-      "type": "text",
-      "id": "title",
-      "label": "Heading",
-      "default": "Carefully Crafted",
-      "info": "Main heading text (will be followed by creator name if enabled below)"
+      "type": "richtext",
+      "id": "header",
+      "label": "Header",
+      "default": "<h2>Carefully Crafted by [cc-creator-first-name]</h2>",
+      "info": "Main heading for the section. Use rich text formatting to style as desired. Supports dynamic text: use [cc-creator-first-name], [cc-collab-discount-amount], or other creator field names in brackets to auto-replace with creator data."
+    },
+    {
+      "type": "range",
+      "id": "header_max_width",
+      "min": 200,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Header max width",
+      "default": 800,
+      "info": "Maximum width of the header text container"
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "min": 200,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Description max width",
+      "default": 600,
+      "info": "Maximum width of the drop description text"
     },
     {
       "type": "select",
-      "id": "heading_size",
-      "label": "Heading size",
+      "id": "description_display_style",
+      "label": "Display descriptions as",
       "options": [
         {
-          "value": "h3",
-          "label": "Small"
+          "value": "regular",
+          "label": "Regular descriptions"
         },
         {
-          "value": "h2",
-          "label": "Medium"
+          "value": "quote_first_name",
+          "label": "Quotes from first name"
         },
         {
-          "value": "h1",
-          "label": "Large"
-        },
-        {
-          "value": "h0",
-          "label": "Extra Large"
+          "value": "quote_shop_title",
+          "label": "Quotes from shop title"
         }
       ],
-      "default": "h2"
-    },
-    {
-      "type": "checkbox",
-      "id": "title_line_break",
-      "label": "Add line break after heading",
-      "default": true,
-      "info": "Puts the creator name on a new line"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_creator_name",
-      "label": "Show creator name",
-      "default": true,
-      "info": "Display the creator's first and last name after the heading"
-    },
-    {
-      "type": "text",
-      "id": "creator_prefix",
-      "label": "Creator name prefix",
-      "default": "Bundles by",
-      "info": "Text shown before the creator's name (e.g., 'Bundles by Sarah Johnson')"
+      "default": "regular",
+      "info": "Choose how to display drop descriptions. Quote styles add quotation marks and attribution."
     },
     {
       "type": "text",
       "id": "button_text",
-      "label": "Button text",
+      "label": "Button Text",
       "default": "Add Bundle to Cart",
-      "info": "Text displayed on the add to cart button"
+      "info": "Text displayed on the add to cart button. Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
     },
     {
-      "type": "header",
-      "content": "Product Card",
-      "info": "Customize how product cards are rendered in the grid"
+      "type": "select",
+      "id": "no_drops_behavior",
+      "label": "When No Drops Available",
+      "options": [
+        {
+          "value": "hide",
+          "label": "Hide section"
+        },
+        {
+          "value": "fallback",
+          "label": "Show a fallback collection"
+        }
+      ],
+      "default": "hide",
+      "info": "Choose whether to hide the section or show a fallback collection when creator has no drops"
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback Collection",
+      "info": "Collection to display when no drops are available (only used if 'Show a fallback collection' is selected above)"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "label": "Products To Show (Fallback)",
+      "default": 12,
+      "info": "Number of products to display from the fallback collection"
     },
     {
       "type": "liquid",
       "id": "product_card_snippet",
-      "label": "Product card snippet",
-      "default": "<a href=\"{{ product.url }}\" class=\"product-card-link\">\n  <div class=\"product-card__image\">\n    <img src=\"{{ product.featured_image | image_url: width: 600 }}\" alt=\"{{ product.title | escape }}\" loading=\"lazy\" width=\"600\" height=\"600\">\n  </div>\n  <div class=\"product-card__info\">\n    <h3 class=\"product-card__title\">{{ product.title }}</h3>\n    <div class=\"product-card__price\">{{ product.price | money }}</div>\n  </div>\n</a>",
-      "info": "Liquid code to render each product card. Use 'product' as the variable name. For Dawn theme, use: render 'card-product', card_product: product, media_aspect_ratio: 'square', show_secondary_image: false. For modern themes with block-based product cards, create a wrapper snippet. Do not include {% %} tags."
+      "label": "Product Card Snippet",
+      "info": "Custom Liquid code for each product card. Variables: 'product' (Shopify object), 'display_price', 'display_compare_price', 'has_creator_discount'. For drops, 'json_product' includes variant ID. Use any Liquid syntax. Dawn: {% render 'card-product', card_product: product, media_aspect_ratio: 'square' %}"
     },
     {
       "type": "header",
       "content": "Design & Styling",
-      "info": "Customize colors, layout, spacing, and visual appearance"
+      "info": "Customize colors, layout, product cards, dropdown styling, spacing, and visual appearance"
+    },
+    {
+      "type": "range",
+      "id": "product_card_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Default Product Card Border Radius",
+      "default": 0,
+      "info": "Border radius for default product card images (only applies when not using a custom product card snippet)"
+    },
+    {
+      "type": "range",
+      "id": "dropdown_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Dropdown Border Width",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "dropdown_border_radius",
+      "min": 0,
+      "max": 45,
+      "step": 1,
+      "unit": "px",
+      "label": "Dropdown Border Radius",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content Alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "center",
+      "info": "Align all content and text to the center or left of the section"
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
-      "label": "Color scheme",
+      "label": "Color Scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_border_color",
+      "label": "Dropdown Border Color",
+      "default": "#000000"
     },
     {
       "type": "range",
@@ -1043,17 +1483,8 @@ assign cc_creator = metaobject
       "min": 1,
       "max": 5,
       "step": 1,
-      "label": "Number of columns on desktop",
+      "label": "Number Of Columns On Desktop",
       "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns_tablet",
-      "min": 1,
-      "max": 4,
-      "step": 1,
-      "label": "Number of columns on tablet",
-      "default": 2
     },
     {
       "type": "range",
@@ -1061,8 +1492,52 @@ assign cc_creator = metaobject
       "min": 1,
       "max": 3,
       "step": 1,
-      "label": "Number of columns on mobile",
+      "label": "Number Of Columns On Mobile",
       "default": 2
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Product Grid Gap (Desktop)",
+      "default": 20,
+      "info": "Space between products on desktop"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Product Grid Gap (Mobile)",
+      "default": 12,
+      "info": "Space between products on mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal Padding (Desktop)",
+      "default": 0,
+      "info": "Left and right padding for the section content on desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal Padding (Mobile)",
+      "default": 0,
+      "info": "Left and right padding for the section content on mobile"
     },
     {
       "type": "range",
@@ -1071,7 +1546,7 @@ assign cc_creator = metaobject
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Top padding",
+      "label": "Top Padding",
       "default": 36
     },
     {
@@ -1081,13 +1556,13 @@ assign cc_creator = metaobject
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "Bottom padding",
+      "label": "Bottom Padding",
       "default": 36
     },
     {
       "type": "header",
-      "content": "Custom CSS",
-      "info": "Add custom CSS to override any styles in this section"
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
     },
     {
       "type": "textarea",
@@ -1098,7 +1573,7 @@ assign cc_creator = metaobject
   ],
   "presets": [
     { 
-      "name": "CC Creator Drops"
+      "name": "Products - Curated Lists"
     }
   ],
   "enabled_on": {

@@ -2,7 +2,7 @@
 
 {% liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
+  assign cc_creator = metaobject
 %}
 
 
@@ -89,8 +89,81 @@
   endif
 %}
 
+{%- comment -%} Calculate computed_text_color BEFORE CSS and HTML {%- endcomment -%}
+{%- liquid
+  assign computed_text_color = section.settings.textcolor
+  
+  if section.settings.auto_text_contrast and section.settings.background_image == blank
+    assign bg_color = section.settings.background | remove: '#' | upcase
+    assign hex_chars = 'ABCDEF'
+    
+    assign r_hex = bg_color | slice: 0, 2
+    assign g_hex = bg_color | slice: 2, 2
+    assign b_hex = bg_color | slice: 4, 2
+    
+    assign r1 = r_hex | slice: 0, 1
+    assign r2 = r_hex | slice: 1, 1
+    if hex_chars contains r1
+      assign r1_val = hex_chars | split: '' | index: r1 | plus: 10
+    else
+      assign r1_val = r1 | times: 1
+    endif
+    if hex_chars contains r2
+      assign r2_val = hex_chars | split: '' | index: r2 | plus: 10
+    else
+      assign r2_val = r2 | times: 1
+    endif
+    assign r = r1_val | times: 16 | plus: r2_val
+    
+    assign g1 = g_hex | slice: 0, 1
+    assign g2 = g_hex | slice: 1, 1
+    if hex_chars contains g1
+      assign g1_val = hex_chars | split: '' | index: g1 | plus: 10
+    else
+      assign g1_val = g1 | times: 1
+    endif
+    if hex_chars contains g2
+      assign g2_val = hex_chars | split: '' | index: g2 | plus: 10
+    else
+      assign g2_val = g2 | times: 1
+    endif
+    assign g = g1_val | times: 16 | plus: g2_val
+    
+    assign b1 = b_hex | slice: 0, 1
+    assign b2 = b_hex | slice: 1, 1
+    if hex_chars contains b1
+      assign b1_val = hex_chars | split: '' | index: b1 | plus: 10
+    else
+      assign b1_val = b1 | times: 1
+    endif
+    if hex_chars contains b2
+      assign b2_val = hex_chars | split: '' | index: b2 | plus: 10
+    else
+      assign b2_val = b2 | times: 1
+    endif
+    assign b = b1_val | times: 16 | plus: b2_val
+    
+    assign bg_brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000
+    
+    if bg_brightness > 128
+      assign computed_text_color = '#000000'
+    else
+      assign computed_text_color = '#ffffff'
+    endif
+  endif
+-%}
+
 <!-- Block Body -->
 {%- style -%}
+  {%- comment -%} Use textcolor directly if background image exists, otherwise use computed color {%- endcomment -%}
+  {%- liquid
+    if section.settings.background_image != blank
+      assign final_text_color = section.settings.textcolor
+    else
+      assign final_text_color = computed_text_color
+    endif
+  -%}
+
   /*=============================
     Hero Section
   =============================*/
@@ -98,7 +171,8 @@
     display: flex;
     gap: 48px;
     min-height: 60vh;
-    color: {{ section.settings.textcolor }};
+    color: {{ final_text_color }};
+    --hero-text-color: {{ final_text_color }};
     width: 100%;
     
     margin: auto;
@@ -177,7 +251,9 @@
     max-width: 100%;
     text-align: center !important;
     display: flex !important;
+    padding-left: 0 !important;
   }
+
 
 
   .responsive-flex {
@@ -248,8 +324,25 @@
   }
   
   .hero-star-icon path {
-    
- }
+    fill: {{ final_text_color }};
+  }
+
+  /* Collab X divider color */
+  .cc-divider {
+    color: {{ final_text_color }};
+  }
+
+  /* Collab text colors */
+  .cc-logo-text,
+  .cc-creator-name {
+    color: {{ final_text_color }} !important;
+  }
+
+  /* Dynamic text elements (title, subtitle, etc.) */
+  .dynamic-text {
+    color: {{ final_text_color }};
+  }
+
 testimonials-component {
     visibility: visible !important;
 }
@@ -320,14 +413,14 @@ testimonials-component {
     width: 400px;
     overflow: hidden;
     border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
-    border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+    border: {{ section.settings.border_width_general }}px solid {{ final_text_color }};
     position: relative;
   }
   .story .unique-testimonial__image{
     aspect-ratio: 9/14;
     width: 400px;
     border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
-    border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+    border: {{ section.settings.border_width_general }}px solid {{ final_text_color }};
      overflow: hidden;
   }
   .story__pagination.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
@@ -417,7 +510,7 @@ testimonials-component {
 
     .cc-logo-divider {
       font-size: 35px;
-      color: {{ section.settings.textcolor }};
+      color: {{ final_text_color }};
       height: 80px;
       align-self: start;
       align-content:center;
@@ -494,7 +587,7 @@ div#hero-image {
       height: 300px;
       width: 180px;
       border-radius: {{ section.settings.border_radius | at_most: 40 }}px;
-      border: {{ section.settings.border_width_general }}px solid {{ section.settings.textcolor }};
+      border: {{ section.settings.border_width_general }}px solid {{ final_text_color }};
     }
 
     .unique-video-slider {
@@ -792,7 +885,7 @@ div#hero-image {
            
            {% assign eyebrow_bg_raw = section.settings.eyebrowbackground | downcase %}
            {% if eyebrow_bg_raw == blank or eyebrow_bg_raw == 'transparent' or eyebrow_bg_raw contains 'rgba(0,0,0,0)' or eyebrow_bg_raw contains 'rgba(255,255,255,0)' %}
-             {% assign eyebrow_text_color = section.settings.textcolor %}
+             {% assign eyebrow_text_color = computed_text_color %}
            {% else %}
              {% assign eyebrow_bg = section.settings.eyebrowbackground | remove: '#' | upcase %}
              {% assign hex_chars = 'ABCDEF' %}
@@ -842,7 +935,7 @@ div#hero-image {
                     >
                   </div>
                 {% endif %}
-                <div style="{% if section.settings.eyebrow_set_uppercase %}text-transform:uppercase;{% endif %}" class="dynamic-text badge-text">
+                <div style="{% if section.settings.eyebrow_set_uppercase %}text-transform:uppercase;{% endif %}">
                 {{- eyebrowcopy -}}
                 </div>
               </div>
@@ -870,7 +963,7 @@ div#hero-image {
                     <div id="star-container">
                       {% for i in (1..5) %}
                         <svg class="star hero-star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
-                          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z" fill="{{ section.settings.textcolor }}"/>
+                          <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
                         </svg>
                       {% endfor %}
                     </div>
@@ -899,7 +992,7 @@ div#hero-image {
                           loading="lazy"
                           class="cc-logo-image"
                         >
-                      <p class="cc-logo-text dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">
+                      <p class="cc-logo-text dynamic-text" style="{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">
                         {{ brand_title }}
                         </p>
                         </div>
@@ -963,7 +1056,7 @@ div#hero-image {
                           loading="lazy"
                           class="cc-creator-image"
                         >
-                      <p class="cc-creator-name dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: metaobject.cc-creator-first-name }}{% else %}{{ metaobject.cc-creator-first-name }}{% endif %}</p>
+                      <p class="cc-creator-name dynamic-text" style="{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: metaobject.cc-creator-first-name }}{% else %}{{ metaobject.cc-creator-first-name }}{% endif %}</p>
                       </div>
 
                       {% else %}
@@ -986,7 +1079,7 @@ div#hero-image {
                           margin: 0;
                         ">{{ initials }}</h4>
                       </div>
-                      <p class="cc-creator-name dynamic-text" style="color:{{ section.settings.textcolor }}; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: first_name }}{% else %}{{ first_name }}{% endif %}</p>
+                      <p class="cc-creator-name dynamic-text" style="{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ section.settings.accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if section.settings.collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: first_name }}{% else %}{{ first_name }}{% endif %}</p>
                     </div>
                     {% endif %}
                   </div>
@@ -996,7 +1089,7 @@ div#hero-image {
                   
                   {% assign cta_bg_raw = section.settings.cta_background | downcase %}
                   {% if cta_bg_raw == blank or cta_bg_raw == 'transparent' or cta_bg_raw contains 'rgba(0,0,0,0)' or cta_bg_raw contains 'rgba(255,255,255,0)' %}
-                    {% assign cta_text_color = section.settings.textcolor %}
+                    {% assign cta_text_color = computed_text_color %}
                   {% else %}
                     {% assign cta_bg = section.settings.cta_background | remove: '#' | upcase %}
                     {% assign hex_chars = 'ABCDEF' %}
@@ -1027,7 +1120,7 @@ div#hero-image {
                   {% endif %}
                     <div style="margin-bottom: 0px;">
                       <a href="{{ section.settings.cta_url }}" style="text-decoration: none;">
-                      <button type="button" class="button fallback-cta hero-cta-button" style="background-color: {{section.settings.cta_background}}; color: {{ cta_text_color }}; padding: 24px 42px; text-align: center; line-height: 1.2; cursor: pointer; border-radius: {{ section.settings.border_radius }}px; border: {{section.settings.border_width_general}}px solid {{section.settings.cta_border_color}};{% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %}">
+                      <button type="button" class="button{% if section.settings.override_theme_button %} fallback-cta hero-cta-button{% endif %}" {% if section.settings.override_theme_button %}style="background-color: {{section.settings.cta_background}}; color: {{ cta_text_color }}; padding: 24px 42px; text-align: center; line-height: 1.2; cursor: pointer; border-radius: {{ section.settings.border_radius }}px; {% if section.settings.uppercase_accent_text %}text-transform:uppercase;{% endif %}"{% endif %}>
                           <p>{{ cta_text }}</p>
                         </button>
                       </a>
@@ -1750,8 +1843,8 @@ div#hero-image {
   "settings": [
      {
       "type": "header",
-      "content": "The Primavera Hero Section",
-      "info": "The Primavera Hero Section is your storefront's bold first impression—an immersive, co-branded canvas that fuses video, images, and creator content into one dynamic experience. It's built to grab attention, showcase credibility, and highlight your brand and collaborators in a way that feels both aspirational and authentic. With flexible layouts, trust badges, and rich carousels, this section transforms your hero area into a content-forward stage that drives conversions."
+      "content": "The Primavera Hero Block",
+      "info": "The Primavera Hero Block is your storefront's bold first impression—an immersive, co-branded canvas that fuses video, images, and creator content into one dynamic experience. It's built to grab attention, showcase credibility, and highlight your brand and collaborators in a way that feels both aspirational and authentic. With flexible layouts, trust badges, and rich carousels, this section transforms your hero area into a content-forward stage that drives conversions."
     },
      {
       "type": "header",
@@ -1806,7 +1899,8 @@ div#hero-image {
     {
       "type": "url",
       "id": "cta_url",
-      "label": "Button URL"
+      "label": "Button URL",
+      "info":"Use #drops-anchor to scroll down to a products section"
       },
       {
         "type": "select",
@@ -1821,10 +1915,33 @@ div#hero-image {
       ]
     },
     {
+      "type": "select",
+      "id": "carousel_type",
+      "label": "Carousel Display Type",
+      "default": "inline",
+      "info": "Choose how the carousel is displayed",
+      "options": [
+        {
+          "value": "social",
+          "label": "Social (Full-screen style)"
+        },
+        {
+          "value": "inline",
+          "label": "Inline (Side-by-side with content)"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "id": "video_1",
+      "label": "Fallback Video",
+      "info": "Upload a video file to display in the carousel. Creator media from drops will automatically be included if available."
+    },
+    {
       "type": "header",
       "content": "Design & Styling",
       "info": "Customize colors, typography, layout, spacing, and visual appearance"
-      },
+    },
         {
       "type": "color",
       "id": "background",
@@ -1848,37 +1965,9 @@ div#hero-image {
     {
       "type": "checkbox",
       "id": "auto_text_contrast",
-      "label": "Auto-adjust text contrast",
+      "label": "Auto-Adjust Text Contrast",
       "default": false,
-      "info": "Automatically adjust text colors for best readability against background"
-    },
-    {
-      "type": "range",
-      "id": "accent_text_size",
-      "min": 10,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Accent Text Size",
-      "default": 13,
-      "info": "Controls size for collaboration highlight names and trust indicator text"
-    },
-    {
-      "type": "checkbox",
-      "id": "uppercase_accent_text",
-      "label": "Uppercase Accent Text",
-      "default": false,
-      "info": "Makes creator badge, collaboration highlight, trust indicator, and button text uppercase"
-    },
-    {
-      "type": "range",
-      "id": "star_adjustment_spacing",
-      "min": -10,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Star Vertical Adjustment",
-      "default": 0
+      "info": "Automatically adjust text colors for best readability against background. Best used when setting creator color as background color. Not for use with background images."
     },
     {
       "type": "color",
@@ -1899,10 +1988,11 @@ div#hero-image {
       "default": "#000000"
     },
     {
-      "type": "color",
-      "id": "cta_border_color",
-      "label": "Button Border Color",
-      "default": "#000000"
+      "type": "checkbox",
+      "id": "override_theme_button",
+      "label": "Override Theme Button Style",
+      "default": true,
+      "info": "When enabled, uses custom button styling. When disabled, inherits your theme's default button classes for consistent styling."
     },
     {
       "type": "range",
@@ -1939,6 +2029,34 @@ div#hero-image {
     },
     {
       "type": "range",
+      "id": "accent_text_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Accent Text Size",
+      "default": 13,
+      "info": "Controls size for collaboration highlight names and trust indicator text"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase_accent_text",
+      "label": "Uppercase Accent Text",
+      "default": false,
+      "info": "Makes creator badge, collaboration highlight, trust indicator, and button text uppercase"
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": -10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Vertical Adjustment",
+      "default": 0
+    },
+    {
+      "type": "range",
       "id": "padding_left",
       "min": 0,
       "max": 200,
@@ -1946,35 +2064,12 @@ div#hero-image {
       "unit": "px",
       "label": "Left Padding (Desktop)",
       "default": 80,
-      "info": "Left padding for the content container on desktop"
-    },
-    {
-      "type": "select",
-      "id": "carousel_type",
-      "label": "Carousel Display Type",
-      "default": "inline",
-      "info": "Choose how the carousel is displayed",
-      "options": [
-        {
-          "value": "social",
-          "label": "Social (Full-screen style)"
-        },
-        {
-          "value": "inline",
-          "label": "Inline (Side-by-side with content)"
-        }
-      ]
-    },
-    {
-      "type": "video",
-      "id": "video_1",
-      "label": "Fallback Video",
-      "info": "Upload a video file to display in the carousel. Creator media from drops will automatically be included if available."
+      "info": "Left padding for the content container on desktop. Note: Automatically removed when section has no media and is centered."
     },
     {
       "type": "header",
-      "content": "Custom CSS",
-      "info": "Add custom CSS to override any styles in this section"
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
     },
     {
       "type": "textarea",
@@ -1988,8 +2083,8 @@ div#hero-image {
       "name": "Hero - Primavera"
     }
   ],
-  "disabled_on": {
-    "groups": ["header", "footer", "custom.overlay"]
+  "enabled_on": {
+    "templates": ["metaobject"]
   }
 }
 {% endschema %}

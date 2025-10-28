@@ -1,0 +1,514 @@
+{%- style -%}
+  .right-panel {
+    width: 100% !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: {{section.settings.quote_author_spacing}}px;
+    padding: 20px;
+    color: white !important;
+    text-align: {{section.settings.desktop_alignment}};
+  }
+
+  .quote {
+    text-align: {{section.settings.desktop_alignment}};
+    font-style: {{section.settings.quote_font_style}};
+    font-size: {{section.settings.quote_font_size}}px;
+    font-weight: {{section.settings.quote_font_weight}};
+    color: {{section.settings.textcolor}} !important;
+    line-height: {{section.settings.quote_line_height}};
+  }
+
+  .author {
+    text-align: {{section.settings.desktop_alignment}};
+    color: {{section.settings.textcolor}} !important;
+    margin-top: {{section.settings.author_margin_top}}px;
+    font-size: {{section.settings.author_font_size}}px;
+    font-weight: {{section.settings.author_font_weight}};
+  }
+
+  @media screen and (max-width: 768px) {
+    .quote {
+      font-size: {{section.settings.quote_font_size | times: 0.9 | round: 0}}px;
+    }
+    
+    .author {
+      font-size: {{section.settings.author_font_size | times: 0.875 | round: 0}}px;
+    }
+  }
+
+  .container {
+  width: {{section.settings.container_width}}%;
+  display: flex; flex-direction: row; align-items: {{section.settings.desktop_vertical_alignment}}; justify-content: space-around;
+  gap: {{section.settings.container_gap}}px;
+  margin: 0 auto;
+  }
+
+  .avatar-container {
+    border-radius: {{section.settings.avatar_border_radius}}px;
+    height: {{section.settings.avatar_size}}px;
+    width: {{section.settings.avatar_size}}px;
+    overflow: hidden;
+    background-color: {{section.settings.avatarcolor}};
+    color: {{section.settings.textcolor}};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: {{section.settings.author_font_weight}};
+    font-size: {{section.settings.avatar_font_size}}rem;
+    text-transform: uppercase;
+  }
+
+  @media screen and (max-width: 768px) {
+
+  .container {
+  width: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-around;
+  gap: {{section.settings.mobile_container_gap}}px;
+  margin: 0 auto;
+  }
+
+  .quote {
+    text-align: {{section.settings.mobile_alignment}};
+    font-style: {{section.settings.quote_font_style}};
+    padding-left: 20px;
+    padding-right: 20px;
+    color: {{section.settings.textcolor}} !important;
+  }
+
+  .author {
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: {{section.settings.mobile_alignment}};
+  }
+
+  .avatar-container {
+    height: {{section.settings.avatar_size | times: 0.8 | round: 0}}px;
+    width: {{section.settings.avatar_size | times: 0.8 | round: 0}}px;
+    font-size: {{section.settings.avatar_font_size | times: 0.714 | round: 1}}rem;
+  }
+
+  }
+
+  /* Custom CSS */
+  {%- if section.settings.custom_css != blank -%}
+    {{ section.settings.custom_css }}
+  {%- endif -%}
+{%- endstyle -%}
+
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign show_preview = section.settings.show_preview
+  assign has_creator_data = false
+  assign has_quote = false
+  assign quote_text = ''
+  assign author_name = ''
+  assign author_initials = ''
+  assign profile_picture = ''
+
+  if show_preview
+    assign has_creator_data = true
+    assign has_quote = true
+    assign quote_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
+    assign author_name = 'Test Author'
+    assign author_initials = 'AB'
+  else
+    if cc_creator.data.value['cc-creator-drops']
+      for drop in cc_creator.data.value['cc-creator-drops']
+        for cc_product in drop['cc-creator-drop-products']
+          assign product_id_string = product.id | append: ''
+          if cc_product.id == product_id_string and cc_product.enhancement.note != '' and cc_product.enhancement.note != null
+            assign has_creator_data = true
+            assign has_quote = true
+            assign quote_text = cc_product.enhancement.note
+            if section.settings.author_display_type == 'store_name' and cc_creator['cc-creator-shop-title'] != blank
+              assign author_name = cc_creator['cc-creator-shop-title']
+            else
+              assign author_name = cc_creator['cc-creator-first-name']
+            endif
+            assign author_initials = cc_creator['cc-creator-first-name'] | slice: 0, 1 | append: cc_creator['cc-creator-last-name'] | slice: 0, 1
+            assign profile_picture = cc_creator['cc-creator-profile-picture']
+            break
+          endif
+        endfor
+        if has_quote
+          break
+        endif
+      endfor
+    endif
+  endif
+-%}
+
+{% if has_creator_data and has_quote %}
+  <div style="background-color: {{section.settings.background}};width:100%;padding-top: {{ section.settings.padding }}px;padding-bottom: {{ section.settings.padding }}px;">
+    <div class="container">
+      <div class="left-panel">
+        <div class="avatar-container">
+          {% if profile_picture != blank %}
+            <img
+              src="{{ profile_picture }}"
+              alt="Creator Profile"
+              style="height: 100%; width: 100%; object-fit: cover;"
+            >
+          {% else %}
+            {{ author_initials }}
+          {% endif %}
+        </div>
+      </div>
+
+      <div id="right-panel">
+        <div class="quote">
+          "{{ quote_text }}"
+        </div>
+
+        <h4 class="author">{{ author_name }}</h4>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product - Quote Editorial",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The Quote Editorial Block",
+      "info": "The Quote Editorial Block transforms product pages into personal testimonials by displaying creator quotes and endorsements directly on product detail pages. When a creator has left a review or note about a specific product, this section elegantly showcases their endorsement with their profile picture, quote text, and attribution—building trust and social proof at the critical moment of purchase consideration."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Ensure your creator metaobject has drops configured with product enhancement notes. This section automatically pulls creator quotes from the 'enhancement.note' field of products within creator drops. The section will only display when a creator is in context and has left a quote for the current product being viewed."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to a product page with this section. You should then see the co-branded quote editorial if the creator has left a note for that specific product. Use the preview toggle to see the section with sample content."
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors, typography, layout, spacing, and visual appearance"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "label": "Text Color"
+    },
+    {
+      "type": "color",
+      "id": "avatarcolor",
+      "label": "Missing Avatar Color"
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Container Width",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "container_gap",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Desktop Gap Between Elements",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_container_gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile Gap Between Elements",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding",
+      "default": 36,
+      "info": "Top and bottom padding for the section"
+    },
+    {
+      "type": "header",
+      "content": "Typography & Spacing",
+      "info": "Control font sizes, weights, styles, and spacing between elements"
+    },
+    {
+      "type": "range",
+      "id": "quote_font_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Quote Font Size",
+      "default": 20,
+      "info": "Font size for quotes. Mobile size is automatically 90% of this value."
+    },
+    {
+      "type": "select",
+      "id": "quote_font_style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "italic",
+      "label": "Quote Font Style"
+    },
+    {
+      "type": "select",
+      "id": "quote_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400",
+      "label": "Quote Font Weight"
+    },
+    {
+      "type": "range",
+      "id": "quote_line_height",
+      "min": 1.0,
+      "max": 2.0,
+      "step": 0.1,
+      "label": "Quote Line Height",
+      "default": 1.4
+    },
+    {
+      "type": "range",
+      "id": "author_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Author Font Size",
+      "default": 16,
+      "info": "Font size for author names. Mobile size is automatically 87.5% of this value."
+    },
+    {
+      "type": "select",
+      "id": "author_font_weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400",
+      "label": "Author Font Weight"
+    },
+    {
+      "type": "range",
+      "id": "author_margin_top",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Author Margin Top",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "quote_author_spacing",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Quote to Author Spacing",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "avatar_size",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Avatar Size",
+      "default": 150,
+      "info": "Avatar size. Mobile size is automatically 80% of this value."
+    },
+    {
+      "type": "range",
+      "id": "avatar_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Avatar Border Radius",
+      "default": 100,
+      "info": "Border radius for the avatar. 50px = circle, 0px = square"
+    },
+    {
+      "type": "range",
+      "id": "avatar_font_size",
+      "min": 1.5,
+      "max": 5.0,
+      "step": 0.1,
+      "unit": "rem",
+      "label": "Avatar Font Size",
+      "default": 3.5,
+      "info": "Font size for avatar initials. Mobile size is automatically 71.4% of this value."
+    },
+    {
+      "type": "select",
+      "id": "desktop_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop Alignment"
+    },
+    {
+      "type": "select",
+      "id": "desktop_vertical_alignment",
+      "options": [
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-start",
+          "label": "Top"
+        }
+      ],
+      "default": "center",
+      "label": "Desktop Vertical Alignment",
+      "info": "How to align the avatar and quote elements vertically on desktop"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Mobile Alignment"
+    },
+    {
+      "type": "select",
+      "id": "author_display_type",
+      "options": [
+        {
+          "value": "first_name",
+          "label": "First Name"
+        },
+        {
+          "value": "store_name",
+          "label": "Store Name"
+        }
+      ],
+      "default": "first_name",
+      "label": "Author Display Type",
+      "info": "Choose whether to display the creator's first name or store name as the author"
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_preview",
+      "label": "Show Preview",
+      "default": false,
+      "info": "Enable to preview the section with lorem ipsum text and test author initials. 🚨 DO NOT SAVE with this enabled."
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Enter valid CSS code to customize this section's appearance. Example: .quote { color: #ff0000; }"
+    }
+  ],
+  "presets": [{
+    "name": "Product - Quote Editorial"
+  }],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
