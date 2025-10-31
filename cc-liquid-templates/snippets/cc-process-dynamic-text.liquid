@@ -1,0 +1,257 @@
+{% comment %}
+  Process Dynamic Text Snippet (Refactored)
+  Handles dynamic text replacement using [field-name] syntax with dot notation support
+  Supports cc_creator. prefix and fallback resolution
+  
+  Usage: {% render 'cc-process-dynamic-text', input_text: section.settings.title, output_var: 'title' %}
+  Note: cc_creator and metaobject must be available in the parent scope
+  
+  Parameters:
+    - input_text: The text containing [field-name] placeholders
+    - output_var: The variable name to assign the processed text to
+    - fallback_to_literal: (optional) If true, shows [field-name] when field not found. Default: true
+  
+  Returns: Processed text is assigned to the specified output_var
+{% endcomment %}
+
+{% liquid
+  # Initialize processed_text with input_text, ensuring it's always set (even if blank)
+  if input_text == blank or input_text == null
+    assign processed_text = ''
+  else
+    assign processed_text = input_text
+  endif
+  
+  # Set default for fallback behavior
+  if fallback_to_literal == blank
+    assign fallback_to_literal = true
+  endif
+  
+  # Only process if text contains brackets
+  if processed_text != blank and processed_text contains '['
+    assign parts = processed_text | split: '['
+    assign processed_text = parts[0]
+    assign prefix = 'cc_creator.'
+    assign prefix_len = prefix | size
+    
+    for part in parts offset: 1
+      assign subparts = part | split: ']'
+      assign path_raw = subparts[0] | strip
+      assign tail = subparts[1]
+      assign resolved_value = nil
+      assign field_found = false
+      
+      # Check if path starts with cc_creator. prefix (new format)
+      assign head = path_raw | slice: 0, prefix_len
+      
+      if head == prefix
+        # New format: cc_creator.field.subfield
+        # Priority: 1. cc_creator.data.value.field, 2. cc_creator.field
+        assign path = path_raw | slice: prefix_len, 9999
+        
+        if path != blank
+          assign segs = path | split: '.'
+          
+          # Try cc_creator.data.value first
+          if field_found == false and cc_creator.data.value
+            assign resolved_value = cc_creator.data.value
+            for seg in segs
+              assign next = resolved_value[seg]
+              
+              # Try numeric index if string lookup fails
+              if next == blank
+                assign seg_as_number = seg | times: 1
+                assign seg_check = seg_as_number | append: ''
+                if seg_check == seg
+                  assign next = resolved_value[seg_as_number]
+                endif
+              endif
+              
+              if next == blank
+                assign resolved_value = nil
+                break
+              else
+                assign resolved_value = next
+              endif
+            endfor
+            
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+          
+          # Try cc_creator direct if not found
+          if field_found == false and cc_creator
+            assign resolved_value = cc_creator
+            for seg in segs
+              assign next = resolved_value[seg]
+              
+              # Try numeric index if string lookup fails
+              if next == blank
+                assign seg_as_number = seg | times: 1
+                assign seg_check = seg_as_number | append: ''
+                if seg_check == seg
+                  assign next = resolved_value[seg_as_number]
+                endif
+              endif
+              
+              if next == blank
+                assign resolved_value = nil
+                break
+              else
+                assign resolved_value = next
+              endif
+            endfor
+            
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+        endif
+      else
+        # Old format: Try hierarchical lookup with clearer priority:
+        # 1. cc_creator.data.value.field (for metaobject field values)
+        # 2. cc_creator.field (for direct creator properties)
+        # 3. metaobject.field (fallback to metaobject)
+        
+        if path_raw contains '.'
+          # Handle dot notation path
+          assign segs = path_raw | split: '.'
+          
+          # Try cc_creator.data.value first (common for metaobject fields)
+          if field_found == false and cc_creator.data.value
+            assign resolved_value = cc_creator.data.value
+            for seg in segs
+              assign next = resolved_value[seg]
+              if next == blank
+                assign seg_as_number = seg | times: 1
+                assign seg_check = seg_as_number | append: ''
+                if seg_check == seg
+                  assign next = resolved_value[seg_as_number]
+                endif
+              endif
+              if next == blank
+                assign resolved_value = nil
+                break
+              else
+                assign resolved_value = next
+              endif
+            endfor
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+          
+          # Try cc_creator direct if not found
+          if field_found == false and cc_creator
+            assign resolved_value = cc_creator
+            for seg in segs
+              assign next = resolved_value[seg]
+              if next == blank
+                assign seg_as_number = seg | times: 1
+                assign seg_check = seg_as_number | append: ''
+                if seg_check == seg
+                  assign next = resolved_value[seg_as_number]
+                endif
+              endif
+              if next == blank
+                assign resolved_value = nil
+                break
+              else
+                assign resolved_value = next
+              endif
+            endfor
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+          
+          # Try metaobject as final fallback
+          if field_found == false and metaobject
+            assign resolved_value = metaobject
+            for seg in segs
+              assign next = resolved_value[seg]
+              if next == blank
+                assign seg_as_number = seg | times: 1
+                assign seg_check = seg_as_number | append: ''
+                if seg_check == seg
+                  assign next = resolved_value[seg_as_number]
+                endif
+              endif
+              if next == blank
+                assign resolved_value = nil
+                break
+              else
+                assign resolved_value = next
+              endif
+            endfor
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+        else
+          # Simple field name without dots
+          assign resolved_value = cc_creator.data.value[path_raw]
+          if resolved_value != blank
+            assign field_found = true
+          endif
+          
+          if field_found == false
+            assign resolved_value = cc_creator[path_raw]
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+          
+          if field_found == false
+            assign resolved_value = metaobject[path_raw]
+            if resolved_value != blank
+              assign field_found = true
+            endif
+          endif
+        endif
+      endif
+      
+      # Append the resolved value or the original placeholder
+      if field_found and resolved_value != blank
+        # Convert value to string safely
+        # For strings, remove JSON quotes. For other types, use as-is.
+        assign value_type = resolved_value | json
+        assign first_char = value_type | slice: 0, 1
+        
+        if first_char == '"'
+          # String value - remove JSON quotes
+          assign last_char = value_type | slice: -1, 1
+          if last_char == '"'
+            assign len = value_type | size
+            assign inner_len = len | minus: 2
+            assign value_output = value_type | slice: 1, inner_len
+          else
+            assign value_output = value_type
+          endif
+        elsif first_char == '[' or first_char == '{'
+          # Array or object - keep JSON format
+          assign value_output = value_type
+        else
+          # Number, boolean, or null - use JSON format
+          assign value_output = value_type
+        endif
+        
+        assign processed_text = processed_text | append: value_output | append: tail
+      else
+        # Field not found - use fallback behavior
+        if fallback_to_literal
+          assign processed_text = processed_text | append: '[' | append: path_raw | append: ']' | append: tail
+        else
+          assign processed_text = processed_text | append: tail
+        endif
+      endif
+    endfor
+  endif
+%}
+
+{%- comment -%}
+  Output the processed text so it can be captured by the parent template
+  The parent template should use {% capture %} to get the value
+{%- endcomment -%}
+{{- processed_text -}}

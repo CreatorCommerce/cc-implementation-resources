@@ -97,9 +97,15 @@
 {%- endstyle -%}
 
 {%- liquid
+
   assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
-  assign show_preview = section.settings.show_preview
+  assign cc_preview_creator = section.settings.preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+
   assign has_creator_data = false
   assign has_quote = false
   assign quote_text = ''
@@ -107,13 +113,7 @@
   assign author_initials = ''
   assign profile_picture = ''
 
-  if show_preview
-    assign has_creator_data = true
-    assign has_quote = true
-    assign quote_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.'
-    assign author_name = 'Test Author'
-    assign author_initials = 'AB'
-  else
+
     if cc_creator.data.value['cc-creator-drops']
       for drop in cc_creator.data.value['cc-creator-drops']
         for cc_product in drop['cc-creator-drop-products']
@@ -137,7 +137,7 @@
         endif
       endfor
     endif
-  endif
+
 -%}
 
 {% if has_creator_data and has_quote %}
@@ -428,7 +428,7 @@
           "label": "Right"
         }
       ],
-      "default": "center",
+      "default": "right",
       "label": "Desktop Alignment"
     },
     {
@@ -491,12 +491,12 @@
       "info": "Preview functionality and custom styling options"
     },
     {
-      "type": "checkbox",
-      "id": "show_preview",
-      "label": "Show Preview",
-      "default": false,
-      "info": "Enable to preview the section with lorem ipsum text and test author initials. 🚨 DO NOT SAVE with this enabled."
-    },
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info":"Select any creator to preview this block with. Helpful for seeing how different data responds & looks in the block. This will not be seen on the live site.",
+      "metaobject_type": "creator"
+},
     {
       "type": "textarea",
       "id": "custom_css",

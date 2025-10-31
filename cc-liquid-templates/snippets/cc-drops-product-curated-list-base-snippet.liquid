@@ -2,68 +2,68 @@
 {{ 'component-price.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  .section-{{ section_id }}-padding {
+    padding-top: {{ padding_vertical | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ padding_vertical | times: 0.75 | round: 0 }}px;
   }
 
   @media screen and (min-width: 750px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+    .section-{{ section_id }}-padding {
+      padding-top: {{ padding_vertical }}px;
+      padding-bottom: {{ padding_vertical }}px;
     }
   }
 
-  #shopify-section-{{ section.id }} .page-width {
-    padding-left: {{ section.settings.padding_horizontal_desktop }}px;
-    padding-right: {{ section.settings.padding_horizontal_desktop }}px;
+  #shopify-section-{{ section_id }} .page-width {
+    padding-left: {{ padding_horizontal_desktop }}px;
+    padding-right: {{ padding_horizontal_desktop }}px;
   }
 
   @media (max-width: 749px) {
-    #shopify-section-{{ section.id }} .page-width {
-      padding-left: {{ section.settings.padding_horizontal_mobile }}px;
-      padding-right: {{ section.settings.padding_horizontal_mobile }}px;
+    #shopify-section-{{ section_id }} .page-width {
+      padding-left: {{ padding_horizontal_mobile }}px;
+      padding-right: {{ padding_horizontal_mobile }}px;
     }
   }
 
-  #shopify-section-{{ section.id }} .cc-section-content {
+  #shopify-section-{{ section_id }} .cc-section-content {
     padding: 0 0px;
     display: flex;
     flex-direction: column;
     gap: 40px;
-    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-section-title {
+  #shopify-section-{{ section_id }} .cc-section-title {
     display: flex;
     flex-direction: column;
     gap:20px;
-    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-tagline-wrapper {
+  #shopify-section-{{ section_id }} .cc-tagline-wrapper {
     display: flex;
     align-items: center;
-    justify-content: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    justify-content: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
   }
 
-  #shopify-section-{{ section.id }} .cc-tagline {
+  #shopify-section-{{ section_id }} .cc-tagline {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     opacity: 0.7;
     margin: 0;
-    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
+    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
   }
 
-  #shopify-section-{{ section.id }} .cc-tagline p {
+  #shopify-section-{{ section_id }} .cc-tagline p {
     margin: 0;
   }
 
-  #shopify-section-{{ section.id }} .cc-content {
+  #shopify-section-{{ section_id }} .cc-content {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -72,25 +72,25 @@
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-main-title {
-    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
+  #shopify-section-{{ section_id }} .cc-main-title {
+    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
     width: 100%;
-    max-width: {{ section.settings.header_max_width }}px;
-    margin: {% if section.settings.content_alignment == 'left' %}0{% else %}0 auto{% endif %};
+    max-width: {{ header_max_width }}px;
+    margin: {% if content_alignment == 'left' %}0{% else %}0 auto{% endif %};
   }
 
-  #shopify-section-{{ section.id }} .cc-main-title > * {
+  #shopify-section-{{ section_id }} .cc-main-title > * {
     margin: 0;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-wrapper {
+  #shopify-section-{{ section_id }} .cc-dropdown-wrapper {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 360px;
-    {% if section.settings.content_alignment == 'left' -%}
+    {% if content_alignment == 'left' -%}
       padding: 0;
       margin: 0;
     {%- else -%}
@@ -98,16 +98,16 @@
     {%- endif %}
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown {
+  #shopify-section-{{ section_id }} .cc-dropdown {
     position: relative;
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-button {
+  #shopify-section-{{ section_id }} .cc-dropdown-button {
     background: rgb(var(--color-background));
     color: rgb(var(--color-foreground));
-    border: {{ section.settings.dropdown_border_width }}px solid {{ section.settings.dropdown_border_color }};
-    border-radius: {{ section.settings.dropdown_border_radius }}px;
+    border: {{ dropdown_border_width }}px solid {{ dropdown_border_color }};
+    border-radius: {{ dropdown_border_radius }}px;
     padding: 15px 20px;
     width: 100%;
     display: flex;
@@ -123,7 +123,7 @@
     text-transform: inherit;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-text {
+  #shopify-section-{{ section_id }} .cc-dropdown-text {
     color: rgb(var(--color-foreground));
     flex: 1;
     text-align: left;
@@ -135,7 +135,7 @@
     text-transform: inherit;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-icon {
+  #shopify-section-{{ section_id }} .cc-dropdown-icon {
     width: 24px;
     height: 24px;
     display: flex;
@@ -147,29 +147,29 @@
   }
 
   /* Dropdown arrow - points up when closed, down when open */
-  #shopify-section-{{ section.id }} .cc-dropdown-icon svg {
+  #shopify-section-{{ section_id }} .cc-dropdown-icon svg {
     width: 14px;
     height: 8px;
     transform: rotate(180deg); /* Points up */
     transition: transform 0.2s ease;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-icon svg path {
+  #shopify-section-{{ section_id }} .cc-dropdown-icon svg path {
     stroke: currentColor;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown.open .cc-dropdown-icon svg {
+  #shopify-section-{{ section_id }} .cc-dropdown.open .cc-dropdown-icon svg {
     transform: rotate(0deg); /* Points down when open */
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-menu {
+  #shopify-section-{{ section_id }} .cc-dropdown-menu {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
     background: rgb(var(--color-background));
-    border: {{ section.settings.dropdown_border_width }}px solid {{ section.settings.dropdown_border_color }};
-    border-radius: {{ section.settings.dropdown_border_radius }}px;
+    border: {{ dropdown_border_width }}px solid {{ dropdown_border_color }};
+    border-radius: {{ dropdown_border_radius }}px;
     margin-top: 4px;
     z-index: 10;
     backdrop-filter: blur(50px);
@@ -177,11 +177,11 @@
     overflow: hidden;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-menu.open {
+  #shopify-section-{{ section_id }} .cc-dropdown-menu.open {
     display: block;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option {
+  #shopify-section-{{ section_id }} .cc-dropdown-option {
     padding: 12px 20px;
     cursor: pointer;
     color: rgb(var(--color-foreground));
@@ -192,64 +192,64 @@
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option:first-child {
+  #shopify-section-{{ section_id }} .cc-dropdown-option:first-child {
     padding-top: 16px;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option:last-child {
+  #shopify-section-{{ section_id }} .cc-dropdown-option:last-child {
     padding-bottom: 16px;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option:hover {
+  #shopify-section-{{ section_id }} .cc-dropdown-option:hover {
     background: rgba(var(--color-foreground), 0.05);
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option.selected {
+  #shopify-section-{{ section_id }} .cc-dropdown-option.selected {
     background: rgba(var(--color-foreground), 0.05);
     justify-content: space-between;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-option-text {
+  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-option-text {
     flex: 1;
     text-align: left;
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-check-icon {
+  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-check-icon {
     width: 24px;
     height: 24px;
     flex-shrink: 0;
     color: rgb(var(--color-foreground));
   }
 
-  #shopify-section-{{ section.id }} .cc-dropdown-option .cc-check-icon path {
+  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-check-icon path {
     stroke: currentColor;
   }
 
-  #shopify-section-{{ section.id }} .cc-collection-description {
+  #shopify-section-{{ section_id }} .cc-collection-description {
     margin-top: 16px;
-    padding: {% if section.settings.content_alignment == 'left' %}0{% else %}0 16px{% endif %};
-    text-align: {% if section.settings.content_alignment == 'left' %}left{% else %}center{% endif %};
+    padding: {% if content_alignment == 'left' %}0{% else %}0 16px{% endif %};
+    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
     color: rgb(var(--color-foreground));
     opacity: 0.8;
     font-size: 14px;
     line-height: 1.6;
-    max-width: {{ section.settings.description_max_width }}px;
-    margin-left: {% if section.settings.content_alignment == 'left' %}0{% else %}auto{% endif %};
+    max-width: {{ description_max_width }}px;
+    margin-left: {% if content_alignment == 'left' %}0{% else %}auto{% endif %};
     margin-right: auto;
   }
 
-  #shopify-section-{{ section.id }} .cc-collection-description.quote-style {
+  #shopify-section-{{ section_id }} .cc-collection-description.quote-style {
     font-style: italic;
   }
 
-  #shopify-section-{{ section.id }} .cc-description-attribution {
+  #shopify-section-{{ section_id }} .cc-description-attribution {
     display: block;
     margin-top: 8px;
     font-style: normal;
     opacity: 0.7;
   }
 
-  #shopify-section-{{ section.id }} .cc-bundle-benefits {
+  #shopify-section-{{ section_id }} .cc-bundle-benefits {
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -257,7 +257,7 @@
     justify-content: flex-start;
   }
 
-  #shopify-section-{{ section.id }} .cc-benefits-row {
+  #shopify-section-{{ section_id }} .cc-benefits-row {
     display: flex;
     gap: 24px;
     align-items: center;
@@ -267,15 +267,15 @@
   }
 
   /* Dynamic benefits visibility */
-  #shopify-section-{{ section.id }} .cc-drop-benefits {
+  #shopify-section-{{ section_id }} .cc-drop-benefits {
     display: none;
   }
 
-  #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+  #shopify-section-{{ section_id }} .cc-drop-benefits.active {
     display: flex;
   }
 
-  #shopify-section-{{ section.id }} .cc-benefit-item {
+  #shopify-section-{{ section_id }} .cc-benefit-item {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -283,45 +283,45 @@
     flex-shrink: 0;
   }
 
-  #shopify-section-{{ section.id }} .cc-benefit-check {
+  #shopify-section-{{ section_id }} .cc-benefit-check {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
   }
 
-  #shopify-section-{{ section.id }} .cc-benefit-text {
+  #shopify-section-{{ section_id }} .cc-benefit-text {
     color: rgb(var(--color-foreground));
     white-space: nowrap;
   }
 
-  #shopify-section-{{ section.id }} .cc-products-container {
+  #shopify-section-{{ section_id }} .cc-products-container {
     display: flex;
     flex-direction: column;
     gap: 40px;
-    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-products-wrapper {
+  #shopify-section-{{ section_id }} .cc-products-wrapper {
     width: 100%;
   }
 
-  #shopify-section-{{ section.id }} .cc-products-grid {
+  #shopify-section-{{ section_id }} .cc-products-grid {
     padding: 0;
     margin: 0;
     width: 100%;
   }
 
   /* Product grid layout */
-  #shopify-section-{{ section.id }} .cc-drop-products {
+  #shopify-section-{{ section_id }} .cc-drop-products {
     display: none;
   }
 
-  #shopify-section-{{ section.id }} .cc-drop-products.active {
+  #shopify-section-{{ section_id }} .cc-drop-products.active {
     display: grid;
-    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
-    gap: {{ section.settings.grid_gap_desktop }}px;
+    grid-template-columns: repeat({{ columns_desktop }}, 1fr);
+    gap: {{ grid_gap_desktop }}px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -329,63 +329,63 @@
   }
 
   /* Product card wrapper */
-  #shopify-section-{{ section.id }} .cc-product-card {
+  #shopify-section-{{ section_id }} .cc-product-card {
     width: 100%;
   }
 
   /* Default product card styles */
-  #shopify-section-{{ section.id }} .product-card-link {
+  #shopify-section-{{ section_id }} .product-card-link {
     display: block;
     text-decoration: none;
     color: inherit;
     transition: opacity 0.2s;
   }
 
-  #shopify-section-{{ section.id }} .product-card-link:hover {
+  #shopify-section-{{ section_id }} .product-card-link:hover {
     opacity: 0.9;
   }
 
-  #shopify-section-{{ section.id }} .product-card__image {
+  #shopify-section-{{ section_id }} .product-card__image {
     position: relative;
     width: 100%;
     aspect-ratio: 1/1;
     overflow: hidden;
     background: rgb(var(--color-background));
-    border-radius: {{ section.settings.product_card_border_radius }}px;
+    border-radius: {{ product_card_border_radius }}px;
     margin-bottom: 12px;
   }
 
-  #shopify-section-{{ section.id }} .product-card__image img {
+  #shopify-section-{{ section_id }} .product-card__image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  #shopify-section-{{ section.id }} .product-card__info {
+  #shopify-section-{{ section_id }} .product-card__info {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  #shopify-section-{{ section.id }} .product-card__title {
+  #shopify-section-{{ section_id }} .product-card__title {
     margin: 0;
     line-height: 1.4;
   }
 
-  #shopify-section-{{ section.id }} .product-card__price {
+  #shopify-section-{{ section_id }} .product-card__price {
   }
 
-  #shopify-section-{{ section.id }} .price-sale {
+  #shopify-section-{{ section_id }} .price-sale {
     color: rgb(var(--color-foreground));
   }
 
-  #shopify-section-{{ section.id }} .price-compare {
+  #shopify-section-{{ section_id }} .price-compare {
     text-decoration: line-through;
     opacity: 0.6;
     margin-left: 8px;
   }
 
-  #shopify-section-{{ section.id }} .product-card__badge {
+  #shopify-section-{{ section_id }} .product-card__badge {
     display: inline-block;
     padding: 4px 8px;
     background: rgba(var(--color-foreground), 0.1);
@@ -395,21 +395,21 @@
     letter-spacing: 0.05em;
   }
 
-  #shopify-section-{{ section.id }} .placeholder-svg {
+  #shopify-section-{{ section_id }} .placeholder-svg {
     width: 100%;
     height: 100%;
     opacity: 0.3;
   }
 
-  #shopify-section-{{ section.id }} .cc-add-bundle {
+  #shopify-section-{{ section_id }} .cc-add-bundle {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    align-items: {% if section.settings.content_alignment == 'left' %}flex-start{% else %}center{% endif %};
+    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
     justify-content: center;
   }
 
-  #shopify-section-{{ section.id }} .cc-add-bundle-btn {
+  #shopify-section-{{ section_id }} .cc-add-bundle-btn {
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -418,20 +418,20 @@
   }
 
   @media (max-width: 990px) {
-    #shopify-section-{{ section.id }} .cc-section-content {
+    #shopify-section-{{ section_id }} .cc-section-content {
       padding: 0 0px;
     }
-    #shopify-section-{{ section.id }} .cc-drop-products.active {
+    #shopify-section-{{ section_id }} .cc-drop-products.active {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    #shopify-section-{{ section.id }} .cc-benefits-row,
-    #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+    #shopify-section-{{ section_id }} .cc-benefits-row,
+    #shopify-section-{{ section_id }} .cc-drop-benefits.active {
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
-    #shopify-section-{{ section.id }} .cc-benefit-item {
+    #shopify-section-{{ section_id }} .cc-benefit-item {
       flex-basis: calc(50% - 8px);
       justify-content: center;
     }
@@ -439,23 +439,23 @@
 
   @media (max-width: 749px) {
     /* Mobile grid layout */
-    #shopify-section-{{ section.id }} .cc-drop-products.active {
-      grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
-      gap: {{ section.settings.grid_gap_mobile }}px;
+    #shopify-section-{{ section_id }} .cc-drop-products.active {
+      grid-template-columns: repeat({{ columns_mobile }}, 1fr);
+      gap: {{ grid_gap_mobile }}px;
     }
 
-    #shopify-section-{{ section.id }} .cc-benefits-row,
-    #shopify-section-{{ section.id }} .cc-drop-benefits.active {
+    #shopify-section-{{ section_id }} .cc-benefits-row,
+    #shopify-section-{{ section_id }} .cc-drop-benefits.active {
       gap: 16px;
       justify-content: center;
       flex-direction: column;
     }
-    #shopify-section-{{ section.id }} .cc-benefit-item {
+    #shopify-section-{{ section_id }} .cc-benefit-item {
       justify-content: center;
     }
-    #shopify-section-{{ section.id }} .cc-dropdown-wrapper {
+    #shopify-section-{{ section_id }} .cc-dropdown-wrapper {
       width: 100%;
-      {% if section.settings.content_alignment == 'center' -%}
+      {% if content_alignment == 'center' -%}
         max-width: 320px;
         margin: 0 auto;
       {%- endif %}
@@ -463,14 +463,19 @@
   }
 
   /* Custom CSS */
-  {%- if section.settings.custom_css != blank -%}
-    {{ section.settings.custom_css }}
+  {%- if custom_css != blank -%}
+    {{ custom_css }}
   {%- endif -%}
 {%- endstyle -%}
 
 {%- liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobject
+  assign cc_preview_creator = preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
 
   assign has_creator = false
   if cc_creator != blank
@@ -496,11 +501,11 @@
   assign fallback_collection = nil
   
   if has_drops == false
-    if section.settings.no_drops_behavior == 'hide'
+    if no_drops_behavior == 'hide'
       assign show_section = false
-    elsif section.settings.no_drops_behavior == 'fallback' and section.settings.fallback_collection != blank
+    elsif no_drops_behavior == 'fallback' and fallback_collection != blank
       assign use_fallback = true
-      assign fallback_collection = collections[section.settings.fallback_collection]
+      assign fallback_collection = collections[fallback_collection]
       if fallback_collection and fallback_collection.products_count > 0
         assign show_section = true
       else
@@ -526,60 +531,17 @@
   endif
 -%}
 
-{%- comment -%} Process bracket variables in text fields {%- endcomment -%}
-{%- liquid
-  assign tagline = section.settings.tagline
-  assign header = section.settings.header
-  assign button_text = section.settings.button_text
-  
-  if tagline contains '['
-    assign parts = tagline | split: '['
-    assign tagline = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
-      if field_value != blank
-        assign tagline = tagline | append: field_value | append: subparts[1]
-      else
-        assign tagline = tagline | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if header contains '['
-    assign parts = header | split: '['
-    assign header = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
-      if field_value != blank
-        assign header = header | append: field_value | append: subparts[1]
-      else
-        assign header = header | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if button_text contains '['
-    assign parts = button_text | split: '['
-    assign button_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name] | default: cc_creator[field_name] | default: metaobject[field_name]
-      if field_value != blank
-        assign button_text = button_text | append: field_value | append: subparts[1]
-      else
-        assign button_text = button_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
--%}
+{%- comment -%}
+  Process dynamic text using snippet for bracket replacement with dot notation support.
+  Supports both old format [field-name] and new format [cc_creator.path.to.field]
+  Objects/arrays → JSON, strings → unquoted.
+{%- endcomment -%}
+{% capture tagline %}{% render 'cc-process-dynamic-text', input_text: tagline, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture header %}{% render 'cc-process-dynamic-text', input_text: header, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture button_text %}{% render 'cc-process-dynamic-text', input_text: button_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
 
 {%- if show_section -%}
-<div id="drops-anchor" class="color-{{ section.settings.color_scheme }} isolate gradient section-{{ section.id }}-padding">
+<div id="drops-anchor" class="color-{{ color_scheme }} isolate gradient section-{{ section_id }}-padding">
   <div class="page-width">
     <div class="cc-section-content">
       <div class="cc-section-title">
@@ -596,9 +558,9 @@
 
         {%- if has_drops -%}
           <div class="cc-dropdown-wrapper">
-            <div class="cc-dropdown" id="cc-bundle-dropdown-{{ section.id }}">
-              <button class="cc-dropdown-button" id="cc-dropdown-button-{{ section.id }}">
-                <span class="cc-dropdown-text" id="cc-selected-bundle-{{ section.id }}">
+            <div class="cc-dropdown" id="cc-bundle-dropdown-{{ section_id }}">
+              <button class="cc-dropdown-button" id="cc-dropdown-button-{{ section_id }}">
+                <span class="cc-dropdown-text" id="cc-selected-bundle-{{ section_id }}">
                   {{ selected_drop['cc-creator-drop-title'] | default: selected_drop_collection.title | escape }}
                 </span>
                 <div class="cc-dropdown-icon">
@@ -607,7 +569,7 @@
                   </svg>
                 </div>
               </button>
-              <div class="cc-dropdown-menu" id="cc-dropdown-menu-{{ section.id }}">
+              <div class="cc-dropdown-menu" id="cc-dropdown-menu-{{ section_id }}">
                 {%- for json_drop in drops_json -%}
                   {%- liquid
                     assign drop_id = json_drop['cc-creator-drop-collection-id']
@@ -643,7 +605,7 @@
           {%- comment -%} Collection description {%- endcomment -%}
           {%- if selected_drop_collection and selected_drop_collection.description != blank -%}
             {%- liquid
-              assign description_style = section.settings.description_display_style
+              assign description_style = description_display_style
               assign quote_class = ''
               assign formatted_description = selected_drop_collection.description
               assign attribution = ''
@@ -658,7 +620,7 @@
                 assign attribution = '— ' | append: cc_creator.cc-creator-shop-title
               endif
             -%}
-            <div class="cc-collection-description{{ quote_class }}" id="cc-collection-description-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
+            <div class="cc-collection-description{{ quote_class }}" id="cc-collection-description-{{ section_id }}" data-drop-id="{{ selected_drop_id | escape }}">
               {{ formatted_description }}
               {%- if attribution != blank -%}
                 <span class="cc-description-attribution">{{ attribution | escape }}</span>
@@ -674,32 +636,19 @@
             {%- if use_fallback -%}
               {%- comment -%} Fallback collection display {%- endcomment -%}
               <div class="cc-products-grid cc-drop-products active">
-                {%- for product in fallback_collection.products limit: section.settings.products_to_show -%}
+                {%- for product in fallback_collection.products limit: products_to_show -%}
+                  {%- comment -%} Calculate creator discount pricing using snippet {%- endcomment -%}
+                  {% capture price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
+                  {% capture compare_price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'compare_at_price' %}{% endcapture %}
+                  {% capture has_discount_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'has_creator_discount' %}{% endcapture %}
                   {%- liquid
-                    # Calculate creator discount pricing
-                    if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
-                      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
-                      assign discount_multiplier = 1 | minus: discount
-                      assign display_price = product.price | times: discount_multiplier
-                      assign display_compare_price = product.price
-                      assign has_creator_discount = true
-                    elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
-                      assign discount = cc_creator['cc-collab-discount-amount'] | times: 100
-                      assign display_price = product.price | minus: discount
-                      if display_price < 0
-                        assign display_price = 0
-                      endif
-                      assign display_compare_price = product.price
-                      assign has_creator_discount = true
-                    else
-                      assign display_price = product.price
-                      assign display_compare_price = product.compare_at_price
-                      assign has_creator_discount = false
-                    endif
+                    assign display_price = price_output | plus: 0
+                    assign display_compare_price = compare_price_output | plus: 0
+                    assign has_creator_discount = has_discount_output
                   -%}
                   <div class="cc-product-card">
-                    {%- if section.settings.product_card_snippet != blank -%}
-                      {{ section.settings.product_card_snippet }}
+                    {%- if product_card_snippet != blank -%}
+                      {{ product_card_snippet }}
                     {%- else -%}
                       <a href="{{ product.url }}" class="product-card-link">
                         <div class="product-card__image">
@@ -745,7 +694,7 @@
                 endif
               -%}
               {%- if drop_collection and drop_collection.products_count > 0 -%}
-                <div class="cc-products-grid cc-drop-products{% if forloop.index0 == 0 %} active{% endif %}" id="cc-products-{{ section.id }}-{{ drop_id }}" data-drop-id="{{ drop_id | escape }}">
+                <div class="cc-products-grid cc-drop-products{% if forloop.index0 == 0 %} active{% endif %}" id="cc-products-{{ section_id }}-{{ drop_id }}" data-drop-id="{{ drop_id | escape }}">
                 {%- for json_product in json_drop['cc-creator-drop-products'] -%}
                   {%- liquid
                     assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
@@ -762,31 +711,18 @@
                   -%}
                   {%- if card_product -%}
                     {%- assign product = card_product -%}
+                    {%- comment -%} Calculate creator discount pricing using snippet {%- endcomment -%}
+                    {% capture price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
+                    {% capture compare_price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'compare_at_price' %}{% endcapture %}
+                    {% capture has_discount_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'has_creator_discount' %}{% endcapture %}
                     {%- liquid
-                      # Calculate creator discount pricing
-                      if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
-                        assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
-                        assign discount_multiplier = 1 | minus: discount
-                        assign display_price = product.price | times: discount_multiplier
-                        assign display_compare_price = product.price
-                        assign has_creator_discount = true
-                      elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator != '' and cc_creator != null and cc_creator['cc-collab-discount-amount'] > 0
-                        assign discount = cc_creator['cc-collab-discount-amount'] | times: 100
-                        assign display_price = product.price | minus: discount
-                        if display_price < 0
-                          assign display_price = 0
-                        endif
-                        assign display_compare_price = product.price
-                        assign has_creator_discount = true
-                      else
-                        assign display_price = product.price
-                        assign display_compare_price = product.compare_at_price
-                        assign has_creator_discount = false
-                      endif
+                      assign display_price = price_output | plus: 0
+                      assign display_compare_price = compare_price_output | plus: 0
+                      assign has_creator_discount = has_discount_output
                     -%}
                     <div class="cc-product-card">
-                      {%- if section.settings.product_card_snippet != blank -%}
-                        {{ section.settings.product_card_snippet }}
+                      {%- if product_card_snippet != blank -%}
+                        {{ product_card_snippet }}
                       {%- else -%}
                         <a href="{{ product.url }}" class="product-card-link">
                           <div class="product-card__image">
@@ -823,7 +759,7 @@
 
           {%- if has_drops -%}
             <div class="cc-add-bundle">
-              <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section.id }}" data-drop-id="{{ selected_drop_id | escape }}">
+              <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section_id }}" data-drop-id="{{ selected_drop_id | escape }}">
                 {{ button_text | default: 'Add Bundle to Cart' }}
               </button>
             </div>
@@ -837,7 +773,7 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const sectionId = '{{ section.id }}';
+    const sectionId = '{{ section_id }}';
     const dropdown = document.getElementById('cc-bundle-dropdown-' + sectionId);
     const button = document.getElementById('cc-dropdown-button-' + sectionId);
     const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
@@ -846,7 +782,7 @@
 
     // Section settings
     const buttonText = {{ button_text | default: 'Add Bundle to Cart' | json }};
-    const descriptionStyle = {{ section.settings.description_display_style | json }};
+    const descriptionStyle = {{ description_display_style | json }};
     const creatorFirstName = {{ cc_creator.cc-creator-first-name | json }};
     const creatorShopTitle = {{ cc_creator.cc-creator-shop-title | json }};
 
@@ -1183,301 +1119,3 @@
   });
 </script>
 
-{% schema %}
-{
-  "name": "Products - Curated Lists",
-  "tag": "section",
-  "class": "section",
-  "settings": [
-    {
-      "type": "header",
-      "content": "The Curated Lists Block",
-      "info": "The Curated Lists Block displays curated product lists from your creators in an elegant, switchable grid. Each creator can have multiple 'drops' (collections of products), and customers can seamlessly toggle between them using a dropdown selector. This section is perfect for showcasing expert recommendations, themed bundles, or seasonal collections—all with one-click 'Add Bundle to Cart' functionality that makes purchasing effortless."
-    },
-    {
-      "type": "header",
-      "content": "Before Building",
-      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template, and review the product card and potentially paste in a new snippet. Ensure your creator has drops configured with products assigned. The section will automatically pull in all drops and their associated products from the metaobject data."
-    },
-    {
-      "type": "header",
-      "content": "For Testing",
-      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context with their drops displayed. Switch between drops using the dropdown to test the product grid switching functionality."
-    },
-    {
-      "type": "header",
-      "content": "Content & Text",
-      "info": "Configure all text elements, messaging, and content for your drops section"
-    },
-    {
-      "type": "richtext",
-      "id": "tagline",
-      "label": "Tagline",
-      "default": "<p>EXPERT RECOMMENDATIONS</p>",
-      "info": "Small uppercase text displayed above the main heading. Supports dynamic text: use [cc-creator-first-name], [cc-creator-last-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data."
-    },
-    {
-      "type": "richtext",
-      "id": "header",
-      "label": "Header",
-      "default": "<h2>Carefully Crafted by [cc-creator-first-name]</h2>",
-      "info": "Main heading for the section. Use rich text formatting to style as desired. Supports dynamic text: use [cc-creator-first-name], [cc-collab-discount-amount], or other creator field names in brackets to auto-replace with creator data."
-    },
-    {
-      "type": "range",
-      "id": "header_max_width",
-      "min": 200,
-      "max": 1200,
-      "step": 50,
-      "unit": "px",
-      "label": "Header max width",
-      "default": 800,
-      "info": "Maximum width of the header text container"
-    },
-    {
-      "type": "range",
-      "id": "description_max_width",
-      "min": 200,
-      "max": 1200,
-      "step": 50,
-      "unit": "px",
-      "label": "Description max width",
-      "default": 600,
-      "info": "Maximum width of the drop description text"
-    },
-    {
-      "type": "select",
-      "id": "description_display_style",
-      "label": "Display descriptions as",
-      "options": [
-        {
-          "value": "regular",
-          "label": "Regular descriptions"
-        },
-        {
-          "value": "quote_first_name",
-          "label": "Quotes from first name"
-        },
-        {
-          "value": "quote_shop_title",
-          "label": "Quotes from shop title"
-        }
-      ],
-      "default": "regular",
-      "info": "Choose how to display drop descriptions. Quote styles add quotation marks and attribution."
-    },
-    {
-      "type": "text",
-      "id": "button_text",
-      "label": "Button Text",
-      "default": "Add Bundle to Cart",
-      "info": "Text displayed on the add to cart button. Supports dynamic text: use [cc-creator-first-name] or other creator field names in brackets to auto-replace with creator data."
-    },
-    {
-      "type": "select",
-      "id": "no_drops_behavior",
-      "label": "When No Drops Available",
-      "options": [
-        {
-          "value": "hide",
-          "label": "Hide section"
-        },
-        {
-          "value": "fallback",
-          "label": "Show a fallback collection"
-        }
-      ],
-      "default": "hide",
-      "info": "Choose whether to hide the section or show a fallback collection when creator has no drops"
-    },
-    {
-      "type": "collection",
-      "id": "fallback_collection",
-      "label": "Fallback Collection",
-      "info": "Collection to display when no drops are available (only used if 'Show a fallback collection' is selected above)"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "min": 1,
-      "max": 50,
-      "step": 1,
-      "label": "Products To Show (Fallback)",
-      "default": 12,
-      "info": "Number of products to display from the fallback collection"
-    },
-    {
-      "type": "liquid",
-      "id": "product_card_snippet",
-      "label": "Product Card Snippet",
-      "info": "Custom Liquid code for each product card. Variables: 'product' (Shopify object), 'display_price', 'display_compare_price', 'has_creator_discount'. For drops, 'json_product' includes variant ID. Use any Liquid syntax. Dawn: {% render 'card-product', card_product: product, media_aspect_ratio: 'square' %}"
-    },
-    {
-      "type": "header",
-      "content": "Design & Styling",
-      "info": "Customize colors, layout, product cards, dropdown styling, spacing, and visual appearance"
-    },
-    {
-      "type": "range",
-      "id": "product_card_border_radius",
-      "min": 0,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "label": "Default Product Card Border Radius",
-      "default": 0,
-      "info": "Border radius for default product card images (only applies when not using a custom product card snippet)"
-    },
-    {
-      "type": "range",
-      "id": "dropdown_border_width",
-      "min": 0,
-      "max": 10,
-      "step": 1,
-      "unit": "px",
-      "label": "Dropdown Border Width",
-      "default": 1
-    },
-    {
-      "type": "range",
-      "id": "dropdown_border_radius",
-      "min": 0,
-      "max": 45,
-      "step": 1,
-      "unit": "px",
-      "label": "Dropdown Border Radius",
-      "default": 12
-    },
-    {
-      "type": "select",
-      "id": "content_alignment",
-      "label": "Content Alignment",
-      "options": [
-        {
-          "value": "center",
-          "label": "Center"
-        },
-        {
-          "value": "left",
-          "label": "Left"
-        }
-      ],
-      "default": "center",
-      "info": "Align all content and text to the center or left of the section"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color Scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "color",
-      "id": "dropdown_border_color",
-      "label": "Dropdown Border Color",
-      "default": "#000000"
-    },
-    {
-      "type": "range",
-      "id": "columns_desktop",
-      "min": 1,
-      "max": 5,
-      "step": 1,
-      "label": "Number Of Columns On Desktop",
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns_mobile",
-      "min": 1,
-      "max": 3,
-      "step": 1,
-      "label": "Number Of Columns On Mobile",
-      "default": 2
-    },
-    {
-      "type": "range",
-      "id": "grid_gap_desktop",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Product Grid Gap (Desktop)",
-      "default": 20,
-      "info": "Space between products on desktop"
-    },
-    {
-      "type": "range",
-      "id": "grid_gap_mobile",
-      "min": 0,
-      "max": 60,
-      "step": 4,
-      "unit": "px",
-      "label": "Product Grid Gap (Mobile)",
-      "default": 12,
-      "info": "Space between products on mobile"
-    },
-    {
-      "type": "range",
-      "id": "padding_horizontal_desktop",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Horizontal Padding (Desktop)",
-      "default": 0,
-      "info": "Left and right padding for the section content on desktop"
-    },
-    {
-      "type": "range",
-      "id": "padding_horizontal_mobile",
-      "min": 0,
-      "max": 60,
-      "step": 4,
-      "unit": "px",
-      "label": "Horizontal Padding (Mobile)",
-      "default": 0,
-      "info": "Left and right padding for the section content on mobile"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top Padding",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom Padding",
-      "default": 36
-    },
-    {
-      "type": "header",
-      "content": "Advanced Settings",
-      "info": "Preview functionality and custom styling options"
-    },
-    {
-      "type": "textarea",
-      "id": "custom_css",
-      "label": "Custom CSS",
-      "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-main-title { color: #ff0000; }"
-    }
-  ],
-  "presets": [
-    { 
-      "name": "Products - Curated Lists"
-    }
-  ],
-  "enabled_on": {
-    "templates": ["metaobject"]
-  }
-}
-{% endschema %}

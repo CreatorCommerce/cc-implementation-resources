@@ -1,0 +1,77 @@
+{% comment %}
+  Calculate Creator Discount Price Snippet
+  Calculates the final price for a product based on creator discount settings
+  Returns: JSON object with price, compare_at_price, has_creator_discount
+  
+  Usage: 
+    {% capture price_data %}{% render 'cc-price', product: product, cc_creator: cc_creator %}{% endcapture %}
+    {% assign price_data_obj = price_data | parse_json %}
+    {{ price_data_obj.price }}
+    {{ price_data_obj.compare_at_price }}
+    {{ price_data_obj.has_creator_discount }}
+  
+  OR for simple price display:
+    {% capture discounted_price %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
+    {{ discounted_price }}
+  
+  Parameters:
+    - product: Required. The product object to calculate price for
+    - cc_creator: Optional. If not provided, snippet will attempt to resolve it
+    - output: Optional. Specify 'price', 'compare_at_price', or 'has_creator_discount' for single value output
+              If not specified, outputs JSON object with all three values
+  
+  Note: Always returns price and compare_at_price, even when no discount is applied.
+{% endcomment %}
+
+{% liquid
+  # Use passed cc_creator parameter, or try to resolve it if not provided
+  if cc_creator == blank
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_preview_creator = section.settings.preview_creator
+    
+    assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+    if cc_creator == blank and request.design_mode
+      assign cc_creator = cc_preview_creator
+    endif
+  endif
+
+  # Initialize with product's default prices
+  assign calculated_price = product.price
+  assign calculated_compare_at_price = product.compare_at_price
+  assign has_discount = false
+  
+  # Calculate discount if creator and discount settings are available
+  if cc_creator != blank and cc_creator != null and cc_creator != ''
+    if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator['cc-collab-discount-amount'] > 0
+      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
+      assign discount_multiplier = 1 | minus: discount
+      assign calculated_price = product.price | times: discount_multiplier
+      assign calculated_compare_at_price = product.price
+      assign has_discount = true
+    elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator['cc-collab-discount-amount'] > 0
+      assign discount = cc_creator['cc-collab-discount-amount'] | times: 100
+      assign calculated_price = product.price | minus: discount
+      if calculated_price < 0
+        assign calculated_price = 0
+      endif
+      assign calculated_compare_at_price = product.price
+      assign has_discount = true
+    endif
+  endif
+  
+  # Output based on requested format
+  if output == 'price'
+    # Output just the price value
+    echo calculated_price
+  elsif output == 'compare_at_price'
+    # Output just the compare_at_price value
+    echo calculated_compare_at_price
+  elsif output == 'has_creator_discount'
+    # Output just the boolean value
+    echo has_discount
+  else
+    # Output JSON object with all values (default)
+    assign price_json = '{"price":' | append: calculated_price | append: ',"compare_at_price":' | append: calculated_compare_at_price | append: ',"has_creator_discount":' | append: has_discount | append: '}'
+    echo price_json
+  endif
+%}

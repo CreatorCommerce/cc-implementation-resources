@@ -1,0 +1,300 @@
+{%- comment -%}
+  Hero Primavera Shell Section
+  This shell section contains the schema and renders the base snippet with all settings as parameters
+{%- endcomment -%}
+
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobject
+-%}
+
+{% render 'cc-hero-primavera-base-snippet',
+  eyebrowcopy: section.settings.eyebrowcopy,
+  title: section.settings.title,
+  subtitle: section.settings.subtitle,
+  stars: section.settings.stars,
+  cta_text: section.settings.cta_text,
+  cta_url: section.settings.cta_url,
+  collab_highlight_display: section.settings.collab_highlight_display,
+  carousel_type: section.settings.carousel_type,
+  video_1: section.settings.video_1,
+  background: section.settings.background,
+  background_image: section.settings.background_image,
+  textcolor: section.settings.textcolor,
+  auto_text_contrast: section.settings.auto_text_contrast,
+  eyebrowbackground: section.settings.eyebrowbackground,
+  eyebrowbordercolor: section.settings.eyebrowbordercolor,
+  cta_background: section.settings.cta_background,
+  override_theme_button: section.settings.override_theme_button,
+  border_width_general: section.settings.border_width_general,
+  border_radius: section.settings.border_radius,
+  padding_vertical: section.settings.padding_vertical,
+  accent_text_size: section.settings.accent_text_size,
+  uppercase_accent_text: section.settings.uppercase_accent_text,
+  star_adjustment_spacing: section.settings.star_adjustment_spacing,
+  padding_left: section.settings.padding_left,
+  custom_css: section.settings.custom_css,
+  heading_margin_bottom: section.settings.heading_margin_bottom | default: '',
+  eyebrow_set_uppercase: section.settings.eyebrow_set_uppercase | default: false,
+  autorotate: section.settings.autorotate | default: false,
+  autorotate_speed: section.settings.autorotate_speed | default: 5,
+  border_width: section.settings.border_width | default: 0,
+  border_color: section.settings.border_color | default: '#000000',
+  cc_creator: cc_creator,
+  metaobject: metaobject
+%}
+
+{% schema %}
+{
+  "name": "Hero - Primavera",
+  "tag": "section",
+  "class": "custom-section",
+  "settings": [
+     {
+      "type": "header",
+      "content": "The Primavera Hero Block",
+      "info": "The Primavera Hero Block is your storefront's bold first impression—an immersive, co-branded canvas that fuses video, images, and creator content into one dynamic experience. It's built to grab attention, showcase credibility, and highlight your brand and collaborators in a way that feels both aspirational and authentic. With flexible layouts, trust badges, and rich carousels, this section transforms your hero area into a content-forward stage that drives conversions."
+    },
+     {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. You can use Dynamic Sources with any section/block input (select the icon to the top right of each input) to inject co-branded content without addition developement or code."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context. Bonus tip: in App embeds on the left side of this screen, switch the CreatorCommerce SDK to ON."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements, messaging, and content for your hero section"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "eyebrowcopy",
+      "label": "Creator Badge Text",
+      "default": "Recommended by [cc-creator-first-name]",
+      "info": "Text to display in the creator badge (leave empty to hide badge). Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Heading Text",
+      "default": "<h1>Shop with a big massive leader like [cc-creator-first-name] for something cool</h1>",
+      "info": "Main heading for the section. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Description Text",
+      "default": "Get a [cc-collab-discount-amount]% discount by shopping from my curated collections.",
+      "info": "Description text below the heading. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "stars",
+      "label": "Trust Indicator Text",
+      "default": "Trusted by 10,000 others",
+      "info": "Text to show next to star rating (leave empty to hide trust indicators). Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "cta_text",
+      "label": "Button Text",
+      "default": "Shop Now",
+      "info": "Leave empty to hide button. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL",
+      "info":"Use #drops-anchor to scroll down to a products section"
+      },
+      {
+        "type": "select",
+      "id": "collab_highlight_display",
+      "label": "Show Collab Highlight",
+      "default": "first_name",
+      "info": "Display brand logo and creator name from metaobject data",
+        "options": [
+        {"label": "Using First Name", "value": "first_name"},
+        {"label": "Using Shop Title", "value": "shop_title"},
+        {"label": "No", "value": "no"}
+      ]
+    },
+    {
+      "type": "select",
+      "id": "carousel_type",
+      "label": "Carousel Display Type",
+      "default": "inline",
+      "info": "Choose how the carousel is displayed",
+      "options": [
+        {
+          "value": "social",
+          "label": "Social (Full-screen style)"
+        },
+        {
+          "value": "inline",
+          "label": "Inline (Side-by-side with content)"
+        }
+      ]
+    },
+    {
+      "type": "video",
+      "id": "video_1",
+      "label": "Fallback Video",
+      "info": "Upload a video file to display in the carousel. Creator media from drops will automatically be included if available."
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors, typography, layout, spacing, and visual appearance"
+    },
+        {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default":"#818181",
+      "info": "Main background color for the section"
+    },
+    {
+      "type":"image_picker",
+      "id":"background_image",
+      "label":"Background Image",
+      "info": "Optional background image (will show behind content)"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "label": "Text Color",
+      "default":"#ffffff",
+      "info": "Controls all text color in the section (heading, description, trust indicators, and collaboration highlight text). Note: Initials automatically adjust to black or white based on contrast with the brand color."
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_text_contrast",
+      "label": "Auto-Adjust Text Contrast",
+      "default": false,
+      "info": "Automatically adjust text colors for best readability against background. Best used when setting creator color as background color. Not for use with background images."
+    },
+    {
+      "type": "color",
+      "id": "eyebrowbackground",
+      "label": "Badge Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "eyebrowbordercolor",
+      "label": "Badge Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_background",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "override_theme_button",
+      "label": "Override Theme Button Style",
+      "default": true,
+      "info": "When enabled, uses custom button styling. When disabled, inherits your theme's default button classes for consistent styling."
+    },
+    {
+      "type": "range",
+      "id": "border_width_general",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Border Width",
+      "default": 0,
+      "info": "Controls border width for buttons and badges"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Border Radius",
+      "default": 8,
+      "info": "Controls roundness of corners for creator badge, button, and media items (0 = square corners, 32 = very rounded)"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 6,
+      "step": 0.2,
+      "unit": "rem",
+      "label": "Vertical Padding (All Devices)",
+      "default": 2.6,
+      "info": "Top and bottom padding for the content container"
+    },
+    {
+      "type": "range",
+      "id": "accent_text_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Accent Text Size",
+      "default": 12,
+      "info": "Controls size for collaboration highlight names and trust indicator text"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase_accent_text",
+      "label": "Uppercase Accent Text",
+      "default": false,
+      "info": "Makes creator badge, collaboration highlight, trust indicator, and button text uppercase"
+    },
+    {
+      "type": "range",
+      "id": "star_adjustment_spacing",
+      "min": -10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Vertical Adjustment",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Left Padding (Desktop)",
+      "default": 80,
+      "info": "Left padding for the content container on desktop. Note: Automatically removed when section has no media and is centered."
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Add custom CSS rules here. Example: .hero-content { padding: 20px; }"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero - Primavera"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["metaobject"]
+  }
+}
+{% endschema %}
+

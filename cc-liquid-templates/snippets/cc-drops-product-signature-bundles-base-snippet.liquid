@@ -1,146 +1,84 @@
 {% liquid
-  assign cc_creator = metaobject
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
 %}
 
-{%- comment -%} Process bracket variables in text fields {%- endcomment -%}
-{%- liquid
-  assign eyebrow_text = section.settings.eyebrow_text
-  assign whats_included_text = section.settings.whats_included_text
-  assign button_text = section.settings.button_text
-  assign badge_text = section.settings.badge_text
-  assign badge_circular_text = section.settings.badge_circular_text
-  
-  if eyebrow_text contains '['
-    assign parts = eyebrow_text | split: '['
-    assign eyebrow_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name]
-      if field_value != blank
-        assign eyebrow_text = eyebrow_text | append: field_value | append: subparts[1]
-      else
-        assign eyebrow_text = eyebrow_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if whats_included_text contains '['
-    assign parts = whats_included_text | split: '['
-    assign whats_included_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name]
-      if field_value != blank
-        assign whats_included_text = whats_included_text | append: field_value | append: subparts[1]
-      else
-        assign whats_included_text = whats_included_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if button_text contains '['
-    assign parts = button_text | split: '['
-    assign button_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name]
-      if field_value != blank
-        assign button_text = button_text | append: field_value | append: subparts[1]
-      else
-        assign button_text = button_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if badge_text contains '['
-    assign parts = badge_text | split: '['
-    assign badge_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name]
-      if field_value != blank
-        assign badge_text = badge_text | append: field_value | append: subparts[1]
-      else
-        assign badge_text = badge_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
-  
-  if badge_circular_text contains '['
-    assign parts = badge_circular_text | split: '['
-    assign badge_circular_text = parts[0]
-    for part in parts offset: 1
-      assign subparts = part | split: ']'
-      assign field_name = subparts[0]
-      assign field_value = cc_creator.data.value[field_name]
-      if field_value != blank
-        assign badge_circular_text = badge_circular_text | append: field_value | append: subparts[1]
-      else
-        assign badge_circular_text = badge_circular_text | append: '[' | append: field_name | append: ']' | append: subparts[1]
-      endif
-    endfor
-  endif
--%}
+{%- comment -%}
+  Process dynamic text using snippet for bracket replacement with dot notation support.
+  Supports both old format [field-name] and new format [cc_creator.path.to.field]
+  Objects/arrays → JSON, strings → unquoted.
+{%- endcomment -%}
+{% capture eyebrow_text %}{% render 'cc-process-dynamic-text', input_text: eyebrow_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture whats_included_text %}{% render 'cc-process-dynamic-text', input_text: whats_included_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture button_text %}{% render 'cc-process-dynamic-text', input_text: button_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture badge_text %}{% render 'cc-process-dynamic-text', input_text: badge_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+{% capture badge_circular_text %}{% render 'cc-process-dynamic-text', input_text: badge_circular_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
+
+{%- comment -%}
+  Note: badge_text has a special [discount] placeholder that is handled separately
+  The snippet processes dynamic creator data, but [discount] is replaced later in the template
+{%- endcomment -%}
 
 {%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top_bottom }}px;
-    padding-bottom: {{ section.settings.padding_top_bottom }}px;
+  .section-{{ section_id }}-padding {
+    padding-top: {{ padding_top_bottom }}px;
+    padding-bottom: {{ padding_top_bottom }}px;
   }
 
-  #shopify-section-{{ section.id }} .page-width {
-    padding-left: {{ section.settings.padding_left_right_desktop }}px;
-    padding-right: {{ section.settings.padding_left_right_desktop }}px;
-    max-width: {{ section.settings.max_width }}px;
+  #shopify-section-{{ section_id }} .page-width {
+    padding-left: {{ padding_left_right_desktop }}px;
+    padding-right: {{ padding_left_right_desktop }}px;
+    max-width: {{ max_width }}px;
     display: flex;
     flex-direction: column;
-    gap: {{ section.settings.drop_gap }}px;
+    gap: {{ drop_gap }}px;
     margin: 0 auto;
   }
 
   @media (max-width: 749px) {
-    #shopify-section-{{ section.id }} .page-width {
-      padding-left: {{ section.settings.padding_left_right_mobile }}px;
-      padding-right: {{ section.settings.padding_left_right_mobile }}px;
+    #shopify-section-{{ section_id }} .page-width {
+      padding-left: {{ padding_left_right_mobile }}px;
+      padding-right: {{ padding_left_right_mobile }}px;
     }
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} isolate gradient section-{{ section.id }}-padding" data-aspect-ratio="{{ section.settings.image_aspect_ratio }}">
+<div class="color-{{ color_scheme }} isolate gradient section-{{ section_id }}-padding" data-aspect-ratio="{{ image_aspect_ratio }}">
   <div class="page-width">
   <style>
     /* Dynamic section styling based on settings */
     
     /* Aspect ratio settings */
-    #shopify-section-{{ section.id }} [data-aspect-ratio="square"] .cc-bundle-left img {
+    #shopify-section-{{ section_id }} [data-aspect-ratio="square"] .cc-bundle-left img {
       aspect-ratio: 1 / 1;
     }
-    #shopify-section-{{ section.id }} [data-aspect-ratio="portrait"] .cc-bundle-left img {
+    #shopify-section-{{ section_id }} [data-aspect-ratio="portrait"] .cc-bundle-left img {
       aspect-ratio: 3 / 4;
     }
     
     /* Image corner radius settings */
-    #shopify-section-{{ section.id }} .cc-bundle-left img {
-      border-radius: {{ section.settings.large_image_corner_radius }}px;
+    #shopify-section-{{ section_id }} .cc-bundle-left img {
+      border-radius: {{ large_image_corner_radius }}px;
     }
     
-    #shopify-section-{{ section.id }} .bundle-img img {
-      border-radius: {{ section.settings.small_image_corner_radius }}px;
+    #shopify-section-{{ section_id }} .bundle-img img {
+      border-radius: {{ small_image_corner_radius }}px;
     }
 
-    #shopify-section-{{ section.id }} .cc-bundle-right {
+    #shopify-section-{{ section_id }} .cc-bundle-right {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
     /* Custom CSS */
-    {%- if section.settings.custom_css != blank -%}
-      {{ section.settings.custom_css }}
+    {%- if custom_css != blank -%}
+      {{ custom_css }}
     {%- endif -%}
   </style>
   {% if cc_creator.data.value['cc-creator-drops'] %}
@@ -180,10 +118,10 @@
 
       {% comment %} Check if bundle meets price criteria {% endcomment %}
       {% assign show_bundle = false %}
-      {% if section.settings.max_bundle_price == blank %}
+      {% if max_bundle_price == blank %}
         {% assign show_bundle = true %}
       {% else %}
-        {% assign max_price_cents = section.settings.max_bundle_price | times: 100 %}
+        {% assign max_price_cents = max_bundle_price | times: 100 %}
         {% if bundle_total_cents <= max_price_cents %}
           {% assign show_bundle = true %}
         {% endif %}
@@ -193,13 +131,13 @@
         {% comment %} Alternate left/right on desktop based on loop index and starting position {% endcomment %}
         {% assign is_even = forloop.index0 | modulo: 2 %}
         {% assign should_reverse = false %}
-        {% if section.settings.alternate_layout %}
-          {% if section.settings.desktop_layout == 'left' and is_even == 1 %}
+        {% if alternate_layout %}
+          {% if desktop_layout == 'left' and is_even == 1 %}
             {% assign should_reverse = true %}
-          {% elsif section.settings.desktop_layout == 'right' and is_even == 0 %}
+          {% elsif desktop_layout == 'right' and is_even == 0 %}
             {% assign should_reverse = true %}
           {% endif %}
-        {% elsif section.settings.desktop_layout == 'right' %}
+        {% elsif desktop_layout == 'right' %}
           {% assign should_reverse = true %}
         {% endif %}
 
@@ -225,9 +163,9 @@
             </div>
 
             {% if badge_text != blank %}
-            <div class="cc-bundle-badge" style="background-color: {{ section.settings.badge_background_color }};">
+            <div class="cc-bundle-badge" style="background-color: {{ badge_background_color }};">
               <div class="badge-inner">
-                <p style="color: {{ section.settings.badge_text_color }};">{{ badge_text | replace: '[discount]', cc_creator.data.value['cc-collab-tier-discount-amount'] }}</p>
+                <p style="color: {{ badge_text_color }};">{{ badge_text | replace: '[discount]', cc_creator.data.value['cc-collab-tier-discount-amount'] }}</p>
               </div>
 
               <svg viewBox="0 0 200 200" class="badge-text" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -235,7 +173,7 @@
                   <path id="circlePath" d="M100,100 m-75,0 a75,75 0 1,1 150,0 a75,75 0 1,1 -150,0" />
                 </defs>
 
-                <text dy="5" fill="{{ section.settings.badge_text_color }}">
+                <text dy="5" fill="{{ badge_text_color }}">
                   <textPath href="#circlePath" startOffset="0%">
                     {{ badge_circular_text }}
                   </textPath>
@@ -254,11 +192,11 @@
                 {{ cc_creator.data.value['cc-creator-first-name'] }} {{ cc_creator.data.value['cc-creator-last-name'] }}
               {% endif %}
             </p>
-            {% if section.settings.title_size == 'h1' %}
+            {% if title_size == 'h1' %}
               <h1 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h1>
-            {% elsif section.settings.title_size == 'h2' %}
+            {% elsif title_size == 'h2' %}
               <h2 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
-            {% elsif section.settings.title_size == 'h3' %}
+            {% elsif title_size == 'h3' %}
               <h3 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h3>
             {% else %}
               <h2 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
@@ -271,7 +209,7 @@
                 {% assign final_price_cents = total_price_cents | minus: discount_amount_cents %}
 
                 <div class="cc-bundle-pricing">
-                  <p class="cc-discounted-price" style="{% if section.settings.bold_bundle_price %}font-weight: 700;{% else %}font-weight: 400;{% endif %}">
+                  <p class="cc-discounted-price" style="{% if bold_bundle_price %}font-weight: 700;{% else %}font-weight: 400;{% endif %}">
                     {{ final_price_cents | money }}
                     <span class="cc-original-price">{{ total_price_cents | money }}</span>
                   </p>
@@ -315,7 +253,7 @@
                            </div>
                          {% endif %}
                          <div class="bundle-info">
-                           {% if section.settings.show_vendor %}
+                           {% if show_vendor %}
                              <p class="bundle-vendor">{{ product['vendor'] }}</p>
                            {% endif %}
                            <a href="{{ product['url'] }}" class="bundle-product-link">
@@ -324,7 +262,7 @@
                           {% if product['variant_title'] %}
                             <p class="bundle-size">Product Size: {{ product['variant_title'] }}</p>
                           {% endif %}
-                          {% if section.settings.show_price %}
+                          {% if show_price %}
                             {% assign product_price_cents = blank %}
                             {% for variant in product.variants %}
                               {% assign raw_price = variant.price %}
@@ -374,7 +312,7 @@
                          </div>
                        {% endif %}
                        <div class="bundle-info">
-                         {% if section.settings.show_vendor %}
+                         {% if show_vendor %}
                            <p class="bundle-vendor">{{ product['vendor'] }}</p>
                          {% endif %}
                          <a href="{{ product['url'] }}" class="bundle-product-link">
@@ -383,7 +321,7 @@
                         {% if product['variant_title'] %}
                           <p class="bundle-size">Product Size: {{ product['variant_title'] }}</p>
                         {% endif %}
-                        {% if section.settings.show_price %}
+                        {% if show_price %}
                           {% assign product_price_cents = blank %}
                           {% for variant in product.variants %}
                             {% assign raw_price = variant.price %}
@@ -505,7 +443,7 @@
 .cc-bundle-left img {
     max-width: 650px;
     width: 100%;
-    border-radius: {{ section.settings.large_image_corner_radius }}px;
+    border-radius: {{ large_image_corner_radius }}px;
     object-fit: cover;
     object-position: center;
 }
@@ -516,7 +454,7 @@
     height: 100%;
     position:relative;
     background: #F6F6F6;
-    border-radius: {{ section.settings.large_image_corner_radius }}px;
+    border-radius: {{ large_image_corner_radius }}px;
 }
 .bundle-container {
     display: flex;
@@ -790,7 +728,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     height:100px;
   }
   .bundle-item{
-    align-items: {% if section.settings.show_vendor or section.settings.show_price %}flex-start{% else %}center{% endif %};
+    align-items: {% if show_vendor or show_price %}flex-start{% else %}center{% endif %};
   }
 }
 @media only screen and (max-width:600px){
@@ -1023,282 +961,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-{% schema %}
-{
-  "name": "Products - Bundles",
-  "tag": "section",
-  "class": "section",
-  "settings": [
-    {
-      "type": "header",
-      "content": "The Signature Bundles Block",
-      "info": "The Signature Bundles Block displays curated product bundles from your creators with rich imagery, detailed product breakdowns, and one-click 'Add All to Cart' functionality. This section features a hero-style layout with a carousel of bundle images, product details, and an optional savings badge—perfect for showcasing premium product collections that deserve extra attention."
-    },
-    {
-      "type": "header",
-      "content": "Before Building",
-      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured as bundles with products assigned and that the total bundle price is within your maximum price threshold. The section will automatically display all qualifying bundles from the creator's drops data."
-    },
-    {
-      "type": "header",
-      "content": "For Testing",
-      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context with their bundles displayed. Verify the products, pricing calculations, and add-to-cart behavior work as expected."
-    },
-    {
-      "type": "header",
-      "content": "Content & Text",
-      "info": "Configure all text elements, messaging, and content for your bundle display"
-    },
-    {
-      "type": "number",
-      "id": "max_bundle_price",
-      "label": "Maximum Bundle Price",
-      "info": "Only show bundles with a total price at or below this amount (in your store's base currency, e.g., 100 for $100.00). Leave blank to show all bundles regardless of price.",
-      "default": 500
-    },
-    {
-      "type": "text",
-      "id": "eyebrow_text",
-      "label": "Eyebrow Text",
-      "info": "Small text displayed above the bundle title. Leave blank to use creator's full name. Supports dynamic text: use [cc-creator-first-name], [cc-creator-last-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data.",
-      "default": "A signature bundle by [cc-creator-first-name]"
-    },
-    {
-      "type": "select",
-      "id": "title_size",
-      "label": "Bundle Title Size",
-      "options": [
-        {
-          "value": "h1",
-          "label": "H1"
-        },
-        {
-          "value": "h2",
-          "label": "H2"
-        },
-        {
-          "value": "h3",
-          "label": "H3"
-        }
-      ],
-      "default": "h2",
-      "info": "HTML heading size for the bundle title"
-    },
-    {
-      "type": "richtext",
-      "id": "whats_included_text",
-      "label": "What's Included Heading",
-      "info": "Heading text for the included products section. Leave blank to hide the heading entirely. Supports dynamic text: use [cc-creator-first-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data.",
-      "default": "<h5>What's Included</h5>"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show Product Vendor",
-      "info": "Display the vendor name on each product in the bundle",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_price",
-      "label": "Show Individual Product Prices",
-      "info": "Display prices for each product within the bundle (with discount applied)",
-      "default": false
-    },
-    {
-      "type": "text",
-      "id": "button_text",
-      "label": "Button Text",
-      "info": "Text displayed on the 'Add All to Cart' button. Supports dynamic text: use [cc-creator-first-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data.",
-      "default": "Add Bundle To Cart"
-    },
-    {
-      "type": "textarea",
-      "id": "badge_text",
-      "label": "Save Badge Text",
-      "info": "Text displayed in the savings badge. Use [discount] to insert the discount percentage. Supports dynamic text: use [cc-creator-first-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data. Leave blank to hide the badge entirely.",
-      "default": "Save<br><span>[discount]%</span>"
-    },
-    {
-      "type": "text",
-      "id": "badge_circular_text",
-      "label": "Badge Circular Text",
-      "info": "Text that circles around the badge (always visible when badge is shown). Supports dynamic text: use [cc-creator-first-name], [cc-creator-shop-title], or other creator field names in brackets to auto-replace with creator data.",
-      "default": "PROFESSIONAL GRADE PRODUCTS • BROUGH TO YOU BY US •"
-    },
-    {
-      "type": "checkbox",
-      "id": "bold_bundle_price",
-      "label": "Bold Bundle Price",
-      "info": "Make the discounted bundle price bold",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Layout & Structure",
-      "info": "Configure the visual layout and structure of the bundle display"
-    },
-    {
-      "type": "select",
-      "id": "desktop_layout",
-      "label": "Desktop Layout (First Bundle)",
-      "options": [
-        {
-          "value": "left",
-          "label": "Image Left"
-        },
-        {
-          "value": "right",
-          "label": "Image Right"
-        }
-      ],
-      "default": "left",
-      "info": "Position of the image carousel for the first bundle on desktop (mobile always stacks vertically)"
-    },
-    {
-      "type": "checkbox",
-      "id": "alternate_layout",
-      "label": "Alternate Layout For Each Bundle",
-      "default": true,
-      "info": "Toggle to alternate the image position (left/right) for each subsequent bundle on desktop. The first bundle uses the 'Desktop layout' setting above."
-    },
-    {
-      "type": "select",
-      "id": "image_aspect_ratio",
-      "label": "Image Aspect Ratio",
-      "options": [
-        {
-          "value": "square",
-          "label": "Square (1:1)"
-        },
-        {
-          "value": "portrait",
-          "label": "Portrait (3:4)"
-        }
-      ],
-      "default": "square",
-      "info": "Aspect ratio for the main bundle carousel images"
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "min": 1000,
-      "max": 1600,
-      "step": 50,
-      "unit": "px",
-      "label": "Maximum Section Width",
-      "default": 1200,
-      "info": "Maximum width of the entire bundle section"
-    },
-    {
-      "type": "range",
-      "id": "large_image_corner_radius",
-      "min": 0,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "label": "Large Image Corner Radius",
-      "default": 10,
-      "info": "Border radius for main carousel images"
-    },
-    {
-      "type": "range",
-      "id": "small_image_corner_radius",
-      "min": 0,
-      "max": 25,
-      "step": 1,
-      "unit": "px",
-      "label": "Small Image Corner Radius",
-      "default": 8,
-      "info": "Border radius for product thumbnail images"
-    },
-    {
-      "type": "range",
-      "id": "padding_top_bottom",
-      "min": 0,
-      "max": 200,
-      "step": 5,
-      "unit": "px",
-      "label": "Top & Bottom Padding",
-      "default": 50,
-      "info": "Vertical padding for the section (applies to both desktop and mobile)"
-    },
-    {
-      "type": "range",
-      "id": "padding_left_right_desktop",
-      "min": 0,
-      "max": 100,
-      "step": 5,
-      "unit": "px",
-      "label": "Left & Right Padding (Desktop)",
-      "default": 0,
-      "info": "Horizontal padding for the section on desktop"
-    },
-    {
-      "type": "range",
-      "id": "padding_left_right_mobile",
-      "min": 0,
-      "max": 60,
-      "step": 5,
-      "unit": "px",
-      "label": "Left & Right Padding (Mobile)",
-      "default": 0,
-      "info": "Horizontal padding for the section on mobile"
-    },
-    {
-      "type": "range",
-      "id": "drop_gap",
-      "min": 0,
-      "max": 200,
-      "step": 10,
-      "unit": "px",
-      "label": "Gap Between Bundles",
-      "default": 100,
-      "info": "Vertical space between each bundle when multiple bundles are displayed"
-    },
-    {
-      "type": "header",
-      "content": "Design & Styling",
-      "info": "Customize colors and visual appearance"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "Color Scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "color",
-      "id": "badge_background_color",
-      "label": "Badge Background Color",
-      "default": "#8B0D2F"
-    },
-    {
-      "type": "color",
-      "id": "badge_text_color",
-      "label": "Badge Text Color",
-      "info": "Color for both the center text and the animated circular text",
-      "default": "#ffffff"
-    },
-    {
-      "type": "header",
-      "content": "Advanced Settings",
-      "info": "Preview functionality and custom styling options"
-    },
-    {
-      "type": "textarea",
-      "id": "custom_css",
-      "label": "Custom CSS",
-      "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-title { color: #ff0000; }"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Products - Signature Bundles"
-    }
-  ],
-  "enabled_on": {
-    "templates": ["metaobject"]
-  }
-}
-{% endschema %}

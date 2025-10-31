@@ -1,0 +1,102 @@
+{% comment %}
+  Calculate Contrast Color Snippet
+  Converts a hex color to RGB, calculates brightness, and returns appropriate contrast color (black or white)
+  
+  Usage: 
+    {% capture computed_text_color %}{% render 'cc-calculate-contrast-color', hex_color: section.settings.background, fallback_color: '#000000' %}{% endcapture %}
+    {% capture eyebrow_text_color %}{% render 'cc-calculate-contrast-color', hex_color: section.settings.eyebrowbackground, fallback_color: '#000000' %}{% endcapture %}
+    {% capture cta_text_color %}{% render 'cc-calculate-contrast-color', hex_color: section.settings.cta_background, fallback_color: computed_text_color %}{% endcapture %}
+  
+  Parameters:
+    - hex_color: The hex color to calculate contrast for (can be null/blank/transparent/rgba with alpha 0)
+    - fallback_color: Optional fallback contrast color to return if hex_color is invalid (defaults to '#000000' if not provided)
+  
+  Returns:
+    - Outputs either '#000000' (black) or '#ffffff' (white)
+    - If hex_color is invalid (blank/null/transparent/rgba with alpha 0), returns fallback_color directly
+  
+  Note: hex_color should include the # symbol (e.g., '#FF5733' or '#ffffff')
+  If hex_color is invalid, fallback_color is returned directly without calculation.
+{% endcomment %}
+
+{% liquid
+  # Check if hex_color is invalid (blank, null, transparent, or rgba with alpha 0)
+  assign hex_color_raw = hex_color | downcase | strip
+  assign is_invalid = false
+  
+  if hex_color == blank or hex_color == null or hex_color_raw == '' or hex_color_raw == 'transparent'
+    assign is_invalid = true
+  elsif hex_color_raw contains 'rgba(0,0,0,0)' or hex_color_raw contains 'rgba(255,255,255,0)'
+    assign is_invalid = true
+  endif
+  
+  # If invalid, return fallback_color directly (or default to black)
+  if is_invalid
+    if fallback_color != blank and fallback_color != null
+      assign contrast_color = fallback_color
+    else
+      # Default to black if no fallback provided
+      assign contrast_color = '#000000'
+    endif
+  else
+    # Normal contrast calculation for valid colors
+    assign bg_color = hex_color | remove: '#' | upcase
+    assign hex_chars = 'ABCDEF'
+    
+    assign r_hex = bg_color | slice: 0, 2
+    assign g_hex = bg_color | slice: 2, 2
+    assign b_hex = bg_color | slice: 4, 2
+    
+    assign r1 = r_hex | slice: 0, 1
+    assign r2 = r_hex | slice: 1, 1
+    if hex_chars contains r1
+      assign r1_val = hex_chars | split: '' | index: r1 | plus: 10
+    else
+      assign r1_val = r1 | times: 1
+    endif
+    if hex_chars contains r2
+      assign r2_val = hex_chars | split: '' | index: r2 | plus: 10
+    else
+      assign r2_val = r2 | times: 1
+    endif
+    assign r = r1_val | times: 16 | plus: r2_val
+    
+    assign g1 = g_hex | slice: 0, 1
+    assign g2 = g_hex | slice: 1, 1
+    if hex_chars contains g1
+      assign g1_val = hex_chars | split: '' | index: g1 | plus: 10
+    else
+      assign g1_val = g1 | times: 1
+    endif
+    if hex_chars contains g2
+      assign g2_val = hex_chars | split: '' | index: g2 | plus: 10
+    else
+      assign g2_val = g2 | times: 1
+    endif
+    assign g = g1_val | times: 16 | plus: g2_val
+    
+    assign b1 = b_hex | slice: 0, 1
+    assign b2 = b_hex | slice: 1, 1
+    if hex_chars contains b1
+      assign b1_val = hex_chars | split: '' | index: b1 | plus: 10
+    else
+      assign b1_val = b1 | times: 1
+    endif
+    if hex_chars contains b2
+      assign b2_val = hex_chars | split: '' | index: b2 | plus: 10
+    else
+      assign b2_val = b2 | times: 1
+    endif
+    assign b = b1_val | times: 16 | plus: b2_val
+    
+    assign brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000
+    
+    if brightness > 128
+      assign contrast_color = '#000000'
+    else
+      assign contrast_color = '#ffffff'
+    endif
+  endif
+%}
+
+{{- contrast_color -}}

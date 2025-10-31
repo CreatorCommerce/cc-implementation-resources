@@ -1,0 +1,330 @@
+{%- comment -%}
+  Products - Signature Bundles Shell Section
+  This shell section contains the schema and renders the base snippet with all settings as parameters
+{%- endcomment -%}
+
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = section.settings.preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+-%}
+
+{% render 'cc-drops-product-signature-bundles-base-snippet',
+  max_bundle_price: section.settings.max_bundle_price,
+  eyebrow_text: section.settings.eyebrow_text,
+  title_size: section.settings.title_size,
+  whats_included_text: section.settings.whats_included_text,
+  show_vendor: section.settings.show_vendor,
+  show_price: section.settings.show_price,
+  button_text: section.settings.button_text,
+  badge_text: section.settings.badge_text,
+  badge_circular_text: section.settings.badge_circular_text,
+  bold_bundle_price: section.settings.bold_bundle_price,
+  desktop_layout: section.settings.desktop_layout,
+  alternate_layout: section.settings.alternate_layout,
+  image_aspect_ratio: section.settings.image_aspect_ratio,
+  max_width: section.settings.max_width,
+  large_image_corner_radius: section.settings.large_image_corner_radius,
+  small_image_corner_radius: section.settings.small_image_corner_radius,
+  padding_top_bottom: section.settings.padding_top_bottom,
+  padding_left_right_desktop: section.settings.padding_left_right_desktop,
+  padding_left_right_mobile: section.settings.padding_left_right_mobile,
+  drop_gap: section.settings.drop_gap,
+  color_scheme: section.settings.color_scheme,
+  badge_background_color: section.settings.badge_background_color,
+  badge_text_color: section.settings.badge_text_color,
+  preview_creator: section.settings.preview_creator,
+  custom_css: section.settings.custom_css,
+  section_id: section.id,
+  cc_creator: cc_creator,
+  metaobject: metaobject
+%}
+
+{% schema %}
+{
+  "name": "Products - Bundles",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The Signature Bundles Block",
+      "info": "The Signature Bundles Block displays curated product bundles from your creators with rich imagery, detailed product breakdowns, and one-click 'Add All to Cart' functionality. This section features a hero-style layout with a carousel of bundle images, product details, and an optional savings badge—perfect for showcasing premium product collections that deserve extra attention."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured as bundles with products assigned and that the total bundle price is within your maximum price threshold. The section will automatically display all qualifying bundles from the creator's drops data."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context with their bundles displayed. Verify the products, pricing calculations, and add-to-cart behavior work as expected."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements, messaging, and content for your bundle display"
+    },
+    {
+      "type": "number",
+      "id": "max_bundle_price",
+      "label": "Maximum Bundle Price",
+      "info": "Only show bundles with a total price at or below this amount (in your store's base currency, e.g., 100 for $100.00). Leave blank to show all bundles regardless of price.",
+      "default": 500
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow Text",
+      "info": "Small text displayed above the bundle title. Leave blank to use creator's full name. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted.",
+      "default": "A signature bundle by [cc-creator-first-name]"
+    },
+    {
+      "type": "select",
+      "id": "title_size",
+      "label": "Bundle Title Size",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        }
+      ],
+      "default": "h2",
+      "info": "HTML heading size for the bundle title"
+    },
+    {
+      "type": "richtext",
+      "id": "whats_included_text",
+      "label": "What's Included Heading",
+      "info": "Heading text for the included products section. Leave blank to hide the heading entirely. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted.",
+      "default": "<h5>What's Included</h5>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Product Vendor",
+      "info": "Display the vendor name on each product in the bundle",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show Individual Product Prices",
+      "info": "Display prices for each product within the bundle (with discount applied)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "info": "Text displayed on the 'Add All to Cart' button. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted.",
+      "default": "Add Bundle To Cart"
+    },
+    {
+      "type": "textarea",
+      "id": "badge_text",
+      "label": "Save Badge Text",
+      "info": "Text displayed in the savings badge. Use [discount] to insert the discount percentage. Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted. Leave blank to hide the badge entirely.",
+      "default": "Save<br><span>[discount]%</span>"
+    },
+    {
+      "type": "text",
+      "id": "badge_circular_text",
+      "label": "Badge Circular Text",
+      "info": "Text that circles around the badge (always visible when badge is shown). Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted.",
+      "default": "PROFESSIONAL GRADE PRODUCTS • BROUGH TO YOU BY US •"
+    },
+    {
+      "type": "checkbox",
+      "id": "bold_bundle_price",
+      "label": "Bold Bundle Price",
+      "info": "Make the discounted bundle price bold",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout & Structure",
+      "info": "Configure the visual layout and structure of the bundle display"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop Layout (First Bundle)",
+      "options": [
+        {
+          "value": "left",
+          "label": "Image Left"
+        },
+        {
+          "value": "right",
+          "label": "Image Right"
+        }
+      ],
+      "default": "left",
+      "info": "Position of the image carousel for the first bundle on desktop (mobile always stacks vertically)"
+    },
+    {
+      "type": "checkbox",
+      "id": "alternate_layout",
+      "label": "Alternate Layout For Each Bundle",
+      "default": true,
+      "info": "Toggle to alternate the image position (left/right) for each subsequent bundle on desktop. The first bundle uses the 'Desktop layout' setting above."
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image Aspect Ratio",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait (3:4)"
+        }
+      ],
+      "default": "square",
+      "info": "Aspect ratio for the main bundle carousel images"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Maximum Section Width",
+      "default": 1200,
+      "info": "Maximum width of the entire bundle section"
+    },
+    {
+      "type": "range",
+      "id": "large_image_corner_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Large Image Corner Radius",
+      "default": 10,
+      "info": "Border radius for main carousel images"
+    },
+    {
+      "type": "range",
+      "id": "small_image_corner_radius",
+      "min": 0,
+      "max": 25,
+      "step": 1,
+      "unit": "px",
+      "label": "Small Image Corner Radius",
+      "default": 8,
+      "info": "Border radius for product thumbnail images"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Top & Bottom Padding",
+      "default": 50,
+      "info": "Vertical padding for the section (applies to both desktop and mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_left_right_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Left & Right Padding (Desktop)",
+      "default": 0,
+      "info": "Horizontal padding for the section on desktop"
+    },
+    {
+      "type": "range",
+      "id": "padding_left_right_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "label": "Left & Right Padding (Mobile)",
+      "default": 0,
+      "info": "Horizontal padding for the section on mobile"
+    },
+    {
+      "type": "range",
+      "id": "drop_gap",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Gap Between Bundles",
+      "default": 100,
+      "info": "Vertical space between each bundle when multiple bundles are displayed"
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors and visual appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "Badge Background Color",
+      "default": "#8B0D2F"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "info": "Color for both the center text and the animated circular text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info":"Select any creator to preview this block with. Helpful for seeing how different data responds & looks in the block. This will not be seen on the live site.",
+      "metaobject_type": "creator"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-title { color: #ff0000; }"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products - Signature Bundles"
+    }
+  ]
+}
+{% endschema %}
+
