@@ -68,7 +68,7 @@
     }
   }
 {%- endstyle -%}
-
+{% if request.design_mode %}
 <div class="cc-instructions-container">
   <div class="cc-instructions-content">
     <img 
@@ -80,7 +80,7 @@
     
     <div class="cc-instructions-text">
       <p>
-        CreatorCommerce doesn't use typical App Blocks because we integrate tightly with your theme. Instead, to access our out-of-the-box sections & blocks, head to the "Sections" tab & search for "CC" to see what's available.
+        CreatorCommerce doesn't use typical App Blocks because we integrate across your theme. Instead, to access our out-of-the-box sections & blocks, <strong>head to the "Sections" tab → then search for "CC" to see what's available</strong>.
       </p>
       <p>
         If you need help, visit our <a href="https://creatorcommerce.shop/brand-help-center/app-blocks-101---build-with-out-of-the-box-ui" target="_blank" rel="noopener noreferrer">product documentation</a>. If you don't end up finding the section you're looking for, contact: <a href="mailto:help@creatorcommerce.shop" target="_blank" rel="noopener noreferrer">help@creatorcommerce.shop</a>
@@ -100,7 +100,7 @@
     </a>
   </div>
 </div>
-
+{% endif %}
 {% schema %}
 {
   "name": "CC App Blocks",
@@ -110,7 +110,7 @@
     {
       "type": "header",
       "content": "⚠️ This is not the block you are looking for",
-      "info": "CreatorCommerce doesn't use typical App Blocks because we integrate tightly with your theme. Instead, to access our out-of-the-box sections & blocks, head to the \"Sections\" tab & search for \"CC\" to see what's available. If you need help, visit our product documentation. If you don't end up finding the section you're looking for, contact: help@creatorcommerce.shop"
+      "info": "CreatorCommerce doesn't use typical App Blocks because we integrate across your theme. Instead, to access our out-of-the-box sections & blocks, head to the \"Sections\" tab → then search for \"CC\" to see what's available. If you need help, visit our product documentation. If you don't end up finding the section you're looking for, contact: help@creatorcommerce.shop"
     },
     {
       "type": "header",
