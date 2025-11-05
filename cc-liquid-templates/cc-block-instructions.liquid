@@ -1,0 +1,131 @@
+{%- style -%}
+  .cc-instructions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+    height: 75vh;
+    padding: 50px;
+    text-align: center;
+  }
+
+  .cc-instructions-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    max-width: 800px;
+    width: 100%;
+  }
+
+  .cc-instructions-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    display: block;
+  }
+
+  .cc-instructions-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: inherit;
+  }
+
+  .cc-instructions-text a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .cc-instructions-text a:hover {
+    opacity: 0.8;
+  }
+
+  .cc-instructions-logo {
+    max-width: 150px;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .cc-instructions-logo-link {
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .cc-instructions-logo-link:hover {
+    opacity: 0.9;
+  }
+
+  @media screen and (max-width: 768px) {
+    .cc-instructions-container {
+      padding: 20px 15px;
+    }
+
+    .cc-instructions-text {
+      font-size: 14px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="cc-instructions-container">
+  <div class="cc-instructions-content">
+    <img 
+      src="https://pub-5ef10fe8b7fe493385209b25566c7cc7.r2.dev/6EA6B4D0-EB58-47C2-A8C1-C940E30F5F51.PNG"
+      alt="CreatorCommerce App Blocks Information"
+      class="cc-instructions-image"
+      loading="lazy"
+    >
+    
+    <div class="cc-instructions-text">
+      <p>
+        CreatorCommerce doesn't use typical App Blocks because we integrate tightly with your theme. Instead, to access our out-of-the-box sections & blocks, head to the "Sections" tab & search for "CC" to see what's available.
+      </p>
+      <p>
+        If you need help, visit our <a href="https://creatorcommerce.shop/brand-help-center/app-blocks-101---build-with-out-of-the-box-ui" target="_blank" rel="noopener noreferrer">product documentation</a>. If you don't end up finding the section you're looking for, contact: <a href="mailto:help@creatorcommerce.shop" target="_blank" rel="noopener noreferrer">help@creatorcommerce.shop</a>
+      </p>
+      <p>
+      P.S. 🗑️ Remove this block before saving!
+      </p>
+    </div>
+
+    <a href="https://creatorcommerce.shop/" target="_blank" rel="noopener noreferrer" class="cc-instructions-logo-link">
+      <img 
+        src="https://pub-5ef10fe8b7fe493385209b25566c7cc7.r2.dev/H_Lockup_Black%402x.png"
+        alt="CreatorCommerce Logo"
+        class="cc-instructions-logo"
+        loading="lazy"
+      >
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CC App Blocks",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "⚠️ This is not the block you are looking for",
+      "info": "CreatorCommerce doesn't use typical App Blocks because we integrate tightly with your theme. Instead, to access our out-of-the-box sections & blocks, head to the \"Sections\" tab & search for \"CC\" to see what's available. If you need help, visit our product documentation. If you don't end up finding the section you're looking for, contact: help@creatorcommerce.shop"
+    },
+    {
+      "type": "header",
+      "content": "How CreatorCommerce integrates with themes",
+      "info": "CreatorCommerce has a liquid-native method to ensure that all co-branded UI/UX is 100% on-brand & works with the rest of your theme via metaobjects. Our out-of-the-box UI taps into the snippets used across your theme, and is designed to work immediately, but it can also be edited & extended by any developer on your team."
+    },
+        {
+      "type": "header",
+      "content": "🗑️  Remove this block before saving",
+      "info": "This block is purely informational. Remove it from the layout before saving."
+    }
+  ],
+  "presets": [{
+    "name": "CC App Block Instructions"
+  }]
+}
+{% endschema %}
+
