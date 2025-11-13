@@ -1,0 +1,959 @@
+openapi: 3.0.3
+info:
+  title: CreatorCommerce Unified API
+  description: API for managing creators, collabs, drops, and checkout URLs
+  version: 1.0.0
+  contact:
+    name: CreatorCommerce Support
+servers:
+  - url: https://unified-api.creatorcommerce.shop
+    description: Production server
+tags:
+  - name: Checkout
+    description: Checkout URL generation
+  - name: Magic Links
+    description: Creator magic link generation
+  - name: Collabs
+    description: Creator collaboration management
+  - name: Drops
+    description: Product drop management
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+paths:
+  /creators/{creatorId}/drops/{dropId}/cart:
+    get:
+      tags:
+        - Checkout
+      summary: Generate Drop Checkout URL
+      description: Generates a checkout URL for a specific drop with all products added to cart
+      operationId: generateDropCheckoutUrl
+      parameters:
+        - name: creatorId
+          in: path
+          required: true
+          description: The creator ID
+          schema:
+            type: string
+            example: "67a92b7cc7825fe4342e0fb5"
+        - name: dropId
+          in: path
+          required: true
+          description: The drop ID
+          schema:
+            type: string
+            example: "67a9390b6cc51f6c4e878db1"
+      responses:
+        '200':
+          description: Successfully generated checkout URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartUrlResponse'
+              example:
+                data:
+                  cartUrl: "https://cc-goaff-sandbox.myshopify.com/cart/48659261522232:1?access_token=1fe8e5cf1f9cb6e8e494cd6599e19acf&attributes[cc-creator-id]=67a92b7cc7825fe4342e0fb5&attributes[cc-creator-handle]=keion1bron&attributes[cc-campaign-id]=67a926aae91287a8ffe066b7&discount=fvfvfvfrvrfvrv"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Failed to create cart url"
+
+  /channels/{myshopifyDomain}/creators/magic-link:
+    get:
+      tags:
+        - Magic Links
+      summary: Get Magic Link
+      description: Generates a magic link for creator authentication
+      operationId: getMagicLink
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain (e.g., tradespoke.myshopify.com)
+          schema:
+            type: string
+            example: "tradespoke.myshopify.com"
+        - name: email
+          in: query
+          required: true
+          description: Creator email address
+          schema:
+            type: string
+            format: email
+            example: "kenyon+test@creatorcommerce.shop"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully generated magic link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MagicLinkResponse'
+              examples:
+                invitation:
+                  value:
+                    email: "kenyon+48427w4882884828@creatorcommerce.shop"
+                    notify: true
+                    link: "https://dashboard-staging.creatorcommerce.shop/invitation?email=kenyon+4822wqs84882884828@creatorcommerce.shop&channel=cc-goaff-sandbox.myshopify.com"
+                signIn:
+                  value:
+                    email: "kenyon+ppenidnt3948@creatorcommerce.shop"
+                    notify: false
+                    link: "https://creatorcommerce.accounts.dev/sign-in?__clerk_ticket=eyJhbGci..."
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Failed to create magic link"
+
+  /creators/collabs:
+    get:
+      tags:
+        - Collabs
+      summary: Get Collabs
+      description: Retrieves all collabs for a creator
+      operationId: getCollabs
+      parameters:
+        - name: email
+          in: query
+          required: false
+          description: Creator email address
+          schema:
+            type: string
+            format: email
+            example: "kenyon+4494949392@creatorcommerce.shop"
+        - name: myshopify_domain
+          in: query
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-goaff-sandbox.myshopify.com"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved collabs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollabsResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Creator or Channel not found"
+
+    post:
+      tags:
+        - Collabs
+      summary: Create Collab
+      description: Creates a new collaboration for a creator
+      operationId: createCollab
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollabRequest'
+            example:
+              myshopifyDomain: "cc-collabs-sandbox.myshopify.com"
+              email: "kenyon+test48548sep641@creatorcommerce.shop"
+              firstName: "Zeptio"
+              lastName: "Hombre"
+              affiliateCode: "TEST"
+              affiliateUrl: "https://test.com/TEST"
+              profilePicture: "https://picsum.photos/200/300"
+              primaryColor: "#66ccff"
+              title: "Blah"
+              custom:
+                cc-ken-short-form: "cc-test1"
+                cc-cc-ken-long-form: "Hey everyone this is a super long field"
+                cc-ken-single-media: "https://fastly.picsum.photos/id/48/200/300.jpg?hmac=p1L57uKWk-HOLxkodQjf0Q4BpaqgWYhEgWyGaeIpG_k"
+                "List of ken media":
+                  - "https://images.pexels.com/photos/31415546/pexels-photo-31415546.jpeg"
+                  - "https://images.pexels.com/photos/16229208/pexels-photo-16229208.jpeg"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully created collab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollabResponse'
+              example:
+                collab:
+                  discount:
+                    discountAmount: 10
+                    discountType: "Percentage"
+                  _id: "68d482d502627cba69150a33"
+                  channel: "67a93e156cc51f6c4e878e0c"
+                  creator: "68d4828e02627cba69144aa2"
+                  __v: 0
+                  affiliateCode: "TEST"
+                  affiliateUrl: "https://test.com/TEST/"
+                  collabTier: "68d46d30d78da92db6cad276"
+                  createdAt: "2025-09-24T23:46:29.094Z"
+                  drops: []
+                  isPartial: false
+                  relationshipManager: "creatorcommerce"
+                  updatedAt: "2025-09-24T23:46:29.094Z"
+
+  /creators/collabs/{collabId}:
+    post:
+      tags:
+        - Collabs
+      summary: Update Collab
+      description: Updates an existing collaboration
+      operationId: updateCollab
+      parameters:
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+        - name: email
+          in: query
+          required: false
+          description: Creator email address
+          schema:
+            type: string
+            format: email
+            example: "kenyon+test48548sep641@creatorcommerce.shop"
+        - name: myshopify_domain
+          in: query
+          required: false
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-collabs-sandbox.myshopify.com"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCollabRequest'
+            example:
+              myshopifyDomain: "cc-collabs-sandbox.myshopify.com"
+              email: "kenyon+test48548sep641@creatorcommerce.shop"
+              firstName: "Meptio"
+              isOnboarded: true
+              lastName: "Zebra"
+              collabTier: "688d99d950696f7c412b385a"
+              affiliateCode: "CODE2"
+              handle: "taptio-123456789"
+              affiliateUrl: "https://kenyon1.com"
+              discount:
+                discountAmount: 80
+                discountType: "Percentage"
+              custom:
+                cc-ken-short-form: "mcdonals"
+                cc-cc-ken-long-form: "bk"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully updated collab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollabResponse'
+              example:
+                collab:
+                  discount:
+                    discountAmount: 0
+                    discountType: "Percentage"
+                  _id: "68d482d502627cba69150a33"
+                  channel: "67a93e156cc51f6c4e878e0c"
+                  creator: "68d4828e02627cba69144aa2"
+                  __v: 0
+                  affiliateCode: "CODE2"
+                  affiliateUrl: "https://kenyon1.com"
+                  collabTier: "688d99d950696f7c412b385a"
+                  createdAt: "2025-09-24T23:46:29.094Z"
+                  drops:
+                    - "68d4bd5c7796e248a07dfbf2"
+                    - "68d4be997796e248a07dfc1a"
+                    - "68d4bf4b7796e248a07dfc2f"
+                  isPartial: false
+                  relationshipManager: "creatorcommerce"
+                  updatedAt: "2025-09-25T20:46:41.420Z"
+                  collabStartedAt: "2025-09-24T23:46:31.304Z"
+                  metadata:
+                    shopifyCreatorCollectionId: "gid://shopify/Collection/501615329567"
+                    shopifyCreatorMetaobjectId: "gid://shopify/Metaobject/169337094431"
+
+  /creators/collabs/{collabId}/drops:
+    post:
+      tags:
+        - Drops
+      summary: Create Drop
+      description: Creates a new drop with products
+      operationId: createDrop
+      parameters:
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+        - name: email
+          in: query
+          required: false
+          description: Creator email address
+          schema:
+            type: string
+            format: email
+            example: "kenyon+test4854899895495487@creatorcommerce.shop"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDropRequest'
+            example:
+              title: "hi quest 5"
+              description: "hello quest"
+              products:
+                - id: "8491113971999"
+                  enhancement:
+                    note: "test notesssssssss for quest snowboard"
+                    media:
+                      - "https://picsum.photos/200/300"
+                  custom:
+                    cc-product-short-form-2: "product stuff quest"
+                    cc-product-long-form-2: "product stuff quest longer"
+                - id: "8491114332447"
+                  enhancement:
+                    note: "test notessssssXXsss for quest snowboard"
+                    media:
+                      - "https://picsum.photos/200/300"
+                      - mediaContentType: "IMAGE"
+                        mimeType: "image/png"
+                        originalFilename: "ChatGPT Image Jul 27, 2025, 02_48_21 PM.png"
+                        extension: "png"
+                        owner: "user_30iVLI8ndVGiTMgtAgD2mHMT7AB"
+                        tags: []
+                        _id: "68918481be19399dfb5cc8d4"
+                        filename: "68918481be19399dfb5cc8d4"
+                        url: "https://assets-staging.drops.shop/user_30iVLI8ndVGiTMgtAgD2mHMT7AB/68918481be19399dfb5cc8d4.png"
+                        __v: 0
+                  custom:
+                    cc-product-short-form-2: "product stuff quest"
+                    cc-product-long-form-2: "product stuff quest longer"
+              custom:
+                cc-drop-short-form-2: "PPPPPPPPPPPPPPPP"
+                cc-drop-long-form-2: "UUUUUUUUUUU"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully created drop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DropResponse'
+
+  /creators/collabs/{collabId}/drops/{dropId}:
+    post:
+      tags:
+        - Drops
+      summary: Update Drop
+      description: Updates an existing drop
+      operationId: updateDrop
+      parameters:
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+        - name: dropId
+          in: path
+          required: true
+          description: The drop ID
+          schema:
+            type: string
+            example: "68d4bf4b7796e248a07dfc2f"
+        - name: email
+          in: query
+          required: false
+          description: Creator email address
+          schema:
+            type: string
+            format: email
+            example: "kenyon+test4854899895495487@creatorcommerce.shop"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDropRequest'
+            example:
+              title: "hi quest 7"
+              description: "hello quest!"
+              products:
+                - id: "8491113971999"
+                  enhancement:
+                    note: "test notesssssssss for quest snowboard"
+                    media:
+                      - "https://picsum.photos/200/300"
+                  custom:
+                    cc-product-short-form-2: "product stuff quest"
+                    cc-product-long-form-2: "product stuff quest longer"
+                - id: "8491114332447"
+                  variantId: "46033520853279"
+                  enhancement:
+                    note: "test notessssssXXsss for quest snowboard"
+                    media:
+                      - "https://picsum.photos/200/300"
+                  custom:
+                    cc-product-short-form-2: "product stuff quest"
+                    cc-product-long-form-2: "product stuff quest longer"
+                    cc-cc-product-singlemedia-2: "https://picsum.photos/200/300"
+                    cc-product-long-media-2:
+                      - "https://picsum.photos/200/300"
+                      - "https://picsum.photos/200/300"
+              custom:
+                cc-drop-short-form-2: "PPPPPPPPPPPPPPPP"
+                cc-drop-long-form-2: "UUUUUUUUUUU"
+                cc-drop-media-2: "https://picsum.photos/200/300"
+                cc-drop-long-media-2:
+                  - "https://picsum.photos/200/300"
+                  - "https://picsum.photos/200/300"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully updated drop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DropResponse'
+              example:
+                drop:
+                  _id: "68d4bf4b7796e248a07dfc2f"
+                  channelHandles: []
+                  title: "hi quest 7"
+                  description: "hello quest!"
+                  media: []
+                  channels:
+                    - "67a93e156cc51f6c4e878e0c"
+                  products:
+                    - "68d4bd2202627cba6983e4df"
+                    - "67bfce788207c73f3951acb7"
+                  enhancements:
+                    - "68d4c15e7796e248a07dfd53"
+                    - "68d4c15f7796e248a07dfd5d"
+                  creator: "68d4828e02627cba69144aa2"
+                  createdAt: "2025-09-25T04:04:29.765Z"
+                  updatedAt: "2025-09-25T04:13:21.875Z"
+                  __v: 0
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token authentication (JWT)
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-channel-access-token
+      description: Channel or partner access token (x-channel-access-token or x-partner-access-token)
+
+  schemas:
+    CartUrlResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            cartUrl:
+              type: string
+              format: uri
+              description: The checkout URL with all products and attributes
+      required:
+        - data
+
+    MagicLinkResponse:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        notify:
+          type: boolean
+          description: Whether to send notification email
+        link:
+          type: string
+          format: uri
+          description: The magic link URL
+      required:
+        - email
+        - link
+
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - statusCode
+        - error
+        - message
+
+    CollabsResponse:
+      type: object
+      properties:
+        collabs:
+          type: object
+          properties:
+            collabs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Collab'
+
+    Collab:
+      type: object
+      properties:
+        _id:
+          type: string
+        channel:
+          type: string
+        creator:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Creator'
+        affiliateCode:
+          type: string
+        channelName:
+          type: string
+        relationshipManager:
+          type: string
+        discount:
+          $ref: '#/components/schemas/Discount'
+        shopifyCollabsTierName:
+          type: string
+        isActive:
+          type: boolean
+        tierKey:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        shop:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Shop'
+        shopHandle:
+          type: string
+        shopifyCreatorCollectionId:
+          type: string
+        shopifyCustomerId:
+          type: string
+        shopifyCreatorMetaobjectId:
+          type: string
+        collabStartedAt:
+          type: string
+          format: date-time
+        collabTier:
+          type: string
+        metadata:
+          type: object
+        drops:
+          type: array
+          items:
+            type: string
+        isPartial:
+          type: boolean
+        affiliateUrl:
+          type: string
+        campaign:
+          $ref: '#/components/schemas/Campaign'
+        custom:
+          type: object
+          additionalProperties: true
+
+    Creator:
+      type: object
+      properties:
+        _id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        username:
+          type: string
+        source:
+          type: string
+        isOnboarded:
+          type: boolean
+        socials:
+          type: array
+          items:
+            type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        shop:
+          $ref: '#/components/schemas/Shop'
+        shopHandle:
+          type: string
+        handle:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        profilePicture:
+          $ref: '#/components/schemas/Media'
+
+    Shop:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        theme:
+          type: object
+          properties:
+            primaryColor:
+              type: string
+        isDeleted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Discount:
+      type: object
+      properties:
+        discountAmount:
+          type: number
+        discountType:
+          type: string
+          enum:
+            - Percentage
+            - FixedAmount
+        shopifyCollabsDiscountCode:
+          type: string
+        discountCode:
+          type: string
+        _id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Campaign:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        collabTiers:
+          type: array
+          items:
+            type: string
+        brandPage:
+          type: string
+          nullable: true
+        productPage:
+          type: string
+          nullable: true
+        channel:
+          type: string
+        isActive:
+          type: boolean
+        brandPageRedirectUrlTemplate:
+          type: string
+        productPageRedirectUrlTemplate:
+          type: string
+        queryParams:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        startedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Media:
+      type: object
+      properties:
+        _id:
+          type: string
+        extension:
+          type: string
+        filename:
+          type: string
+        mediaContentType:
+          type: string
+        mimeType:
+          type: string
+        originalFilename:
+          type: string
+        owner:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        updatedAt:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+
+    CreateCollabRequest:
+      type: object
+      required:
+        - myshopifyDomain
+        - email
+        - firstName
+        - lastName
+      properties:
+        myshopifyDomain:
+          type: string
+          description: The Shopify domain
+        email:
+          type: string
+          format: email
+          description: Creator email address
+        firstName:
+          type: string
+        lastName:
+          type: string
+        affiliateCode:
+          type: string
+        affiliateUrl:
+          type: string
+        profilePicture:
+          oneOf:
+            - type: string
+              format: uri
+            - $ref: '#/components/schemas/Media'
+        primaryColor:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          description: Hex color code
+        title:
+          type: string
+        custom:
+          type: object
+          additionalProperties: true
+          description: Custom fields for the collab
+
+    UpdateCollabRequest:
+      type: object
+      properties:
+        myshopifyDomain:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isOnboarded:
+          type: boolean
+        collabTier:
+          type: string
+        affiliateCode:
+          type: string
+        handle:
+          type: string
+        affiliateUrl:
+          type: string
+        discount:
+          $ref: '#/components/schemas/Discount'
+        profilePicture:
+          oneOf:
+            - type: string
+              format: uri
+            - $ref: '#/components/schemas/Media'
+        primaryColor:
+          type: string
+        title:
+          type: string
+        custom:
+          type: object
+          additionalProperties: true
+
+    CollabResponse:
+      type: object
+      properties:
+        collab:
+          $ref: '#/components/schemas/Collab'
+
+    ProductEnhancement:
+      type: object
+      properties:
+        note:
+          type: string
+        media:
+          type: array
+          items:
+            oneOf:
+              - type: string
+                format: uri
+              - $ref: '#/components/schemas/Media'
+        custom:
+          type: object
+          additionalProperties: true
+
+    DropProduct:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Shopify product ID
+        variantId:
+          type: string
+          description: Optional variant ID
+        enhancement:
+          $ref: '#/components/schemas/ProductEnhancement'
+        custom:
+          type: object
+          additionalProperties: true
+
+    CreateDropRequest:
+      type: object
+      required:
+        - title
+        - description
+        - products
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/DropProduct'
+        custom:
+          type: object
+          additionalProperties: true
+
+    UpdateDropRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/DropProduct'
+        custom:
+          type: object
+          additionalProperties: true
+
+    DropResponse:
+      type: object
+      properties:
+        drop:
+          type: object
+          properties:
+            _id:
+              type: string
+            channelHandles:
+              type: array
+              items:
+                type: string
+            title:
+              type: string
+            description:
+              type: string
+            media:
+              type: array
+              items:
+                $ref: '#/components/schemas/Media'
+            channels:
+              type: array
+              items:
+                type: string
+            products:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                  - $ref: '#/components/schemas/DropProduct'
+            enhancements:
+              type: array
+              items:
+                oneOf:
+                  - type: string
+                  - type: object
+            creator:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            __v:
+              type: integer
+

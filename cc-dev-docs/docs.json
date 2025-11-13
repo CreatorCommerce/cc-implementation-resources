@@ -5,6 +5,9 @@
    "colors":{
       "primary":"#ff0000"
    },
+   "mcp":{
+      "enabled":true
+   },
    "navigation":{
       "tabs":[
          {
@@ -41,7 +44,32 @@
                         "group":"RESOURCES",
                         "icon":"square-terminal",
                         "pages":[
-                           "temp1",
+                           {
+                              "group":"Cursor Setup",
+                              "expanded":true,
+                              "pages":[
+                                 "guides/cursor-coding",
+                                 "guides/cursor-rules"
+                              ]
+                           },
+                           {
+                              "group":"Claude Setup",
+                              "expanded":true,
+                              "pages":[
+                                 "guides/claude-coding",
+                                 "guides/claude-rules"
+                              ]
+                           },
+                           "guides/shopify-mcp",
+                           {
+                              "group":"Figma MCP",
+                              "expanded":true,
+                              "pages":[
+                                 "guides/figma-mcp",
+                                 "guides/designing-for-cobranded-ui",
+                                 "guides/designing-a-dashboard-for-collaboration"
+                              ]
+                           },
                            "release-notes"
                         ]
                      }
@@ -80,17 +108,25 @@
                         "group":"API REFERENCE",
                         "expanded":true,
                         "pages":[
-                           "temp3",
-                           "temp2",
+                           "unified-api-reference",
+                           "api-overview",
+                           "guides/authentication",
                            {
-                              "group":"Shopify Flow actions",
+                              "group":"Endpoints",
+                              "expanded":true,
+                              "openapi": "api-reference/unified-api.yaml",
                               "pages":[
-                                 "temp3",
-                                 "temp2"
-                              ]
+                                  "GET /creators/{creatorId}/drops/{dropId}/cart",
+                                   "GET /channels/{myshopifyDomain}/creators/magic-link",
+                                   "GET /creators/collabs",
+                                   "POST /creators/collabs",
+                                   "POST /creators/collabs/{collabId}",
+                                   "POST /creators/collabs/{collabId}/drops",
+                                   "POST /creators/collabs/{collabId}/drops/{dropId}"
+                                 ]
                            },
                            {
-                              "group":"Release notes",
+                              "group":"Shopify Flow actions",
                               "pages":[
                                  "temp3",
                                  "temp2"
@@ -124,7 +160,40 @@
             ]
          },
          {
-            "tab":"Co-branded Consumer UX",
+            "tab":"Creator Experiences (Inputs)",
+            "anchors":[
+               {
+                  "anchor":"Getting Started",
+                  "icon":"layout",
+                  "pages":[
+                     "getting-started"
+                  ]
+               },
+               {
+                  "anchor":"Creator Dashboard",
+                  "icon":"monitor",
+                  "pages":[
+                     "creator-dashboard"
+                  ]
+               },
+               {
+                  "anchor":"Creator Message Flows",
+                  "icon":"message-circle",
+                  "pages":[
+                     "creator-messaging"
+                  ]
+               },
+               {
+                  "anchor":"Enrichment Workflows",
+                  "icon":"workflow",
+                  "pages":[
+                     "enrichment-flows"
+                  ]
+               }
+            ]
+         },
+         {
+            "tab":"Consumer Experiences (Outputs)",
             "anchors":[
                {
                   "anchor":"Getting Started",
@@ -146,40 +215,8 @@
                   "pages":[
                      "co-branded-messaging"
                   ]
-               },
-               {
-                  "anchor":"Enrichment Workflows",
-                  "icon":"workflow",
-                  "pages":[
-                     "enrichment-flows"
-                  ]
-               },
-               {
-                  "anchor":"Creator Message Flows",
-                  "icon":"message-circle",
-                  "pages":[
-                     "creator-messaging"
-                  ]
-               },
-               {
-                  "anchor":"Creator Dashboard",
-                  "icon":"monitor",
-                  "pages":[
-                     "creator-dashboard"
-                  ]
-               },
-               {
-                  "anchor":"Partner Integrations",
-                  "icon":"puzzle",
-                  "pages":[
-                     "partner-integrations"
-                  ]
                }
             ]
-         },
-         {
-            "tab":"Creator UX",
-            "href":"https://external-link.com/blog"
          },
          {
             "tab":"Partner Integrations",
@@ -187,15 +224,193 @@
          },
          {
             "tab":"MCP (Coming Soon)",
-            "href":"https://external-link.com/blog"
+            "href":"#"
          },
          {
             "tab":"References",
-            "href":"https://external-link.com/blog"
+            "menu":[
+               {
+                  "item":"API Reference",
+                  "icon":"square-terminal",
+                  "groups":[
+                     {
+                        "group":"Getting Started",
+                        "expanded":true,
+                        "pages":[
+                           "api-overview",
+                           "guides/authentication"
+                        ]
+                     },
+                     {
+                        "group":"Checkout",
+                        "expanded":true,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages":[
+                           "GET /creators/{creatorId}/drops/{dropId}/cart"
+                        ]
+                     },
+                     {
+                        "group":"Magic Links",
+                        "expanded":true,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages":[
+                           "GET /channels/{myshopifyDomain}/creators/magic-link"
+                        ]
+                     },
+                     {
+                        "group":"Collabs",
+                        "expanded":true,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages":[
+                           "GET /creators/collabs",
+                           "POST /creators/collabs",
+                           "POST /creators/collabs/{collabId}"
+                        ]
+                     },
+                     {
+                        "group":"Drops",
+                        "expanded":true,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages":[
+                           "POST /creators/collabs/{collabId}/drops",
+                           "POST /creators/collabs/{collabId}/drops/{dropId}"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Data Model",
+                  "icon":"database",
+                  "groups":[
+                     {
+                        "group":"DATA MODEL",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           "glossary",
+                           "temp3"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Shopify Reference",
+                  "icon":"shopping-cart",
+                  "groups":[
+                     {
+                        "group":"SHOPIFY REFERENCE",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           "temp3"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"SDKs",
+                  "icon":"code",
+                  "groups":[
+                     {
+                        "group":"SDKS",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           "temp3"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Webhooks",
+                  "icon":"webhook",
+                  "groups":[
+                     {
+                        "group":"WEBHOOKS",
+                        "expanded":true,
+                        "pages":[
+                           "temp2",
+                           {
+                              "group":"Shopify Flow triggers",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           },
+                           {
+                              "group":"Klaviyo events",
+                              "pages":[
+                                 "temp1",
+                                 "temp2"
+                              ]
+                           }
+                        ]
+                     }
+                  ]
+               }
+            ]
          },
          {
             "tab":"Resources",
-            "href":"https://external-link.com/blog"
+            "menu":[
+               {
+                  "item":"Release Notes",
+                  "icon":"newspaper",
+                  "pages":[
+                     "release-notes"
+                  ]
+               },
+               {
+                  "item":"Cursor Setup",
+                  "icon":"code",
+                  "groups":[
+                     {
+                        "group":"Cursor Setup",
+                        "expanded":true,
+                        "pages":[
+                           "guides/cursor-coding",
+                           "guides/cursor-rules"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Claude Setup",
+                  "icon":"code",
+                  "groups":[
+                     {
+                        "group":"Claude Setup",
+                        "expanded":true,
+                        "pages":[
+                           "guides/claude-coding",
+                           "guides/claude-rules"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Shopify MCP",
+                  "icon":"shopping-cart",
+                  "pages":[
+                     "guides/shopify-mcp"
+                  ]
+               },
+               {
+                  "item":"Figma MCP",
+                  "icon":"image",
+                  "groups":[
+                     {
+                        "group":"Figma MCP",
+                        "expanded":true,
+                        "pages":[
+                           "guides/figma-mcp",
+                           "guides/designing-for-cobranded-ui",
+                           "guides/designing-a-dashboard-for-collaboration"
+                        ]
+                     }
+                  ]
+               }
+            ]
          }
       ]
    }

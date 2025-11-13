@@ -1,0 +1,58 @@
+---
+title: API Overview
+---
+
+The CreatorCommerce Unified API provides a comprehensive interface for managing creators, collaborations, drops, and checkout URLs. This API enables you to integrate CreatorCommerce functionality into your applications.
+
+## Base URL
+
+```
+https://unified-api.creatorcommerce.shop
+```
+
+## Authentication
+
+The API supports two authentication methods:
+
+1. **Bearer Token (JWT)** - For authenticated user requests
+2. **API Key** - Using `x-channel-access-token` or `x-partner-access-token` headers
+
+See the [Authentication Guide](/guides/authentication) for detailed information.
+
+## API Endpoints
+
+### Checkout
+- **GET** `/creators/{creatorId}/drops/{dropId}/cart` - Generate a checkout URL for a drop with all products added to cart
+
+### Magic Links
+- **GET** `/channels/{myshopifyDomain}/creators/magic-link` - Generate a magic link for creator authentication
+
+### Collabs
+- **GET** `/creators/collabs` - Retrieve all collabs for a creator
+- **POST** `/creators/collabs` - Create a new collaboration
+- **POST** `/creators/collabs/{collabId}` - Update an existing collaboration
+
+### Drops
+- **POST** `/creators/collabs/{collabId}/drops` - Create a new drop with products
+- **POST** `/creators/collabs/{collabId}/drops/{dropId}` - Update an existing drop
+
+## Response Format
+
+All responses are returned in JSON format. Successful responses typically include a `data` or resource object, while errors follow a consistent error response structure:
+
+```json
+{
+  "statusCode": 500,
+  "error": "Internal Server Error",
+  "message": "Error description"
+}
+```
+
+## Rate Limiting
+
+Rate limits may apply to API requests. Check response headers for rate limit information.
+
+## Support
+
+For API support, contact CreatorCommerce Support.
+

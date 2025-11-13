@@ -1,0 +1,68 @@
+---
+title: Setting up Rules for Cursor
+---
+
+# Setting up Rules for Cursor
+
+Configure Cursor rules to ensure consistent code generation and best practices for CreatorCommerce development.
+
+## Overview
+
+Cursor rules help guide the AI assistant to generate code that follows your project's conventions and best practices. This is especially important for CreatorCommerce projects where specific patterns and rules must be followed.
+
+## Creating Rules Files
+
+Cursor rules are typically stored in `.cursorrules` files in your project root or specific directories.
+
+### Basic Rule Structure
+
+```markdown
+# CreatorCommerce Development Rules
+
+## Liquid Template Rules
+- Always use CreatorCommerce data reference patterns
+- Follow the co-branded UI data reference rules
+- Use proper fallback handling for creator data
+
+## API Integration Rules
+- Always include proper error handling
+- Use the Unified API endpoints
+- Follow authentication best practices
+```
+
+## Common Rules for CreatorCommerce
+
+### Data Reference Rules
+
+```markdown
+When referencing creator data:
+- Always check for creator context first
+- Use proper metaobject access patterns
+- Include graceful fallbacks
+```
+
+### Code Organization Rules
+
+```markdown
+- Keep Liquid logic in liquid blocks when possible
+- Use descriptive variable names
+- Comment complex logic
+- Follow existing code patterns in the project
+```
+
+## Best Practices
+
+1. **Start with Project-Specific Rules**: Add rules that are specific to your CreatorCommerce implementation
+2. **Reference Existing Code**: Point Cursor to existing patterns in your codebase
+3. **Update Regularly**: Keep rules updated as patterns evolve
+4. **Test Rules**: Verify that Cursor follows your rules correctly
+
+## Example Rules File
+
+See the [Cursor Rules documentation](https://cursor.sh/docs) for more examples and advanced configuration options.
+
+## Related Resources
+
+- [Coding in Cursor](/guides/cursor-coding)
+- [CreatorCommerce Co-Branded UI Rules](/.cursor/rules/cc-referencing-drops-data.mdc)
+

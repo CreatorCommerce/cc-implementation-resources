@@ -1,0 +1,72 @@
+---
+title: Setting up Rules for Claude Code
+---
+
+# Setting up Rules for Claude Code
+
+Configure Claude Code rules to ensure consistent code generation and best practices for CreatorCommerce development.
+
+## Overview
+
+Claude Code rules help guide the AI assistant to generate code that follows your project's conventions and best practices. This is especially important for CreatorCommerce projects where specific patterns and rules must be followed.
+
+## Creating Rules Files
+
+Claude Code rules can be configured through various methods depending on your setup.
+
+### Using Project Configuration
+
+Claude Code can read rules from configuration files in your project. Check your Claude Code documentation for the specific format required.
+
+### Basic Rule Structure
+
+```markdown
+# CreatorCommerce Development Rules
+
+## Liquid Template Rules
+- Always use CreatorCommerce data reference patterns
+- Follow the co-branded UI data reference rules
+- Use proper fallback handling for creator data
+
+## API Integration Rules
+- Always include proper error handling
+- Use the Unified API endpoints
+- Follow authentication best practices
+```
+
+## Common Rules for CreatorCommerce
+
+### Data Reference Rules
+
+```markdown
+When referencing creator data:
+- Always check for creator context first
+- Use proper metaobject access patterns
+- Include graceful fallbacks
+```
+
+### Code Organization Rules
+
+```markdown
+- Keep Liquid logic in liquid blocks when possible
+- Use descriptive variable names
+- Comment complex logic
+- Follow existing code patterns in the project
+```
+
+## Best Practices
+
+1. **Start with Project-Specific Rules**: Add rules that are specific to your CreatorCommerce implementation
+2. **Reference Existing Code**: Point Claude to existing patterns in your codebase
+3. **Update Regularly**: Keep rules updated as patterns evolve
+4. **Test Rules**: Verify that Claude follows your rules correctly
+
+## Configuration Methods
+
+Claude Code supports various configuration methods. Refer to your Claude Code documentation for the specific setup required for your environment.
+
+## Related Resources
+
+- [Coding in Claude Code](/guides/claude-coding)
+- [CreatorCommerce Co-Branded UI Rules](/.cursor/rules/cc-referencing-drops-data.mdc)
+

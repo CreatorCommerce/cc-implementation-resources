@@ -1,0 +1,109 @@
+---
+title: Authentication
+---
+
+The CreatorCommerce Unified API supports multiple authentication methods depending on your use case.
+
+## Authentication Methods
+
+### Bearer Token (JWT)
+
+For authenticated user requests, use Bearer token authentication. Include the JWT token in the `Authorization` header:
+
+```bash
+Authorization: Bearer <your-jwt-token>
+```
+
+**When to use:**
+- Authenticated user requests
+- Requests from the CreatorCommerce dashboard
+- User-initiated API calls
+
+### API Key Authentication
+
+For server-to-server communication, use API key authentication via custom headers:
+
+```bash
+x-channel-access-token: <your-channel-token>
+```
+
+or
+
+```bash
+x-partner-access-token: <your-partner-token>
+```
+
+**When to use:**
+- Server-to-server integrations
+- Partner API access
+- Channel-specific operations
+
+### Admin Access Token
+
+For administrative operations, you can use:
+
+```bash
+x-admin-access-token: <your-admin-token>
+```
+
+**When to use:**
+- Administrative operations
+- System-level integrations
+
+## Getting Your Credentials
+
+### JWT Tokens
+
+JWT tokens are obtained through the CreatorCommerce authentication flow. These tokens are typically short-lived and should be refreshed as needed.
+
+### API Keys
+
+API keys are provided when you:
+- Set up a channel integration
+- Register as a partner
+- Configure administrative access
+
+Contact CreatorCommerce Support to obtain API keys for your use case.
+
+## Security Best Practices
+
+1. **Never commit credentials to version control** - Store API keys and tokens in environment variables or secure secret management systems
+2. **Use HTTPS only** - All API requests must use HTTPS
+3. **Rotate keys regularly** - Periodically rotate your API keys for security
+4. **Use the principle of least privilege** - Only request the permissions you need
+5. **Monitor token expiration** - Implement proper token refresh logic for JWT tokens
+
+## Example Requests
+
+### Using Bearer Token
+
+```bash
+curl -X GET \
+  'https://unified-api.creatorcommerce.shop/creators/collabs?myshopify_domain=example.myshopify.com' \
+  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIs...'
+```
+
+### Using API Key
+
+```bash
+curl -X GET \
+  'https://unified-api.creatorcommerce.shop/creators/collabs?myshopify_domain=example.myshopify.com' \
+  -H 'x-channel-access-token: your-channel-token-here'
+```
+
+## Error Responses
+
+If authentication fails, you'll receive a `401 Unauthorized` or `403 Forbidden` response:
+
+```json
+{
+  "statusCode": 401,
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+## Token Expiration
+
+JWT tokens have expiration times. Monitor the token expiration and implement refresh logic. API keys typically don't expire but can be revoked by administrators.
+
