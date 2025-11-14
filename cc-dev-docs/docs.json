@@ -2,11 +2,37 @@
    "$schema":"https://mintlify.com/docs.json",
    "theme":"mint",
    "name":"Your Docs",
+      "logo": {
+        "light": "https://assets.creatorcommerce.shop/dx-back-icon.png",
+        "dark": "https://assets.creatorcommerce.shop/dx-red-icon.png",
+        "href": "https://creatorcommerce.dev"
+      },
    "colors":{
-      "primary":"#ff0000"
+      "primary":"#FF4438",
+      "light":"#FF4438",
+      "dark":"#FF4438"
    },
+      "background": {
+        "color": {
+          "light": "#FFFFFF",
+          "dark": "#22201F" 
+        }
+      },
    "mcp":{
       "enabled":true
+   },
+   "navbar":{
+      "links":[
+         {
+            "label":"help@creatorcommerce.shop",
+            "href":"mailto:help@creatorcommerce.shop"
+         }
+      ],
+      "primary":{
+         "type":"button",
+         "label":"Book a discovery call",
+         "href":"https://calendly.com/creatorcommerce/30min?utm_source=dev-docs&utm_medium=referral&utm_campaign=developer-onboarding&utm_content=book-a-call"
+      }
    },
    "navigation":{
       "tabs":[
@@ -359,6 +385,11 @@
                   "pages":[
                      "release-notes"
                   ]
+               },
+               {
+                  "item":"Product docs",
+                  "icon":"book-open",
+                  "href":"https://creatorcommerce.shop/brand-help-center"
                },
                {
                   "item":"Cursor Setup",

@@ -1,0 +1,204 @@
+/* CreatorCommerce Developer Documentation Custom Styles */
+
+/* Import Google Fonts - Poppins and Lora */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&family=Lora:wght@400&display=swap');
+
+
+:root {
+    --mint-color-background: #22201F !important;
+  }
+
+
+/* Body Font */
+body {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300; /* Regular */
+  background-color: #22201F !important;
+  border-color: #a1a1a1a !important;
+}
+
+h1, h2, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300 !important; /* Regular */
+}
+
+h3, h4, h5 {
+    font-family: 'Lora', sans-serif;
+    font-style: italic;
+    font-weight: 500; /* Regular */
+  }
+
+  .eyebrow {
+    font-family: 'Lora', sans-serif;
+    font-style: italic;
+    font-weight: 400; /* Regular */
+  }
+
+/* Navbar Customization */
+#navbar {
+  /* Add custom navbar styling here if needed */
+}
+
+.navbar-link {
+  /* Customize navbar links */
+}
+
+ul li {
+    border-radius: 100px;
+}
+
+/* Sidebar Customization */
+#sidebar {
+  /* Add custom sidebar styling here if needed */
+}
+
+.sidebar-group {
+  /* Customize sidebar groups */
+}
+
+/* Content Area Customization */
+#content-area {
+  /* Add custom content area styling here if needed */
+}
+
+.mdx-content {
+  /* Customize main content area */
+}
+
+/* Code Blocks */
+.code-block {
+  /* Customize code block styling */
+}
+
+/* API Sections */
+.api-section {
+  /* Customize API section styling */
+}
+
+.api-section-heading-title {
+  /* Customize API section titles */
+}
+
+/* Cards */
+.card {
+  /* Customize card components */
+}
+
+.card-group {
+  /* Customize card groups */
+}
+
+/* Callouts and Tips */
+.callout {
+  /* Customize callout boxes */
+}
+
+/* Tables */
+table {
+  /* Customize table styling */
+}
+
+/* Links */
+.link {
+  /* Customize link styling */
+}
+
+/* Footer */
+#footer {
+  /* Add custom footer styling here if needed */
+  margin-top: 2rem;
+  display:none;
+}
+
+/* Search Bar */
+#search-input {
+  /* Customize search input */
+  border-radius: 100px;
+}
+
+/* Tabs */
+.tabs {
+  /* Customize tabs container */
+}
+
+.tab {
+  /* Customize individual tabs */
+}
+
+/* Accordions */
+.accordion {
+  /* Customize accordion components */
+}
+
+.accordion-group {
+  /* Customize accordion groups */
+}
+
+/* Method Pills (for API methods like GET, POST) */
+.method-pill {
+  /* Customize API method pills */
+}
+
+/* Table of Contents */
+#table-of-contents {
+  /* Customize table of contents */
+}
+
+.toc-item {
+  /* Customize TOC items */
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  /* Add dark mode specific styles here */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* Add mobile-specific styles here */
+}
+
+/* Custom CreatorCommerce Brand Colors */
+:root {
+  --cc-primary-color: #FF4438;
+  --cc-secondary-color: #2E3332;
+  /* Add more brand colors as needed */
+}
+
+/* Custom utility classes */
+.cc-highlight {
+  background-color: rgba(255, 68, 56, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+
+.cc-code-inline {
+  background-color: #f4f4f4;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.125rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9em;
+}
+
+
+
+#topbar-cta-button span {
+    border-radius: 9999px !important;
+}
+
+
+/* API Playground Customization */
+#api-playground-input {
+  /* Customize API playground input */
+}
+
+/* Chat Assistant Customization */
+#chat-assistant-sheet {
+  /* Customize chat assistant */
+}
+
+#chat-assistant-textarea {
+  /* Customize chat assistant textarea */
+}
+
