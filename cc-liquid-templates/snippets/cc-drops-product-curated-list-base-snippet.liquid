@@ -771,351 +771,277 @@
 </div>
 {%- endif -%}
 
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const sectionId = '{{ section_id }}';
-    const dropdown = document.getElementById('cc-bundle-dropdown-' + sectionId);
-    const button = document.getElementById('cc-dropdown-button-' + sectionId);
-    const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
-    const selectedText = document.getElementById('cc-selected-bundle-' + sectionId);
-    const addBundleBtn = document.getElementById('cc-add-bundle-' + sectionId);
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sectionId = '{{ section_id }}';
+  const dropdown = document.getElementById('cc-bundle-dropdown-' + sectionId);
+  const button = document.getElementById('cc-dropdown-button-' + sectionId);
+  const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
+  const selectedText = document.getElementById('cc-selected-bundle-' + sectionId);
+  const addBundleBtn = document.getElementById('cc-add-bundle-' + sectionId);
 
-    // Section settings
-    const buttonText = {{ button_text | default: 'Add Bundle to Cart' | json }};
-    const descriptionStyle = {{ description_display_style | json }};
-    const creatorFirstName = {{ cc_creator.cc-creator-first-name | json }};
-    const creatorShopTitle = {{ cc_creator.cc-creator-shop-title | json }};
+  // Section settings
+  const buttonText = {{ button_text | default: 'Add Bundle to Cart' | json }};
+  const descriptionStyle = {{ description_display_style | json }};
+  const creatorFirstName = {{ cc_creator.cc-creator-first-name | json }};
+  const creatorShopTitle = {{ cc_creator.cc-creator-shop-title | json }};
 
-    // Format description based on display style
-    function formatDescription(description) {
-      if (!description || description.trim() === '') return '';
-      
-      if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
-        return '"' + description + '"';
-      } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
-        return '"' + description + '"';
-      }
-      return description;
+  // Format description based on display style
+  function formatDescription(description) {
+    if (!description || description.trim() === '') return '';
+    
+    if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
+      return '"' + description + '"';
+    } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
+      return '"' + description + '"';
     }
+    return description;
+  }
 
-    // Get attribution text based on display style
-    function getAttribution() {
-      if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
-        return '— ' + creatorFirstName;
-      } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
-        return '— ' + creatorShopTitle;
-      }
-      return '';
+  // Get attribution text based on display style
+  function getAttribution() {
+    if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
+      return '— ' + creatorFirstName;
+    } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
+      return '— ' + creatorShopTitle;
     }
+    return '';
+  }
 
-    // Store drops data for cart functionality
-    const dropsData = {
-      {%- for json_drop in drops_json -%}
-        {%- liquid
-          assign drop_id = json_drop['cc-creator-drop-collection-id']
-          assign drop_collection = nil
-          if drop_id != blank
-            for c in drops_collections
-              assign c_id = c.id | append: ''
-              if c_id == drop_id
-                assign drop_collection = c
-                break
-              endif
-            endfor
-          endif
-        -%}
-        {%- if drop_collection and drop_collection.products_count > 0 -%}
-          '{{ drop_id }}': {
-            title: {{ json_drop['cc-creator-drop-title'] | default: drop_collection.title | json }},
-            description: {{ drop_collection.description | json }},
-            products: [
-              {%- for json_product in json_drop['cc-creator-drop-products'] -%}
-                {%- liquid
-                  assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
-                  assign card_product = nil
-                  if wanted_id != blank
-                    for p in drop_collection.products
-                      assign p_id = p.id | append: ''
-                      if p_id == wanted_id
-                        assign card_product = p
-                        break
-                      endif
-                    endfor
-                  endif
-                -%}
-                {%- if card_product -%}
-                  {
-                    id: {{ card_product.id }},
-                    variantId: {{ card_product.selected_or_first_available_variant.id }},
-                    available: {{ card_product.available | json }}
-                  }{% unless forloop.last %},{% endunless %}
-                {%- endif -%}
-              {%- endfor -%}
-            ]
-          }{% unless forloop.last %},{% endunless %}
-        {%- endif -%}
-      {%- endfor -%}
-    };
+  // Store drops data for cart functionality
+  const dropsData = {
+    {%- for json_drop in drops_json -%}
+      {%- liquid
+        assign drop_id = json_drop['cc-creator-drop-collection-id']
+        assign drop_collection = nil
+        if drop_id != blank
+          for c in drops_collections
+            assign c_id = c.id | append: ''
+            if c_id == drop_id
+              assign drop_collection = c
+              break
+            endif
+          endfor
+        endif
+      -%}
+      {%- if drop_collection and drop_collection.products_count > 0 -%}
+        '{{ drop_id }}': {
+          title: {{ json_drop['cc-creator-drop-title'] | default: drop_collection.title | json }},
+          description: {{ drop_collection.description | json }},
+          products: [
+            {%- for json_product in json_drop['cc-creator-drop-products'] -%}
+              {%- liquid
+                assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+                assign card_product = nil
+                if wanted_id != blank
+                  for p in drop_collection.products
+                    assign p_id = p.id | append: ''
+                    if p_id == wanted_id
+                      assign card_product = p
+                      break
+                    endif
+                  endfor
+                endif
+              -%}
+              {%- if card_product -%}
+                {
+                  id: {{ card_product.id }},
+                  variantId: {{ card_product.selected_or_first_available_variant.id }},
+                  available: {{ card_product.available | json }}
+                }{% unless forloop.last %},{% endunless %}
+              {%- endif -%}
+            {%- endfor -%}
+          ]
+        }{% unless forloop.last %},{% endunless %}
+      {%- endif -%}
+    {%- endfor -%}
+  };
 
-    if (dropdown && button && menu) {
-      // Toggle dropdown
-      button.addEventListener('click', function() {
-        dropdown.classList.toggle('open');
-        menu.classList.toggle('open');
-      });
+  if (dropdown && button && menu) {
+    // Toggle dropdown
+    button.addEventListener('click', function() {
+      dropdown.classList.toggle('open');
+      menu.classList.toggle('open');
+    });
 
-      // Close dropdown when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!dropdown.contains(e.target)) {
-          dropdown.classList.remove('open');
-          menu.classList.remove('open');
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+        menu.classList.remove('open');
+      }
+    });
+
+    // Handle option selection
+    menu.addEventListener('click', function(e) {
+      const option = e.target.closest('.cc-dropdown-option');
+      if (option) {
+        const dropId = option.dataset.dropId;
+        const dropTitle = option.querySelector('.cc-option-text').textContent.trim();
+
+        // Update selected text
+        selectedText.textContent = dropTitle;
+
+        // Update selected state
+        menu.querySelectorAll('.cc-dropdown-option').forEach(opt => {
+          opt.classList.remove('selected');
+          const checkIcon = opt.querySelector('.cc-check-icon');
+          if (checkIcon) checkIcon.remove();
+        });
+        option.classList.add('selected');
+        const checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        checkIcon.setAttribute('class', 'cc-check-icon');
+        checkIcon.setAttribute('width', '24');
+        checkIcon.setAttribute('height', '24');
+        checkIcon.setAttribute('viewBox', '0 0 24 24');
+        checkIcon.setAttribute('fill', 'none');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M20 6L9 17L4 12');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        checkIcon.appendChild(path);
+        option.appendChild(checkIcon);
+
+        // Close dropdown
+        dropdown.classList.remove('open');
+        menu.classList.remove('open');
+
+        // Update button data attribute
+        if (addBundleBtn) {
+          addBundleBtn.dataset.dropId = dropId;
         }
-      });
 
-      // Handle option selection
-      menu.addEventListener('click', function(e) {
-        const option = e.target.closest('.cc-dropdown-option');
-        if (option) {
-          const dropId = option.dataset.dropId;
-          const dropTitle = option.querySelector('.cc-option-text').textContent.trim();
+        // Show/hide product grids
+        switchToDrop(dropId);
+      }
+    });
+  }
 
-          // Update selected text
-          selectedText.textContent = dropTitle;
+  // Function to switch between product grids
+  function switchToDrop(dropId) {
+    const allGrids = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-products');
+    const targetGrid = document.getElementById('cc-products-' + sectionId + '-' + dropId);
 
-          // Update selected state
-          menu.querySelectorAll('.cc-dropdown-option').forEach(opt => {
-            opt.classList.remove('selected');
-            const checkIcon = opt.querySelector('.cc-check-icon');
-            if (checkIcon) checkIcon.remove();
-          });
-          option.classList.add('selected');
-          const checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-          checkIcon.setAttribute('class', 'cc-check-icon');
-          checkIcon.setAttribute('width', '24');
-          checkIcon.setAttribute('height', '24');
-          checkIcon.setAttribute('viewBox', '0 0 24 24');
-          checkIcon.setAttribute('fill', 'none');
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', 'M20 6L9 17L4 12');
-          path.setAttribute('stroke-width', '2');
-          path.setAttribute('stroke-linecap', 'round');
-          path.setAttribute('stroke-linejoin', 'round');
-          checkIcon.appendChild(path);
-          option.appendChild(checkIcon);
+    // Hide all grids
+    allGrids.forEach(grid => {
+      grid.classList.remove('active');
+    });
 
-          // Close dropdown
-          dropdown.classList.remove('open');
-          menu.classList.remove('open');
-
-          // Update button data attribute
-          if (addBundleBtn) {
-            addBundleBtn.dataset.dropId = dropId;
-          }
-
-          // Show/hide product grids
-          switchToDrop(dropId);
-        }
-      });
+    // Show target grid
+    if (targetGrid) {
+      targetGrid.classList.add('active');
     }
 
-    // Function to switch between product grids
-    function switchToDrop(dropId) {
-      const allGrids = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-products');
-      const targetGrid = document.getElementById('cc-products-' + sectionId + '-' + dropId);
-
-      // Hide all grids
-      allGrids.forEach(grid => {
-        grid.classList.remove('active');
-      });
-
-      // Show target grid
-      if (targetGrid) {
-        targetGrid.classList.add('active');
-      }
-
-      // Update collection description
-      const descriptionEl = document.getElementById('cc-collection-description-' + sectionId);
-      if (descriptionEl && dropsData[dropId]) {
-        const description = dropsData[dropId].description;
-        if (description && description.trim() !== '') {
-          // Format description and add attribution
-          const formattedDesc = formatDescription(description);
-          const attribution = getAttribution();
-          
-          // Update class for quote styling
-          if (descriptionStyle === 'quote_first_name' || descriptionStyle === 'quote_shop_title') {
-            descriptionEl.classList.add('quote-style');
-          } else {
-            descriptionEl.classList.remove('quote-style');
-          }
-          
-          // Set content
-          if (attribution) {
-            descriptionEl.innerHTML = formattedDesc + '<span class="cc-description-attribution">' + attribution + '</span>';
-          } else {
-            descriptionEl.textContent = formattedDesc;
-          }
-          
-          descriptionEl.style.display = 'block';
+    // Update collection description
+    const descriptionEl = document.getElementById('cc-collection-description-' + sectionId);
+    if (descriptionEl && dropsData[dropId]) {
+      const description = dropsData[dropId].description;
+      if (description && description.trim() !== '') {
+        // Format description and add attribution
+        const formattedDesc = formatDescription(description);
+        const attribution = getAttribution();
+        
+        // Update class for quote styling
+        if (descriptionStyle === 'quote_first_name' || descriptionStyle === 'quote_shop_title') {
+          descriptionEl.classList.add('quote-style');
         } else {
-          descriptionEl.style.display = 'none';
+          descriptionEl.classList.remove('quote-style');
         }
-      }
-
-      // Switch benefits to match the selected drop
-      switchBenefits(dropId);
-    }
-
-    // Function to switch benefits based on selected drop
-    function switchBenefits(dropId) {
-      const allBenefits = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-benefits');
-      const targetBenefits = document.getElementById('cc-benefits-' + sectionId + '-' + dropId);
-
-      // Hide all benefit sets
-      allBenefits.forEach(benefits => {
-        benefits.classList.remove('active');
-      });
-
-      // Show target benefit set
-      if (targetBenefits) {
-        targetBenefits.classList.add('active');
+        
+        // Set content
+        if (attribution) {
+          descriptionEl.innerHTML = formattedDesc + '<span class="cc-description-attribution">' + attribution + '</span>';
+        } else {
+          descriptionEl.textContent = formattedDesc;
+        }
+        
+        descriptionEl.style.display = 'block';
+      } else {
+        descriptionEl.style.display = 'none';
       }
     }
 
-    // Add bundle to cart functionality - Universal compatibility
-    if (addBundleBtn) {
-      addBundleBtn.addEventListener('click', async function() {
-        const dropId = this.dataset.dropId;
-        if (!dropId || !dropsData[dropId]) return;
+    // Switch benefits to match the selected drop
+    switchBenefits(dropId);
+  }
 
-        const dropData = dropsData[dropId];
-        const items = dropData.products.filter(p => p.available).map(p => ({
-          id: p.variantId,
-          quantity: 1
-        }));
+  // Function to switch benefits based on selected drop
+  function switchBenefits(dropId) {
+    const allBenefits = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-benefits');
+    const targetBenefits = document.getElementById('cc-benefits-' + sectionId + '-' + dropId);
 
-        if (!items.length) {
-          alert('No available products in this bundle');
-          return;
-        }
+    // Hide all benefit sets
+    allBenefits.forEach(benefits => {
+      benefits.classList.remove('active');
+    });
 
-        try {
-          this.disabled = true;
-          const originalText = this.textContent;
-          this.textContent = 'Adding...';
-
-          // Use JSON API (universal across all Shopify stores)
-          const res = await fetch(window.Shopify.routes.root + 'cart/add.js', {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({ items: items })
-          });
-
-          const response = await res.json();
-          
-          // Check for errors in response
-          if (!res.ok || response.status === 422 || response.status === 'error') {
-            throw new Error(response.description || response.message || 'Failed to add items to cart');
-          }
-          
-          this.textContent = 'Added!';
-          
-          // Universal cart update approaches (try multiple methods)
-          
-          // 1. Modern Shopify Ajax Cart API event
-          if (window.Shopify && window.Shopify.onItemAdded) {
-            window.Shopify.onItemAdded(response);
-          }
-          
-          // 2. Try Dawn/modern theme pub-sub pattern
-          if (typeof window.publish !== 'undefined' && typeof window.PUB_SUB_EVENTS !== 'undefined') {
-            window.publish(window.PUB_SUB_EVENTS.cartUpdate, {
-              source: 'bundle-add',
-              cartData: response
-            });
-          }
-          
-          // 3. Try to find and update cart drawer/notification (Dawn, Debut, etc.)
-          const cartDrawer = document.querySelector('cart-drawer');
-          const cartNotification = document.querySelector('cart-notification');
-          const cartElement = cartDrawer || cartNotification;
-          
-          if (cartElement) {
-            // Try modern render method
-            if (typeof cartElement.renderContents === 'function') {
-              cartElement.renderContents(response);
-            }
-            // Remove empty class
-            if (cartElement.classList && cartElement.classList.contains('is-empty')) {
-              cartElement.classList.remove('is-empty');
-            }
-            // Try to open the cart
-            if (typeof cartElement.open === 'function') {
-              cartElement.open();
-            }
-          }
-          
-          // 4. Trigger jQuery events (for older themes)
-          if (typeof jQuery !== 'undefined') {
-            jQuery(document.body).trigger('added.ajaxProduct', [response]);
-            jQuery(document.body).trigger('cart.requestComplete', [response]);
-          }
-          
-          // 5. Dispatch native DOM event (for custom implementations)
-          document.dispatchEvent(new CustomEvent('cart:updated', { 
-            detail: { cart: response, items: items }
-          }));
-          
-          // 6. Refresh cart count in header (universal selector approach)
-          try {
-            const cartCountResponse = await fetch(window.Shopify.routes.root + 'cart.js');
-            const cartData = await cartCountResponse.json();
-            
-            // Update cart count badges (common selectors across themes)
-            const countSelectors = [
-              '.cart-count-bubble',
-              '.cart-count',
-              '[data-cart-count]',
-              '.cart__count',
-              '#cart-icon-bubble',
-              '.header__icon--cart .count'
-            ];
-            
-            countSelectors.forEach(selector => {
-              const elements = document.querySelectorAll(selector);
-              elements.forEach(el => {
-                if (el) {
-                  el.textContent = cartData.item_count;
-                  if (el.classList) {
-                    el.classList.remove('hidden');
-                  }
-                }
-              });
-            });
-          } catch (e) {
-            // Cart count update failed, but items are added
-            console.log('Cart count update failed:', e);
-          }
-          
-          // Reset button after a brief delay
-          setTimeout(() => {
-            this.textContent = originalText;
-            this.disabled = false;
-          }, 2000);
-          
-        } catch (err) {
-          console.error('Error adding bundle to cart:', err);
-          this.textContent = err.message || 'Error - Try Again';
-          setTimeout(() => {
-            this.textContent = buttonText;
-            this.disabled = false;
-          }, 3000);
-        }
-      });
+    // Show target benefit set
+    if (targetBenefits) {
+      targetBenefits.classList.add('active');
     }
-  });
+  }
+
+  // Add bundle to cart - Simple, reliable approach
+  if (addBundleBtn) {
+    addBundleBtn.addEventListener('click', async function() {
+      const dropId = this.dataset.dropId;
+      if (!dropId || !dropsData[dropId]) return;
+
+      const dropData = dropsData[dropId];
+      const items = dropData.products.filter(p => p.available).map(p => ({
+        id: p.variantId,
+        quantity: 1
+      }));
+
+      if (!items.length) {
+        alert('No available products in this bundle');
+        return;
+      }
+
+      try {
+        this.disabled = true;
+        const originalText = this.textContent;
+        this.textContent = 'Adding...';
+
+        // Add items to cart using Shopify's Cart API
+        const res = await fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ items: items })
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to add items to cart');
+        }
+
+        const response = await res.json();
+        
+        // Check for Shopify API errors
+        if (response.status === 422 || response.status === 'error') {
+          throw new Error(response.description || response.message || 'Failed to add items to cart');
+        }
+        
+        this.textContent = 'Added!';
+        
+        // Navigate to cart after 1 second
+        setTimeout(() => {
+          window.location.href = window.Shopify.routes.root + 'cart';
+        }, 1000);
+        
+      } catch (err) {
+        console.error('Error adding bundle to cart:', err);
+        this.textContent = 'Error - Try Again';
+        setTimeout(() => {
+          this.textContent = buttonText;
+          this.disabled = false;
+        }, 3000);
+      }
+    });
+  }
+});
 </script>
 

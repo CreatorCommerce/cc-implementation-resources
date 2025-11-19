@@ -215,17 +215,32 @@
       # Append the resolved value or the original placeholder
       if field_found and resolved_value != blank
         # Convert value to string safely
-        # For strings, remove JSON quotes. For other types, use as-is.
+        # For strings, remove JSON quotes and preserve special characters like + and &
+        # Use json filter to safely handle the value, then extract the unescaped string
         assign value_type = resolved_value | json
         assign first_char = value_type | slice: 0, 1
         
         if first_char == '"'
-          # String value - remove JSON quotes
+          # String value - remove JSON quotes and unescape JSON escape sequences
           assign last_char = value_type | slice: -1, 1
           if last_char == '"'
             assign len = value_type | size
             assign inner_len = len | minus: 2
             assign value_output = value_type | slice: 1, inner_len
+            
+            # Unescape JSON escape sequences to preserve original characters
+            # JSON escapes: \" becomes ", \\ becomes \
+            # Liquid's | json filter also escapes & as \u0026 and + as \u002B (Unicode escapes)
+            # We need to convert these back to their actual characters
+            assign value_output = value_output | replace: '\\"', '"'
+            assign value_output = value_output | replace: '\\\\', '\'
+            # Convert Unicode escape sequences back to actual characters
+            # \u0026 = & (ampersand)
+            assign value_output = value_output | replace: '\u0026', '&'
+            # \u002B = + (plus sign)
+            assign value_output = value_output | replace: '\u002B', '+'
+            # Note: Other control characters (\n, \r, \t) remain as escaped sequences
+            # This is acceptable as they're less common and &/+ are the primary concern
           else
             assign value_output = value_type
           endif

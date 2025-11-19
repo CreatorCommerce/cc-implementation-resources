@@ -1,3 +1,13 @@
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+-%}
+
 {%- comment -%}
   Process dynamic text using snippet for bracket replacement with dot notation support.
   Supports both old format [field-name] and new format [cc_creator.path.to.field]
@@ -825,8 +835,6 @@ div#hero-image {
                   {% endif %}
 
             {% if collab_highlight_display != 'no' %}
-                {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-                {% assign cc_creator = metaobjects.creator[cc_handle] %}
                 {% assign brand_logo = metaobject.data.value['cc-channel-brandkit-primary-logo'] %}
                 {% assign brand_title = metaobject.data.value['cc-channel-brandkit-title'] %}
 
