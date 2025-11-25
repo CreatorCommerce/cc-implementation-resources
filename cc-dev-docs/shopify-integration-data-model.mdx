@@ -1,0 +1,406 @@
+---
+title: 'Shopify Integration Data Model'
+description: 'How CreatorCommerce integrates with Shopify metaobjects, collections, and customers'
+---
+
+# Shopify Integration Data Model
+
+CreatorCommerce syncs creator data to Shopify through metaobjects, collections, and customer accounts. This document explains the integration points and data flow.
+
+## Metaobject Integration
+
+### Creator Metaobject
+
+The primary integration point is a Shopify metaobject of type `creator` that mirrors creator data for Liquid template access.
+
+### Metaobject Structure
+
+**Metaobject Type:** `creator`
+
+**Top-Level Fields:**
+```liquid
+{{ metaobject.cc-creator-first-name }}
+{{ metaobject.cc-creator-last-name }}
+{{ metaobject.cc-creator-profile-picture }}
+{{ metaobject.cc-creator-shop-handle }}
+{{ metaobject.cc-creator-shop-theme-primary-color }}
+{{ metaobject.cc-creator-shop-description }}
+{{ metaobject.cc-creator-drops }}  {# Collection list reference #}
+```
+
+**JSON Data Field:**
+```liquid
+{{ metaobject.data.value.cc-creator-first-name }}
+{{ metaobject.data.value['cc-creator-drops'] }}  {# JSON array #}
+{{ metaobject.data.value['cc-public'] }}
+{{ metaobject.data.value['cc-collab-discount-code'] }}
+```
+
+### Metaobject Field Mapping
+
+| CreatorCommerce Field | Metaobject Field | Type |
+|-----------------------|------------------|------|
+| `firstName` | `cc-creator-first-name` | Single line text |
+| `lastName` | `cc-creator-last-name` | Single line text |
+| `profilePicture.url` | `cc-creator-profile-picture` | File reference / URL |
+| `shop.handle` | `cc-creator-shop-handle` | Single line text |
+| `shop.theme.primaryColor` | `cc-creator-shop-theme-primary-color` | Color |
+| `shop.description` | `cc-creator-shop-description` | Multi-line text |
+| `drops[]` | `cc-creator-drops` | Collection list |
+| Drops JSON | `data.value['cc-creator-drops']` | JSON |
+
+### Metaobject Access Patterns
+
+**On Metaobject Page Templates:**
+```liquid
+{# Direct access to metaobject #}
+{{ metaobject.cc-creator-first-name }}
+{% assign cc_creator = metaobject %}
+```
+
+**On Other Pages/Sections:**
+```liquid
+{# Via cart attributes #}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+**In Snippets:**
+```liquid
+{# Template context branching #}
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+
+## Collection Integration
+
+### Drop → Collection Mapping
+
+Each drop maps to one Shopify collection:
+
+**Relationship:**
+- **Drop ID** → **Collection ID** (stored in `shopifyCreatorCollectionId`)
+- Collection contains all products from the drop
+- Products sync automatically when drop is updated
+
+### Collection Access
+
+**Via Creator Metaobject:**
+```liquid
+{# Collection list field #}
+{% assign drops_collections = cc_creator['cc-creator-drops'].value %}
+
+{# JSON drop data with collection IDs #}
+{% assign drops_json = cc_creator.data.value['cc-creator-drops'] %}
+```
+
+**Matching JSON Drops to Collections:**
+```liquid
+{% for json_drop in drops_json %}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+  
+  {% for collection_drop in drops_collections %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      {# Match found - collection_drop is the Shopify collection #}
+      {% for product in collection_drop.products %}
+        {# Display product #}
+      {% endfor %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+### Collection Metadata
+
+Collections created by CreatorCommerce include metadata:
+
+- **Title**: Drop title
+- **Description**: Drop description
+- **Products**: Synced from drop product list
+- **Handle**: Auto-generated or custom
+
+## Customer Account Integration
+
+### Creator Customer Account
+
+Optional Shopify customer account for creators, used for:
+- Discount code association
+- Customer portal access
+- Order attribution
+
+### Customer Account Fields
+
+**Metadata Stored:**
+- `shopifyCustomerId` - Customer GID
+- `shopifyCustomerAccountActivationUrl` - Activation link (if needed)
+- Linked to collab via `metadata.shopifyCustomerId`
+
+### Customer Account Access
+
+**For Discount Codes:**
+Discount codes can be associated with creator customer accounts for automatic application.
+
+**Activation Flow:**
+1. Customer account created
+2. Activation URL generated
+3. Creator receives invitation
+4. Account activated
+
+## ID Formats
+
+### Shopify GID (Global ID) Format
+
+Shopify uses GIDs (Global Identifiers) in this format:
+
+```
+gid://shopify/{Type}/{NumericId}
+```
+
+**Examples:**
+- `gid://shopify/Metaobject/77942685991`
+- `gid://shopify/Collection/488980119847`
+- `gid://shopify/Customer/8587704402215`
+- `gid://shopify/Product/8491113971999`
+- `gid://shopify/ProductVariant/46033520296223`
+
+### ID Storage in CreatorCommerce
+
+**Metaobject IDs:**
+```json
+{
+  "metadata": {
+    "shopifyCreatorMetaobjectId": "gid://shopify/Metaobject/77942685991"
+  }
+}
+```
+
+**Collection IDs:**
+```json
+{
+  "metadata": {
+    "shopifyCreatorCollectionId": "gid://shopify/Collection/488980119847"
+  }
+}
+```
+
+**In Metaobject JSON:**
+```json
+{
+  "cc-creator-drop-collection-id": "488980119847"  {# Numeric ID only #}
+}
+```
+
+### ID Conversion for Comparison
+
+**Critical:** Shopify object IDs (integers) must be converted to strings when comparing with JSON-stored IDs:
+
+```liquid
+{# ❌ Wrong - type mismatch #}
+{% if collection_drop.id == json_drop['cc-creator-drop-collection-id'] %}
+
+{# ✅ Correct - convert to string #}
+{% if collection_drop.id | append: '' == json_drop['cc-creator-drop-collection-id'] %}
+```
+
+## Data Synchronization
+
+### Sync Triggers
+
+**Real-time Sync:**
+- Drop creation/update
+- Product additions/removals
+- Creator profile updates
+- Custom field changes
+
+**Scheduled Sync:**
+- Metaobject enrichment workflows
+- Collection product updates
+- Analytics aggregation
+- Data consistency checks
+
+### Sync Flow
+
+```
+CreatorCommerce Backend
+  ↓ (API call / webhook)
+Shopify Admin API
+  ↓
+Metaobject Update
+  ↓
+Collection Update (if drop changed)
+  ↓
+Shop Liquid templates can access updated data
+```
+
+### Bidirectional Sync
+
+**CreatorCommerce → Shopify:**
+- Creator data updates
+- Drop changes
+- Product lists
+- Custom fields
+
+**Shopify → CreatorCommerce:**
+- Collection changes (rare)
+- Product availability updates
+- Metadata enrichment
+
+## Metaobject Data Field
+
+### JSON Structure
+
+The `data` field in metaobjects stores a JSON representation:
+
+```json
+{
+  "data": {
+    "value": {
+      "cc-creator-first-name": "Kenyon",
+      "cc-creator-last-name": "Brown",
+      "cc-creator-drops": [
+        {
+          "cc-creator-drop-collection-id": "488980119847",
+          "cc-creator-drop-title": "My Favorites",
+          "cc-creator-drop-products": [...]
+        }
+      ],
+      "cc-public": "Y",
+      "cc-collab-discount-code": "KENYON10"
+    }
+  }
+}
+```
+
+### Why Two Access Patterns?
+
+**Top-Level Fields:**
+- Direct Shopify field access
+- Simple, fast queries
+- Standard Liquid patterns
+
+**JSON Data Field:**
+- Complete data structure
+- Preserves order (for drops)
+- Custom fields
+- Nested structures
+
+**Best Practice:** Use `data.value` for complex structures (drops, custom fields), top-level for simple fields.
+
+## Collection Product Sync
+
+### Automatic Product Updates
+
+When a drop is updated:
+
+1. **Drop products changed** → Collection products updated
+2. **Product removed from drop** → Removed from collection
+3. **Product added to drop** → Added to collection
+4. **Drop deleted** → Collection remains (archived)
+
+### Product Ordering
+
+**In Collections:**
+- Products ordered by drop product list
+- Order preserved from drop definition
+
+**In JSON:**
+- Order preserved in `cc-creator-drop-products` array
+- Always iterate JSON first to maintain order
+
+## Cart Attributes Integration
+
+### Cart Attribute Flow
+
+```
+Creator Link Clicked
+  ↓
+Cart Attributes Set:
+  - cc-creator-id
+  - cc-creator-handle
+  - cc-campaign-id
+  ↓
+Metaobject Lookup via Handle
+  ↓
+Creator Data Available in Liquid
+```
+
+### Setting Cart Attributes
+
+**Via Checkout URL:**
+```http
+GET /creators/{creatorId}/drops/{dropId}/cart
+```
+
+Returns URL with cart attributes:
+```
+/cart/...?attributes[cc-creator-id]=...&attributes[cc-creator-handle]=...&discount=CODE
+```
+
+**In Liquid:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+### Cart Attribute Persistence
+
+Cart attributes persist:
+- Through checkout process
+- In order metadata
+- For attribution tracking
+
+## Best Practices
+
+### 1. Always Use Handle for Lookups
+Handles are more reliable than IDs for metaobject access:
+
+```liquid
+{# ✅ Correct #}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{# ❌ Wrong #}
+{% assign cc_creator = metaobjects.creator[creator_id] %}
+```
+
+### 2. Type-Safe ID Comparison
+Always convert Shopify IDs to strings:
+
+```liquid
+{% assign collection_id = collection.id | append: '' %}
+{% if collection_id == json_drop['cc-creator-drop-collection-id'] %}
+```
+
+### 3. Handle Missing Metaobjects
+Check for metaobject existence:
+
+```liquid
+{% if cc_creator and cc_creator.data and cc_creator.data.value %}
+  {# Safe to access #}
+{% endif %}
+```
+
+### 4. Prefer Data.Value for Complex Structures
+Use JSON for drops, nested data, custom fields:
+
+```liquid
+{# ✅ For drops order #}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+
+{# ✅ For custom fields #}
+{{ cc_creator.data.value['cc-public'] }}
+```
+
+## Related Documentation
+
+- [Data Model Overview](/data-model-overview) - High-level architecture
+- [Creator & Collab Data Model](/creator-collab-data-model) - Creator structures
+- [Drops & Products Data Model](/drops-products-data-model) - Drop structures
+- [Custom Fields Reference](/custom-fields-reference) - Field patterns
+

@@ -1,0 +1,368 @@
+---
+title: 'Creator & Collab Data Model'
+description: 'Detailed structure of creators and collaborations in CreatorCommerce'
+---
+
+# Creator & Collab Data Model
+
+This document provides a comprehensive guide to the creator and collaboration data structures, including all fields, relationships, and access patterns.
+
+## Creator Data Structure
+
+### Creator Entity
+
+A creator represents an individual who collaborates with brands. Creator data exists in three places:
+
+1. **CreatorCommerce Backend** (authoritative source)
+2. **Shopify Metaobject** (type: `creator`, synced for Liquid access)
+3. **Shopify Customer** (optional, for account access)
+
+### Core Creator Fields
+
+```json
+{
+  "_id": "6765b6af6716078b61be0fd1",
+  "firstName": "Kenyon",
+  "lastName": "Brown",
+  "email": "kenyon@example.com",
+  "username": "",
+  "handle": "kenyonbrown23333",
+  "profilePicture": {
+    "_id": "68317367b14fb8d0032eff3f",
+    "url": "https://assets.drops.shop/.../profile.jpg",
+    "mediaContentType": "IMAGE",
+    "mimeType": "image/jpeg",
+    "filename": "68317367b14fb8d0032eff3f",
+    "extension": "jpg"
+  },
+  "isOnboarded": true,
+  "source": "shopify-collabs",
+  "socials": [],
+  "tags": [],
+  "shop": {
+    "_id": "6765be89f5ea34a0228109d9",
+    "title": "Kenyon's Shop",
+    "description": "Explore my handpicked products...",
+    "theme": {
+      "primaryColor": "#2f00ff"
+    }
+  },
+  "shopHandle": "kenyonbrown23333",
+  "createdAt": "2024-12-20T18:25:51.864Z",
+  "updatedAt": "2025-09-11T01:54:39.022Z"
+}
+```
+
+### Shopify Metaobject Structure
+
+The creator metaobject has two access patterns:
+
+**Top-Level Fields:**
+```liquid
+{{ metaobject.cc-creator-first-name }}
+{{ metaobject.cc-creator-last-name }}
+{{ metaobject.cc-creator-profile-picture }}
+{{ metaobject.cc-creator-shop-handle }}
+{{ metaobject.cc-creator-shop-theme-primary-color }}
+```
+
+**JSON Data Field:**
+```liquid
+{{ metaobject.data.value.cc-creator-first-name }}
+{{ metaobject.data.value.cc-creator-drops }}
+{{ metaobject.data.value['cc-public'] }}
+```
+
+**Important:** The `data.value` object contains all fields including those at the top level, plus additional data like drops in JSON format.
+
+### Creator Field Reference
+
+| Field | Type | Description | Access Pattern |
+|-------|------|-------------|----------------|
+| `cc-creator-first-name` | String | Creator's first name | Top-level or `data.value` |
+| `cc-creator-last-name` | String | Creator's last name | Top-level or `data.value` |
+| `cc-creator-profile-picture` | Media/URL | Profile image | Top-level or `data.value` |
+| `cc-creator-shop-handle` | String | URL handle for creator's shop | Top-level or `data.value` |
+| `cc-creator-shop-theme-primary-color` | Color | Brand color hex code | Top-level or `data.value` |
+| `cc-creator-shop-description` | String | Shop bio/description | Top-level or `data.value` |
+| `cc-creator-drops` | Collection List | Shopify collections for drops | Top-level (Shopify objects) |
+| `cc-creator-drops` | JSON Array | Drops as JSON with order/fields | `data.value` (JSON data) |
+| `cc-public` | String | Public visibility flag ("Y"/"N") | `data.value` only |
+| `cc-collab-discount-code` | String | Discount code for this creator | `data.value` or via collab |
+| `cc-collab-discount-amount` | Number | Discount percentage/amount | Via collab relationship |
+
+## Collab (Collaboration) Data Structure
+
+### Collab Entity
+
+A collab represents the relationship between a creator and a channel (brand). Each collab includes discount settings, affiliate tracking, and tier classification.
+
+### Core Collab Fields
+
+```json
+{
+  "_id": "6765b6af6716078b61be0fd4",
+  "creator": "6765b6af6716078b61be0fd1",
+  "channel": "66be62136b2dcf7b2e660089",
+  "channelName": "CreatorCommerce Demo",
+  "collabTier": "6785e7cb86247878dbd60430",
+  "shopifyCollabsTierName": "CC // amika",
+  "tierKey": "CC // amika",
+  "affiliateCode": "1230OEW",
+  "affiliateUrl": "https://www.demobrand.shop/1230OEW",
+  "discount": {
+    "_id": "6765b6af6716078b61be0fd5",
+    "discountAmount": 0.1,
+    "discountType": "Percentage",
+    "discountCode": "1230OEW",
+    "shopifyCollabsDiscountCode": "1230OEW"
+  },
+  "relationshipManager": "shopify-collabs",
+  "isActive": true,
+  "isPartial": false,
+  "collabStartedAt": "2024-12-20T18:25:51.967Z",
+  "drops": ["6765be89f5ea34a0228109e9"],
+  "metadata": {
+    "shopifyCreatorCollectionId": "gid://shopify/Collection/488980119847",
+    "shopifyCreatorMetaobjectId": "gid://shopify/Metaobject/77942685991",
+    "shopifyCustomerId": "gid://shopify/Customer/8587704402215",
+    "shopifyCollabsCommunityMemberId": "4310492"
+  },
+  "custom": {
+    "cc-hero-header": "Discover the products holding me together",
+    "cc-logo": { /* Media object */ },
+    "cc-coin": "Lorem ipsum"
+  },
+  "createdAt": "2024-12-20T18:25:51.967Z",
+  "updatedAt": "2025-09-11T01:54:39.247Z"
+}
+```
+
+### Collab Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | String | Unique collab identifier |
+| `creator` | String/Object | Creator reference (ID or populated object) |
+| `channel` | String | Channel/brand reference |
+| `channelName` | String | Human-readable channel name |
+| `collabTier` | String | Tier ID reference |
+| `shopifyCollabsTierName` | String | Tier name from Shopify Collabs |
+| `tierKey` | String | Unique tier identifier |
+| `affiliateCode` | String | Unique discount/affiliate code |
+| `affiliateUrl` | String | Full affiliate link URL |
+| `discount` | Object | Discount configuration (see below) |
+| `relationshipManager` | String | Source system (`shopify-collabs`, `creatorcommerce`) |
+| `isActive` | Boolean | Whether collab is currently active |
+| `isPartial` | Boolean | Whether collab is fully configured |
+| `collabStartedAt` | DateTime | When collaboration began |
+| `drops` | Array[String] | Array of drop IDs |
+| `metadata` | Object | Shopify integration metadata |
+| `custom` | Object | Custom fields (brand-specific) |
+
+### Discount Object Structure
+
+```json
+{
+  "_id": "6765b6af6716078b61be0fd5",
+  "discountAmount": 0.1,
+  "discountType": "Percentage",
+  "discountCode": "1230OEW",
+  "shopifyCollabsDiscountCode": "1230OEW",
+  "createdAt": "2024-12-20T18:25:51.967Z",
+  "updatedAt": "2024-12-20T18:25:51.967Z"
+}
+```
+
+**Discount Types:**
+- `"Percentage"` - Percentage discount (0.1 = 10%)
+- `"FixedAmount"` - Fixed dollar amount discount
+
+### Campaign Relationship
+
+Collabs belong to campaigns through their tier:
+
+```json
+{
+  "campaign": {
+    "_id": "6797d50cecf174b7e23f3f50",
+    "title": "Ambassadors",
+    "collabTiers": ["6785e7cb86247878dbd60430", ...],
+    "isActive": true,
+    "brandPageRedirectUrlTemplate": "https://demobrand.shop/pages/creator/{{shop.handle}}",
+    "queryParams": "cc={{shop.handle}}"
+  }
+}
+```
+
+## Access Patterns
+
+### Getting Creator Data in Liquid
+
+**Standard Pattern:**
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+```
+
+**Template Context Branching:**
+```liquid
+{% liquid
+  if template.name contains 'metaobject'
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+
+### Accessing Collab Data
+
+Collab data is typically accessed via the creator's relationship. Common fields are also stored in the creator metaobject:
+
+```liquid
+{# Discount code #}
+{{ cc_creator.data.value['cc-collab-discount-code'] }}
+
+{# Or from discount object if available #}
+{{ collab.discount.discountCode }}
+```
+
+### Safe Field Access
+
+Always handle missing data gracefully:
+
+```liquid
+{% assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator' %}
+
+{% if cc_creator and cc_creator.cc-creator-profile-picture %}
+  <img src="{{ cc_creator.cc-creator-profile-picture }}" alt="{{ creator_name }}">
+{% else %}
+  <div class="placeholder-avatar">{{ creator_name | first }}</div>
+{% endif %}
+```
+
+## Data Relationships
+
+### Creator → Collabs
+
+A creator can have multiple collabs with different channels:
+
+```liquid
+{# Get all collabs for a creator #}
+{% for collab in creator.collabs %}
+  Channel: {{ collab.channelName }}
+  Discount: {{ collab.discount.discountCode }}
+{% endfor %}
+```
+
+### Collab → Drops
+
+Each collab contains multiple drops:
+
+```liquid
+{# Drops are stored on the collab #}
+{% for drop_id in collab.drops %}
+  {# Lookup drop details #}
+{% endfor %}
+```
+
+### Creator → Shopify Objects
+
+- **Metaobject**: One creator = one metaobject
+- **Collections**: One drop = one collection
+- **Customer**: Optional, one per creator per channel
+
+## API Access
+
+### Get Creator's Collabs
+
+```http
+GET /creators/collabs?myshopify_domain=example.myshopify.com&email=creator@example.com
+```
+
+### Create Collab
+
+```http
+POST /creators/collabs
+{
+  "myshopifyDomain": "example.myshopify.com",
+  "email": "creator@example.com",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "affiliateCode": "JANE10",
+  "primaryColor": "#FF0000",
+  "custom": { /* custom fields */ }
+}
+```
+
+### Update Collab
+
+```http
+POST /creators/collabs/{collabId}
+{
+  "firstName": "Jane",
+  "isOnboarded": true,
+  "discount": {
+    "discountAmount": 15,
+    "discountType": "Percentage"
+  }
+}
+```
+
+## Best Practices
+
+### 1. Always Use Handle for Lookups
+Use the creator's handle to access metaobjects, not the ID:
+
+```liquid
+{# ✅ Correct #}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{# ❌ Wrong #}
+{% assign cc_creator = metaobjects.creator[creator_id] %}
+```
+
+### 2. Prefer Data.Value for Complex Fields
+Use `data.value` for drops, nested structures, and custom fields:
+
+```liquid
+{# ✅ Correct #}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+
+{# ❌ Limited - only Shopify objects #}
+{% for drop in cc_creator['cc-creator-drops'].value %}
+```
+
+### 3. Handle Missing Creators
+Always check for creator existence:
+
+```liquid
+{% if cc_creator and cc_creator.cc-creator-first-name %}
+  {{ cc_creator.cc-creator-first-name }}
+{% else %}
+  <!-- Fallback content -->
+{% endif %}
+```
+
+### 4. Cache Creator Resolution
+Resolve creator once at the top of your template:
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_creator = cc_creator != blank
+%}
+```
+
+## Related Documentation
+
+- [Data Model Overview](/data-model-overview) - High-level architecture
+- [Drops & Products Data Model](/drops-products-data-model) - Drop structures
+- [Shopify Integration Data Model](/shopify-integration-data-model) - Metaobjects
+- [Custom Fields Reference](/custom-fields-reference) - Custom field patterns
+

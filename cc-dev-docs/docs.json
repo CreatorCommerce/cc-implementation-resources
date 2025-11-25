@@ -48,22 +48,22 @@
                         "expanded":true,
                         "pages":[
                            "getting-started",
-                           "glossary",
-                           "shopify-compatibility"
-                        ]
-                     },
-                     {
-                        "group":"LEARN ABOUT CC",
-                        "expanded":true,
-                        "pages":[
-                           "temp1"
+                           "how-to-use-these-docs",
+                           "the-3-ms",
+                           "shopify-compatibility",
+                           "building-prerequisites",
+                           "glossary"
                         ]
                      },
                      {
                         "group":"CABABILITIES",
                         "expanded":true,
                         "pages":[
-                           "temp1"
+                           "Unite-your-collab-tech-stack",
+                           "make-your-first-collabs",
+                           "make-your-first-shopping-experiences",
+                           "attribute-analyze",
+                           "optimize-scale"
                         ]
                      },
                      {
@@ -109,17 +109,52 @@
                         "group":"DATA MODEL",
                         "expanded":true,
                         "pages":[
-                           "temp2",
-                           "glossary",
-                           "temp3"
+                           "data-model-overview",
+                           "creator-collab-data-model",
+                           "drops-products-data-model",
+                           "custom-fields-reference",
+                           "glossary"
                         ]
                      },
                      {
                         "group":"SHOPIFY REFERENCE",
                         "expanded":true,
                         "pages":[
-                           "temp2",
-                           "temp3"
+                           "shopify-integration-data-model",
+                           {
+                              "group":"Shopify objects",
+                              "expanded":true,
+                              "pages":[
+                                 "shopify-objects"
+                              ]
+                           },
+                           {
+                              "group":"Metaobjects schema",
+                              "expanded":true,
+                              "pages":[
+                                 "metaobjects-schema"
+                              ]
+                           },
+                           {
+                              "group":"Tags",
+                              "expanded":true,
+                              "pages":[
+                                 {
+                                    "group":"Order object tags",
+                                    "expanded":true,
+                                    "pages":[
+                                       "order-object-tags"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Customer object tags",
+                                    "expanded":true,
+                                    "pages":[
+                                       "customer-object-tags"
+                                    ]
+                                 }
+                              ]
+                           }
                         ]
                      },
                      {
@@ -186,20 +221,58 @@
             ]
          },
          {
-            "tab":"Creator Experiences (Inputs)",
+            "tab":"Creator Experiences",
             "anchors":[
-               {
-                  "anchor":"Getting Started",
-                  "icon":"layout",
-                  "pages":[
-                     "getting-started"
-                  ]
-               },
                {
                   "anchor":"Creator Dashboard",
                   "icon":"monitor",
-                  "pages":[
-                     "creator-dashboard"
+                  "groups":[
+                     {
+                        "group":"Overview",
+                        "expanded":true,
+                        "pages":[
+                           "creator-dashboard"
+                        ]
+                     },
+                     {
+                        "group":"CSS Customization",
+                        "expanded":true,
+                        "pages":[
+                           "dashboard-overview-css",
+                           "css-reference",
+                           "css-applied-examples"
+                        ]
+                     },
+                     {
+                        "group":"API REFERENCE",
+                        "expanded":true,
+                        "pages":[
+                           "unified-api-reference",
+                           "api-overview",
+                           "guides/authentication",
+                           {
+                              "group":"Endpoints",
+                              "expanded":true,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages":[
+                                  "GET /creators/{creatorId}/drops/{dropId}/cart",
+                                   "GET /channels/{myshopifyDomain}/creators/magic-link",
+                                   "GET /creators/collabs",
+                                   "POST /creators/collabs",
+                                   "POST /creators/collabs/{collabId}",
+                                   "POST /creators/collabs/{collabId}/drops",
+                                   "POST /creators/collabs/{collabId}/drops/{dropId}"
+                                 ]
+                           },
+                           {
+                              "group":"Shopify Flow actions",
+                              "pages":[
+                                 "temp3",
+                                 "temp2"
+                              ]
+                           }
+                        ]
+                     }
                   ]
                },
                {
@@ -210,7 +283,7 @@
                   ]
                },
                {
-                  "anchor":"Enrichment Workflows",
+                  "anchor":"Content Enrichment",
                   "icon":"workflow",
                   "pages":[
                      "enrichment-flows"
@@ -219,20 +292,52 @@
             ]
          },
          {
-            "tab":"Consumer Experiences (Outputs)",
+            "tab":"Consumer Experiences",
             "anchors":[
-               {
-                  "anchor":"Getting Started",
-                  "icon":"layout",
-                  "pages":[
-                     "getting-started"
-                  ]
-               },
                {
                   "anchor":"Co-branded Storefronts",
                   "icon":"layout",
-                  "pages":[
-                     "co-branded-storefronts"
+                  "groups":[
+                     {
+                        "group":"Learning the basics",
+                        "expanded":true,
+                        "pages":[
+                           "co-branded-storefronts",
+                           {
+                              "title":"Shopify Reference",
+                              "href":"/references/shopify-reference"
+                           },
+                           {
+                              "title":"Liquid SDK",
+                              "href":"/references/sdks"
+                           }
+                        ]
+                     },
+                     {
+                        "group":"Landing pages",
+                        "expanded":true,
+                        "pages":[]
+                     },
+                     {
+                        "group":"Full funnel",
+                        "expanded":true,
+                        "pages":[]
+                     },
+                     {
+                        "group":"Pop-ups",
+                        "expanded":true,
+                        "pages":[]
+                     },
+                     {
+                        "group":"Checkout blocks",
+                        "expanded":true,
+                        "pages":[]
+                     },
+                     {
+                        "group":"Headless",
+                        "expanded":true,
+                        "pages":[]
+                     }
                   ]
                },
                {
@@ -327,8 +432,41 @@
                         "group":"SHOPIFY REFERENCE",
                         "expanded":true,
                         "pages":[
-                           "temp2",
-                           "temp3"
+                           "shopify-integration-data-model",
+                           {
+                              "group":"Shopify objects",
+                              "expanded":true,
+                              "pages":[
+                                 "shopify-objects"
+                              ]
+                           },
+                           {
+                              "group":"Metaobjects schema",
+                              "expanded":true,
+                              "pages":[
+                                 "metaobjects-schema"
+                              ]
+                           },
+                           {
+                              "group":"Tags",
+                              "expanded":true,
+                              "pages":[
+                                 {
+                                    "group":"Order object tags",
+                                    "expanded":true,
+                                    "pages":[
+                                       "order-object-tags"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Customer object tags",
+                                    "expanded":true,
+                                    "pages":[
+                                       "customer-object-tags"
+                                    ]
+                                 }
+                              ]
+                           }
                         ]
                      }
                   ]

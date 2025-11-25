@@ -1,0 +1,287 @@
+---
+title: 'Make Your First Collabs'
+description: 'Create and manage your first creator collaborations'
+---
+
+# Make Your First Collabs
+
+Creating collabs (collaborations) is your first step to building partnerships with creators. This guide covers the basics of creating and managing collabs.
+
+## What Is a Collab?
+
+A **collab** is a relationship between a creator and your brand (channel). Each collab includes:
+- Creator profile information
+- Discount code and affiliate settings
+- Collaboration tier/level
+- Drops (curated product collections)
+- Custom fields and branding
+
+## Creating Your First Collab
+
+### Via Shopify Collabs (Recommended)
+
+**Steps:**
+1. Open Shopify Collabs app
+2. Invite creator or accept creator application
+3. CreatorCommerce automatically syncs the collab
+4. Creator appears in CreatorCommerce dashboard
+5. Configure additional settings as needed
+
+**Benefits:**
+- Seamless creator onboarding
+- Integrated discount management
+- Unified creator database
+- Automatic syncing
+
+### Via CreatorCommerce API
+
+**Create Collab:**
+```http
+POST /creators/collabs
+{
+  "myshopifyDomain": "yourstore.myshopify.com",
+  "email": "creator@example.com",
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "affiliateCode": "JANE10",
+  "primaryColor": "#FF0000",
+  "custom": {
+    "cc-hero-header": "Welcome to Jane's Shop"
+  }
+}
+```
+
+**What Happens:**
+- Creator account created (if new)
+- Collab relationship established
+- Shopify metaobject created/updated
+- Shopify collection created (for drops)
+- Creator can access dashboard
+
+### Via CreatorCommerce Dashboard
+
+**Steps:**
+1. Go to CreatorCommerce dashboard
+2. Click "Create Collab" or "Add Creator"
+3. Enter creator details
+4. Configure settings
+5. Save and activate
+
+## Essential Collab Settings
+
+### Creator Information
+
+**Required Fields:**
+- First name
+- Last name
+- Email address
+
+**Recommended Fields:**
+- Profile picture
+- Bio/description
+- Brand color/theme
+- Handle/slug for URLs
+
+### Discount Configuration
+
+**Discount Types:**
+- **Percentage** - e.g., 10% off
+- **Fixed Amount** - e.g., $10 off
+
+**Discount Code:**
+- Unique affiliate code
+- Auto-generated or custom
+- Syncs with Shopify Collabs (if used)
+- Attached to checkout URLs
+
+### Affiliation Settings
+
+**Affiliate Code:**
+- Unique identifier for creator
+- Used in affiliate links
+- Tracks attribution
+- Can be used in URLs
+
+**Affiliate URL:**
+- Custom landing page URL
+- Can include discount code
+- Branded experience URL
+- Shareable creator link
+
+### Tier/Campaign Assignment
+
+**Collab Tier:**
+- Classifies relationship level
+- Examples: "Ambassadors", "Influencers", "Partners"
+- Defines permissions and benefits
+- Links to campaigns
+
+**Campaign:**
+- Marketing initiative
+- Groups multiple tiers
+- Defines redirect templates
+- Sets query parameters
+
+## Managing Collabs
+
+### Updating Collab Details
+
+**Via API:**
+```http
+POST /creators/collabs/{collabId}
+{
+  "firstName": "Jane",
+  "isOnboarded": true,
+  "discount": {
+    "discountAmount": 15,
+    "discountType": "Percentage"
+  }
+}
+```
+
+**What You Can Update:**
+- Creator profile information
+- Discount settings
+- Affiliation codes
+- Custom fields
+- Onboarding status
+- Tier assignments
+
+### Onboarding Status
+
+**Tracking Creator Onboarding:**
+- `isOnboarded: false` - Creator invited but not onboarded
+- `isOnboarded: true` - Creator completed onboarding
+- Used to track creator lifecycle
+- Affects dashboard access
+
+### Collab Status
+
+**Active Collabs:**
+- `isActive: true` - Collab is active
+- Creator can create drops
+- Storefront experiences visible
+- Attribution tracking enabled
+
+**Inactive Collabs:**
+- `isActive: false` - Collab paused
+- Drops hidden from storefront
+- Attribution still tracked
+- Can reactivate anytime
+
+## Best Practices
+
+### Creator Onboarding
+
+**Welcome Sequence:**
+1. Send creator invitation
+2. Creator accepts and creates account
+3. Complete profile setup
+4. Create first drop
+5. Launch creator experience
+
+**Support Materials:**
+- Creator dashboard access
+- Drop creation guide
+- Best practices documentation
+- Support contact information
+
+### Setting Up Discounts
+
+**Choose Appropriate Discount:**
+- Align with brand margins
+- Consider competitor pricing
+- Test different discount levels
+- Monitor performance
+
+**Discount Code Management:**
+- Use meaningful codes (creator name)
+- Make codes easy to remember
+- Ensure uniqueness
+- Track usage
+
+### Custom Fields
+
+**Brand-Specific Data:**
+- Hero section content
+- Creator logos
+- Seasonal content
+- Brand-specific metadata
+
+**Use Custom Fields For:**
+- Landing page headlines
+- Creator branding elements
+- Campaign-specific content
+- A/B testing variations
+
+## Testing Your First Collab
+
+### Create Test Creator
+
+**Recommended Steps:**
+1. Create test creator with your email
+2. Complete full setup
+3. Create test drop with products
+4. Test checkout flow
+5. Verify attribution
+
+### Verify Setup
+
+**Check Creator Data:**
+- Creator appears in Shopify metaobjects
+- Profile data populated correctly
+- Discount code working
+- Drops accessible
+
+**Test Checkout:**
+- Click creator link
+- Verify cart attributes set
+- Apply discount code
+- Complete test purchase
+- Check attribution
+
+## Common Workflows
+
+### Onboarding New Creator
+
+**Simple Flow:**
+1. Creator applies or you invite
+2. Create collab in system
+3. Creator receives magic link
+4. Creator completes profile
+5. Creator creates first drop
+6. Launch creator experience
+
+### Managing Existing Creator
+
+**Update Workflow:**
+1. Access creator in dashboard
+2. Update profile or settings
+3. Changes sync automatically
+4. Shopify metaobject updates
+5. Storefront reflects changes
+
+### Tier Management
+
+**Moving Creator to New Tier:**
+1. Update `collabTier` field
+2. System updates permissions
+3. Campaign assignment updates
+4. Redirect URLs update (if configured)
+5. Creator experience adapts
+
+## Next Steps
+
+After creating your first collab:
+
+1. **Create Drops** - Add product collections (see [Make Your First Shopping Experiences](/make-your-first-shopping-experiences))
+2. **Build Storefronts** - Create co-branded experiences
+3. **Track Performance** - Monitor attribution and metrics (see [Attribute & Analyze](/attribute-analyze))
+4. **Optimize** - Improve based on data (see [Optimize & Scale](/optimize-scale))
+
+## Related Documentation
+
+- [Creator & Collab Data Model](/creator-collab-data-model) - Deep dive into collab structure
+- [Building Prerequisites](/building-prerequisites) - Setup requirements
+- [Connect Your Tech Stack](/connect-your-tech-stack) - Integration setup
+

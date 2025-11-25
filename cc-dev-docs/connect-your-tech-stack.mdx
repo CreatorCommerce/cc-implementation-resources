@@ -1,0 +1,332 @@
+---
+title: 'Connect Your Tech Stack'
+description: 'Integrate CreatorCommerce with your existing tools and platforms'
+---
+
+# Connect Your Tech Stack
+
+CreatorCommerce integrates with your existing tech stack to work seamlessly alongside your current tools. This guide covers the key integration points.
+
+## Core Integrations
+
+### Shopify (Required)
+
+**Native Integration:**
+- CreatorCommerce is a Shopify app
+- Installs directly in your Shopify store
+- Uses Shopify metaobjects for data storage
+- Leverages Shopify collections for drops
+
+**What It Does:**
+- Syncs creator data to Shopify metaobjects
+- Maps drops to Shopify collections
+- Stores creator profiles and content
+- Enables Liquid template access to creator data
+
+**No Additional Setup Required:**
+- Metaobjects auto-created on app install
+- Collections auto-synced with drops
+- Cart attributes flow through checkout
+
+### Shopify Collabs (Recommended)
+
+**Integrated Creator Management:**
+- Seamless creator onboarding
+- Unified creator database
+- Automatic discount code sync
+- Integrated tier management
+
+**Benefits:**
+- Single source of truth for creators
+- Reduced manual work
+- Better creator experience
+- Simplified creator lifecycle
+
+**Setup:**
+- Install Shopify Collabs app
+- Configure creator tiers
+- Enable CreatorCommerce integration
+- Creators sync automatically
+
+## Email & Marketing Platforms
+
+### Klaviyo
+
+**Co-Branded Email Campaigns:**
+- Creator data available in Klaviyo
+- Personalize emails with creator context
+- Track creator-attributed conversions
+- Segment by creator audience
+
+**Integration Points:**
+- Cart attributes include creator data
+- Purchase events track creator attribution
+- Creator metadata in customer profiles
+- Custom properties for creator context
+
+**Use Cases:**
+- Creator-endorsed product emails
+- Personalized recommendations
+- Creator campaign tracking
+- Attribution reporting
+
+### Other Email Platforms
+
+**Generic Integration:**
+- Cart attributes available via webhooks
+- Creator data in order metadata
+- Customer tags for segmentation
+- Custom properties via API
+
+**Supported Platforms:**
+- Any platform that reads Shopify webhooks
+- Email tools with Shopify integration
+- Marketing automation platforms
+- Customer data platforms (CDPs)
+
+## Analytics & Attribution
+
+### Shopify Analytics
+
+**Built-in Tracking:**
+- Creator-attributed orders
+- Cart attributes in analytics
+- Creator handle in order metadata
+- Conversion tracking by creator
+
+**Available Metrics:**
+- Orders by creator
+- Revenue by creator
+- Conversion rates by creator
+- Customer acquisition by creator
+
+### Google Analytics / GA4
+
+**Event Tracking:**
+- Creator context in events
+- Custom dimensions for creators
+- Attribution tracking
+- Conversion paths
+
+**Integration:**
+- Cart attributes accessible via JavaScript
+- Custom events with creator data
+- Enhanced ecommerce tracking
+- Creator dimension tracking
+
+### Other Analytics Platforms
+
+**Flexible Integration:**
+- Webhook data includes creator context
+- Order metadata has creator attribution
+- Custom events for creator actions
+- API access for advanced tracking
+
+## Workflow Automation
+
+### Shopify Flow
+
+**Automated Workflows:**
+- Creator onboarding flows
+- Drop creation triggers
+- Product sync automation
+- Email notification workflows
+
+**Available Triggers:**
+- Collab created/updated
+- Drop created/updated
+- Creator enrolled
+- Product added to drop
+
+**Use Cases:**
+- Auto-create collections for drops
+- Send creator welcome emails
+- Sync products automatically
+- Update customer tags
+
+### Zapier / Make
+
+**Workflow Automation:**
+- Connect to 1000+ apps
+- Custom workflow triggers
+- Data transformation
+- Multi-platform orchestration
+
+**Common Workflows:**
+- Creator signup → CRM update
+- Drop creation → Content calendar
+- Purchase attribution → Analytics
+- Creator onboarding → Email sequence
+
+## Customer Data Platforms (CDPs)
+
+### Segment / mParticle / Others
+
+**Unified Customer Data:**
+- Creator context in customer profiles
+- Attribution tracking across platforms
+- Behavioral data with creator context
+- Cross-platform analytics
+
+**Integration:**
+- Webhooks with creator data
+- Customer properties update
+- Event tracking with attribution
+- Identity resolution
+
+## E-commerce Platforms
+
+### Headless Commerce Setups
+
+**API-First Integration:**
+- REST API for creator data
+- GraphQL queries for Shopify data
+- Custom storefront integration
+- Flexible data access
+
+**Use Cases:**
+- React/Next.js storefronts
+- Mobile app integrations
+- Custom CMS integrations
+- Multi-channel commerce
+
+### Third-Party Tools
+
+**Common Integrations:**
+- Product recommendation engines
+- Search platforms
+- Review platforms
+- Loyalty programs
+
+**Integration Pattern:**
+- Access creator data via API
+- Include creator context in product data
+- Personalize experiences
+- Track creator attribution
+
+## Content Management
+
+### Headless CMS
+
+**Content Integration:**
+- Creator profiles as content
+- Drop descriptions as content
+- Product enhancement notes
+- Custom fields as content
+
+**Use Cases:**
+- Contentful / Strapi integration
+- Custom content editors
+- Multi-channel content
+- Content versioning
+
+## Customer Support
+
+### Help Desk Platforms
+
+**Creator Context:**
+- Creator information in support tickets
+- Order attribution in customer profiles
+- Creator-related inquiries
+- Support team context
+
+**Integration:**
+- Customer data enrichment
+- Order metadata access
+- Creator lookup in support tools
+- Contextual support experiences
+
+## Development Tools
+
+### CI/CD Pipelines
+
+**Automated Deployment:**
+- Theme deployment workflows
+- Code testing with creator data
+- Automated testing
+- Version control
+
+### Local Development
+
+**Shopify CLI:**
+- Local theme development
+- File sync
+- Preview environments
+- Testing workflows
+
+## API Integrations
+
+### Direct API Access
+
+**Unified API:**
+- RESTful API endpoints
+- Create/update collabs
+- Manage drops
+- Generate checkout URLs
+
+**Use Cases:**
+- Custom integrations
+- Third-party tools
+- Internal systems
+- Advanced workflows
+
+**Authentication:**
+- API keys per channel
+- Partner access tokens
+- Admin access tokens
+- Secure authentication
+
+## Webhook Integrations
+
+### Real-Time Updates
+
+**Available Webhooks:**
+- Collab created/updated
+- Drop created/updated
+- Creator enrolled
+- Product added to drop
+
+**Use Cases:**
+- Sync to external systems
+- Trigger workflows
+- Update databases
+- Send notifications
+
+## Best Practices
+
+### Start Simple
+
+**Begin With:**
+- Core Shopify integration (automatic)
+- Shopify Collabs (recommended)
+- Email platform (Klaviyo or other)
+- Analytics platform
+
+**Add Later:**
+- Workflow automation
+- Advanced analytics
+- Custom integrations
+- Headless setups
+
+### Data Flow Understanding
+
+**Know Where Data Lives:**
+- CreatorCommerce backend (authoritative)
+- Shopify metaobjects (synced)
+- Shopify collections (drop products)
+- Your integrations (via API/webhooks)
+
+### Test Integrations
+
+**Before Production:**
+- Test in development store
+- Verify data sync
+- Check webhook delivery
+- Validate attribution tracking
+
+## Related Documentation
+
+- [Building Prerequisites](/building-prerequisites) - Setup requirements
+- [API Overview](/api-overview) - API integration details
+- [Data Model Overview](/data-model-overview) - Understanding data flow
+

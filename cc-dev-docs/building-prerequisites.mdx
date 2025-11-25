@@ -1,0 +1,258 @@
+---
+title: 'Building Prerequisites'
+description: 'What you need before you start building with CreatorCommerce'
+---
+
+# Building Prerequisites
+
+Before you start building with CreatorCommerce, make sure you have everything set up. This guide covers the essential prerequisites you'll need.
+
+## Essential Prerequisites
+
+### 1. Shopify Account & Store
+
+**Shopify Account:**
+- A valid Shopify account (existing or new)
+- Access to the Shopify admin panel
+
+**Shopify Store:**
+- A Shopify store (development or production)
+- Store admin access
+- Ability to install apps
+
+**Development Store Option:**
+- Can use a development store for testing
+- Development stores work the same as production stores
+- No credit card required for development stores
+
+**Requirements:**
+- Store must be on Shopify Plus, Shopify Basic, or higher plan
+- Store must have metaobjects enabled (available on all modern Shopify plans)
+
+### 2. CreatorCommerce Instance
+
+**App Installation:**
+- CreatorCommerce app installed in your Shopify store
+- App activated and connected
+- Access to CreatorCommerce dashboard
+
+**Initial Setup:**
+- Complete initial app setup flow
+- Configure basic settings
+- Verify store connection
+
+**Access Requirements:**
+- Access to CreatorCommerce dashboard
+- API access (if using API directly)
+- Store admin access for app configuration
+
+### 3. Shopify Collabs (Optional but Recommended)
+
+**Shopify Collabs Setup:**
+- Shopify Collabs app installed (recommended)
+- Collabs program configured
+- Creator tiers set up (if using tiers)
+
+**Why It Helps:**
+- Seamless creator onboarding
+- Integrated discount code management
+- Unified creator management
+- Automatic syncing between Collabs and CreatorCommerce
+
+**Alternative:**
+- Can work without Shopify Collabs
+- Manual creator management via API
+- More setup required
+
+### 4. Development Environment (For Builders)
+
+**Code Editor:**
+- Code editor for editing Liquid templates
+- Access to Shopify theme files
+- Git setup (optional but recommended)
+
+**Shopify CLI (Recommended):**
+- Shopify CLI installed for local development
+- Theme development tools
+- File sync capabilities
+
+**Testing Environment:**
+- Development store for testing
+- Browser developer tools
+- Testing workflow established
+
+## What You Should Have Ready
+
+### Before Building Co-Branded Experiences
+
+**Store Setup:**
+- ✅ Shopify store active and accessible
+- ✅ CreatorCommerce app installed
+- ✅ Basic app configuration complete
+- ✅ Metaobjects created (app handles this)
+
+**Creator Data:**
+- ✅ At least one creator/collab created
+- ✅ Creator has profile data populated
+- ✅ Creator has at least one drop (optional but helpful for testing)
+
+**Theme Access:**
+- ✅ Access to theme code
+- ✅ Ability to create/edit sections and snippets
+- ✅ Can preview changes in development store
+
+### Before Building Creator Features
+
+**CreatorCommerce Setup:**
+- ✅ App installed and configured
+- ✅ Creator dashboard access (if building creator features)
+- ✅ Creator onboarding flow understood
+- ✅ Creator data structure familiar (review glossary/data models)
+
+**Creator Content:**
+- ✅ Test creators created
+- ✅ Sample drops created
+- ✅ Product enhancements added
+- ✅ Custom fields configured (if using)
+
+## Quick Setup Checklist
+
+### Phase 1: Basic Setup (15 minutes)
+
+- [ ] Shopify store ready (dev or production)
+- [ ] CreatorCommerce app installed
+- [ ] App activated and connected
+- [ ] Initial app setup completed
+- [ ] Can access CreatorCommerce dashboard
+
+### Phase 2: Test Creator Setup (30 minutes)
+
+- [ ] Created test creator/collab
+- [ ] Populated creator profile data
+- [ ] Created test drop
+- [ ] Added products to drop
+- [ ] Added product enhancements (notes, media)
+- [ ] Verified creator metaobject created in Shopify
+
+### Phase 3: Development Ready (15 minutes)
+
+- [ ] Theme development environment set up
+- [ ] Can access theme files
+- [ ] Testing workflow established
+- [ ] Development store for testing (recommended)
+- [ ] Browser dev tools ready
+
+## Verifying Your Setup
+
+### Check CreatorCommerce Connection
+
+**In Shopify Admin:**
+1. Go to Apps → CreatorCommerce
+2. Verify app is installed and active
+3. Check that you can access the dashboard
+
+**In CreatorCommerce Dashboard:**
+1. Verify store connection shows as connected
+2. Check that creators can be created
+3. Verify metaobjects are accessible
+
+### Check Creator Metaobject
+
+**In Shopify Admin:**
+1. Go to Settings → Custom data → Metaobjects
+2. Find metaobject type `creator`
+3. Verify it exists and has fields
+4. Check that test creators appear as metaobject entries
+
+### Check Creator Data in Liquid
+
+**In Theme Code:**
+1. Access theme files
+2. Create test snippet or section
+3. Try accessing creator data:
+   ```liquid
+   {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+   {% assign cc_creator = metaobjects.creator[cc_handle] %}
+   {% if cc_creator %}
+     Creator found: {{ cc_creator.cc-creator-first-name }}
+   {% endif %}
+   ```
+
+## Common Setup Issues
+
+### Issue: App Not Installed
+
+**Solution:**
+- Install CreatorCommerce app from Shopify App Store
+- Complete installation flow
+- Verify in Apps section of Shopify admin
+
+### Issue: Metaobjects Not Created
+
+**Solution:**
+- CreatorCommerce automatically creates metaobjects on installation
+- If missing, check app installation
+- Contact support if metaobjects don't appear
+
+### Issue: No Creator Data
+
+**Solution:**
+- Create a test creator/collab first
+- Verify creator profile is populated
+- Check that creator appears in Shopify metaobjects
+- Ensure cart attributes are set for testing
+
+### Issue: Can't Access Theme Files
+
+**Solution:**
+- Ensure you have store admin access
+- Check theme permissions
+- Use Shopify CLI for local development
+- Consider development store for testing
+
+## Development Store vs Production
+
+### Development Store (Recommended for Building)
+
+**Pros:**
+- Safe testing environment
+- Can break things without impact
+- Easy to reset and start over
+- No credit card required
+
+**Use When:**
+- Learning CreatorCommerce
+- Building new features
+- Testing implementations
+- Experimenting with designs
+
+### Production Store
+
+**Pros:**
+- Real data and customers
+- Actual creator relationships
+- True performance metrics
+
+**Use When:**
+- Ready to launch
+- Have tested thoroughly
+- Confident in implementation
+
+**Recommendation:**
+Start with a development store, then move to production when ready.
+
+## Next Steps
+
+Once you have everything set up:
+
+1. **Understand the Data Model** - Review [Data Model Overview](/data-model-overview)
+2. **Learn Access Patterns** - Check [Creator & Collab Data Model](/creator-collab-data-model)
+3. **Start Building** - Follow the product guides in [LEARN ABOUT CC](/getting-started) section
+
+## Related Documentation
+
+- [Getting Started](/getting-started) - Platform overview
+- [How to Use These Docs](/how-to-use-these-docs) - Leveraging documentation with LLMs
+- [The 3 M's](/the-3-ms) - Strategic orientation
+- [Data Model Overview](/data-model-overview) - Understanding the architecture
+

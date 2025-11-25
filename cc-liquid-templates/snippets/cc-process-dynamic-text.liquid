@@ -1,7 +1,7 @@
 {% comment %}
   Process Dynamic Text Snippet (Refactored)
   Handles dynamic text replacement using [field-name] syntax with dot notation support
-  Supports cc_creator. prefix and fallback resolution
+  Supports cc_creator. prefix, fallback resolution, and default values
   
   Usage: {% render 'cc-process-dynamic-text', input_text: section.settings.title, output_var: 'title' %}
   Note: cc_creator and metaobject must be available in the parent scope
@@ -10,6 +10,13 @@
     - input_text: The text containing [field-name] placeholders
     - output_var: The variable name to assign the processed text to
     - fallback_to_literal: (optional) If true, shows [field-name] when field not found. Default: true
+  
+  Syntax Examples:
+    - [field-name] - Basic field reference
+    - [cc_creator.field-name] - Explicit creator field reference
+    - [field-name.subfield] - Dot notation for nested fields
+    - [field-name | default: 'Default Text'] - Field with default value (uses default if field is null or empty)
+    - [cc_creator.field-name | default: 'Default Text'] - Creator field with default value
   
   Returns: Processed text is assigned to the specified output_var
 {% endcomment %}
@@ -40,6 +47,35 @@
       assign tail = subparts[1]
       assign resolved_value = nil
       assign field_found = false
+      assign default_value = nil
+      assign has_default = false
+      
+      # Check for default value syntax: [field-name | default: 'default text']
+      if path_raw contains '| default:'
+        assign default_parts = path_raw | split: '| default:'
+        assign path_raw = default_parts[0] | strip
+        assign default_raw = default_parts[1] | strip
+        
+        # Extract default value from quotes (supports both single and double quotes)
+        if default_raw != blank
+          assign default_first = default_raw | slice: 0, 1
+          if default_first == "'" or default_first == '"'
+            assign default_last = default_raw | slice: -1, 1
+            if default_last == default_first
+              assign default_len = default_raw | size
+              assign default_inner_len = default_len | minus: 2
+              assign default_value = default_raw | slice: 1, default_inner_len
+              assign has_default = true
+            endif
+          endif
+          
+          # If no quotes found, use the raw value as default
+          if has_default == false
+            assign default_value = default_raw
+            assign has_default = true
+          endif
+        endif
+      endif
       
       # Check if path starts with cc_creator. prefix (new format)
       assign head = path_raw | slice: 0, prefix_len
@@ -212,7 +248,7 @@
         endif
       endif
       
-      # Append the resolved value or the original placeholder
+      # Append the resolved value, default value, or the original placeholder
       if field_found and resolved_value != blank
         # Convert value to string safely
         # For strings, remove JSON quotes and preserve special characters like + and &
@@ -253,8 +289,11 @@
         endif
         
         assign processed_text = processed_text | append: value_output | append: tail
+      elsif has_default and default_value != blank
+        # Field not found or blank, but default value provided - use default
+        assign processed_text = processed_text | append: default_value | append: tail
       else
-        # Field not found - use fallback behavior
+        # Field not found and no default - use fallback behavior
         if fallback_to_literal
           assign processed_text = processed_text | append: '[' | append: path_raw | append: ']' | append: tail
         else

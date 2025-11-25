@@ -1,0 +1,476 @@
+---
+title: 'Custom Fields Reference'
+description: 'Comprehensive guide to custom fields in CreatorCommerce collabs, drops, and products'
+---
+
+# Custom Fields Reference
+
+CreatorCommerce supports flexible custom fields at multiple levels, allowing brands to add metadata beyond standard fields. This guide covers field types, naming conventions, and access patterns.
+
+## Custom Field Levels
+
+Custom fields can be added at three levels:
+
+1. **Collab Level** - Per creator-brand relationship
+2. **Drop Level** - Per drop/collection
+3. **Product Level** - Per product within a drop
+
+## Field Types
+
+### Text Fields
+
+**Short Form (Single Line Text)**
+- Single-line text input
+- Suitable for: Tags, labels, short descriptions
+- Example: `cc-hero-header`
+
+**Long Form (Multi-line Text / Rich Text)**
+- Multi-line text with formatting
+- Suitable for: Descriptions, detailed content
+- Example: `cc-cc-ken-long-form`
+
+### Media Fields
+
+**Single Media**
+- One image or video file
+- URL string or Media object
+- Example: `cc-ken-single-media`
+
+**List Media**
+- Array of images/videos
+- Array of URL strings or Media objects
+- Example: `List of ken media`
+
+### Nested Structures
+
+**Objects**
+- Complex nested data
+- JSON object structure
+- Example: Custom metadata objects
+
+**Arrays**
+- Lists of values
+- Can contain objects or primitives
+- Example: Media arrays, tag lists
+
+## Naming Conventions
+
+### Standard Pattern
+
+Custom fields typically follow this pattern:
+
+```
+cc-{entity}-{field-type}-{identifier}
+```
+
+**Examples:**
+- `cc-drop-short-form-2` - Drop-level short text field #2
+- `cc-product-long-form-2` - Product-level long text field #2
+- `cc-ken-short-form` - Brand-specific field
+- `cc-hero-header` - Semantic naming
+
+### Common Prefixes
+
+- `cc-` - CreatorCommerce prefix
+- `cc-drop-` - Drop-level fields
+- `cc-product-` - Product-level fields
+- `cc-creator-drop-product-` - Product in drop (metaobject)
+
+## Collab-Level Custom Fields
+
+### Structure
+
+Collab custom fields are stored in the `custom` object:
+
+```json
+{
+  "custom": {
+    "cc-hero-header": "Discover the products holding me together",
+    "cc-logo": {
+      "mediaContentType": "IMAGE",
+      "url": "https://assets.drops.shop/.../logo.png",
+      "_id": "6915d4e7de360e493ec95813"
+    },
+    "cc-coin": "Lorem ipsum",
+    "cc-spring-content": [
+      { /* Media object */ },
+      { /* Media object */ }
+    ]
+  }
+}
+```
+
+### Access in Liquid
+
+**Via Metaobject:**
+```liquid
+{# Top-level access (if synced) #}
+{{ cc_creator.custom['cc-hero-header'] }}
+
+{# Via data.value #}
+{{ cc_creator.data.value['cc-hero-header'] }}
+```
+
+**Via API Response:**
+```json
+{
+  "collab": {
+    "custom": {
+      "cc-hero-header": "..."
+    }
+  }
+}
+```
+
+### Common Collab Fields
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| `cc-hero-header` | String | Hero section headline |
+| `cc-logo` | Media | Creator/brand logo |
+| `cc-coin` | String | Short tagline/coin phrase |
+| `cc-spring-content` | Media[] | Seasonal content gallery |
+| Brand-specific fields | Various | Brand-customized fields |
+
+## Drop-Level Custom Fields
+
+### Structure
+
+Drop custom fields stored in drop's `custom` object:
+
+```json
+{
+  "custom": {
+    "cc-drop-short-form-2": "Featured Collection",
+    "cc-drop-long-form-2": "These products represent my favorite picks...",
+    "cc-drop-media-2": "https://example.com/drop-image.jpg",
+    "cc-drop-long-media-2": [
+      "https://example.com/image1.jpg",
+      "https://example.com/image2.jpg"
+    ]
+  }
+}
+```
+
+### Access in Liquid
+
+**Via Metaobject JSON:**
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {# Short text #}
+  {% if json_drop['cc-drop-short-form-2'] %}
+    <span class="drop-tag">{{ json_drop['cc-drop-short-form-2'] }}</span>
+  {% endif %}
+  
+  {# Long text #}
+  {% if json_drop['cc-drop-long-form-2'] %}
+    <div class="drop-description">
+      {{ json_drop['cc-drop-long-form-2'] }}
+    </div>
+  {% endif %}
+  
+  {# Single media #}
+  {% if json_drop['cc-drop-media-2'] %}
+    <img src="{{ json_drop['cc-drop-media-2'] }}" alt="Drop image">
+  {% endif %}
+  
+  {# Media array #}
+  {% if json_drop['cc-drop-long-media-2'] %}
+    {% for media_item in json_drop['cc-drop-long-media-2'] %}
+      <img src="{{ media_item }}" alt="Drop media">
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+```
+
+### Common Drop Fields
+
+| Field Pattern | Type | Purpose |
+|---------------|------|---------|
+| `cc-drop-short-form-{n}` | String | Drop tag/label |
+| `cc-drop-long-form-{n}` | String | Drop description |
+| `cc-drop-media-{n}` | Media/String | Drop featured image |
+| `cc-drop-long-media-{n}` | Media[] | Drop gallery |
+
+## Product-Level Custom Fields
+
+### Structure
+
+Product custom fields exist at two levels:
+
+1. **Enhancement Custom Fields** - Creator content about the product
+2. **Product Custom Fields** - Product metadata in drop context
+
+### Enhancement Custom Fields
+
+```json
+{
+  "enhancement": {
+    "note": "This is my absolute favorite!",
+    "media": [...],
+    "custom": {
+      "cc-product-short-form-2": "Must-have",
+      "cc-product-long-form-2": "I use this every day..."
+    }
+  }
+}
+```
+
+### Product Custom Fields
+
+```json
+{
+  "custom": {
+    "cc-product-short-form-2": "Featured Product",
+    "cc-product-long-form-2": "Product details...",
+    "cc-cc-product-singlemedia-2": "https://example.com/product-media.jpg",
+    "cc-product-long-media-2": [
+      "https://example.com/media1.jpg",
+      "https://example.com/media2.jpg"
+    ]
+  }
+}
+```
+
+### Access in Liquid
+
+**Via Metaobject JSON:**
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop_product in json_drop['cc-creator-drop-products'] %}
+    {% if drop_product['cc-creator-drop-product-shopify-id'] == current_product_id %}
+      
+      {# Enhancement note #}
+      {% if drop_product['cc-creator-drop-product-enhancement-note'] %}
+        <blockquote>
+          {{ drop_product['cc-creator-drop-product-enhancement-note'] }}
+        </blockquote>
+      {% endif %}
+      
+      {# Enhancement custom fields #}
+      {% assign enhancement_custom = drop_product['cc-creator-drop-product-enhancement-custom'] %}
+      {% if enhancement_custom %}
+        {% if enhancement_custom['cc-product-short-form-2'] %}
+          <span class="product-tag">{{ enhancement_custom['cc-product-short-form-2'] }}</span>
+        {% endif %}
+      {% endif %}
+      
+      {# Product custom fields #}
+      {% if drop_product['cc-product-short-form-2'] %}
+        <p class="product-note">{{ drop_product['cc-product-short-form-2'] }}</p>
+      {% endif %}
+      
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+### Common Product Fields
+
+| Field Pattern | Type | Purpose |
+|---------------|------|---------|
+| `cc-product-short-form-{n}` | String | Product tag/note |
+| `cc-product-long-form-{n}` | String | Product description |
+| `cc-product-singlemedia-{n}` | Media/String | Product media |
+| `cc-product-long-media-{n}` | Media[] | Product gallery |
+| `cc-creator-drop-product-enhancement-note` | String | Creator's product note |
+
+## Field Access Patterns
+
+### Safe Field Access
+
+Always check for field existence:
+
+```liquid
+{# Check existence before access #}
+{% if json_drop['cc-drop-short-form-2'] %}
+  {{ json_drop['cc-drop-short-form-2'] }}
+{% endif %}
+
+{# With default fallback #}
+{% assign drop_tag = json_drop['cc-drop-short-form-2'] | default: 'Featured' %}
+```
+
+### Nested Field Access
+
+For nested structures:
+
+```liquid
+{% assign enhancement_custom = drop_product['cc-creator-drop-product-enhancement-custom'] %}
+{% if enhancement_custom and enhancement_custom['cc-product-short-form-2'] %}
+  {{ enhancement_custom['cc-product-short-form-2'] }}
+{% endif %}
+```
+
+### Media Field Handling
+
+Handle both URL strings and Media objects:
+
+```liquid
+{% assign media_field = json_drop['cc-drop-media-2'] %}
+
+{# Check if it's a Media object or URL string #}
+{% if media_field.url %}
+  {# Media object #}
+  <img src="{{ media_field.url }}" alt="Media">
+{% elsif media_field %}
+  {# URL string #}
+  <img src="{{ media_field }}" alt="Media">
+{% endif %}
+```
+
+### Array Field Iteration
+
+For media arrays and lists:
+
+```liquid
+{% if json_drop['cc-drop-long-media-2'] %}
+  {% for media_item in json_drop['cc-drop-long-media-2'] %}
+    {% if media_item.url %}
+      {# Media object #}
+      <img src="{{ media_item.url }}" alt="Gallery image">
+    {% else %}
+      {# URL string #}
+      <img src="{{ media_item }}" alt="Gallery image">
+    {% endif %}
+  {% endfor %}
+{% endif %}
+```
+
+## API Field Setting
+
+### Creating Collab with Custom Fields
+
+```http
+POST /creators/collabs
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "custom": {
+    "cc-hero-header": "Welcome to Jane's Shop",
+    "cc-ken-short-form": "Brand-specific field",
+    "cc-spring-content": [
+      "https://example.com/image1.jpg",
+      {
+        "mediaContentType": "IMAGE",
+        "url": "https://assets.drops.shop/.../image2.jpg"
+      }
+    ]
+  }
+}
+```
+
+### Updating Drop with Custom Fields
+
+```http
+POST /creators/collabs/{collabId}/drops/{dropId}
+{
+  "title": "My Favorites",
+  "custom": {
+    "cc-drop-short-form-2": "Featured",
+    "cc-drop-long-form-2": "These are my absolute favorites...",
+    "cc-drop-media-2": "https://example.com/drop-image.jpg",
+    "cc-drop-long-media-2": [
+      "https://example.com/gallery1.jpg",
+      "https://example.com/gallery2.jpg"
+    ]
+  }
+}
+```
+
+### Adding Product with Custom Fields
+
+```http
+POST /creators/collabs/{collabId}/drops
+{
+  "products": [
+    {
+      "id": "8491113971999",
+      "enhancement": {
+        "note": "Love this product!",
+        "custom": {
+          "cc-product-short-form-2": "Must-have",
+          "cc-product-long-form-2": "I use this every single day..."
+        }
+      },
+      "custom": {
+        "cc-product-short-form-2": "Featured Product"
+      }
+    }
+  ]
+}
+```
+
+## Field Naming Best Practices
+
+### 1. Use Descriptive Names
+```liquid
+{# ✅ Good #}
+cc-hero-header
+cc-product-featured-note
+cc-drop-seasonal-tag
+
+{# ❌ Bad #}
+cc-field-1
+cc-text-2
+cc-data
+```
+
+### 2. Include Entity Context
+```liquid
+{# ✅ Good - clear it's a drop field #}
+cc-drop-short-form-2
+
+{# ❌ Bad - ambiguous #}
+cc-short-form-2
+```
+
+### 3. Use Consistent Numbering
+If you have multiple fields of the same type, number them consistently:
+- `cc-drop-short-form-1`
+- `cc-drop-short-form-2`
+- `cc-drop-short-form-3`
+
+### 4. Document Field Purposes
+Create internal documentation mapping field names to their purposes.
+
+## Common Patterns
+
+### Featured Content Pattern
+
+```liquid
+{% assign featured_drop = cc_creator.data.value['cc-creator-drops'][0] %}
+{% if featured_drop['cc-drop-short-form-2'] == 'Featured' %}
+  {# Display as featured #}
+{% endif %}
+```
+
+### Media Gallery Pattern
+
+```liquid
+{% assign gallery = json_drop['cc-drop-long-media-2'] %}
+{% if gallery and gallery.size > 0 %}
+  <div class="gallery">
+    {% for media_item in gallery %}
+      <img src="{{ media_item.url | default: media_item }}" alt="Gallery">
+    {% endfor %}
+  </div>
+{% endif %}
+```
+
+### Tag/Label Pattern
+
+```liquid
+{% assign tag = json_drop['cc-drop-short-form-2'] | default: drop_product['cc-product-short-form-2'] %}
+{% if tag %}
+  <span class="tag">{{ tag }}</span>
+{% endif %}
+```
+
+## Related Documentation
+
+- [Data Model Overview](/data-model-overview) - High-level architecture
+- [Creator & Collab Data Model](/creator-collab-data-model) - Collab structures
+- [Drops & Products Data Model](/drops-products-data-model) - Drop structures
+- [Shopify Integration Data Model](/shopify-integration-data-model) - Metaobject fields
+

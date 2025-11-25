@@ -1,5 +1,407 @@
 ---
-title: 'New file'
-description: 'Description of your new file.'
+title: 'Glossary'
+description: 'Comprehensive glossary of CreatorCommerce concepts, data models, and terminology'
 ---
 
+# Glossary
+
+This glossary defines key concepts, data models, and terminology used throughout the CreatorCommerce platform. Use this as a reference when working with the API, building integrations, or implementing co-branded experiences.
+
+## Core Concepts
+
+### Creator
+An individual who collaborates with brands to promote and sell products. Also referred to as:
+- Influencer
+- Ambassador
+- Affiliate
+- Practitioner
+- Partner
+
+Creators have profiles, drops, and collaborations with channels (brands). Creator data is stored in Shopify metaobjects of type `creator`.
+
+**Related API Fields:**
+- `_id` - Creator's unique identifier
+- `firstName`, `lastName` - Creator's name
+- `email` - Creator's email address
+- `handle` - Unique URL-friendly identifier (e.g., `kenyonbrown23333`)
+- `profilePicture` - Creator's profile image
+- `isOnboarded` - Whether the creator has completed onboarding
+- `shop` - Creator's shop configuration
+- `socials` - Social media profiles
+- `tags` - Classification tags
+
+### Channel
+A brand or merchant that collaborates with creators. The channel represents the Shopify store that creators promote.
+
+**Related API Fields:**
+- `myshopifyDomain` - Shopify store domain (e.g., `tradespoke.myshopify.com`)
+- `channel` - Channel ID reference
+
+### Collab (Collaboration)
+A relationship between a creator and a channel. Each collab represents a creator's partnership with a specific brand, including their tier, discount codes, and drops.
+
+**Related API Fields:**
+- `_id` - Collab's unique identifier
+- `creator` - Reference to the creator
+- `channel` - Reference to the channel
+- `collabTier` - Tier ID for the collaboration
+- `affiliateCode` - Unique discount/affiliate code
+- `affiliateUrl` - Affiliate link URL
+- `discount` - Discount configuration
+- `drops` - Array of drop IDs associated with this collab
+- `isPartial` - Whether the collab is fully configured
+- `relationshipManager` - Source system (e.g., `shopify-collabs`, `creatorcommerce`)
+- `isActive` - Whether the collab is currently active
+- `collabStartedAt` - Timestamp when collaboration began
+- `metadata` - Additional metadata including Shopify IDs
+- `custom` - Custom fields specific to the collab
+
+### Collab Tier
+A classification level for a collaboration (e.g., "Ambassadors", "Influencers", "Partners"). Defines the relationship type and may have associated campaigns.
+
+**Related API Fields:**
+- `collabTier` - Tier ID reference
+- `shopifyCollabsTierName` - Name from Shopify Collabs
+- `tierKey` - Unique tier identifier
+
+### Campaign
+A marketing initiative that groups multiple collab tiers together. Campaigns can have brand pages, product pages, and redirect URL templates.
+
+**Related API Fields:**
+- `_id` - Campaign's unique identifier
+- `title` - Campaign name
+- `collabTiers` - Array of tier IDs in this campaign
+- `brandPage` - Brand page template URL
+- `productPage` - Product page template URL
+- `brandPageRedirectUrlTemplate` - Template for brand page redirects
+- `productPageRedirectUrlTemplate` - Template for product page redirects
+- `queryParams` - Query parameters to append
+- `isActive` - Whether campaign is active
+- `startedAt` - Campaign start timestamp
+
+### Drop
+A curated collection of products recommended by a creator. Drops can include product enhancements (notes, media) and custom fields.
+
+**Related API Fields:**
+- `_id` - Drop's unique identifier
+- `title` - Drop name
+- `description` - Drop description
+- `creator` - Reference to the creator
+- `channels` - Array of channel IDs
+- `products` - Array of product references
+- `enhancements` - Array of product enhancement IDs
+- `media` - Array of media associated with the drop
+- `channelHandles` - Array of channel handle identifiers
+- `custom` - Custom fields specific to the drop
+- `createdAt`, `updatedAt` - Timestamps
+
+### Drop Product
+A product included in a drop with optional enhancements and custom fields.
+
+**Related API Fields:**
+- `id` - Shopify product ID (required)
+- `variantId` - Optional Shopify variant ID
+- `enhancement` - Product enhancement object
+- `custom` - Custom fields specific to this product in the drop
+
+**Enhancement Fields:**
+- `note` - Creator's note about the product
+- `media` - Array of media (images/videos) for the product
+- `custom` - Additional custom fields
+
+## Discounts & Affiliate
+
+### Discount
+Discount configuration for a collab. Can be percentage-based or fixed amount.
+
+**Related API Fields:**
+- `discountAmount` - Discount value (number)
+- `discountType` - Either `"Percentage"` or `"FixedAmount"`
+- `discountCode` - The discount code string
+- `shopifyCollabsDiscountCode` - Code from Shopify Collabs integration
+
+### Affiliate Code
+A unique code used for tracking and applying discounts. Synonymous with discount code for creator-specific promotions.
+
+**Related API Fields:**
+- `affiliateCode` - The affiliate/discount code
+- `affiliateUrl` - Full affiliate link URL
+
+## Media
+
+### Media Object
+Represents images, videos, or other media files stored in CreatorCommerce's asset system.
+
+**Related API Fields:**
+- `_id` - Media's unique identifier
+- `url` - Full URL to the media file
+- `mediaContentType` - Type: `"IMAGE"`, `"VIDEO"`, etc.
+- `mimeType` - MIME type (e.g., `"image/jpeg"`)
+- `originalFilename` - Original file name
+- `filename` - Stored file name
+- `extension` - File extension
+- `owner` - Owner identifier (creator ID, channel ID, or `"user_..."` format)
+- `tags` - Array of classification tags
+- `createdAt`, `updatedAt` - Timestamps
+
+## Checkout & Cart
+
+### Cart URL
+A pre-configured checkout URL with products added and creator attributes attached. Generated via the checkout API endpoint.
+
+**Related API Fields:**
+- `cartUrl` - Full checkout URL with products and attributes
+
+### Cart Attributes
+Key-value pairs attached to the cart to track creator context and attribution.
+
+**Key Attributes:**
+- `cc-creator-id` - Creator's unique ID
+- `cc-creator-handle` - Creator's handle (for metaobject lookup)
+- `cc-campaign-id` - Campaign ID for attribution
+
+**Usage in Liquid:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+## Authentication & Access
+
+### Magic Link
+A passwordless authentication link for creators to access the Creator Dashboard.
+
+**Related API Fields:**
+- `link` - The magic link URL
+- `email` - Creator's email address
+- `notify` - Whether notification email was sent
+
+**Link Types:**
+- **Invitation Link**: First-time creator onboarding
+- **Sign-in Link**: Returning creator authentication
+
+### Access Tokens
+Authentication tokens for API access.
+
+**Token Types:**
+- `x-channel-access-token` - Channel (brand) API access
+- `x-partner-access-token` - Partner/integration API access
+- `x-admin-access-token` - Admin/creator dashboard access
+- `Bearer` - JWT token for authenticated creator sessions
+
+## Shopify Integration
+
+### Metaobject
+A Shopify metaobject of type `creator` that stores creator data and syncs with CreatorCommerce backend.
+
+**Key Metaobject Fields:**
+- Top-level fields: Direct access (e.g., `cc-creator-first-name`)
+- `data.value` - JSON structure containing all creator data including:
+  - `cc-creator-drops` - Drops as JSON with order and custom fields
+  - All top-level fields duplicated for consistency
+
+**Access Patterns:**
+```liquid
+{# On metaobject page templates #}
+{{ metaobject.cc-creator-first-name }}
+
+{# On other pages/sections #}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{{ cc_creator.cc-creator-first-name }}
+```
+
+### Shopify IDs
+GIDs (Global IDs) used to reference Shopify objects.
+
+**Common ID Types:**
+- `shopifyCreatorMetaobjectId` - Creator metaobject GID
+- `shopifyCreatorCollectionId` - Creator's collection GID
+- `shopifyCustomerId` - Customer account GID
+- `shopifyProductId` - Product GID
+- `shopifyVariantId` - Product variant GID
+
+**Format:** `gid://shopify/{Type}/{NumericId}` (e.g., `gid://shopify/Metaobject/77942685991`)
+
+### Collection
+Shopify collection representing a creator's drops. Each drop maps to a Shopify collection containing the drop's products.
+
+**Relationship:**
+- Drop → Shopify Collection (via `shopifyCreatorCollectionId`)
+- Collection contains products from the drop
+- Products can be accessed via Shopify's collection API
+
+## Custom Fields
+
+### Custom Field Structure
+Flexible key-value storage for collabs, drops, and products. Allows brands to add custom metadata beyond standard fields.
+
+**Field Types:**
+- **Short form** - Single-line text
+- **Long form** - Multi-line text (rich text)
+- **Single media** - One media file
+- **List media** - Array of media files
+- **Nested structures** - Objects and arrays
+
+**Naming Convention:**
+Custom fields typically prefixed with `cc-` (e.g., `cc-hero-header`, `cc-product-short-form-2`)
+
+**Access in Liquid:**
+```liquid
+{# Collab custom fields #}
+{{ cc_creator.custom['cc-hero-header'] }}
+
+{# Drop custom fields #}
+{{ drop.custom['cc-drop-short-form-2'] }}
+
+{# Product custom fields (in drops) #}
+{{ product.custom['cc-product-short-form-2'] }}
+```
+
+## Enrichment & Workflows
+
+### Enrichment Workflow
+Automated processes that enhance data based on events or schedules. Used to sync data between CreatorCommerce and Shopify, update metaobjects, and trigger notifications.
+
+**Common Enrichment Patterns:**
+- Cart attributes → Metaobject updates
+- New collab → Shopify collection creation
+- Drop creation → Product collection updates
+- Purchase events → Attribution tracking
+
+### Conversion Flow
+Workflow triggered by purchase events to attribute sales to creators and update analytics.
+
+**Typical Steps:**
+1. Cart checkout with `cc-creator-id` attribute
+2. Purchase event captured
+3. Attribution assigned to creator
+4. Analytics updated
+5. Creator notified (if configured)
+
+### Enrollment Flow
+Workflow for onboarding new creators and setting up collaborations.
+
+**Typical Steps:**
+1. Creator invitation (magic link)
+2. Creator signup/authentication
+3. Collab creation
+4. Metaobject initialization
+5. Shopify collection creation
+6. Creator dashboard access granted
+
+## Co-Branded Experiences
+
+### Co-Branded Storefront
+A personalized storefront experience that incorporates creator branding, recommended products, and custom messaging. Built using Liquid templates that reference creator metaobjects.
+
+**Key Components:**
+- Creator profile information
+- Drops/product recommendations
+- Creator-specific messaging
+- Discount code display
+- Brand + creator co-branding
+
+### Creator Page
+A dedicated page for a creator (metaobject page template) showcasing their profile, drops, and recommended products.
+
+**URL Pattern:** `/pages/{creator-handle}` or metaobject page URL
+
+### Dynamic Text Processing
+Liquid snippets that process dynamic text with creator-specific placeholders and personalization.
+
+**Common Patterns:**
+- Replace placeholders with creator data
+- Handle missing values gracefully
+- Support multi-level fallbacks
+
+## Data Model Hierarchy
+
+```
+Channel (Brand)
+  └── Campaigns
+       └── Collab Tiers
+            └── Collabs
+                 ├── Creator
+                 ├── Discount
+                 ├── Affiliate Code/URL
+                 ├── Custom Fields
+                 └── Drops
+                      ├── Products (with Enhancements)
+                      │    ├── Notes
+                      │    ├── Media
+                      │    └── Custom Fields
+                      └── Custom Fields
+```
+
+## Common Field Patterns
+
+### Creator Fields
+- `cc-creator-first-name` / `cc-creator-last-name` - Name
+- `cc-creator-profile-picture` - Profile image
+- `cc-creator-shop-handle` - Shop URL handle
+- `cc-creator-drops` - Drops collection/list
+- `cc-creator-shop-theme-primary-color` - Brand color
+- `cc-creator-shop-description` - Shop bio/description
+
+### Drop Fields
+- `cc-drop-short-form-{n}` - Short text field
+- `cc-drop-long-form-{n}` - Long text field
+- `cc-drop-media-{n}` - Single media
+- `cc-drop-long-media-{n}` - List media
+
+### Product Enhancement Fields
+- `cc-product-short-form-{n}` - Product note/variant
+- `cc-product-long-form-{n}` - Detailed product description
+- `cc-product-singlemedia-{n}` - Product media
+- `cc-product-long-media-{n}` - Product media gallery
+
+## Best Practices
+
+### Data Resolution Order
+1. Creator metaobject (primary source)
+2. Section/block settings (configurable defaults)
+3. Neutral/fallback values
+
+### ID Type Conversion
+Always convert IDs to strings when comparing:
+```liquid
+{# ❌ Wrong - type mismatch #}
+{% if product.id == drop_product_id %}
+
+{# ✅ Correct - convert to string #}
+{% if product.id | append: '' == drop_product_id %}
+```
+
+### Graceful Fallbacks
+Always handle missing data:
+```liquid
+{% assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator' %}
+{% if cc_creator and cc_creator.cc-creator-drops %}
+  {# Safe to access drops #}
+{% endif %}
+```
+
+## API Endpoints Summary
+
+### Checkout
+- `GET /creators/{creatorId}/drops/{dropId}/cart` - Generate checkout URL for a drop
+
+### Magic Links
+- `GET /channels/{myshopifyDomain}/creators/magic-link` - Get magic link for creator
+
+### Collabs
+- `GET /creators/collabs` - List creator's collabs
+- `POST /creators/collabs` - Create new collab
+- `POST /creators/collabs/{collabId}` - Update existing collab
+
+### Drops
+- `POST /creators/collabs/{collabId}/drops` - Create new drop
+- `POST /creators/collabs/{collabId}/drops/{dropId}` - Update existing drop
+
+## Related Documentation
+
+- [API Reference](/api-overview) - Complete API documentation
+- [Co-Branded Storefronts](/co-branded-storefronts) - Building personalized experiences
+- [Getting Started](/getting-started) - Platform overview and setup
+- [Data Model Reference](/unified-api-reference) - Detailed schema documentation

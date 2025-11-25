@@ -1,0 +1,327 @@
+---
+title: 'Make Your First Shopping Experiences'
+description: 'Build co-branded storefront experiences with CreatorCommerce'
+---
+
+# Make Your First Shopping Experiences
+
+Once you have creators and collabs set up, you can build co-branded shopping experiences that personalize the storefront around each creator. This guide covers the basics.
+
+## What Are Co-Branded Shopping Experiences?
+
+**Co-branded experiences** personalize your storefront around each creator:
+- Creator profile and branding displayed
+- Creator-curated product recommendations (drops)
+- Creator notes and reviews on products
+- Creator discount codes automatically applied
+- Personalized messaging and content
+
+**The Result:**
+- Feels like shopping with the creator
+- Authentic, personalized experience
+- Higher conversion rates
+- Stronger emotional connection
+
+## Types of Shopping Experiences
+
+### Creator Landing Pages
+
+**Purpose:**
+- Dedicated page for each creator
+- Showcase creator profile and drops
+- Entry point for creator traffic
+- Build creator brand presence
+
+**Key Elements:**
+- Creator profile (photo, bio, brand color)
+- Featured drops
+- Creator's product recommendations
+- Discount code prominently displayed
+- Creator's story and content
+
+### Personalized Product Pages
+
+**Purpose:**
+- Show creator's review/note on products
+- Display creator's related recommendations
+- Apply creator discount automatically
+- Create personalized product experience
+
+**Key Elements:**
+- Creator product review/note
+- "Recommended by [Creator]" messaging
+- Other products from creator's drops
+- Creator discount code display
+- Creator profile badge
+
+### Co-Branded Collections
+
+**Purpose:**
+- Display creator's drops as collections
+- Curated product lists
+- Creator context throughout
+- Story-driven product presentation
+
+**Key Elements:**
+- Drop title and description
+- Products with creator enhancements
+- Creator notes on products
+- Drop custom fields
+- Creator branding
+
+### Creator Directory
+
+**Purpose:**
+- Browse all creators
+- Discover creator partnerships
+- Find specific creators
+- Explore creator shops
+
+**Key Elements:**
+- Grid/list of creators
+- Creator profile previews
+- Filter by tags/categories
+- Link to creator pages
+- Search functionality
+
+## Building Your First Experience
+
+### Step 1: Access Creator Data
+
+**Basic Pattern:**
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{% if cc_creator %}
+  <h1>Shop with {{ cc_creator.cc-creator-first-name }}</h1>
+{% endif %}
+```
+
+**What This Does:**
+- Gets creator handle from cart attributes
+- Looks up creator in metaobjects
+- Accesses creator data
+- Handles missing creator gracefully
+
+### Step 2: Display Creator Profile
+
+**Show Creator Information:**
+```liquid
+{% if cc_creator %}
+  <div class="creator-header">
+    {% if cc_creator.cc-creator-profile-picture %}
+      <img src="{{ cc_creator.cc-creator-profile-picture }}" 
+           alt="{{ cc_creator.cc-creator-first-name }}">
+    {% endif %}
+    <h2>{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}</h2>
+    {% if cc_creator.cc-creator-shop-description %}
+      <p>{{ cc_creator.cc-creator-shop-description }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+```
+
+### Step 3: Display Creator Drops
+
+**Iterate Through Drops:**
+```liquid
+{% assign drops_json = cc_creator.data.value['cc-creator-drops'] %}
+{% assign drops_collections = cc_creator['cc-creator-drops'].value %}
+
+{% for json_drop in drops_json %}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+  
+  {% for collection_drop in drops_collections %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      <h3>{{ json_drop['cc-creator-drop-title'] | default: collection_drop.title }}</h3>
+      
+      {% for product in collection_drop.products limit: 10 %}
+        {# Display product #}
+      {% endfor %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+### Step 4: Show Creator Discount
+
+**Display Discount Code:**
+```liquid
+{% if cc_creator.data.value['cc-collab-discount-code'] %}
+  <div class="discount-banner">
+    Use code <strong>{{ cc_creator.data.value['cc-collab-discount-code'] }}</strong>
+    for {{ cc_creator.data.value['cc-collab-discount-amount'] }}% off!
+  </div>
+{% endif %}
+```
+
+## Quick Start: Creator Landing Page
+
+**Simple Implementation:**
+1. Create new Shopify page template
+2. Access creator via metaobject
+3. Display creator profile
+4. Show creator's drops
+5. Add discount code display
+
+**Result:**
+- Personalized landing page
+- Creator branding throughout
+- Easy to share and link
+- Converts creator traffic
+
+## Quick Start: Product Review Section
+
+**Show Creator's Product Note:**
+```liquid
+{% assign current_product_id = product.id | append: '' %}
+{% assign product_enhancement = null %}
+
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop_product in json_drop['cc-creator-drop-products'] %}
+    {% if drop_product['cc-creator-drop-product-shopify-id'] == current_product_id %}
+      {% if drop_product['cc-creator-drop-product-enhancement-note'] %}
+        {% assign product_enhancement = drop_product %}
+        {% break %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if product_enhancement %}{% break %}{% endif %}
+{% endfor %}
+
+{% if product_enhancement %}
+  <blockquote class="creator-review">
+    "{{ product_enhancement['cc-creator-drop-product-enhancement-note'] }}"
+    <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
+  </blockquote>
+{% endif %}
+```
+
+## Design Considerations
+
+### Mobile-First
+
+**Why:**
+- Most creator traffic is mobile
+- Instagram/TikTok links drive mobile visits
+- Mobile experience is critical
+
+**Best Practices:**
+- Creator profile at top
+- Discount code prominent
+- Easy product scrolling
+- Touch-friendly interactions
+
+### Authenticity Over Polish
+
+**What Works:**
+- Creator photos (not stock)
+- Real creator notes/reviews
+- Creator voice and tone
+- User-generated content
+
+**What Doesn't Work:**
+- Generic product descriptions
+- Stock photography only
+- Overly polished, inauthentic content
+- Ignoring creator's voice
+
+### Visual Hierarchy
+
+**Priority Order:**
+1. Creator profile (who they're shopping with)
+2. Discount code (value proposition)
+3. Products (what they're shopping for)
+4. Additional content
+
+### Brand Co-Branding
+
+**Balance:**
+- Creator branding visible
+- Brand identity maintained
+- Co-branded feel
+- Professional appearance
+
+## Testing Your Experience
+
+### Test Checklist
+
+**Before Launch:**
+- [ ] Creator data displays correctly
+- [ ] Drops load and display properly
+- [ ] Discount codes work
+- [ ] Product reviews/notes show
+- [ ] Mobile experience works
+- [ ] Fallbacks work (no creator context)
+- [ ] Links function correctly
+- [ ] Images load properly
+
+### Test Scenarios
+
+**With Creator Context:**
+- Visit creator landing page
+- Click creator link → product page
+- Verify creator data appears
+- Test discount code application
+
+**Without Creator Context:**
+- Visit storefront normally
+- Verify neutral experience
+- No broken images/links
+- Graceful degradation
+
+## Best Practices
+
+### Always Handle Missing Data
+
+**Defensive Coding:**
+```liquid
+{% if cc_creator and cc_creator.cc-creator-first-name %}
+  {{ cc_creator.cc-creator-first-name }}
+{% else %}
+  Featured Creator
+{% endif %}
+```
+
+### Use Fallbacks
+
+**For Missing Content:**
+```liquid
+{% assign creator_name = cc_creator.cc-creator-first-name | default: 'Creator' %}
+{% assign creator_image = cc_creator.cc-creator-profile-picture | default: false %}
+{% assign discount_code = cc_creator.data.value['cc-collab-discount-code'] | default: false %}
+```
+
+### Optimize Performance
+
+**Lazy Load Images:**
+```liquid
+<img src="{{ creator_image }}" 
+     alt="{{ creator_name }}"
+     loading="lazy">
+```
+
+**Limit Product Iterations:**
+```liquid
+{% for product in collection.products limit: 12 %}
+  {# Display product #}
+{% endfor %}
+```
+
+## Next Steps
+
+After building your first experience:
+
+1. **Test Thoroughly** - Verify all scenarios work
+2. **Track Performance** - Monitor metrics (see [Attribute & Analyze](/attribute-analyze))
+3. **Iterate** - Improve based on data
+4. **Scale** - Build more experiences (see [Optimize & Scale](/optimize-scale))
+
+## Related Documentation
+
+- [Co-Branded Storefronts](/co-branded-storefronts) - Detailed implementation guide
+- [Drops & Products Data Model](/drops-products-data-model) - Understanding drop structure
+- [Data Model Overview](/data-model-overview) - Access patterns
+

@@ -1,0 +1,292 @@
+---
+title: 'Data Model Overview'
+description: 'High-level architecture and relationships in the CreatorCommerce data model'
+---
+
+# Data Model Overview
+
+The CreatorCommerce data model is built around the relationship between creators and brands (channels), organized through collaborations, campaigns, and product drops. This guide provides a high-level view of the architecture and how different entities relate to each other.
+
+## Architecture Hierarchy
+
+```
+Channel (Brand/Merchant)
+  └── Campaigns
+       └── Collab Tiers
+            └── Collabs
+                 ├── Creator
+                 ├── Discount
+                 ├── Affiliate Code/URL
+                 ├── Custom Fields
+                 └── Drops
+                      ├── Products (with Enhancements)
+                      │    ├── Notes
+                      │    ├── Media
+                      │    └── Custom Fields
+                      └── Custom Fields
+```
+
+## Core Entities
+
+### Channel
+The brand or merchant that collaborates with creators. Represents a Shopify store.
+
+**Key Relationships:**
+- Has many Campaigns
+- Has many Creators (through Collabs)
+- Owns Products that creators can feature
+
+### Campaign
+A marketing initiative that groups multiple collab tiers together.
+
+**Key Relationships:**
+- Belongs to one Channel
+- Contains many Collab Tiers
+- Defines redirect URL templates and query parameters
+
+### Collab Tier
+A classification level for collaborations (e.g., "Ambassadors", "Influencers").
+
+**Key Relationships:**
+- Belongs to one or more Campaigns
+- Contains many Collabs
+- Defines relationship type and permissions
+
+### Collab (Collaboration)
+The core relationship between a Creator and a Channel.
+
+**Key Relationships:**
+- Belongs to one Creator
+- Belongs to one Channel
+- Has one Collab Tier
+- Has one Discount configuration
+- Has many Drops
+- May belong to one Campaign (through tier)
+
+**Key Attributes:**
+- Affiliate code for tracking
+- Discount settings
+- Onboarding status
+- Shopify metadata (collections, metaobjects, customers)
+
+### Creator
+An individual who collaborates with brands.
+
+**Key Relationships:**
+- Has many Collabs (with different channels)
+- Has many Drops (across all collabs)
+- Has one Shopify Metaobject
+- May have Shopify Collections (one per drop)
+
+**Data Storage:**
+- CreatorCommerce backend database
+- Shopify Metaobject (type: `creator`)
+- Shopify Customer account (optional)
+
+### Drop
+A curated collection of products recommended by a creator.
+
+**Key Relationships:**
+- Belongs to one Creator
+- Belongs to one or more Channels
+- Contains many Products (with enhancements)
+- Maps to one Shopify Collection
+
+**Key Attributes:**
+- Title and description
+- Product list with enhancements
+- Custom fields
+- Media gallery
+
+### Product Enhancement
+Additional content created by a creator for a specific product in a drop.
+
+**Key Relationships:**
+- Belongs to one Drop
+- Enhances one Product
+- Contains Media and Notes
+
+**Key Attributes:**
+- Creator's note/review
+- Media (images/videos)
+- Custom product-level fields
+
+## Data Flow Patterns
+
+### Creator Onboarding Flow
+
+```
+1. Creator invited (Magic Link)
+   ↓
+2. Creator authenticates
+   ↓
+3. Collab created in CreatorCommerce
+   ↓
+4. Shopify Customer account created (if needed)
+   ↓
+5. Shopify Metaobject created/updated
+   ↓
+6. Shopify Collection created (empty, for drops)
+   ↓
+7. Creator Dashboard access granted
+```
+
+### Drop Creation Flow
+
+```
+1. Creator creates Drop via API/Dashboard
+   ↓
+2. Products added with enhancements
+   ↓
+3. Drop saved in CreatorCommerce
+   ↓
+4. Shopify Collection updated with products
+   ↓
+5. Metaobject updated with drop reference
+   ↓
+6. Drop visible in creator's shop
+```
+
+### Checkout Flow
+
+```
+1. Customer clicks creator's link
+   ↓
+2. Cart attributes set:
+   - cc-creator-id
+   - cc-creator-handle
+   - cc-campaign-id
+   ↓
+3. Customer browses/storefront personalized
+   ↓
+4. Customer adds products to cart
+   ↓
+5. Checkout URL generated with all products + attributes
+   ↓
+6. Purchase attributed to creator
+```
+
+## Data Synchronization
+
+### CreatorCommerce ↔ Shopify
+
+**Shopify Metaobject (`creator` type)**
+- Primary source of truth for creator data
+- Synced bidirectionally
+- Contains all creator fields + drops data
+- Accessible via Liquid templates
+
+**Shopify Collections**
+- Each drop maps to one collection
+- Products automatically synced
+- Used for product filtering and display
+
+**Shopify Customer Accounts**
+- Optional creator accounts
+- Used for discount codes
+- Linked via metadata
+
+### Sync Triggers
+
+**Real-time Sync:**
+- Drop creation/update
+- Product additions/removals
+- Creator profile updates
+
+**Scheduled Sync:**
+- Metaobject enrichment workflows
+- Collection product updates
+- Analytics aggregation
+
+## Data Access Patterns
+
+### In Liquid Templates
+
+**On Metaobject Pages:**
+```liquid
+{# Direct access to metaobject #}
+{{ metaobject.cc-creator-first-name }}
+{{ metaobject.data.value.cc-creator-drops }}
+```
+
+**On Other Pages:**
+```liquid
+{# Via cart attributes #}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+### Via API
+
+**REST API:**
+- `/creators/collabs` - Get/create/update collabs
+- `/creators/collabs/{collabId}/drops` - Manage drops
+- `/creators/{creatorId}/drops/{dropId}/cart` - Generate checkout URLs
+
+**GraphQL (Shopify):**
+- Metaobject queries
+- Collection queries
+- Product queries
+
+## Data Model Principles
+
+### 1. Single Source of Truth
+- CreatorCommerce backend is authoritative
+- Shopify is synced presentation layer
+- Metaobject mirrors backend data
+
+### 2. Flexible Customization
+- Custom fields at collab, drop, and product levels
+- Brand-specific field configurations
+- No rigid schema limitations
+
+### 3. Relationship Integrity
+- All relationships maintained in CreatorCommerce
+- Shopify objects reference CreatorCommerce IDs
+- Bidirectional sync maintains consistency
+
+### 4. Performance Optimization
+- Metaobjects cached by Shopify
+- Collections pre-populated
+- Lazy loading for media
+
+## Common Data Patterns
+
+### Drop Order Preservation
+Drops are ordered via JSON in `data.value.cc-creator-drops`, not via collection order. Always iterate JSON first:
+
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+  {% for collection_drop in cc_creator['cc-creator-drops'].value %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      {# Match found - use collection_drop for Shopify data #}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+### Product Matching
+Products in drops are matched by Shopify product ID. Always convert to strings:
+
+```liquid
+{% assign product_id_str = product.id | append: '' %}
+{% if product_id_str == drop_product['cc-creator-drop-product-shopify-id'] %}
+  {# Match found #}
+{% endif %}
+```
+
+### Context Resolution
+Creator context flows from cart attributes through the session:
+
+```
+Cart Attributes → Creator Handle → Metaobject Lookup → Full Creator Data
+```
+
+## Related Documentation
+
+- [Creator & Collab Data Model](/creator-collab-data-model) - Deep dive into creator/collab structures
+- [Drops & Products Data Model](/drops-products-data-model) - Drops and products architecture
+- [Shopify Integration Data Model](/shopify-integration-data-model) - Metaobjects and collections
+- [Custom Fields Reference](/custom-fields-reference) - Field configuration and access patterns
+

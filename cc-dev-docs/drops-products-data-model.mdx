@@ -1,0 +1,429 @@
+---
+title: 'Drops & Products Data Model'
+description: 'Detailed structure of drops, products, and enhancements in CreatorCommerce'
+---
+
+# Drops & Products Data Model
+
+This document explains how drops, products, and product enhancements are structured and accessed in CreatorCommerce.
+
+## Drop Structure
+
+### Drop Entity
+
+A drop is a curated collection of products recommended by a creator. Each drop can contain multiple products with creator enhancements (notes, media, custom fields).
+
+### Core Drop Fields
+
+```json
+{
+  "_id": "68d4bf4b7796e248a07dfc2f",
+  "title": "My Winter Favorites",
+  "description": "Products I'm loving this season",
+  "creator": "68d4828e02627cba69144aa2",
+  "channels": ["67a93e156cc51f6c4e878e0c"],
+  "channelHandles": [],
+  "products": ["68d4bd2202627cba6983e4df", "67bfce788207c73f3951acb7"],
+  "enhancements": ["68d4c15e7796e248a07dfd53", "68d4c15f7796e248a07dfd5d"],
+  "media": [],
+  "custom": {
+    "cc-drop-short-form-2": "Featured Collection",
+    "cc-drop-long-form-2": "These products represent my favorite picks...",
+    "cc-drop-media-2": "https://example.com/drop-image.jpg"
+  },
+  "createdAt": "2025-09-25T04:04:29.765Z",
+  "updatedAt": "2025-09-25T04:13:21.875Z"
+}
+```
+
+### Drop Field Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | String | Unique drop identifier |
+| `title` | String | Drop name/title |
+| `description` | String | Drop description |
+| `creator` | String | Creator ID reference |
+| `channels` | Array[String] | Channel IDs this drop belongs to |
+| `channelHandles` | Array[String] | Channel handle identifiers |
+| `products` | Array[String/Object] | Product references (IDs or objects) |
+| `enhancements` | Array[String/Object] | Enhancement references |
+| `media` | Array[Media] | Drop-level media gallery |
+| `custom` | Object | Custom fields specific to this drop |
+
+## Product Structure in Drops
+
+### Drop Product
+
+When a product is added to a drop, it includes the base Shopify product plus optional enhancements and custom fields.
+
+### Drop Product Structure (API)
+
+```json
+{
+  "id": "8491113971999",
+  "variantId": "46033520853279",
+  "enhancement": {
+    "note": "This is my absolute favorite product!",
+    "media": [
+      "https://example.com/product-image.jpg",
+      {
+        "mediaContentType": "IMAGE",
+        "mimeType": "image/png",
+        "url": "https://assets.drops.shop/.../image.png",
+        "_id": "68918481be19399dfb5cc8d4"
+      }
+    ],
+    "custom": {
+      "cc-product-short-form-2": "Must-have",
+      "cc-product-long-form-2": "I use this every day..."
+    }
+  },
+  "custom": {
+    "cc-product-short-form-2": "Product note",
+    "cc-product-long-form-2": "Detailed description"
+  }
+}
+```
+
+### Product Enhancement Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `note` | String | Creator's note/review about the product |
+| `media` | Array[Media/String] | Images/videos for this product |
+| `custom` | Object | Custom fields at product level |
+
+## Shopify Collection Mapping
+
+### Drop ↔ Collection Relationship
+
+Each drop maps to one Shopify collection:
+
+- **Drop ID** → **Shopify Collection GID**
+- Collection contains all products from the drop
+- Products sync automatically when drop is updated
+
+### Accessing Drop Collections
+
+```liquid
+{# Get drop collection via creator #}
+{% assign drops_json = cc_creator.data.value['cc-creator-drops'] %}
+{% assign drops_collections = cc_creator['cc-creator-drops'].value %}
+
+{# Match JSON drop to collection #}
+{% for json_drop in drops_json %}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+  {% for collection_drop in drops_collections %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      {# collection_drop is the Shopify collection #}
+      {% assign matched_collection = collection_drop %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+## Drop Data in Metaobject
+
+### JSON Structure in Metaobject
+
+Drops are stored in the creator metaobject as JSON in `data.value.cc-creator-drops`:
+
+```json
+[
+  {
+    "cc-creator-drop-collection-id": "488980119847",
+    "cc-creator-drop-title": "My Winter Favorites",
+    "cc-creator-drop-products": [
+      {
+        "cc-creator-drop-product-shopify-id": "8491113971999",
+        "cc-creator-drop-product-enhancement-note": "This is my favorite!",
+        "cc-creator-drop-product-enhancement-media": [
+          "https://example.com/media.jpg"
+        ],
+        "cc-creator-drop-product-custom-field-2": "Custom value"
+      }
+    ],
+    "cc-drop-short-form-2": "Featured",
+    "cc-drop-long-form-2": "Collection description..."
+  }
+]
+```
+
+### Field Naming Convention
+
+Drop fields in metaobject use this pattern:
+- `cc-creator-drop-{field}` - Drop-level fields
+- `cc-creator-drop-product-{field}` - Product-level fields
+- `cc-creator-drop-product-enhancement-{field}` - Enhancement fields
+
+## Access Patterns
+
+### Iterating Drops (Correct Order)
+
+**Always iterate JSON first to preserve order:**
+
+```liquid
+{% assign drops_json = cc_creator.data.value['cc-creator-drops'] %}
+{% assign drops_collections = cc_creator['cc-creator-drops'].value %}
+
+{% for json_drop in drops_json %}
+  {% comment %} Find matching Shopify collection #}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+  {% assign matched_collection = null %}
+  
+  {% for collection_drop in drops_collections %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      {% assign matched_collection = collection_drop %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  
+  {% if matched_collection %}
+    <h2>{{ json_drop['cc-creator-drop-title'] | default: matched_collection.title }}</h2>
+    
+    {% comment %} Iterate products from collection #}
+    {% for product in matched_collection.products limit: 10 %}
+      {# Display product #}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+```
+
+### Finding Product Enhancement
+
+**Match product ID to find enhancement:**
+
+```liquid
+{% assign current_product_id = product.id | append: '' %}
+{% assign product_enhancement = null %}
+
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop_product in json_drop['cc-creator-drop-products'] %}
+    {% if drop_product['cc-creator-drop-product-shopify-id'] == current_product_id %}
+      {% assign product_enhancement = drop_product %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  {% if product_enhancement %}{% break %}{% endif %}
+{% endfor %}
+
+{% if product_enhancement and product_enhancement['cc-creator-drop-product-enhancement-note'] %}
+  <blockquote>
+    {{ product_enhancement['cc-creator-drop-product-enhancement-note'] }}
+    <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
+  </blockquote>
+{% endif %}
+```
+
+### Accessing Drop Custom Fields
+
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% if json_drop['cc-drop-short-form-2'] %}
+    <p class="drop-tag">{{ json_drop['cc-drop-short-form-2'] }}</p>
+  {% endif %}
+  
+  {% if json_drop['cc-drop-long-form-2'] %}
+    <div class="drop-description">
+      {{ json_drop['cc-drop-long-form-2'] }}
+    </div>
+  {% endif %}
+  
+  {% if json_drop['cc-drop-media-2'] %}
+    <img src="{{ json_drop['cc-drop-media-2'] }}" alt="Drop image">
+  {% endif %}
+{% endfor %}
+```
+
+## ID Matching Patterns
+
+### Product ID Comparison
+
+**Critical:** Always convert Shopify IDs to strings for comparison:
+
+```liquid
+{# ❌ Wrong - type mismatch #}
+{% if product.id == drop_product['cc-creator-drop-product-shopify-id'] %}
+
+{# ✅ Correct - convert to string #}
+{% assign product_id_str = product.id | append: '' %}
+{% if product_id_str == drop_product['cc-creator-drop-product-shopify-id'] %}
+```
+
+### Collection ID Comparison
+
+Same pattern for collection IDs:
+
+```liquid
+{% assign collection_id_str = collection_drop.id | append: '' %}
+{% if collection_id_str == json_drop['cc-creator-drop-collection-id'] %}
+  {# Match found #}
+{% endif %}
+```
+
+### Variant ID Matching
+
+When a specific variant is associated with a drop product:
+
+```liquid
+{% if drop_product['cc-creator-drop-product-variant-id'] %}
+  {% assign variant_id_str = variant.id | append: '' %}
+  {% if variant_id_str == drop_product['cc-creator-drop-product-variant-id'] %}
+    {# This variant is featured in the drop #}
+  {% endif %}
+{% endif %}
+```
+
+## Product Enhancement Media
+
+### Media Structure
+
+Enhancement media can be:
+- **URL strings** - External media URLs
+- **Media objects** - CreatorCommerce-hosted media
+
+```liquid
+{% assign enhancement_media = drop_product['cc-creator-drop-product-enhancement-media'] %}
+{% if enhancement_media %}
+  {% for media_item in enhancement_media %}
+    {% if media_item.url %}
+      {# Media object #}
+      <img src="{{ media_item.url }}" alt="Product media">
+    {% else %}
+      {# URL string #}
+      <img src="{{ media_item }}" alt="Product media">
+    {% endif %}
+  {% endfor %}
+{% endif %}
+```
+
+## Drop Product Lists
+
+### Types of Drop Lists
+
+Drops can be displayed as:
+
+1. **All Drop Products** - Every product in the drop
+2. **Featured Products** - Subset marked as featured
+3. **Curated Lists** - Custom-ordered subset
+
+```liquid
+{% comment %} Display all products from first drop #}
+{% assign first_drop = cc_creator.data.value['cc-creator-drops'][0] %}
+{% assign collection_id = first_drop['cc-creator-drop-collection-id'] %}
+
+{% for collection_drop in cc_creator['cc-creator-drops'].value %}
+  {% if collection_drop.id | append: '' == collection_id %}
+    {% for product in collection_drop.products limit: 12 %}
+      {# Display product #}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+```
+
+## API Operations
+
+### Create Drop
+
+```http
+POST /creators/collabs/{collabId}/drops
+{
+  "title": "Summer Essentials",
+  "description": "My must-have summer products",
+  "products": [
+    {
+      "id": "8491113971999",
+      "enhancement": {
+        "note": "Love this!",
+        "media": ["https://example.com/image.jpg"]
+      },
+      "custom": {
+        "cc-product-short-form-2": "Featured"
+      }
+    }
+  ],
+  "custom": {
+    "cc-drop-short-form-2": "Summer 2025"
+  }
+}
+```
+
+### Update Drop
+
+```http
+POST /creators/collabs/{collabId}/drops/{dropId}
+{
+  "title": "Summer Essentials 2025",
+  "description": "Updated description",
+  "products": [ /* updated product list */ ],
+  "custom": { /* updated custom fields */ }
+}
+```
+
+### Generate Drop Checkout URL
+
+```http
+GET /creators/{creatorId}/drops/{dropId}/cart
+```
+
+Returns a checkout URL with all drop products added to cart and creator attributes attached.
+
+## Best Practices
+
+### 1. Preserve Drop Order
+Always iterate JSON drops first, then match to collections:
+
+```liquid
+{# ✅ Correct - preserves order #}
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+
+{# ❌ Wrong - collection order may differ #}
+{% for collection_drop in cc_creator['cc-creator-drops'].value %}
+```
+
+### 2. Handle Missing Drops
+Check for drops existence:
+
+```liquid
+{% assign drops_json = cc_creator.data.value['cc-creator-drops'] %}
+{% if drops_json and drops_json.size > 0 %}
+  {# Process drops #}
+{% else %}
+  {# No drops available #}
+{% endif %}
+```
+
+### 3. Type-Safe ID Comparison
+Always convert IDs to strings:
+
+```liquid
+{% assign product_id = product.id | append: '' %}
+{% assign drop_product_id = drop_product['cc-creator-drop-product-shopify-id'] %}
+{% if product_id == drop_product_id %}
+```
+
+### 4. Efficient Lookups
+Break loops once matches are found:
+
+```liquid
+{% assign found_enhancement = null %}
+{% for json_drop in drops_json %}
+  {% for drop_product in json_drop['cc-creator-drop-products'] %}
+    {% if drop_product['cc-creator-drop-product-shopify-id'] == current_product_id %}
+      {% assign found_enhancement = drop_product %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  {% if found_enhancement %}{% break %}{% endif %}
+{% endfor %}
+```
+
+## Related Documentation
+
+- [Data Model Overview](/data-model-overview) - High-level architecture
+- [Creator & Collab Data Model](/creator-collab-data-model) - Creator structures
+- [Shopify Integration Data Model](/shopify-integration-data-model) - Collections
+- [Custom Fields Reference](/custom-fields-reference) - Custom field patterns
+
