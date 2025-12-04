@@ -602,31 +602,29 @@
             </div>
           </div>
 
-          {%- comment -%} Collection description {%- endcomment -%}
-          {%- if selected_drop_collection and selected_drop_collection.description != blank -%}
-            {%- liquid
-              assign description_style = description_display_style
-              assign quote_class = ''
-              assign formatted_description = selected_drop_collection.description
-              assign attribution = ''
-              
-              if description_style == 'quote_first_name' and has_creator
-                assign quote_class = ' quote-style'
-                assign formatted_description = '"' | append: selected_drop_collection.description | append: '"'
-                assign attribution = '— ' | append: cc_creator.cc-creator-first-name
-              elsif description_style == 'quote_shop_title' and has_creator and cc_creator.cc-creator-shop-title
-                assign quote_class = ' quote-style'
-                assign formatted_description = '"' | append: selected_drop_collection.description | append: '"'
-                assign attribution = '— ' | append: cc_creator.cc-creator-shop-title
-              endif
-            -%}
-            <div class="cc-collection-description{{ quote_class }}" id="cc-collection-description-{{ section_id }}" data-drop-id="{{ selected_drop_id | escape }}">
-              {{ formatted_description }}
-              {%- if attribution != blank -%}
-                <span class="cc-description-attribution">{{ attribution | escape }}</span>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
+            {%- comment -%} Collection description - always render container {%- endcomment -%}
+<div class="cc-collection-description{% if description_display_style == 'quote_first_name' or description_display_style == 'quote_shop_title' %} quote-style{% endif %}" 
+     id="cc-collection-description-{{ section_id }}" 
+     style="{% if selected_drop and selected_drop['cc-creator-drop-description'] != blank %}display: block;{% else %}display: none;{% endif %}">
+  {%- if selected_drop and selected_drop['cc-creator-drop-description'] != blank -%}
+    {%- liquid
+      assign description_style = description_display_style
+      assign formatted_description = selected_drop['cc-creator-drop-description']
+      
+      if description_style == 'quote_first_name' and has_creator
+        assign formatted_description = '"' | append: selected_drop['cc-creator-drop-description'] | append: '"'
+      elsif description_style == 'quote_shop_title' and has_creator and cc_creator.cc-creator-shop-title
+        assign formatted_description = '"' | append: selected_drop['cc-creator-drop-description'] | append: '"'
+      endif
+    -%}
+    {{ formatted_description }}
+    {%- if description_style == 'quote_first_name' and has_creator -%}
+      <span class="cc-description-attribution">— {{ cc_creator.cc-creator-first-name | escape }}</span>
+    {%- elsif description_style == 'quote_shop_title' and has_creator and cc_creator.cc-creator-shop-title -%}
+      <span class="cc-description-attribution">— {{ cc_creator.cc-creator-shop-title | escape }}</span>
+    {%- endif -%}
+  {%- endif -%}
+</div>
         {%- endif -%}
       </div>
 
@@ -809,38 +807,32 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Store drops data for cart functionality
-  const dropsData = {
+ const dropsData = {
     {%- for json_drop in drops_json -%}
       {%- liquid
         assign drop_id = json_drop['cc-creator-drop-collection-id']
-        assign drop_collection = nil
-        if drop_id != blank
-          for c in drops_collections
-            assign c_id = c.id | append: ''
-            if c_id == drop_id
-              assign drop_collection = c
+        assign has_valid_products = false
+        if json_drop['cc-creator-drop-products'] and json_drop['cc-creator-drop-products'].size > 0
+          for json_product in json_drop['cc-creator-drop-products']
+            assign product_handle = json_product['cc-creator-drop-product-handle'] | default: json_product['handle'] | default: json_product['product-handle']
+            if product_handle != blank and all_products[product_handle] != blank
+              assign has_valid_products = true
               break
             endif
           endfor
         endif
       -%}
-      {%- if drop_collection and drop_collection.products_count > 0 -%}
+      {%- if has_valid_products -%}
         '{{ drop_id }}': {
-          title: {{ json_drop['cc-creator-drop-title'] | default: drop_collection.title | json }},
-          description: {{ drop_collection.description | json }},
+          title: {{ json_drop['cc-creator-drop-title'] | json }},
+          description: {{ json_drop['cc-creator-drop-description'] | default: '' | json }},
           products: [
             {%- for json_product in json_drop['cc-creator-drop-products'] -%}
               {%- liquid
-                assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+                assign product_handle = json_product['cc-creator-drop-product-handle'] | default: json_product['handle'] | default: json_product['product-handle']
                 assign card_product = nil
-                if wanted_id != blank
-                  for p in drop_collection.products
-                    assign p_id = p.id | append: ''
-                    if p_id == wanted_id
-                      assign card_product = p
-                      break
-                    endif
-                  endfor
+                if product_handle != blank
+                  assign card_product = all_products[product_handle]
                 endif
               -%}
               {%- if card_product -%}
