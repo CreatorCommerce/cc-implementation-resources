@@ -10,18 +10,19 @@ The CreatorCommerce data model is built around the relationship between creators
 ## Architecture Hierarchy
 
 ```
-Channel (Brand/Merchant)
+Channel (Shopify Store)
   └── Campaigns
-       └── Collab Tiers
+       └── Tiers (Collab Tiers)
             └── Collabs
                  ├── Creator
                  ├── Discount
                  ├── Affiliate Code/URL
                  ├── Custom Fields
-                 └── Drops
+                 └── Drops (Product Collections)
                       ├── Products (with Enhancements)
                       │    ├── Notes
                       │    ├── Media
+                      │    ├── Variant
                       │    └── Custom Fields
                       └── Custom Fields
 ```
@@ -29,10 +30,11 @@ Channel (Brand/Merchant)
 ## Core Entities
 
 ### Channel
-The brand or merchant that collaborates with creators. Represents a Shopify store.
+The technical name for a Shopify Store in the CreatorCommerce system. A channel is the brand or merchant that collaborates with creators.
 
 **Key Relationships:**
 - Has many Campaigns
+- Has many Tiers (Collab Tiers)
 - Has many Creators (through Collabs)
 - Owns Products that creators can feature
 
@@ -44,21 +46,22 @@ A marketing initiative that groups multiple collab tiers together.
 - Contains many Collab Tiers
 - Defines redirect URL templates and query parameters
 
-### Collab Tier
-A classification level for collaborations (e.g., "Ambassadors", "Influencers").
+### Tier (Collab Tier)
+An assigned tier level to a collab that defines discount rates and relationship type (e.g., "Ambassadors", "Influencers", "Partners").
 
 **Key Relationships:**
 - Belongs to one or more Campaigns
 - Contains many Collabs
-- Defines relationship type and permissions
+- Defines discount configuration and permissions
+- Associated with a Channel
 
 ### Collab (Collaboration)
-The core relationship between a Creator and a Channel.
+An association between a creator and a channel. The core relationship structure connecting creators to brands.
 
 **Key Relationships:**
 - Belongs to one Creator
 - Belongs to one Channel
-- Has one Collab Tier
+- Has one Tier (Collab Tier)
 - Has one Discount configuration
 - Has many Drops
 - May belong to one Campaign (through tier)
@@ -84,12 +87,12 @@ An individual who collaborates with brands.
 - Shopify Customer account (optional)
 
 ### Drop
-A curated collection of products recommended by a creator.
+A curated collection of products dedicated to collabs within channels. Each drop is a product collection recommended by a creator.
 
 **Key Relationships:**
 - Belongs to one Creator
 - Belongs to one or more Channels
-- Contains many Products (with enhancements)
+- Contains many Products (with Enhancements)
 - Maps to one Shopify Collection
 
 **Key Attributes:**
@@ -97,19 +100,26 @@ A curated collection of products recommended by a creator.
 - Product list with enhancements
 - Custom fields
 - Media gallery
+- Optional form template ID
 
-### Product Enhancement
-Additional content created by a creator for a specific product in a drop.
+### Enhancement (Product Enhancement)
+Product content fields within a drop within a collab within a channel. Additional content created by creators to personalize products in their drops.
 
 **Key Relationships:**
 - Belongs to one Drop
 - Enhances one Product
+- May specify a Product Variant
 - Contains Media and Notes
 
 **Key Attributes:**
 - Creator's note/review
 - Media (images/videos)
+- Variant-specific details
 - Custom product-level fields
+- Optional form template ID
+
+**Data Hierarchy:**
+Channel → Collab → Drop → Enhancement → Product
 
 ## Data Flow Patterns
 

@@ -31,14 +31,14 @@ Creators have profiles, drops, and collaborations with channels (brands). Creato
 - `tags` - Classification tags
 
 ### Channel
-A brand or merchant that collaborates with creators. The channel represents the Shopify store that creators promote.
+The technical name for a Shopify Store in the CreatorCommerce system. A channel is a brand or merchant that collaborates with creators. Each channel represents a Shopify store that creators promote, and serves as the primary organizational unit for managing collaborations, campaigns, and collab tiers.
 
 **Related API Fields:**
 - `myshopifyDomain` - Shopify store domain (e.g., `tradespoke.myshopify.com`)
 - `channel` - Channel ID reference
 
 ### Collab (Collaboration)
-A relationship between a creator and a channel. Each collab represents a creator's partnership with a specific brand, including their tier, discount codes, and drops.
+An association between a creator and a channel. Each collab represents the core relationship structure that connects a creator to a specific brand/channel, including their assigned tier, discount codes, affiliate links, and associated drops.
 
 **Related API Fields:**
 - `_id` - Collab's unique identifier
@@ -56,13 +56,16 @@ A relationship between a creator and a channel. Each collab represents a creator
 - `metadata` - Additional metadata including Shopify IDs
 - `custom` - Custom fields specific to the collab
 
-### Collab Tier
-A classification level for a collaboration (e.g., "Ambassadors", "Influencers", "Partners"). Defines the relationship type and may have associated campaigns.
+### Tier (Collab Tier)
+An assigned tier level to a collab that defines the discount rates, relationship type, and classification level (e.g., "Ambassadors", "Influencers", "Partners"). Tiers determine the benefits and permissions for creators within a collaboration and may be associated with campaigns.
 
 **Related API Fields:**
 - `collabTier` - Tier ID reference
+- `tierTitle` - Human-readable tier name
 - `shopifyCollabsTierName` - Name from Shopify Collabs
 - `tierKey` - Unique tier identifier
+- `discount` - Discount configuration for this tier
+- `campaign` - Associated campaign reference
 
 ### Campaign
 A marketing initiative that groups multiple collab tiers together. Campaigns can have brand pages, product pages, and redirect URL templates.
@@ -80,7 +83,7 @@ A marketing initiative that groups multiple collab tiers together. Campaigns can
 - `startedAt` - Campaign start timestamp
 
 ### Drop
-A curated collection of products recommended by a creator. Drops can include product enhancements (notes, media) and custom fields.
+A curated collection of products dedicated to collabs within channels. Drops are recommended product sets created by creators that can include product enhancements (notes, media) and custom fields. Each drop maps to a Shopify collection and belongs to a specific collab within a channel.
 
 **Related API Fields:**
 - `_id` - Drop's unique identifier
@@ -93,6 +96,7 @@ A curated collection of products recommended by a creator. Drops can include pro
 - `media` - Array of media associated with the drop
 - `channelHandles` - Array of channel handle identifiers
 - `custom` - Custom fields specific to the drop
+- `formId` - Associated form template ID
 - `createdAt`, `updatedAt` - Timestamps
 
 ### Drop Product
@@ -108,6 +112,38 @@ A product included in a drop with optional enhancements and custom fields.
 - `note` - Creator's note about the product
 - `media` - Array of media (images/videos) for the product
 - `custom` - Additional custom fields
+
+### Enhancement (Product Enhancement)
+Product content fields within a drop within a collab within a channel. Enhancements are additional content created by creators to personalize and annotate products in their drops. They include creator notes, media (photos/videos), variant-specific details, and custom fields.
+
+**Related API Fields:**
+- `_id` - Enhancement's unique identifier
+- `product` - Product reference
+- `note` - Creator's review or note about the product
+- `media` - Array of media objects (images/videos)
+- `variant` - Specific variant ID if enhancement is variant-specific
+- `custom` - Custom fields for product-level personalization
+- `formId` - Associated form template ID
+
+**Data Hierarchy:**
+- Channel → Collab → Drop → Enhancement → Product
+
+### Forms
+Configurable form templates that define custom field structures for different entity types in the CreatorCommerce system. Forms allow channels to customize what information is collected and displayed for collabs, drops, and products. There are 4 types of forms:
+
+**Form Types:**
+1. **Onboarding Forms** - Fields collected during creator onboarding to a collab
+2. **Custom Forms** - General-purpose custom field collections for collabs
+3. **Product Forms** - Custom fields specific to products within drops
+4. **Drop Forms** - Custom fields for drop-level information
+
+**Related API Fields:**
+- `formId` - Form template identifier referenced in drops, enhancements, and custom fields
+- `type` - Form type classification
+- `fields` - Array of field definitions
+
+**Usage:**
+Forms define the structure of custom fields and can include various field types (text, media, lists) that are then populated with data at the collab, drop, or product enhancement level.
 
 ## Discounts & Affiliate
 

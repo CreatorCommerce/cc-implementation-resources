@@ -118,6 +118,357 @@ paths:
                 error: "Internal Server Error"
                 message: "Failed to create magic link"
 
+  /channels/{myshopifyDomain}/collabs:
+    get:
+      tags:
+        - Collabs
+      summary: Get Channel Collabs
+      description: Retrieves all collabs for a specific channel
+      operationId: getChannelCollabs
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain (e.g., tradespoke.myshopify.com)
+          schema:
+            type: string
+            example: "cc-goaff-sandbox.myshopify.com"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved channel collabs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelCollabsResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Failed to retrieve channel collabs"
+
+  /channels/{myshopifyDomain}/collabs/{collabId}:
+    get:
+      tags:
+        - Collabs
+      summary: Get Channel Collab
+      description: Retrieves a specific collab for a channel with full details including drops and enhancements
+      operationId: getChannelCollab
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-goaff-sandbox.myshopify.com"
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "67801c7dddd3b70bb40a62e9"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved channel collab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelCollabResponse'
+              example:
+                collab:
+                  _id: "67801c7dddd3b70bb40a62e9"
+                  creator:
+                    _id: "67801c7dddd3b70bb40a62e6"
+                    firstName: "Brett"
+                    lastName: "Anderson"
+                    handle: "brett"
+                    email: "kenyon+0404030430403300e0r@creatorcommerce.shop"
+                    profilePicture:
+                      _id: "68318157b14fb8d0032f0884"
+                      url: "https://assets.drops.shop/user_2rP83VD6o02CQ9hHNINi6nfZVcr/68318157b14fb8d0032f0884.png"
+                      mimeType: "image/png"
+                      mediaContentType: "IMAGE"
+                      filename: "68318157b14fb8d0032f0884"
+                    shop:
+                      theme:
+                        primaryColor: "#000000"
+                      title: "Brett's Shop"
+                  collabTier:
+                    _id: "6785e7cb86247878dbd60430"
+                    title: "Shopify Collabs Tier Codes - CC // Ambassadors"
+                  campaign:
+                    _id: "6797d50cecf174b7e23f3f50"
+                    title: "Ambassadors"
+                  affiliateCode: "brett15"
+                  affiliateUrl: "https://www.demobrand.shop/brett15"
+                  discount:
+                    discountAmount: 0.1
+                    discountType: "Percentage"
+                  drops:
+                    - _id: "6831814eb14fb8d0032f086a"
+                      title: "Starter Kit"
+                      description: "For your first purchases. Trust me."
+                      enhancements:
+                        - _id: "6831814eb14fb8d0032f0873"
+                          product: "6831814e5623cdacc9023abd"
+                          note: "Perfect for riding in the lambo"
+                          media:
+                            - _id: "68c229ffd1866e0904f04e74"
+                              url: "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/68c229ffd1866e0904f04e74.mp4"
+                              mimeType: "video/mp4"
+                              mediaContentType: "VIDEO"
+                              filename: "68c229ffd1866e0904f04e74"
+                      media: []
+                      products:
+                        - _id: "6831814e5623cdacc9023abd"
+                          shopifyId: "gid://shopify/Product/9830837322023"
+                          shopifyHandle: "the-moonshot-hodl"
+                  customFields:
+                    - _id: "68317ae95623cdacc9fc1393"
+                      handle: "cc-hero-header"
+                      ownerType: "collab"
+                      ownerId: "67801c7dddd3b70bb40a62e9"
+                      value: "Love the hold, you will too!"
+                      type: "single_line_text_field"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Failed to retrieve channel collab"
+
+    post:
+      tags:
+        - Collabs
+      summary: Update Channel Collab
+      description: Updates a collab within a channel, including ability to reorder drops
+      operationId: updateChannelCollab
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-collabs-sandbox.myshopify.com"
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelCollabRequest'
+            example:
+              creator:
+                email: "kenyon+test48548sep641@creatorcommerce.shop"
+                firstName: "Qeptio"
+                lastName: "Hombre"
+                shop:
+                  theme:
+                    primaryColor: "#66ccff"
+                  title: "test tiles"
+              affiliateCode: "NEWCODE"
+              affiliateUrl: "https://example.com/NEWCODE"
+              drops: ["68d4bd5c7796e248a07dfbf2", "68d4be997796e248a07dfc1a"]
+              custom:
+                cc-ken-short-form: "cc-test1"
+                cc-cc-ken-long-form: "Hey everyone this is a super long field"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully updated channel collab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollabResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/collab-tiers:
+    get:
+      tags:
+        - Collabs
+      summary: Get Channel Collab Tiers
+      description: Retrieves all collab tiers configured for a specific channel
+      operationId: getChannelCollabTiers
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-goaff-sandbox.myshopify.com"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved collab tiers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollabTiersResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 500
+                error: "Internal Server Error"
+                message: "Failed to retrieve collab tiers"
+
+  /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}:
+    post:
+      tags:
+        - Drops
+      summary: Update Channel Drop
+      description: Updates a drop within a channel collab with field-by-field changes
+      operationId: updateChannelDrop
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-collabs-sandbox.myshopify.com"
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+        - name: dropId
+          in: path
+          required: true
+          description: The drop ID
+          schema:
+            type: string
+            example: "68d4bf4b7796e248a07dfc2f"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelDropRequest'
+            example:
+              title: "Updated Drop Title"
+              description: "Updated drop description"
+              media: []
+              products: []
+              custom:
+                cc-drop-short-form-2: "Featured"
+              formId: "form_12345"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully updated channel drop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DropResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancement/{enhancementId}:
+    post:
+      tags:
+        - Drops
+      summary: Update Product Enhancement
+      description: Updates a product enhancement within a drop in a channel collab
+      operationId: updateChannelEnhancement
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          description: The Shopify domain
+          schema:
+            type: string
+            example: "cc-collabs-sandbox.myshopify.com"
+        - name: collabId
+          in: path
+          required: true
+          description: The collab ID
+          schema:
+            type: string
+            example: "68d482d502627cba69150a33"
+        - name: dropId
+          in: path
+          required: true
+          description: The drop ID
+          schema:
+            type: string
+            example: "68d4bf4b7796e248a07dfc2f"
+        - name: enhancementId
+          in: path
+          required: true
+          description: The enhancement ID
+          schema:
+            type: string
+            example: "68d4c15e7796e248a07dfd53"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEnhancementRequest'
+            example:
+              note: "This is my absolute favorite product!"
+              variant: "46033520853279"
+              media:
+                - "https://picsum.photos/200/300"
+              custom:
+                cc-product-short-form-2: "Must-have"
+              formId: "form_product_123"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Successfully updated enhancement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnhancementResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /creators/collabs:
     get:
       tags:
@@ -855,9 +1206,15 @@ components:
               - type: string
                 format: uri
               - $ref: '#/components/schemas/Media'
+        variant:
+          type: string
+          description: Optional specific variant ID
         custom:
           type: object
           additionalProperties: true
+        formId:
+          type: string
+          description: Optional form template ID
 
     DropProduct:
       type: object
@@ -894,6 +1251,9 @@ components:
         custom:
           type: object
           additionalProperties: true
+        formId:
+          type: string
+          description: Optional form template ID
 
     UpdateDropRequest:
       type: object
@@ -909,6 +1269,9 @@ components:
         custom:
           type: object
           additionalProperties: true
+        formId:
+          type: string
+          description: Optional form template ID
 
     DropResponse:
       type: object
@@ -956,4 +1319,331 @@ components:
               format: date-time
             __v:
               type: integer
+            formId:
+              type: string
+              description: Optional form template ID
+
+    ChannelCollabsResponse:
+      type: object
+      properties:
+        collabs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collab'
+      description: Response containing array of collabs for a channel
+
+    ChannelCollabResponse:
+      type: object
+      properties:
+        collab:
+          type: object
+          properties:
+            _id:
+              type: string
+            creator:
+              type: object
+              properties:
+                _id:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                handle:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                profilePicture:
+                  $ref: '#/components/schemas/Media'
+                shop:
+                  type: object
+                  properties:
+                    theme:
+                      type: object
+                      properties:
+                        primaryColor:
+                          type: string
+                    title:
+                      type: string
+            collabTier:
+              type: object
+              properties:
+                _id:
+                  type: string
+                title:
+                  type: string
+            campaign:
+              type: object
+              properties:
+                _id:
+                  type: string
+                title:
+                  type: string
+            affiliateCode:
+              type: string
+            affiliateUrl:
+              type: string
+            discount:
+              $ref: '#/components/schemas/Discount'
+            drops:
+              type: array
+              items:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  enhancements:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        product:
+                          type: string
+                        note:
+                          type: string
+                        media:
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/Media'
+                  media:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Media'
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        shopifyId:
+                          type: string
+                          description: Shopify GID
+                        shopifyHandle:
+                          type: string
+            customFields:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomField'
+      description: Response containing single collab with fully populated creator, drops, enhancements, and custom fields
+
+    CollabTiersResponse:
+      type: object
+      properties:
+        collabTiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollabTier'
+      description: Response containing array of collab tiers for a channel
+
+    CollabTier:
+      type: object
+      properties:
+        _id:
+          type: string
+        channel:
+          type: string
+        tierKey:
+          type: string
+          description: Unique tier identifier
+        tierTitle:
+          type: string
+          description: Human-readable tier name
+        relationshipManager:
+          type: string
+          enum:
+            - shopify-collabs
+            - creatorcommerce
+        discount:
+          $ref: '#/components/schemas/Discount'
+        metadata:
+          type: object
+          properties:
+            shopifyDiscountId:
+              type: string
+        prevDiscount:
+          $ref: '#/components/schemas/Discount'
+        isDefault:
+          type: boolean
+        isShopifyCreatorMetaobjectSyncDisabled:
+          type: boolean
+        campaign:
+          type: string
+          description: Associated campaign ID
+        prevCampaign:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Enhancement:
+      type: object
+      properties:
+        _id:
+          type: string
+        product:
+          type: string
+          description: Product reference ID
+        note:
+          type: string
+          description: Creator's note or review about the product
+        media:
+          type: array
+          items:
+            oneOf:
+              - type: string
+                format: uri
+              - $ref: '#/components/schemas/Media'
+        variant:
+          type: string
+          description: Optional specific variant ID
+        custom:
+          type: object
+          additionalProperties: true
+        formId:
+          type: string
+          description: Optional form template ID
+      description: Product content fields within a drop within a collab within a channel
+
+    CustomField:
+      type: object
+      properties:
+        _id:
+          type: string
+        handle:
+          type: string
+          description: Custom field handle/key (e.g., cc-hero-header)
+        ownerType:
+          type: string
+          enum:
+            - collab
+            - drop
+            - product
+          description: Type of entity this field belongs to
+        ownerId:
+          type: string
+          description: ID of the owning entity
+        value:
+          oneOf:
+            - type: string
+            - type: number
+            - type: boolean
+            - $ref: '#/components/schemas/Media'
+            - type: array
+              items:
+                $ref: '#/components/schemas/Media'
+          description: Field value - type depends on the field type (string for text, Media object for media, array for list.media)
+        type:
+          type: string
+          enum:
+            - single_line_text_field
+            - multi_line_text_field
+            - media
+            - list.media
+          description: Field type classification
+
+    UpdateEnhancementRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          description: Creator's note about the product
+        variant:
+          type: string
+          description: Specific variant ID
+        media:
+          type: array
+          items:
+            oneOf:
+              - type: string
+                format: uri
+              - $ref: '#/components/schemas/Media'
+        custom:
+          type: object
+          additionalProperties: true
+          description: Custom fields for product-level personalization
+        formId:
+          type: string
+          description: Form template ID
+
+    UpdateChannelCollabRequest:
+      type: object
+      properties:
+        creator:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            firstName:
+              type: string
+            lastName:
+              type: string
+            shop:
+              type: object
+              properties:
+                theme:
+                  type: object
+                  properties:
+                    primaryColor:
+                      type: string
+                      pattern: '^#[0-9A-Fa-f]{6}$'
+                title:
+                  type: string
+        affiliateCode:
+          type: string
+        affiliateUrl:
+          type: string
+          format: uri
+        drops:
+          type: array
+          items:
+            type: string
+          description: Array of drop IDs for reordering
+        custom:
+          type: object
+          additionalProperties: true
+          description: Custom fields for the collab
+
+    UpdateChannelDropRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        media:
+          type: array
+          items:
+            oneOf:
+              - type: string
+                format: uri
+              - $ref: '#/components/schemas/Media'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/DropProduct'
+        custom:
+          type: object
+          additionalProperties: true
+        formId:
+          type: string
+          description: Form template ID
+
+    EnhancementResponse:
+      type: object
+      properties:
+        enhancement:
+          $ref: '#/components/schemas/Enhancement'
+      description: Response containing updated enhancement
 

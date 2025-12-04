@@ -5,13 +5,13 @@ description: 'Detailed structure of drops, products, and enhancements in Creator
 
 # Drops & Products Data Model
 
-This document explains how drops, products, and product enhancements are structured and accessed in CreatorCommerce.
+This document explains how drops, products, and enhancements are structured and accessed in CreatorCommerce.
 
 ## Drop Structure
 
 ### Drop Entity
 
-A drop is a curated collection of products recommended by a creator. Each drop can contain multiple products with creator enhancements (notes, media, custom fields).
+A drop is a curated collection of products dedicated to collabs within channels. Each drop is recommended by a creator and can contain multiple products with enhancements (notes, media, custom fields) that provide product content fields within the drop.
 
 ### Core Drop Fields
 
@@ -44,12 +44,13 @@ A drop is a curated collection of products recommended by a creator. Each drop c
 | `title` | String | Drop name/title |
 | `description` | String | Drop description |
 | `creator` | String | Creator ID reference |
-| `channels` | Array[String] | Channel IDs this drop belongs to |
+| `channels` | Array[String] | Channel (Shopify Store) IDs this drop belongs to |
 | `channelHandles` | Array[String] | Channel handle identifiers |
 | `products` | Array[String/Object] | Product references (IDs or objects) |
-| `enhancements` | Array[String/Object] | Enhancement references |
+| `enhancements` | Array[String/Object] | Enhancement references (product content fields) |
 | `media` | Array[Media] | Drop-level media gallery |
 | `custom` | Object | Custom fields specific to this drop |
+| `formId` | String | Optional form template ID for custom field structure |
 
 ## Product Structure in Drops
 
@@ -86,23 +87,37 @@ When a product is added to a drop, it includes the base Shopify product plus opt
 }
 ```
 
-### Product Enhancement Fields
+## Enhancement Structure
+
+### Enhancement (Product Enhancement)
+
+Enhancements are product content fields within a drop within a collab within a channel. They contain the personalized content that creators add to products.
+
+**Data Hierarchy:**
+Channel → Collab → Drop → Enhancement → Product
+
+### Enhancement Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `_id` | String | Enhancement unique identifier |
+| `product` | String/Object | Product reference |
 | `note` | String | Creator's note/review about the product |
 | `media` | Array[Media/String] | Images/videos for this product |
+| `variant` | String | Optional specific variant ID |
 | `custom` | Object | Custom fields at product level |
+| `formId` | String | Optional form template ID |
 
 ## Shopify Collection Mapping
 
 ### Drop ↔ Collection Relationship
 
-Each drop maps to one Shopify collection:
+Each drop (a collection dedicated to a collab within a channel) maps to one Shopify collection:
 
 - **Drop ID** → **Shopify Collection GID**
 - Collection contains all products from the drop
 - Products sync automatically when drop is updated
+- Drops belong to specific channels (Shopify stores)
 
 ### Accessing Drop Collections
 

@@ -95,7 +95,7 @@ The creator metaobject has two access patterns:
 
 ### Collab Entity
 
-A collab represents the relationship between a creator and a channel (brand). Each collab includes discount settings, affiliate tracking, and tier classification.
+A collab is an association between a creator and a channel. Each collab represents the core relationship structure that includes discount settings, affiliate tracking, and tier classification. Collabs are dedicated to specific channels (Shopify stores) and define how creators promote that channel's products.
 
 ### Core Collab Fields
 
@@ -144,9 +144,9 @@ A collab represents the relationship between a creator and a channel (brand). Ea
 |-------|------|-------------|
 | `_id` | String | Unique collab identifier |
 | `creator` | String/Object | Creator reference (ID or populated object) |
-| `channel` | String | Channel/brand reference |
+| `channel` | String | Channel (Shopify Store) reference |
 | `channelName` | String | Human-readable channel name |
-| `collabTier` | String | Tier ID reference |
+| `collabTier` | String | Tier ID reference (assigned tier level) |
 | `shopifyCollabsTierName` | String | Tier name from Shopify Collabs |
 | `tierKey` | String | Unique tier identifier |
 | `affiliateCode` | String | Unique discount/affiliate code |
@@ -156,9 +156,10 @@ A collab represents the relationship between a creator and a channel (brand). Ea
 | `isActive` | Boolean | Whether collab is currently active |
 | `isPartial` | Boolean | Whether collab is fully configured |
 | `collabStartedAt` | DateTime | When collaboration began |
-| `drops` | Array[String] | Array of drop IDs |
+| `drops` | Array[String] | Array of drop IDs (collections dedicated to this collab) |
 | `metadata` | Object | Shopify integration metadata |
-| `custom` | Object | Custom fields (brand-specific) |
+| `custom` | Object | Custom fields (channel-specific) |
+| `customFields` | Array[Object] | Structured custom field objects with form references |
 
 ### Discount Object Structure
 
@@ -178,9 +179,9 @@ A collab represents the relationship between a creator and a channel (brand). Ea
 - `"Percentage"` - Percentage discount (0.1 = 10%)
 - `"FixedAmount"` - Fixed dollar amount discount
 
-### Campaign Relationship
+### Tier and Campaign Relationship
 
-Collabs belong to campaigns through their tier:
+Collabs are assigned a tier level that determines discount rates and relationship type. Tiers belong to campaigns:
 
 ```json
 {

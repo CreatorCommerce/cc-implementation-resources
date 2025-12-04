@@ -21,20 +21,42 @@ See the [Authentication Guide](/guides/authentication) for detailed information.
 
 ## API Endpoints
 
-### Checkout
-- **GET** `/creators/{creatorId}/drops/{dropId}/cart` - Generate a checkout URL for a drop with all products added to cart
+The API is organized into Channel-centric and Creator-centric patterns, allowing both brands and creators to manage their collaborations effectively.
 
-### Magic Links
-- **GET** `/channels/{myshopifyDomain}/creators/magic-link` - Generate a magic link for creator authentication
+### Channel-Centric Endpoints
 
-### Collabs
+These endpoints are designed for channels (Shopify stores) to manage their collabs, tiers, and drops.
+
+#### Collabs Management
+- **GET** `/channels/{myshopifyDomain}/collabs` - Get all collabs for a channel
+- **GET** `/channels/{myshopifyDomain}/collabs/{collabId}` - Get a specific collab with full details including drops and enhancements
+- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}` - Update a channel collab (includes drop reordering capability)
+
+#### Tiers Management
+- **GET** `/channels/{myshopifyDomain}/collab-tiers` - Get all collab tiers configured for a channel
+
+#### Drops & Enhancements
+- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}` - Update a drop with field-by-field changes
+- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancement/{enhancementId}` - Update product enhancement (notes, media, variant-specific content)
+
+### Creator-Centric Endpoints
+
+These endpoints are designed for creators to manage their collaborations and drops.
+
+#### Collabs
 - **GET** `/creators/collabs` - Retrieve all collabs for a creator
 - **POST** `/creators/collabs` - Create a new collaboration
 - **POST** `/creators/collabs/{collabId}` - Update an existing collaboration
 
-### Drops
+#### Drops
 - **POST** `/creators/collabs/{collabId}/drops` - Create a new drop with products
 - **POST** `/creators/collabs/{collabId}/drops/{dropId}` - Update an existing drop
+
+### Checkout
+- **GET** `/creators/{creatorId}/drops/{dropId}/cart` - Generate a checkout URL for a drop with all products added to cart
+
+### Authentication
+- **GET** `/channels/{myshopifyDomain}/creators/magic-link` - Generate a magic link for creator authentication
 
 ## Response Format
 

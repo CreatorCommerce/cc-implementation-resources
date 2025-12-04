@@ -117,7 +117,7 @@
                         ]
                      },
                      {
-                        "group":"SHOPIFY REFERENCE",
+                        "group":"SHOPIFY OBJECTS",
                         "expanded":true,
                         "pages":[
                            "shopify-integration-data-model",
@@ -166,7 +166,7 @@
                         ]
                      },
                      {
-                        "group":"API REFERENCE",
+                        "group":"UNIFIED API",
                         "expanded":true,
                         "pages":[
                            "unified-api-reference",
@@ -177,8 +177,14 @@
                               "expanded":true,
                               "openapi": "api-reference/unified-api.yaml",
                               "pages":[
-                                  "GET /creators/{creatorId}/drops/{dropId}/cart",
                                    "GET /channels/{myshopifyDomain}/creators/magic-link",
+                                   "GET /channels/{myshopifyDomain}/collabs",
+                                   "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                                   "GET /channels/{myshopifyDomain}/collab-tiers",
+                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancement/{enhancementId}",
+                                   "GET /creators/{creatorId}/drops/{dropId}/cart",
                                    "GET /creators/collabs",
                                    "POST /creators/collabs",
                                    "POST /creators/collabs/{collabId}",
@@ -244,7 +250,7 @@
                         ]
                      },
                      {
-                        "group":"API REFERENCE",
+                        "group":"UNIFIED API",
                         "expanded":true,
                         "pages":[
                            "unified-api-reference",
@@ -304,7 +310,7 @@
                         "pages":[
                            "co-branded-storefronts",
                            {
-                              "title":"Shopify Reference",
+                              "title":"Shopify Objects",
                               "href":"/references/shopify-reference"
                            },
                            {
@@ -361,7 +367,7 @@
             "tab":"References",
             "menu":[
                {
-                  "item":"API Reference",
+                  "item":"Unified API",
                   "icon":"square-terminal",
                   "groups":[
                      {
@@ -425,11 +431,11 @@
                   ]
                },
                {
-                  "item":"Shopify Reference",
+                  "item":"Shopify Objects",
                   "icon":"shopping-cart",
                   "groups":[
                      {
-                        "group":"SHOPIFY REFERENCE",
+                        "group":"SHOPIFY OBJECTS",
                         "expanded":true,
                         "pages":[
                            "shopify-integration-data-model",
