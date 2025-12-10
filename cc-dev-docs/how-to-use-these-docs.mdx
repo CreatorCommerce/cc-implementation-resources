@@ -1,1028 +1,570 @@
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-
-{%- style -%}
-  .section-{{ section_id }}-padding {
-    padding-top: {{ padding_vertical | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ padding_vertical | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .section-{{ section_id }}-padding {
-      padding-top: {{ padding_vertical }}px;
-      padding-bottom: {{ padding_vertical }}px;
-    }
-  }
-
-  #shopify-section-{{ section_id }} .page-width {
-    padding-left: {{ padding_horizontal_desktop }}px;
-    padding-right: {{ padding_horizontal_desktop }}px;
-  }
-
-  @media (max-width: 749px) {
-    #shopify-section-{{ section_id }} .page-width {
-      padding-left: {{ padding_horizontal_mobile }}px;
-      padding-right: {{ padding_horizontal_mobile }}px;
-    }
-  }
-
-  #shopify-section-{{ section_id }} .cc-section-content {
-    padding: 0 0px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-    justify-content: center;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-section-title {
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-    justify-content: center;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-tagline-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-  }
-
-  #shopify-section-{{ section_id }} .cc-tagline {
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-    margin: 0;
-    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
-  }
-
-  #shopify-section-{{ section_id }} .cc-tagline p {
-    margin: 0;
-  }
-
-  #shopify-section-{{ section_id }} .cc-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-main-title {
-    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
-    width: 100%;
-    max-width: {{ header_max_width }}px;
-    margin: {% if content_alignment == 'left' %}0{% else %}0 auto{% endif %};
-  }
-
-  #shopify-section-{{ section_id }} .cc-main-title > * {
-    margin: 0;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-    justify-content: center;
-    width: 360px;
-    {% if content_alignment == 'left' -%}
-      padding: 0;
-      margin: 0;
-    {%- else -%}
-      margin: 0 auto;
-    {%- endif %}
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown {
-    position: relative;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-button {
-    background: rgb(var(--color-background));
-    color: rgb(var(--color-foreground));
-    border: {{ dropdown_border_width }}px solid {{ dropdown_border_color }};
-    border-radius: {{ dropdown_border_radius }}px;
-    padding: 15px 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-text {
-    color: rgb(var(--color-foreground));
-    flex: 1;
-    text-align: left;
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-icon {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: scaleY(-1);
-    flex-shrink: 0;
-    color: rgb(var(--color-foreground));
-  }
-
-  /* Dropdown arrow - points up when closed, down when open */
-  #shopify-section-{{ section_id }} .cc-dropdown-icon svg {
-    width: 14px;
-    height: 8px;
-    transform: rotate(180deg); /* Points up */
-    transition: transform 0.2s ease;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-icon svg path {
-    stroke: currentColor;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown.open .cc-dropdown-icon svg {
-    transform: rotate(0deg); /* Points down when open */
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgb(var(--color-background));
-    border: {{ dropdown_border_width }}px solid {{ dropdown_border_color }};
-    border-radius: {{ dropdown_border_radius }}px;
-    margin-top: 4px;
-    z-index: 10;
-    backdrop-filter: blur(50px);
-    display: none;
-    overflow: hidden;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-menu.open {
-    display: block;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option {
-    padding: 12px 20px;
-    cursor: pointer;
-    color: rgb(var(--color-foreground));
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option:first-child {
-    padding-top: 16px;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option:last-child {
-    padding-bottom: 16px;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option:hover {
-    background: rgba(var(--color-foreground), 0.05);
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option.selected {
-    background: rgba(var(--color-foreground), 0.05);
-    justify-content: space-between;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-option-text {
-    flex: 1;
-    text-align: left;
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-check-icon {
-    width: 24px;
-    height: 24px;
-    flex-shrink: 0;
-    color: rgb(var(--color-foreground));
-  }
-
-  #shopify-section-{{ section_id }} .cc-dropdown-option .cc-check-icon path {
-    stroke: currentColor;
-  }
-
-  #shopify-section-{{ section_id }} .cc-collection-description {
-    margin-top: 16px;
-    padding: {% if content_alignment == 'left' %}0{% else %}0 16px{% endif %};
-    text-align: {% if content_alignment == 'left' %}left{% else %}center{% endif %};
-    color: rgb(var(--color-foreground));
-    opacity: 0.8;
-    font-size: 14px;
-    line-height: 1.6;
-    max-width: {{ description_max_width }}px;
-    margin-left: {% if content_alignment == 'left' %}0{% else %}auto{% endif %};
-    margin-right: auto;
-  }
-
-  #shopify-section-{{ section_id }} .cc-collection-description.quote-style {
-    font-style: italic;
-  }
-
-  #shopify-section-{{ section_id }} .cc-description-attribution {
-    display: block;
-    margin-top: 8px;
-    font-style: normal;
-    opacity: 0.7;
-  }
-
-  #shopify-section-{{ section_id }} .cc-bundle-benefits {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
-    justify-content: flex-start;
-  }
-
-  #shopify-section-{{ section_id }} .cc-benefits-row {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  /* Dynamic benefits visibility */
-  #shopify-section-{{ section_id }} .cc-drop-benefits {
-    display: none;
-  }
-
-  #shopify-section-{{ section_id }} .cc-drop-benefits.active {
-    display: flex;
-  }
-
-  #shopify-section-{{ section_id }} .cc-benefit-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
-    flex-shrink: 0;
-  }
-
-  #shopify-section-{{ section_id }} .cc-benefit-check {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-  }
-
-  #shopify-section-{{ section_id }} .cc-benefit-text {
-    color: rgb(var(--color-foreground));
-    white-space: nowrap;
-  }
-
-  #shopify-section-{{ section_id }} .cc-products-container {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-    justify-content: center;
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-products-wrapper {
-    width: 100%;
-  }
-
-  #shopify-section-{{ section_id }} .cc-products-grid {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
-
-  /* Product grid layout */
-  #shopify-section-{{ section_id }} .cc-drop-products {
-    display: none;
-  }
-
-  #shopify-section-{{ section_id }} .cc-drop-products.active {
-    display: grid;
-    grid-template-columns: repeat({{ columns_desktop }}, 1fr);
-    gap: {{ grid_gap_desktop }}px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-  }
-
-  /* Product card wrapper */
-  #shopify-section-{{ section_id }} .cc-product-card {
-    width: 100%;
-  }
-
-  /* Default product card styles */
-  #shopify-section-{{ section_id }} .product-card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.2s;
-  }
-
-  #shopify-section-{{ section_id }} .product-card-link:hover {
-    opacity: 0.9;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__image {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    background: rgb(var(--color-background));
-    border-radius: {{ product_card_border_radius }}px;
-    margin-bottom: 12px;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__title {
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__price {
-  }
-
-  #shopify-section-{{ section_id }} .price-sale {
-    color: rgb(var(--color-foreground));
-  }
-
-  #shopify-section-{{ section_id }} .price-compare {
-    text-decoration: line-through;
-    opacity: 0.6;
-    margin-left: 8px;
-  }
-
-  #shopify-section-{{ section_id }} .product-card__badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: rgba(var(--color-foreground), 0.1);
-    border-radius: 4px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  #shopify-section-{{ section_id }} .placeholder-svg {
-    width: 100%;
-    height: 100%;
-    opacity: 0.3;
-  }
-
-  #shopify-section-{{ section_id }} .cc-add-bundle {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: {% if content_alignment == 'left' %}flex-start{% else %}center{% endif %};
-    justify-content: center;
-  }
-
-  #shopify-section-{{ section_id }} .cc-add-bundle-btn {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  @media (max-width: 990px) {
-    #shopify-section-{{ section_id }} .cc-section-content {
-      padding: 0 0px;
-    }
-    #shopify-section-{{ section_id }} .cc-drop-products.active {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    #shopify-section-{{ section_id }} .cc-benefits-row,
-    #shopify-section-{{ section_id }} .cc-drop-benefits.active {
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    #shopify-section-{{ section_id }} .cc-benefit-item {
-      flex-basis: calc(50% - 8px);
-      justify-content: center;
-    }
-  }
-
-  @media (max-width: 749px) {
-    /* Mobile grid layout */
-    #shopify-section-{{ section_id }} .cc-drop-products.active {
-      grid-template-columns: repeat({{ columns_mobile }}, 1fr);
-      gap: {{ grid_gap_mobile }}px;
-    }
-
-    #shopify-section-{{ section_id }} .cc-benefits-row,
-    #shopify-section-{{ section_id }} .cc-drop-benefits.active {
-      gap: 16px;
-      justify-content: center;
-      flex-direction: column;
-    }
-    #shopify-section-{{ section_id }} .cc-benefit-item {
-      justify-content: center;
-    }
-    #shopify-section-{{ section_id }} .cc-dropdown-wrapper {
-      width: 100%;
-      {% if content_alignment == 'center' -%}
-        max-width: 320px;
-        margin: 0 auto;
-      {%- endif %}
-    }
-  }
-
-  /* Custom CSS */
-  {%- if custom_css != blank -%}
-    {{ custom_css }}
-  {%- endif -%}
-{%- endstyle -%}
-
-{%- liquid
-  assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_preview_creator = preview_creator
-  
-  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
-  if cc_creator == blank and request.design_mode
-    assign cc_creator = cc_preview_creator
-  endif
-
-  assign has_creator = false
-  if cc_creator != blank
-    assign has_creator = true
-  endif
-  assign drops_json = nil
-
-  if has_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
-    assign drops_json = cc_creator.data.value['cc-creator-drops']
-  endif
-
-  assign has_drops = false
-  if drops_json and drops_json.size > 0
-    assign has_drops = true
-  endif
-
-  assign show_section = true
-  assign use_fallback = false
-  assign fallback_collection = nil
-  
-  if has_drops == false
-    if no_drops_behavior == 'hide'
-      assign show_section = false
-    elsif no_drops_behavior == 'fallback' and fallback_collection != blank
-      assign use_fallback = true
-      assign fallback_collection = collections[fallback_collection]
-      if fallback_collection and fallback_collection.products_count > 0
-        assign show_section = true
-      else
-        assign show_section = false
-      endif
-    endif
-  endif
-
-  assign selected_drop = nil
-  if has_drops
-    assign selected_drop = drops_json[0]
-  endif
--%}
-
-{%- comment -%}
-  Process dynamic text using snippet for bracket replacement with dot notation support.
-  Supports both old format [field-name] and new format [cc_creator.path.to.field]
-  Objects/arrays → JSON, strings → unquoted.
-{%- endcomment -%}
-{% capture tagline %}{% render 'cc-process-dynamic-text', input_text: tagline, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
-{% capture header %}{% render 'cc-process-dynamic-text', input_text: header, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
-{% capture button_text %}{% render 'cc-process-dynamic-text', input_text: button_text, cc_creator: cc_creator, metaobject: metaobject %}{% endcapture %}
-
-{%- if show_section -%}
-<div id="drops-anchor" class="color-{{ color_scheme }} isolate gradient section-{{ section_id }}-padding">
-  <div class="page-width">
-    <div class="cc-section-content">
-      <div class="cc-section-title">
-        {%- if tagline != blank -%}
-          <div class="cc-tagline-wrapper">
-            <div class="cc-tagline">{{ tagline }}</div>
-          </div>
-        {%- endif -%}
-        <div class="cc-content">
-          {%- if header != blank -%}
-            <div class="cc-main-title">{{ header }}</div>
-          {%- endif -%}
-        </div>
-
-        {%- if has_drops -%}
-          <div class="cc-dropdown-wrapper">
-            <div class="cc-dropdown" id="cc-bundle-dropdown-{{ section_id }}">
-              <button class="cc-dropdown-button" id="cc-dropdown-button-{{ section_id }}">
-                <span class="cc-dropdown-text" id="cc-selected-bundle-{{ section_id }}">
-                  {{ selected_drop['cc-creator-drop-title'] | escape }}
-                </span>
-                <div class="cc-dropdown-icon">
-                  <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L7 7L13 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-              </button>
-              <div class="cc-dropdown-menu" id="cc-dropdown-menu-{{ section_id }}">
-                {%- for json_drop in drops_json -%}
-                  {%- liquid
-                    assign drop_id = json_drop['cc-creator-drop-collection-id']
-                    assign drop_title = json_drop['cc-creator-drop-title']
-                    assign has_valid_products = false
-                    if json_drop['cc-creator-drop-products'] and json_drop['cc-creator-drop-products'].size > 0
-                      for json_product in json_drop['cc-creator-drop-products']
-                        assign product_handle = json_product['cc-creator-drop-product-handle']
-                        if product_handle != blank and all_products[product_handle] != blank
-                          assign has_valid_products = true
-                          break
-                        endif
-                      endfor
-                    endif
-                  -%}
-                  {%- if has_valid_products -%}
-                    <div class="cc-dropdown-option{% if forloop.index0 == 0 %} selected{% endif %}" 
-                         data-drop-id="{{ drop_id | escape }}" 
-                         data-drop-index="{{ forloop.index0 }}">
-                      <span class="cc-option-text">{{ drop_title | escape }}</span>
-                      {%- if forloop.index0 == 0 -%}
-                        <svg class="cc-check-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M20 6L9 17L4 12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      {%- endif -%}
-                    </div>
-                  {%- endif -%}
-                {%- endfor -%}
-              </div>
-            </div>
-          </div>
-
-          {%- comment -%} Collection description {%- endcomment -%}
-          {%- if selected_drop and selected_drop['cc-creator-drop-description'] != blank -%}
-            {%- liquid
-              assign description_style = description_display_style
-              assign quote_class = ''
-              assign formatted_description = selected_drop['cc-creator-drop-description']
-              assign attribution = ''
-              
-              if description_style == 'quote_first_name' and has_creator
-                assign quote_class = ' quote-style'
-                assign formatted_description = '"' | append: selected_drop['cc-creator-drop-description'] | append: '"'
-                assign attribution = '— ' | append: cc_creator.cc-creator-first-name
-              elsif description_style == 'quote_shop_title' and has_creator and cc_creator.cc-creator-shop-title
-                assign quote_class = ' quote-style'
-                assign formatted_description = '"' | append: selected_drop['cc-creator-drop-description'] | append: '"'
-                assign attribution = '— ' | append: cc_creator.cc-creator-shop-title
-              endif
-            -%}
-            <div class="cc-collection-description{{ quote_class }}" id="cc-collection-description-{{ section_id }}" data-drop-id="{{ selected_drop['cc-creator-drop-collection-id'] | escape }}">
-              {{ formatted_description }}
-              {%- if attribution != blank -%}
-                <span class="cc-description-attribution">{{ attribution | escape }}</span>
-              {%- endif -%}
-            </div>
-          {%- endif -%}
-        {%- endif -%}
-      </div>
-
-      {%- if has_drops or use_fallback -%}
-        <div class="cc-products-container">
-          <div class="cc-products-wrapper">
-            {%- if use_fallback -%}
-              {%- comment -%} Fallback collection display {%- endcomment -%}
-              <div class="cc-products-grid cc-drop-products active">
-                {%- for product in fallback_collection.products limit: products_to_show -%}
-                  {%- comment -%} Calculate creator discount pricing using snippet {%- endcomment -%}
-                  {% capture price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
-                  {% capture compare_price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'compare_at_price' %}{% endcapture %}
-                  {% capture has_discount_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'has_creator_discount' %}{% endcapture %}
-                  {%- liquid
-                    assign display_price = price_output | plus: 0
-                    assign display_compare_price = compare_price_output | plus: 0
-                    assign has_creator_discount = has_discount_output
-                  -%}
-                  <div class="cc-product-card">
-                    {%- if product_card_snippet != blank -%}
-                        {% render 'card-product',
-                  card_product: product
-                %}
-                    {%- else -%}
-                      <a href="{{ product.url }}" class="product-card-link">
-                        <div class="product-card__image">
-                          {%- if product.featured_image -%}
-                            <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="600">
-                          {%- else -%}
-                            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                          {%- endif -%}
-                        </div>
-                        <div class="product-card__info">
-                          <p class="product-card__title">{{ product.title }}</p>
-                          <div class="product-card__price">
-                            {%- if has_creator_discount or display_compare_price > display_price -%}
-                              <span class="price-sale">{{ display_price | money }}</span>
-                              <span class="price-compare">{{ display_compare_price | money }}</span>
-                            {%- else -%}
-                              {{ display_price | money }}
-                            {%- endif -%}
-                          </div>
-                          {%- unless product.available -%}
-                            <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
-                          {%- endunless -%}
-                        </div>
-                      </a>
-                    {%- endif -%}
-                  </div>
-                {%- endfor -%}
-              </div>
-            {%- else -%}
-              {%- comment -%} Regular drops display {%- endcomment -%}
-              {%- for json_drop in drops_json -%}
-              {%- liquid
-                assign drop_id = json_drop['cc-creator-drop-collection-id']
-                assign has_valid_products = false
-                if json_drop['cc-creator-drop-products'] and json_drop['cc-creator-drop-products'].size > 0
-                  for json_product in json_drop['cc-creator-drop-products']
-                    assign product_handle = json_product['cc-creator-drop-product-handle']
-                    if product_handle != blank and all_products[product_handle] != blank
-                      assign has_valid_products = true
-                      break
-                    endif
-                  endfor
-                endif
-              -%}
-              {%- if has_valid_products -%}
-                <div class="cc-products-grid cc-drop-products{% if forloop.index0 == 0 %} active{% endif %}" id="cc-products-{{ section_id }}-{{ drop_id }}" data-drop-id="{{ drop_id | escape }}">
-                {%- for json_product in json_drop['cc-creator-drop-products'] -%}
-                  {%- liquid
-                    assign product_handle = json_product['cc-creator-drop-product-handle']
-                    assign card_product = nil
-                    if product_handle != blank
-                      assign card_product = all_products[product_handle]
-                    endif
-                  -%}
-                  {%- if card_product -%}
-                    {%- assign product = card_product -%}
-                    {%- comment -%} Calculate creator discount pricing using snippet {%- endcomment -%}
-                    {% capture price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
-                    {% capture compare_price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'compare_at_price' %}{% endcapture %}
-                    {% capture has_discount_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'has_creator_discount' %}{% endcapture %}
-                    {%- liquid
-                      assign display_price = price_output | plus: 0
-                      assign display_compare_price = compare_price_output | plus: 0
-                      assign has_creator_discount = has_discount_output
-                    -%}
-                    <div class="cc-product-card">
-                      {%- if product_card_snippet != blank -%}
-                        {% render 'card-product',
-                  card_product: product,
-                  show_secondary_image: true,
-                  media_aspect_ratio: 'adapt',
-                  show_rating: true,
-                  section_id: section_id,
-                  quick_add: 'standard'
-                %}
-                      {%- else -%}
-                        <a href="{{ product.url }}" class="product-card-link">
-                          <div class="product-card__image">
-                            {%- if product.featured_image -%}
-                              <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="600">
-                            {%- else -%}
-                              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-                            {%- endif -%}
-                          </div>
-                          <div class="product-card__info">
-                            <p class="product-card__title">{{ product.title }}</p>
-                            <div class="product-card__price">
-                              {%- if has_creator_discount or display_compare_price > display_price -%}
-                                <span class="price-sale">{{ display_price | money }}</span>
-                                <span class="price-compare">{{ display_compare_price | money }}</span>
-                              {%- else -%}
-                                {{ display_price | money }}
-                              {%- endif -%}
-                            </div>
-                            {%- unless product.available -%}
-                              <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
-                            {%- endunless -%}
-                          </div>
-                        </a>
-                      {%- endif -%}
-                    </div>
-                  {%- endif -%}
-                {%- endfor -%}
-                </div>
-              {%- endif -%}
-            {%- endfor -%}
-            {%- endif -%}
-          </div>
-
-          {%- if has_drops -%}
-            <div class="cc-add-bundle">
-              <button type="button" class="button cc-add-bundle-btn" id="cc-add-bundle-{{ section_id }}" data-drop-id="{{ selected_drop['cc-creator-drop-collection-id'] | escape }}">
-                {{ button_text | default: 'Add Bundle to Cart' }}
-              </button>
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-    </div>
-  </div>
-</div>
-{%- endif -%}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const sectionId = '{{ section_id }}';
-  const dropdown = document.getElementById('cc-bundle-dropdown-' + sectionId);
-  const button = document.getElementById('cc-dropdown-button-' + sectionId);
-  const menu = document.getElementById('cc-dropdown-menu-' + sectionId);
-  const selectedText = document.getElementById('cc-selected-bundle-' + sectionId);
-  const addBundleBtn = document.getElementById('cc-add-bundle-' + sectionId);
-
-  // Section settings
-  const buttonText = {{ button_text | default: 'Add Bundle to Cart' | json }};
-  const descriptionStyle = {{ description_display_style | json }};
-  const creatorFirstName = {{ cc_creator.cc-creator-first-name | json }};
-  const creatorShopTitle = {{ cc_creator.cc-creator-shop-title | json }};
-
-  // Format description based on display style
-  function formatDescription(description) {
-    if (!description || description.trim() === '') return '';
-    
-    if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
-      return '"' + description + '"';
-    } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
-      return '"' + description + '"';
-    }
-    return description;
-  }
-
-  // Get attribution text based on display style
-  function getAttribution() {
-    if (descriptionStyle === 'quote_first_name' && creatorFirstName) {
-      return '— ' + creatorFirstName;
-    } else if (descriptionStyle === 'quote_shop_title' && creatorShopTitle) {
-      return '— ' + creatorShopTitle;
-    }
-    return '';
-  }
-
-  // Store drops data for cart functionality
-  const dropsData = {
-    {%- for json_drop in drops_json -%}
-      {%- liquid
-        assign drop_id = json_drop['cc-creator-drop-collection-id']
-        assign has_valid_products = false
-        if json_drop['cc-creator-drop-products'] and json_drop['cc-creator-drop-products'].size > 0
-          for json_product in json_drop['cc-creator-drop-products']
-            assign product_handle = json_product['cc-creator-drop-product-handle']
-            if product_handle != blank and all_products[product_handle] != blank
-              assign has_valid_products = true
-              break
-            endif
-          endfor
-        endif
-      -%}
-      {%- if has_valid_products -%}
-        '{{ drop_id }}': {
-          title: {{ json_drop['cc-creator-drop-title'] | json }},
-          description: {{ json_drop['cc-creator-drop-description'] | default: '' | json }},
-          products: [
-            {%- for json_product in json_drop['cc-creator-drop-products'] -%}
-              {%- liquid
-                assign product_handle = json_product['cc-creator-drop-product-handle']
-                assign card_product = nil
-                if product_handle != blank
-                  assign card_product = all_products[product_handle]
-                endif
-              -%}
-              {%- if card_product -%}
-                {
-                  id: {{ card_product.id }},
-                  variantId: {{ card_product.selected_or_first_available_variant.id }},
-                  available: {{ card_product.available | json }}
-                }{% unless forloop.last %},{% endunless %}
-              {%- endif -%}
-            {%- endfor -%}
-          ]
-        }{% unless forloop.last %},{% endunless %}
-      {%- endif -%}
-    {%- endfor -%}
-  };
-
-  if (dropdown && button && menu) {
-    // Toggle dropdown
-    button.addEventListener('click', function() {
-      dropdown.classList.toggle('open');
-      menu.classList.toggle('open');
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!dropdown.contains(e.target)) {
-        dropdown.classList.remove('open');
-        menu.classList.remove('open');
-      }
-    });
-
-    // Handle option selection
-    menu.addEventListener('click', function(e) {
-      const option = e.target.closest('.cc-dropdown-option');
-      if (option) {
-        const dropId = option.dataset.dropId;
-        const dropTitle = option.querySelector('.cc-option-text').textContent.trim();
-
-        // Update selected text
-        selectedText.textContent = dropTitle;
-
-        // Update selected state
-        menu.querySelectorAll('.cc-dropdown-option').forEach(opt => {
-          opt.classList.remove('selected');
-          const checkIcon = opt.querySelector('.cc-check-icon');
-          if (checkIcon) checkIcon.remove();
-        });
-        option.classList.add('selected');
-        const checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        checkIcon.setAttribute('class', 'cc-check-icon');
-        checkIcon.setAttribute('width', '24');
-        checkIcon.setAttribute('height', '24');
-        checkIcon.setAttribute('viewBox', '0 0 24 24');
-        checkIcon.setAttribute('fill', 'none');
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', 'M20 6L9 17L4 12');
-        path.setAttribute('stroke-width', '2');
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
-        checkIcon.appendChild(path);
-        option.appendChild(checkIcon);
-
-        // Close dropdown
-        dropdown.classList.remove('open');
-        menu.classList.remove('open');
-
-        // Update button data attribute
-        if (addBundleBtn) {
-          addBundleBtn.dataset.dropId = dropId;
-        }
-
-        // Show/hide product grids
-        switchToDrop(dropId);
-      }
-    });
-  }
-
-  // Function to switch between product grids
-  function switchToDrop(dropId) {
-    const allGrids = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-products');
-    const targetGrid = document.getElementById('cc-products-' + sectionId + '-' + dropId);
-
-    // Hide all grids
-    allGrids.forEach(grid => {
-      grid.classList.remove('active');
-    });
-
-    // Show target grid
-    if (targetGrid) {
-      targetGrid.classList.add('active');
-    }
-
-    // Update collection description
-    const descriptionEl = document.getElementById('cc-collection-description-' + sectionId);
-    if (descriptionEl && dropsData[dropId]) {
-      const description = dropsData[dropId].description;
-      if (description && description.trim() !== '') {
-        // Format description and add attribution
-        const formattedDesc = formatDescription(description);
-        const attribution = getAttribution();
-        
-        // Update class for quote styling
-        if (descriptionStyle === 'quote_first_name' || descriptionStyle === 'quote_shop_title') {
-          descriptionEl.classList.add('quote-style');
-        } else {
-          descriptionEl.classList.remove('quote-style');
-        }
-        
-        // Set content
-        if (attribution) {
-          descriptionEl.innerHTML = formattedDesc + '<span class="cc-description-attribution">' + attribution + '</span>';
-        } else {
-          descriptionEl.textContent = formattedDesc;
-        }
-        
-        descriptionEl.style.display = 'block';
-      } else {
-        descriptionEl.style.display = 'none';
-      }
-    }
-
-    // Switch benefits to match the selected drop
-    switchBenefits(dropId);
-  }
-
-  // Function to switch benefits based on selected drop
-  function switchBenefits(dropId) {
-    const allBenefits = document.querySelectorAll('#shopify-section-' + sectionId + ' .cc-drop-benefits');
-    const targetBenefits = document.getElementById('cc-benefits-' + sectionId + '-' + dropId);
-
-    // Hide all benefit sets
-    allBenefits.forEach(benefits => {
-      benefits.classList.remove('active');
-    });
-
-    // Show target benefit set
-    if (targetBenefits) {
-      targetBenefits.classList.add('active');
-    }
-  }
-
-  // Add bundle to cart - Simple, reliable approach
-  if (addBundleBtn) {
-    addBundleBtn.addEventListener('click', async function() {
-      const dropId = this.dataset.dropId;
-      if (!dropId || !dropsData[dropId]) return;
-
-      const dropData = dropsData[dropId];
-      const items = dropData.products.filter(p => p.available).map(p => ({
-        id: p.variantId,
-        quantity: 1
-      }));
-
-      if (!items.length) {
-        alert('No available products in this bundle');
-        return;
-      }
-
-      try {
-        this.disabled = true;
-        const originalText = this.textContent;
-        this.textContent = 'Adding...';
-
-        // Add items to cart using Shopify's Cart API
-        const res = await fetch(window.Shopify.routes.root + 'cart/add.js', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({ items: items })
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to add items to cart');
-        }
-
-        const response = await res.json();
-        
-        // Check for Shopify API errors
-        if (response.status === 422 || response.status === 'error') {
-          throw new Error(response.description || response.message || 'Failed to add items to cart');
-        }
-        
-        this.textContent = 'Added!';
-        
-        // Navigate to cart after 1 second
-        setTimeout(() => {
-          window.location.href = window.Shopify.routes.root + 'cart';
-        }, 1000);
-        
-      } catch (err) {
-        console.error('Error adding bundle to cart:', err);
-        this.textContent = 'Error - Try Again';
-        setTimeout(() => {
-          this.textContent = buttonText;
-          this.disabled = false;
-        }, 3000);
-      }
-    });
-  }
-});
-</script>
+---
+title: 'Documentation Built for AI'
+description: 'Learn how to leverage these LLM-forward docs by copying context into your AI assistant of choice for faster, better implementations'
+---
+
+# How to Use These Docs Effectively
+
+These documentation files are designed with **LLM-forward** principles in mind, meaning they're optimized for use with Language Learning Models (LLMs) like Claude, ChatGPT, or Cursor's AI assistant. This page explains how to get the most out of these docs.
+
+## The LLM-Forward Approach
+
+### What Does "LLM-Forward" Mean?
+
+**LLM-forward documentation** is structured to provide complete, contextual information that AI assistants can easily understand and act upon. Instead of requiring you to piece together information from multiple sources, these docs contain comprehensive context within each file.
+
+This approach follows the same documentation strategy used by leading AI platforms like Claude, which provides detailed context upfront so the AI can generate better, more accurate responses.
+
+### Why This Matters
+
+**Traditional documentation:**
+- Requires you to read multiple pages
+- Makes you connect dots between concepts
+- Forces you to remember context across sessions
+- Leads to incomplete implementations
+
+**LLM-forward documentation:**
+- Provides complete context in one place
+- Allows AI to connect concepts automatically
+- Enables accurate, context-aware assistance
+- Results in better implementations
+
+## How to Use These Docs with LLMs
+
+### Method 1: Copy Entire Docs
+
+**Best for:** Getting comprehensive, context-rich assistance on a specific topic.
+
+**When to use:**
+- Starting a new implementation
+- Learning a new concept
+- Need deep understanding of a topic
+- Building complex features
+
+**How to do it:**
+1. Open the relevant documentation file
+2. Copy the entire contents (Cmd/Ctrl + A, then Cmd/Ctrl + C)
+3. Paste into your LLM prompt, prefaced with:
+   ```
+   I'm working with CreatorCommerce. Here's the documentation for [topic]:
+   
+   [paste full doc content]
+   
+   Now help me [your specific question/task]
+   ```
+
+**Example:**
+```
+I'm working with CreatorCommerce. Here's the documentation for drops and products:
+
+[paste entire drops-products-data-model.mdx]
+
+I need to build a section that shows a creator's drops. Can you help me write the Liquid code?
+```
+
+### Method 2: Copy Multiple Related Docs
+
+**Best for:** Building features that require understanding multiple concepts.
+
+**When to use:**
+- Building co-branded experiences (needs data model + storefronts docs)
+- Implementing drops (needs drops docs + custom fields)
+- Setting up integrations (needs API docs + data models)
+
+**How to do it:**
+1. Identify all relevant documentation files
+2. Copy each file's contents
+3. Combine them in one prompt with clear section headers
+
+**Example:**
+```
+I'm building a co-branded product page. Here's the relevant CreatorCommerce documentation:
+
+=== Data Model Overview ===
+[paste data-model-overview.mdx]
+
+=== Drops & Products Data Model ===
+[paste drops-products-data-model.mdx]
+
+=== Custom Fields Reference ===
+[paste custom-fields-reference.mdx]
+
+Now help me build a product page that:
+1. Shows the creator's review/note for the current product
+2. Displays the product with custom fields from the drop
+3. Shows other products from the same drop
+```
+
+### Method 3: Selective Context Extraction
+
+**Best for:** Quick questions about specific topics.
+
+**When to use:**
+- Quick reference questions
+- Clarifying specific concepts
+- Understanding particular patterns
+- Troubleshooting specific issues
+
+**How to do it:**
+1. Find the specific section you need
+2. Copy that section plus relevant context around it
+3. Include any related code examples or patterns
+
+**Example:**
+```
+I'm working with CreatorCommerce and need to match products in drops. Here's the relevant section from the drops documentation:
+
+[paste "Product Matching" section + code examples]
+
+I'm getting a type mismatch error. Can you help me fix it?
+```
+
+### Method 4: Progressive Context Building
+
+**Best for:** Complex implementations that build on each other.
+
+**When to use:**
+- Building multiple related features
+- Iterative development
+- Learning while building
+- Refactoring existing code
+
+**How to do it:**
+1. Start with high-level overview docs
+2. Add specific docs as you drill into features
+3. Include your current code for context
+4. Ask for incremental improvements
+
+**Example (Session 1):**
+```
+I'm starting to build with CreatorCommerce. Here's the data model overview:
+
+[paste data-model-overview.mdx]
+
+Help me understand how creator data flows through the system.
+```
+
+**Example (Session 2):**
+```
+Continuing from where we left off. I've got the basic structure. Now I need to access drops. Here's the drops documentation:
+
+[paste drops-products-data-model.mdx]
+
+And here's my current code:
+[paste your code]
+
+Help me iterate the drops properly.
+```
+
+### Method 5: Complete Context Dumps
+
+**Best for:** Comprehensive implementations from scratch.
+
+**When to use:**
+- Building entire features from scratch
+- Complex implementations requiring full context
+- Want AI to consider all possibilities
+- Need optimal, best-practice implementations
+
+**How to do it:**
+1. Identify all relevant documentation
+2. Copy everything (data models, API references, patterns, examples)
+3. Provide clear, specific requirements
+4. Ask for complete implementation
+
+**Example:**
+```
+I'm building a creator directory grid. Here's all the CreatorCommerce documentation I think is relevant:
+
+=== Glossary ===
+[paste glossary.mdx]
+
+=== Creator & Collab Data Model ===
+[paste creator-collab-data-model.mdx]
+
+=== Data Model Overview ===
+[paste data-model-overview.mdx]
+
+=== Custom Fields Reference ===
+[paste custom-fields-reference.mdx]
+
+Build me a complete Shopify section file for a creator directory grid that:
+- Shows all public creators
+- Displays profile picture, name, and bio
+- Links to creator pages
+- Filters by tags (optional)
+- Is responsive and accessible
+```
+
+## Best Practices for LLM Prompts
+
+### 1. Always Include Relevant Context
+
+**Don't do this:**
+```
+How do I access creator drops?
+```
+
+**Do this:**
+```
+I'm working with CreatorCommerce. Here's the drops documentation:
+
+[paste drops-products-data-model.mdx]
+
+How do I access creator drops in Liquid? I'm on a regular product page, not a metaobject page.
+```
+
+### 2. Be Specific About Your Context
+
+**Don't do this:**
+```
+Help me build a product page.
+```
+
+**Do this:**
+```
+I'm building a product page that shows creator reviews. Here's the relevant documentation:
+
+[paste drops-products-data-model.mdx section on product enhancements]
+
+I need to:
+1. Find if the current product is in any of the creator's drops
+2. Display the enhancement note if found
+3. Show the creator's name and profile picture
+
+Current product context: {{ product }}
+Creator context: Available via cart attributes
+```
+
+### 3. Include Your Current Code
+
+**Don't do this:**
+```
+Fix this code:
+[code with no context]
+```
+
+**Do this:**
+```
+I'm working on accessing creator drops. Here's the CreatorCommerce drops documentation:
+
+[paste relevant sections]
+
+And here's my current implementation:
+[paste your code]
+
+I'm getting [specific error]. Can you help me fix it following the patterns in the documentation?
+```
+
+### 4. Reference Specific Patterns
+
+**Don't do this:**
+```
+How do I match products?
+```
+
+**Do this:**
+```
+Looking at the "Product Matching" pattern in the drops documentation:
+
+[paste that section]
+
+I'm trying to match products but having trouble with the ID comparison. Can you show me the correct way based on this pattern?
+```
+
+### 5. Ask for Improvements Based on Best Practices
+
+**Don't do this:**
+```
+Is this code good?
+```
+
+**Do this:**
+```
+Here's my code for accessing creator data:
+
+[paste your code]
+
+And here's the CreatorCommerce documentation on data access patterns:
+
+[paste relevant sections]
+
+Can you review my code and suggest improvements based on the best practices in the documentation?
+```
+
+## Recommended Doc Combinations
+
+### Building Co-Branded Storefronts
+
+**Combine:**
+- `co-branded-storefronts.mdx`
+- `data-model-overview.mdx`
+- `creator-collab-data-model.mdx`
+- `custom-fields-reference.mdx`
+- `glossary.mdx`
+
+**Why:** Need understanding of data structures, access patterns, and co-branding concepts.
+
+### Implementing Drops
+
+**Combine:**
+- `drops-products-data-model.mdx`
+- `shopify-integration-data-model.mdx`
+- `custom-fields-reference.mdx`
+- `data-model-overview.mdx`
+
+**Why:** Need to understand drop structure, collection mapping, and custom fields.
+
+### API Integration
+
+**Combine:**
+- `api-overview.mdx`
+- `unified-api-reference.mdx`
+- `data-model-overview.mdx`
+- `glossary.mdx`
+
+**Why:** Need API endpoints, data structures, and terminology.
+
+### Building Sections/Snippets
+
+**Combine:**
+- `data-model-overview.mdx`
+- Relevant data model docs (creator-collab, drops-products, etc.)
+- `custom-fields-reference.mdx`
+- `shopify-integration-data-model.mdx`
+
+**Why:** Need data structures, access patterns, and Shopify integration details.
+
+### Learning the Platform
+
+**Start with:**
+1. `the-3-ms.mdx` - Understand the philosophy
+2. `getting-started.mdx` - Platform overview
+3. `glossary.mdx` - Learn terminology
+4. `data-model-overview.mdx` - Understand architecture
+5. Then dive into specific topics as needed
+
+## Copying Docs: Tips & Tricks
+
+### Tooling Recommendations
+
+**For Desktop:**
+- Use your code editor to open `.mdx` files
+- Full file selection is easier in editors
+- Some editors have "copy file path" features
+
+**For Web:**
+- Use the Mintlify docs site if available
+- Browser extensions for selecting all content
+- Use "View Source" if available
+
+**For AI Tools:**
+- Cursor: Open file in editor, select all, paste into chat
+- ChatGPT/Claude: Copy from editor, paste in chat
+- Some tools support file uploads (use `.mdx` or convert to `.md`)
+
+### Organizing Your Prompts
+
+**Use clear section headers:**
+```
+=== CreatorCommerce Documentation ===
+
+=== Glossary ===
+[paste]
+
+=== Data Model Overview ===
+[paste]
+
+=== My Question ===
+[your specific question]
+```
+
+**Use code blocks for code:**
+```
+Here's the pattern from the docs:
+```liquid
+{% assign cc_creator = ... %}
+```
+
+And my current code:
+```liquid
+[your code]
+```
+```
+
+### Handling Long Docs
+
+**If docs are too long for your LLM:**
+1. Break into logical sections
+2. Start with overview, add details as needed
+3. Use progressive context building
+4. Focus on most relevant sections first
+
+**Most LLMs handle these docs fine:**
+- Individual docs are sized for typical context windows
+- Combine 2-3 docs usually works well
+- Modern LLMs handle 50k+ tokens easily
+
+## Why This Strategy Works
+
+### Benefits for You
+
+**Faster Development:**
+- Less time hunting for information
+- AI can answer with full context
+- Fewer iterations needed
+
+**Better Implementations:**
+- AI sees complete picture
+- Can suggest optimal patterns
+- Catches edge cases you might miss
+
+**Learning While Building:**
+- AI explains concepts in context
+- Can ask follow-up questions
+- Documentation is always available
+
+**Consistent Patterns:**
+- AI references same patterns
+- Encourages best practices
+- Reduces code inconsistencies
+
+### Benefits for AI Assistants
+
+**Complete Context:**
+- Understands full system
+- Can make connections between concepts
+- Provides accurate, relevant answers
+
+**Pattern Recognition:**
+- Sees consistent patterns across docs
+- Can suggest pattern-aligned solutions
+- Understands why patterns exist
+
+**Better Code Generation:**
+- Generates code that matches platform style
+- Includes proper error handling
+- Follows best practices
+
+## Real-World Examples
+
+### Example 1: Building a Product Review Section
+
+**Prompt:**
+```
+I need to build a product page section that shows creator reviews. Here's the CreatorCommerce documentation:
+
+=== Drops & Products Data Model ===
+[paste drops-products-data-model.mdx]
+
+=== Creator & Collab Data Model ===
+[paste creator-collab-data-model.mdx - sections on access patterns]
+
+=== Shopify Integration Data Model ===
+[paste shopify-integration-data-model.mdx - sections on metaobject access]
+
+Build me a Shopify section file that:
+1. Finds if the current product is in any creator's drops
+2. Displays the enhancement note if found
+3. Shows creator name and profile picture
+4. Handles missing data gracefully
+
+Section file name: `sections/cc-product-review.liquid`
+```
+
+**Why this works:**
+- AI has complete context on how drops work
+- Understands product matching patterns
+- Knows access patterns for creator data
+- Can generate code following documented patterns
+
+### Example 2: Understanding the Data Model
+
+**Prompt:**
+```
+I'm new to CreatorCommerce. Help me understand the data model:
+
+=== Data Model Overview ===
+[paste data-model-overview.mdx]
+
+=== Creator & Collab Data Model ===
+[paste creator-collab-data-model.mdx]
+
+Explain:
+1. How creators relate to channels/brands
+2. How drops relate to creators and collections
+3. How I access this data in Liquid templates
+4. Common patterns I should know
+```
+
+**Why this works:**
+- AI can explain relationships clearly
+- Can connect concepts across docs
+- Provides examples from the documentation
+- Helps you understand the "why" behind patterns
+
+### Example 3: Troubleshooting Code
+
+**Prompt:**
+```
+I'm having trouble matching products in drops. Here's the relevant documentation:
+
+=== Drops & Products Data Model - Product Matching ===
+[paste "Product Matching" section with ID comparison patterns]
+
+And my current code:
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop_product in json_drop['cc-creator-drop-products'] %}
+    {% if product.id == drop_product['cc-creator-drop-product-shopify-id'] %}
+      <!-- Match found -->
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+The condition never matches. Can you help me fix it based on the documentation patterns?
+```
+
+**Why this works:**
+- AI sees the documented pattern
+- Can compare to your code
+- Understands the ID type conversion issue
+- Can explain why the fix works
+
+## Your Workflow Recommendation
+
+### Step 1: Start with Strategy
+Copy `the-3-ms.mdx` to understand the philosophy and orient around what matters.
+
+### Step 2: Learn the Basics
+Copy `getting-started.mdx` and `glossary.mdx` for platform overview.
+
+### Step 3: Understand the Data Model
+Copy `data-model-overview.mdx` and relevant specific data model docs.
+
+### Step 4: Build Features
+Copy relevant docs for each feature you build:
+- Building storefronts? → Co-branded docs + data models
+- Working with drops? → Drops docs + integration docs
+- Using API? → API docs + data models
+
+### Step 5: Reference as Needed
+Copy specific sections for quick questions or troubleshooting.
+
+## Tips for Maximum Effectiveness
+
+1. **Don't be shy about copying large amounts** - These docs are designed for this
+2. **Include multiple related docs** - AI benefits from seeing connections
+3. **Copy your code too** - AI needs context to help effectively
+4. **Reference specific sections** - Helps AI focus on relevant parts
+5. **Ask follow-up questions** - Build on the context you've provided
+6. **Save your prompts** - Reuse successful prompt patterns
+
+## Related Documentation
+
+- [Getting Started](/getting-started) - Platform overview
+- [The 3 M's](/the-3-ms) - Strategic orientation
+- [Glossary](/glossary) - Key concepts and terminology
+- All data model docs - Complete context for implementations
+

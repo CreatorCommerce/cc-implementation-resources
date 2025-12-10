@@ -175,6 +175,14 @@ paths:
           schema:
             type: string
             example: "67801c7dddd3b70bb40a62e9"
+        - name: email
+          in: query
+          required: false
+          description: Creator email address (alternative to collabId)
+          schema:
+            type: string
+            format: email
+            example: "kenyon+04@creatorcommerce.shop"
       security:
         - ApiKeyAuth: []
       responses:
@@ -272,6 +280,14 @@ paths:
           schema:
             type: string
             example: "68d482d502627cba69150a33"
+        - name: email
+          in: query
+          required: false
+          description: Creator email address (alternative to collabId)
+          schema:
+            type: string
+            format: email
+            example: "kenyon+test1@creatorcommerce.shop"
       requestBody:
         required: true
         content:
