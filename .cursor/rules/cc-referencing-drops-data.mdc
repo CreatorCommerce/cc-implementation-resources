@@ -20,11 +20,15 @@ alwaysApply: false
 ```liquid
 {% liquid
   assign cc_handle = cart.attributes["cc-creator-handle"]
-  assign cc_creator = template.name contains "metaobject" and template.suffix == "creator"
-     ? metaobject
-     : metaobjects.creator[cc_handle]
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
 %}
 ```
+
+**Why `if metaobject` is preferred:** Simpler, more direct, works regardless of template naming conventions.
 
 ## Drops Rendering Implementation
 
@@ -300,7 +304,7 @@ alwaysApply: false
 ```liquid
 {%- liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-  if template.name contains 'metaobject' and template.suffix == 'creator'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_creator = metaobjects.creator[cc_handle]

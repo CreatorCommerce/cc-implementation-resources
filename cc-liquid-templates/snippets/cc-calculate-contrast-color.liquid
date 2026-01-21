@@ -39,57 +39,9 @@
       assign contrast_color = '#000000'
     endif
   else
-    # Normal contrast calculation for valid colors
-    assign bg_color = hex_color | remove: '#' | upcase
-    assign hex_chars = 'ABCDEF'
-    
-    assign r_hex = bg_color | slice: 0, 2
-    assign g_hex = bg_color | slice: 2, 2
-    assign b_hex = bg_color | slice: 4, 2
-    
-    assign r1 = r_hex | slice: 0, 1
-    assign r2 = r_hex | slice: 1, 1
-    if hex_chars contains r1
-      assign r1_val = hex_chars | split: '' | index: r1 | plus: 10
-    else
-      assign r1_val = r1 | times: 1
-    endif
-    if hex_chars contains r2
-      assign r2_val = hex_chars | split: '' | index: r2 | plus: 10
-    else
-      assign r2_val = r2 | times: 1
-    endif
-    assign r = r1_val | times: 16 | plus: r2_val
-    
-    assign g1 = g_hex | slice: 0, 1
-    assign g2 = g_hex | slice: 1, 1
-    if hex_chars contains g1
-      assign g1_val = hex_chars | split: '' | index: g1 | plus: 10
-    else
-      assign g1_val = g1 | times: 1
-    endif
-    if hex_chars contains g2
-      assign g2_val = hex_chars | split: '' | index: g2 | plus: 10
-    else
-      assign g2_val = g2 | times: 1
-    endif
-    assign g = g1_val | times: 16 | plus: g2_val
-    
-    assign b1 = b_hex | slice: 0, 1
-    assign b2 = b_hex | slice: 1, 1
-    if hex_chars contains b1
-      assign b1_val = hex_chars | split: '' | index: b1 | plus: 10
-    else
-      assign b1_val = b1 | times: 1
-    endif
-    if hex_chars contains b2
-      assign b2_val = hex_chars | split: '' | index: b2 | plus: 10
-    else
-      assign b2_val = b2 | times: 1
-    endif
-    assign b = b1_val | times: 16 | plus: b2_val
-    
-    assign brightness = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000
+    # Use Shopify's built-in color_brightness filter (returns 0-255)
+    # This is more reliable than manual hex parsing
+    assign brightness = hex_color | color_brightness
     
     if brightness > 128
       assign contrast_color = '#000000'
@@ -98,5 +50,4 @@
     endif
   endif
 %}
-
 {{- contrast_color -}}

@@ -1,0 +1,1926 @@
+<style>
+/* ========================================
+   Product Quote Badge - Creator Profile Banner
+   Shows only when creator has note/media for this product
+   ======================================== */
+
+/* Banner Wrapper - handles centering */
+.quote-badge-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: var(--quote-badge-margin-top, 0px);
+  margin-bottom: var(--quote-badge-margin-bottom, 0px);
+  padding-left: var(--quote-badge-margin-left, 0px);
+  padding-right: var(--quote-badge-margin-right, 0px);
+  box-sizing: border-box;
+}
+
+.quote-badge-banner {
+  position: relative;
+  width: 100%;
+  max-width: var(--quote-badge-banner-max-width, 3840px);
+  z-index: 100;
+  overflow: hidden;
+  font-family: var(--font-body-family, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  border-radius: var(--quote-badge-banner-radius, 0);
+}
+
+
+/* Position Modes */
+.quote-badge-banner--fixed-top {
+  position: fixed;
+  top: var(--quote-badge-margin-top, 0px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px));
+  max-width: min(var(--quote-badge-banner-max-width, 3840px), calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px)));
+}
+
+.quote-badge-banner--fixed-natural {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px));
+  max-width: min(var(--quote-badge-banner-max-width, 3840px), calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px)));
+  /* top is set dynamically via JavaScript */
+}
+
+.quote-badge-banner--fixed-bottom {
+  position: fixed;
+  bottom: var(--quote-badge-margin-bottom, 0px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px));
+  max-width: min(var(--quote-badge-banner-max-width, 3840px), calc(100% - var(--quote-badge-margin-left, 0px) - var(--quote-badge-margin-right, 0px)));
+}
+
+.quote-badge-banner--normal {
+  position: relative;
+}
+
+/* Spacer for fixed positioning */
+.quote-badge-banner__spacer {
+  display: none;
+}
+
+.quote-badge-banner--fixed ~ .quote-badge-banner__spacer,
+.quote-badge-banner--fixed + .quote-badge-banner__spacer {
+  display: block;
+}
+
+/* Background Layers */
+.quote-badge-banner__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Solid Color Background */
+.quote-badge-banner__bg--color {
+  background-color: var(--quote-badge-bg-color, #1a1a2e);
+}
+
+/* Image Background with Overlay */
+.quote-badge-banner__bg--image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.quote-badge-banner__bg--image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* ============================================
+   Liquid Glass Effect - Enhanced Frosted Glass
+   Premium glassmorphism with layered blur & highlights
+   ============================================ */
+
+/* Apply backdrop-filter to the BANNER CONTAINER for glass mode */
+.quote-badge-banner--glass-border {
+  background-color: var(--quote-badge-glass-bg-color);
+  backdrop-filter: blur(var(--quote-badge-glass-blur, 40px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--quote-badge-glass-blur, 40px)) saturate(180%);
+}
+
+/* Background layer for glass - adds gradients/highlights + optional gaussian blur */
+.quote-badge-banner__bg--glass {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(0, 0, 0, 0.02) 100%
+  );
+  border-radius: var(--quote-badge-banner-radius, 0);
+  filter: blur(var(--quote-badge-glass-filter-blur, 0px));
+}
+
+/* Inner Frosted Layer - adds gradient overlay for depth + soft glow */
+.quote-badge-banner__glass-frosted {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 100%
+  );
+  border-radius: var(--quote-badge-banner-radius, 0);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(var(--quote-badge-glass-filter-blur, 0px));
+}
+
+/* Top Edge Shine - simulates light hitting glass from above */
+.quote-badge-banner__glass-frosted::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 20%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 80%,
+    transparent 100%
+  );
+  border-radius: var(--quote-badge-banner-radius, 0);
+}
+
+/* Inner Glow - soft light diffusion */
+.quote-badge-banner__glass-frosted::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 60%
+  );
+  border-radius: var(--quote-badge-banner-radius, 0);
+  pointer-events: none;
+}
+
+/* Dark Shadow Border - adds depth/dimension */
+.quote-badge-banner__glass-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--quote-badge-banner-radius, 0);
+  box-shadow: 
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Bright White Highlight - outer glow ring */
+.quote-badge-banner__glass-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--quote-badge-banner-radius, 0);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Inner border highlight */
+.quote-badge-banner__glass-highlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+/* Subtle noise texture for realism */
+.quote-badge-banner__glass-highlight-soft {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--quote-badge-banner-radius, 0);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Container border for glass mode */
+.quote-badge-banner--glass-border {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--quote-badge-banner-radius, 0);
+  overflow: hidden;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Content Container */
+.quote-badge-banner__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: var(--quote-badge-content-max-width, 1440px);
+  margin: 0 auto;
+  padding: var(--quote-badge-padding-y, 12px) var(--quote-badge-padding-x, 20px);
+}
+
+/* Profile Picture Container */
+.quote-badge-banner__avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Profile Picture */
+.quote-badge-banner__avatar {
+  position: relative;
+  width: var(--quote-badge-avatar-size, 48px);
+  height: var(--quote-badge-avatar-size, 48px);
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Avatar Image */
+.quote-badge-banner__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+/* Product Avatar Variant - slightly rounded corners instead of circle */
+.quote-badge-banner__avatar--product {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.quote-badge-banner__avatar--product .quote-badge-banner__avatar-img {
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Avatar Initials */
+.quote-badge-banner__avatar-initials {
+  font-size: calc(var(--quote-badge-avatar-size, 48px) * 0.4);
+  font-weight: 600;
+  color: var(--quote-badge-avatar-initials-color, #ffffff);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+/* Light Reflection Overlay - Curved Shine Effect */
+.quote-badge-banner__avatar-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Product avatar shine - match rounded corners */
+.quote-badge-banner__avatar--product .quote-badge-banner__avatar-shine {
+  border-radius: 8px;
+}
+
+/* Primary curved reflection */
+.quote-badge-banner__avatar-shine::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+/* Secondary subtle edge highlight */
+.quote-badge-banner__avatar-shine::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5%;
+  right: 5%;
+  height: 35%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  border-radius: 50% 50% 45% 45%;
+  filter: blur(1px);
+}
+
+/* Product avatar shine adjustments */
+.quote-badge-banner__avatar--product .quote-badge-banner__avatar-shine::before {
+  border-radius: 8px;
+}
+
+.quote-badge-banner__avatar--product .quote-badge-banner__avatar-shine::after {
+  border-radius: 6px 6px 4px 4px;
+}
+
+/* Avatar Ring/Border */
+.quote-badge-banner__avatar-ring {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  pointer-events: none;
+}
+
+/* Product avatar ring - match rounded corners */
+.quote-badge-banner__avatar--product + .quote-badge-banner__avatar-ring,
+.quote-badge-banner__avatar-wrapper:has(.quote-badge-banner__avatar--product) .quote-badge-banner__avatar-ring {
+  border-radius: 10px;
+}
+
+/* Creator Info */
+.quote-badge-banner__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+/* Creator Name */
+.quote-badge-banner__name {
+  margin: 0;
+  font-size: var(--quote-badge-name-size, 1rem);
+  font-weight: var(--quote-badge-name-weight, 600);
+  line-height: 1.3;
+  color: var(--quote-badge-text-color, #ffffff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Subtitle/Tagline */
+.quote-badge-banner__tagline {
+  margin: 0;
+  font-size: var(--quote-badge-tagline-size, 0.8125rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--quote-badge-tagline-color, rgba(255, 255, 255, 0.7));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Optional CTA Button */
+.quote-badge-banner__cta {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: var(--quote-badge-button-radius, 9999px);
+  background-color: var(--quote-badge-button-bg, #ffffff);
+  color: var(--quote-badge-button-text, #1a1a2e);
+  border: 1px solid var(--quote-badge-button-border, transparent);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.quote-badge-banner__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Discount Badge */
+.quote-badge-banner__discount {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--quote-badge-discount-bg, rgba(255, 255, 255, 0.15));
+  color: var(--quote-badge-discount-text, #ffffff);
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+/* Mobile-only: hide on desktop */
+.quote-badge-banner__discount--mobile-only {
+  display: none;
+}
+
+/* ============================================
+   Expanded State Styles
+   ============================================ */
+
+.quote-badge-banner__expanded {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              opacity 0.3s ease,
+              padding 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.quote-badge-banner.is-expanded .quote-badge-banner__expanded {
+  max-height: 600px;
+  opacity: 1;
+  padding: 0 var(--quote-badge-padding-x, 20px) var(--quote-badge-padding-y, 12px);
+}
+
+.quote-badge-banner__expanded-inner {
+  max-width: var(--quote-badge-content-max-width, 1440px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Quote Section */
+.quote-badge-banner__quote {
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--quote-badge-text-color, #ffffff);
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.quote-badge-banner__quote::before {
+  content: '"';
+  font-size: 1.5em;
+  line-height: 0;
+  vertical-align: -0.2em;
+  margin-right: 0.1em;
+  opacity: 0.6;
+}
+
+.quote-badge-banner__quote::after {
+  content: '"';
+  font-size: 1.5em;
+  line-height: 0;
+  vertical-align: -0.2em;
+  margin-left: 0.1em;
+  opacity: 0.6;
+}
+
+/* Media Carousel */
+.quote-badge-banner__media-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+}
+
+.quote-badge-banner__media-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.quote-badge-banner__media-item {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: var(--quote-badge-media-card-width, 160px);
+  height: var(--quote-badge-media-card-height, 240px);
+  border-radius: var(--quote-badge-media-card-radius, 12px);
+  overflow: hidden;
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.quote-badge-banner__media-item img,
+.quote-badge-banner__media-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Video play indicator */
+.quote-badge-banner__media-item--video::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quote-badge-banner__media-item--video::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateX(2px);
+  z-index: 1;
+  width: 0;
+  height: 0;
+  border-left: 16px solid white;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.quote-badge-banner__media-item--video.is-playing::after,
+.quote-badge-banner__media-item--video.is-playing::before {
+  display: none;
+}
+
+/* Show video controls when playing */
+.quote-badge-banner__media-item--video video {
+  pointer-events: none;
+}
+
+.quote-badge-banner__media-item--video.is-playing video {
+  pointer-events: auto;
+}
+
+/* Style video controls area */
+.quote-badge-banner__media-item--video video::-webkit-media-controls {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.quote-badge-banner__media-item--video.is-playing video::-webkit-media-controls {
+  opacity: 1;
+}
+
+/* Ensure fullscreen works properly */
+.quote-badge-banner__media-item--video video:fullscreen,
+.quote-badge-banner__media-item--video video:-webkit-full-screen {
+  object-fit: contain;
+  background: #000;
+}
+
+/* Close Button */
+.quote-badge-banner__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  z-index: 10;
+}
+
+.quote-badge-banner.is-expanded .quote-badge-banner__close {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.quote-badge-banner__close:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.quote-badge-banner__close svg {
+  width: 16px;
+  height: 16px;
+  stroke: white;
+  stroke-width: 2;
+}
+
+/* Hide CTA when expanded */
+.quote-badge-banner.is-expanded .quote-badge-banner__cta {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 749px) {
+  .quote-badge-banner__content {
+    padding: var(--quote-badge-padding-y-mobile, 8px) var(--quote-badge-padding-x-mobile, 16px);
+    gap: 0.75rem;
+  }
+
+  .quote-badge-banner__avatar {
+    width: var(--quote-badge-avatar-size-mobile, 40px);
+    height: var(--quote-badge-avatar-size-mobile, 40px);
+  }
+
+  .quote-badge-banner__avatar-initials {
+    font-size: calc(var(--quote-badge-avatar-size-mobile, 40px) * 0.4);
+  }
+
+  .quote-badge-banner__name {
+    font-size: var(--quote-badge-name-size-mobile, 0.9375rem);
+  }
+
+  .quote-badge-banner__tagline {
+    font-size: var(--quote-badge-tagline-size-mobile, 0.75rem);
+  }
+
+  .quote-badge-banner__cta {
+    padding: 0.375rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  /* Desktop-only: hide on mobile */
+  .quote-badge-banner__discount--desktop-only {
+    display: none;
+  }
+  
+  /* Mobile-only: show on mobile */
+  .quote-badge-banner__discount--mobile-only {
+    display: inline-flex;
+  }
+  
+  /* Hide discount icon on mobile */
+  .quote-badge-banner__discount-icon {
+    display: none;
+  }
+  
+  /* Ensure discount badge properly contains text on mobile */
+  .quote-badge-banner__discount {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+
+  /* Expanded state mobile adjustments */
+  .quote-badge-banner.is-expanded .quote-badge-banner__expanded {
+    padding: 0 var(--quote-badge-padding-x-mobile, 16px) var(--quote-badge-padding-y-mobile, 8px);
+  }
+
+  .quote-badge-banner__quote {
+    font-size: 0.9375rem;
+  }
+
+  .quote-badge-banner__media-item {
+    width: calc(var(--quote-badge-media-card-width, 160px) * 0.75);
+    height: calc(var(--quote-badge-media-card-height, 240px) * 0.75);
+    border-radius: calc(var(--quote-badge-media-card-radius, 12px) * 0.67);
+  }
+
+  .quote-badge-banner__close {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Very small screens - hide tagline */
+@media screen and (max-width: 480px) {
+  .quote-badge-banner__tagline {
+    display: none;
+  }
+}
+</style>
+
+{%- liquid
+  # ============================================
+  # Creator Context Resolution
+  # ============================================
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = section.settings.preview_creator
+
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+
+  assign has_creator = false
+  if cc_creator != blank
+    assign has_creator = true
+  endif
+
+  # ============================================
+  # Product Enhancement Detection
+  # Check if creator has a note or media for this product
+  # ============================================
+  assign has_product_enhancement = false
+  assign product_note = ''
+  assign product_media = null
+  assign product_id_string = product.id | append: ''
+
+  if cc_creator and cc_creator.data.value['cc-creator-drops']
+    for drop in cc_creator.data.value['cc-creator-drops']
+      if drop['cc-creator-drop-products']
+        for cc_product in drop['cc-creator-drop-products']
+          assign cc_product_id = cc_product['cc-creator-drop-product-shopify-id'] | append: ''
+          if cc_product_id == product_id_string
+            # Check for enhancement note
+            assign note = cc_product['cc-creator-drop-product-enhancement-note']
+            if note == blank and cc_product.enhancement != blank
+              assign note = cc_product.enhancement.note
+            endif
+            
+            # Check for enhancement media
+            assign media = cc_product['cc-creator-drop-product-enhancement-media']
+            if media == blank and cc_product.enhancement != blank
+              assign media = cc_product.enhancement.media
+            endif
+            
+            # Determine if we have valid content
+            if note != blank and note != ''
+              assign has_product_enhancement = true
+              assign product_note = note
+            endif
+            
+            if media != blank and media.size > 0
+              assign has_product_enhancement = true
+              assign product_media = media
+            endif
+            
+            break
+          endif
+        endfor
+      endif
+      if has_product_enhancement
+        break
+      endif
+    endfor
+  endif
+
+  # ============================================
+  # Process Dynamic Text
+  # ============================================
+  capture name_text
+    render 'cc-process-dynamic-text', input_text: section.settings.name_text
+  endcapture
+  assign name_text = name_text | strip
+
+  capture tagline_text
+    render 'cc-process-dynamic-text', input_text: section.settings.tagline_text
+  endcapture
+  assign tagline_text = tagline_text | strip
+
+  capture button_text
+    render 'cc-process-dynamic-text', input_text: section.settings.button_text
+  endcapture
+  assign button_text = button_text | strip
+
+  # ============================================
+  # Avatar Image Resolution
+  # ============================================
+  assign has_avatar_image = false
+  assign avatar_image_url = ''
+  assign avatar_alt_text = ''
+  
+  # Check if we should show product image or creator image
+  if section.settings.avatar_display_type == 'product'
+    # Use product featured image
+    if product.featured_image != blank
+      assign has_avatar_image = true
+      assign avatar_image_url = product.featured_image | image_url: width: 200, height: 200, crop: 'center'
+      assign avatar_alt_text = product.title
+    elsif section.settings.fallback_image != blank
+      assign has_avatar_image = true
+      assign avatar_image_url = section.settings.fallback_image | image_url: width: 200, height: 200, crop: 'center'
+      assign avatar_alt_text = 'Product image'
+    endif
+  else
+    # Use creator profile picture (default behavior)
+    # CC profile pictures are external URLs, not Shopify assets - don't use image_url filter
+    if cc_creator and cc_creator.cc-creator-profile-picture != blank
+      assign has_avatar_image = true
+      assign avatar_image_url = cc_creator.cc-creator-profile-picture
+      assign avatar_alt_text = display_name
+    elsif cc_creator.data.value.cc-creator-profile-picture != blank
+      assign has_avatar_image = true
+      assign avatar_image_url = cc_creator.data.value.cc-creator-profile-picture
+      assign avatar_alt_text = display_name
+    elsif section.settings.fallback_image != blank
+      # Fallback image IS a Shopify asset, so use image_url filter
+      assign has_avatar_image = true
+      assign avatar_image_url = section.settings.fallback_image | image_url: width: 200, height: 200, crop: 'center'
+      assign avatar_alt_text = 'Creator'
+    endif
+  endif
+
+  # Creator Name and Initials
+  assign first_name = cc_creator.cc-creator-first-name | default: ''
+  assign last_name = cc_creator.cc-creator-last-name | default: ''
+  
+  if first_name == blank and cc_creator.data.value.cc-creator-first-name != blank
+    assign first_name = cc_creator.data.value.cc-creator-first-name
+  endif
+  
+  if last_name == blank and cc_creator.data.value.cc-creator-last-name != blank
+    assign last_name = cc_creator.data.value.cc-creator-last-name
+  endif
+
+  # Generate initials
+  assign first_initial = first_name | slice: 0, 1 | upcase | default: ''
+  assign last_initial = last_name | slice: 0, 1 | upcase | default: ''
+  assign initials = first_initial | append: last_initial
+
+  # Full name for display
+  if name_text != blank
+    assign display_name = name_text
+  elsif first_name != blank or last_name != blank
+    assign display_name = first_name | append: ' ' | append: last_name | strip
+  else
+    assign display_name = section.settings.fallback_name | default: 'Featured Creator'
+  endif
+
+  # Fallback initials if none exist
+  if initials == blank
+    assign initials = section.settings.fallback_initials | default: 'CC'
+  endif
+
+  # Discount data
+  assign has_discount = false
+  if cc_creator and cc_creator.cc-collab-discount-code != blank
+    assign has_discount = true
+    assign discount_code = cc_creator.cc-collab-discount-code
+    assign discount_amount = cc_creator.data.value.cc-collab-discount-amount | default: ''
+  endif
+
+  # ============================================
+  # Visibility Logic
+  # Only show if there's a product enhancement (note or media)
+  # ============================================
+  assign show_banner = false
+  if has_product_enhancement
+    if section.settings.visibility == 'always'
+      assign show_banner = true
+    elsif section.settings.visibility == 'creator_only' and has_creator
+      assign show_banner = true
+    endif
+  endif
+
+  # Position mode
+  assign position_class = 'quote-badge-banner--normal'
+  case section.settings.position_mode
+    when 'fixed_top'
+      assign position_class = 'quote-badge-banner--fixed-top'
+    when 'fixed_natural'
+      assign position_class = 'quote-badge-banner--fixed-natural'
+    when 'fixed_bottom'
+      assign position_class = 'quote-badge-banner--fixed-bottom'
+  endcase
+
+  # Background type class
+  assign bg_class = 'quote-badge-banner__bg--color'
+  case section.settings.background_type
+    when 'glass'
+      assign bg_class = 'quote-badge-banner__bg--glass'
+    when 'image'
+      assign bg_class = 'quote-badge-banner__bg--image'
+  endcase
+
+  # ============================================
+  # Avatar Gradient & Initials Color
+  # ============================================
+  assign avatar_gradient = 'linear-gradient(135deg, ' | append: section.settings.avatar_bg_color_1 | append: ' 0%, ' | append: section.settings.avatar_bg_color_2 | append: ' 100%)'
+
+  # ============================================
+  # Auto Text Contrast Calculation
+  # ============================================
+  if section.settings.auto_text_contrast
+    # Determine the effective background color for contrast calculation
+    # Note: Image backgrounds always use white text (set directly in template)
+    case section.settings.background_type
+      when 'color'
+        assign contrast_bg = section.settings.background_color
+      when 'glass'
+        assign contrast_bg = section.settings.glass_tint_color
+    endcase
+  endif
+-%}
+
+{%- comment -%} Calculate contrast colors when auto contrast is enabled {%- endcomment -%}
+{%- if section.settings.auto_text_contrast -%}
+  {%- comment -%} Avatar initials: compare against gradient start color {%- endcomment -%}
+  {%- capture computed_avatar_initials_color -%}
+    {%- render 'cc-calculate-contrast-color', hex_color: section.settings.avatar_bg_color_1 -%}
+  {%- endcapture -%}
+  {%- assign computed_avatar_initials_color = computed_avatar_initials_color | strip -%}
+  
+  {%- comment -%} Button text: compare against button background {%- endcomment -%}
+  {%- capture computed_button_text_color -%}
+    {%- render 'cc-calculate-contrast-color', hex_color: section.settings.button_bg_color -%}
+  {%- endcapture -%}
+  {%- assign computed_button_text_color = computed_button_text_color | strip -%}
+  
+  {%- comment -%} Banner text: image backgrounds get white text, others calculate from background {%- endcomment -%}
+  {%- if section.settings.background_type == 'image' -%}
+    {%- assign computed_text_color = '#ffffff' -%}
+    {%- assign computed_tagline_color = 'rgba(255, 255, 255, 0.7)' -%}
+    {%- assign computed_discount_text_color = '#ffffff' -%}
+  {%- else -%}
+    {%- capture computed_text_color -%}
+      {%- render 'cc-calculate-contrast-color', hex_color: contrast_bg -%}
+    {%- endcapture -%}
+    {%- assign computed_text_color = computed_text_color | strip -%}
+    
+    {%- comment -%} Tagline and discount are muted versions of text color {%- endcomment -%}
+    {%- if computed_text_color == '#ffffff' or computed_text_color == '#FFFFFF' -%}
+      {%- assign computed_tagline_color = 'rgba(255, 255, 255, 0.7)' -%}
+      {%- assign computed_discount_text_color = '#ffffff' -%}
+    {%- else -%}
+      {%- assign computed_tagline_color = 'rgba(0, 0, 0, 0.6)' -%}
+      {%- assign computed_discount_text_color = '#000000' -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- else -%}
+  {%- assign computed_text_color = section.settings.text_color -%}
+  {%- assign computed_tagline_color = section.settings.tagline_color -%}
+  {%- assign computed_button_text_color = section.settings.button_text_color -%}
+  {%- assign computed_discount_text_color = section.settings.discount_text_color -%}
+  {%- assign computed_avatar_initials_color = section.settings.avatar_initials_color -%}
+{%- endif -%}
+
+{%- if show_banner -%}
+  <div 
+    class="quote-badge-wrapper"
+    style="
+      --quote-badge-margin-top: {{ section.settings.margin_top }}px;
+      --quote-badge-margin-bottom: {{ section.settings.margin_bottom }}px;
+      --quote-badge-margin-left: {{ section.settings.margin_left }}px;
+      --quote-badge-margin-right: {{ section.settings.margin_right }}px;
+    "
+  >
+    <div 
+      class="quote-badge-banner {{ position_class }}{% if section.settings.background_type == 'glass' %} quote-badge-banner--glass-border{% endif %}"
+      id="quote-badge-banner-{{ section.id }}"
+      data-has-content="{{ has_product_enhancement }}"
+      style="
+        --quote-badge-bg-color: {{ section.settings.background_color }};
+      --quote-badge-text-color: {{ computed_text_color }};
+      --quote-badge-tagline-color: {{ computed_tagline_color }};
+      --quote-badge-avatar-size: {{ section.settings.avatar_size }}px;
+      --quote-badge-avatar-size-mobile: {{ section.settings.avatar_size_mobile }}px;
+      --quote-badge-name-size: {{ section.settings.name_font_size }}px;
+      --quote-badge-name-size-mobile: {{ section.settings.name_font_size_mobile }}px;
+      --quote-badge-name-weight: {{ section.settings.name_font_weight }};
+      --quote-badge-tagline-size: {{ section.settings.tagline_font_size }}px;
+      --quote-badge-tagline-size-mobile: {{ section.settings.tagline_font_size_mobile }}px;
+      --quote-badge-padding-y: {{ section.settings.padding_vertical }}px;
+      --quote-badge-padding-x: {{ section.settings.padding_horizontal }}px;
+      --quote-badge-padding-y-mobile: {{ section.settings.padding_vertical_mobile }}px;
+      --quote-badge-padding-x-mobile: {{ section.settings.padding_horizontal_mobile }}px;
+      --quote-badge-banner-max-width: {{ section.settings.banner_max_width }}px;
+      --quote-badge-content-max-width: {{ section.settings.content_max_width }}px;
+      --quote-badge-button-bg: {{ section.settings.button_bg_color }};
+      --quote-badge-button-text: {{ computed_button_text_color }};
+      --quote-badge-button-border: {{ section.settings.button_border_color }};
+      --quote-badge-button-radius: {{ section.settings.button_border_radius }}px;
+      --quote-badge-discount-bg: {{ section.settings.discount_bg_color }};
+      --quote-badge-discount-text: {{ computed_discount_text_color }};
+      --quote-badge-banner-radius: {{ section.settings.banner_border_radius }}px;
+      --quote-badge-glass-blur: {{ section.settings.glass_blur_intensity }}px;
+      --quote-badge-glass-blur-secondary: {{ section.settings.glass_blur_intensity | divided_by: 2 }}px;
+      --quote-badge-glass-opacity: {{ section.settings.glass_opacity | divided_by: 100.0 }};
+      --quote-badge-glass-tint: {{ section.settings.glass_tint_color }};
+{%- assign glass_opacity_decimal = section.settings.glass_opacity | divided_by: 100.0 -%}
+      --quote-badge-glass-bg-color: {{ section.settings.glass_tint_color | color_modify: 'alpha', glass_opacity_decimal }};
+      --quote-badge-glass-filter-blur: {{ section.settings.glass_filter_blur }}px;
+      --quote-badge-margin-top: {{ section.settings.margin_top }}px;
+      --quote-badge-margin-bottom: {{ section.settings.margin_bottom }}px;
+      --quote-badge-margin-left: {{ section.settings.margin_left }}px;
+      --quote-badge-margin-right: {{ section.settings.margin_right }}px;
+      --quote-badge-media-card-radius: {{ section.settings.media_card_radius }}px;
+      --quote-badge-media-card-width: {{ section.settings.media_card_width }}px;
+      --quote-badge-media-card-height: {{ section.settings.media_card_height }}px;
+    "
+  >
+    {%- comment -%} Close Button {%- endcomment -%}
+    <button class="quote-badge-banner__close" aria-label="Close expanded content" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    {%- comment -%} Background Layer {%- endcomment -%}
+    <div 
+      class="quote-badge-banner__bg {{ bg_class }}"
+      {%- if section.settings.background_type == 'image' and section.settings.background_image != blank -%}
+        style="background-image: url('{{ section.settings.background_image | image_url: width: 2000 }}');"
+      {%- endif -%}
+    ></div>
+    
+    {%- comment -%} Glass Effect Layers {%- endcomment -%}
+    {%- if section.settings.background_type == 'glass' -%}
+      <div class="quote-badge-banner__glass-frosted"></div>
+      <div class="quote-badge-banner__glass-shadow"></div>
+      <div class="quote-badge-banner__glass-highlight"></div>
+      <div class="quote-badge-banner__glass-highlight-soft"></div>
+    {%- endif -%}
+
+    {%- comment -%} Content {%- endcomment -%}
+    <div class="quote-badge-banner__content">
+      {%- comment -%} Avatar {%- endcomment -%}
+      {%- if section.settings.show_avatar -%}
+        <div class="quote-badge-banner__avatar-wrapper">
+          <div 
+            class="quote-badge-banner__avatar{% if section.settings.avatar_display_type == 'product' %} quote-badge-banner__avatar--product{% endif %}"
+            style="background: {{ avatar_gradient }}; --quote-badge-avatar-initials-color: {{ computed_avatar_initials_color }};"
+          >
+            {%- if has_avatar_image -%}
+              <img 
+                src="{{ avatar_image_url }}"
+                alt="{{ avatar_alt_text | default: display_name | escape }}"
+                class="quote-badge-banner__avatar-img"
+                loading="eager"
+              >
+            {%- else -%}
+              <span class="quote-badge-banner__avatar-initials">{{ initials }}</span>
+            {%- endif -%}
+            
+            {%- comment -%} Light Reflection Effect {%- endcomment -%}
+            <div class="quote-badge-banner__avatar-shine"></div>
+          </div>
+
+          {%- if section.settings.show_avatar_ring -%}
+            <div class="quote-badge-banner__avatar-ring" style="border-color: {{ section.settings.avatar_ring_color }};"></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Creator Info {%- endcomment -%}
+      <div class="quote-badge-banner__info">
+        <p class="quote-badge-banner__name">{{ display_name | escape }}</p>
+        {%- if tagline_text != blank -%}
+          <p class="quote-badge-banner__tagline">{{ tagline_text }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Discount Badge {%- endcomment -%}
+      {%- if has_discount and discount_amount != blank -%}
+        {%- if section.settings.show_discount_badge or section.settings.show_discount_badge_mobile -%}
+          {%- liquid
+            assign discount_class = 'quote-badge-banner__discount'
+            if section.settings.show_discount_badge and section.settings.show_discount_badge_mobile == false
+              assign discount_class = discount_class | append: ' quote-badge-banner__discount--desktop-only'
+            elsif section.settings.show_discount_badge == false and section.settings.show_discount_badge_mobile
+              assign discount_class = discount_class | append: ' quote-badge-banner__discount--mobile-only'
+            endif
+          -%}
+          <span class="{{ discount_class }}">
+            <svg class="quote-badge-banner__discount-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            {{ discount_amount }}% OFF
+          </span>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} CTA Button - Triggers Expansion {%- endcomment -%}
+      {%- if button_text != blank -%}
+        <button 
+          type="button"
+          class="quote-badge-banner__cta"
+          data-expand-trigger
+        >
+          {{ button_text }}
+          {%- if section.settings.button_show_arrow -%}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          {%- endif -%}
+        </button>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Expanded Content - Quote and Media {%- endcomment -%}
+    <div class="quote-badge-banner__expanded">
+      <div class="quote-badge-banner__expanded-inner">
+        {%- comment -%} Quote Text {%- endcomment -%}
+        {%- if product_note != blank -%}
+          <p class="quote-badge-banner__quote">{{ product_note | escape }}</p>
+        {%- endif -%}
+
+        {%- comment -%} Media Carousel {%- endcomment -%}
+        {%- if product_media != blank and product_media.size > 0 -%}
+          <div class="quote-badge-banner__media-carousel">
+            {%- for media_item in product_media -%}
+              {%- if media_item.url contains 'assets.drops.shop' -%}
+                {%- if media_item.mimeType contains 'video' -%}
+                  <div class="quote-badge-banner__media-item quote-badge-banner__media-item--video" data-video-src="{{ media_item.url }}">
+                    <video 
+                      muted 
+                      playsinline 
+                      loop
+                      preload="metadata"
+                      poster=""
+                      controlslist="nodownload"
+                    >
+                      <source src="{{ media_item.url }}" type="{{ media_item.mimeType }}">
+                    </video>
+                  </div>
+                {%- elsif media_item.mimeType contains 'image' -%}
+                  <div class="quote-badge-banner__media-item">
+                    <img 
+                      src="{{ media_item.url }}" 
+                      alt="{{ product.title | escape }} - Creator media"
+                      loading="lazy"
+                    >
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  </div>{%- comment -%} End quote-badge-wrapper {%- endcomment -%}
+
+  {%- comment -%} Spacer and positioning for fixed modes {%- endcomment -%}
+  {%- if section.settings.position_mode == 'fixed_top' or section.settings.position_mode == 'fixed_natural' or section.settings.position_mode == 'fixed_bottom' -%}
+    <div 
+      class="quote-badge-banner__spacer" 
+      id="quote-badge-spacer-{{ section.id }}"
+      style="height: {{ section.settings.avatar_size | plus: section.settings.padding_vertical | times: 2 | plus: 16 }}px;"
+    ></div>
+  {%- endif -%}
+
+  <script>
+  (function() {
+    const banner = document.getElementById('quote-badge-banner-{{ section.id }}');
+    const spacer = document.getElementById('quote-badge-spacer-{{ section.id }}');
+    const positionMode = '{{ section.settings.position_mode }}';
+    
+    if (banner) {
+      // Expand/Collapse functionality
+      const expandTrigger = banner.querySelector('[data-expand-trigger]');
+      const closeButton = banner.querySelector('.quote-badge-banner__close');
+      const videoItems = banner.querySelectorAll('.quote-badge-banner__media-item--video');
+      
+      function toggleExpand(shouldExpand) {
+        if (shouldExpand) {
+          banner.classList.add('is-expanded');
+          // Update spacer height for fixed modes
+          if (spacer) {
+            setTimeout(() => {
+              spacer.style.height = banner.offsetHeight + 'px';
+            }, 400); // Wait for animation to complete
+          }
+        } else {
+          banner.classList.remove('is-expanded');
+          // Pause all videos and remove controls when collapsing
+          videoItems.forEach(item => {
+            const video = item.querySelector('video');
+            if (video) {
+              video.pause();
+              video.currentTime = 0;
+              video.removeAttribute('controls');
+              item.classList.remove('is-playing');
+            }
+          });
+          // Reset spacer height
+          if (spacer) {
+            setTimeout(() => {
+              spacer.style.height = banner.offsetHeight + 'px';
+            }, 400);
+          }
+        }
+      }
+      
+      if (expandTrigger) {
+        expandTrigger.addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleExpand(true);
+        });
+      }
+      
+      if (closeButton) {
+        closeButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          toggleExpand(false);
+        });
+      }
+      
+      // Video play/pause on click
+      videoItems.forEach(item => {
+        const video = item.querySelector('video');
+        if (!video) return;
+        
+        // Click on the item (not the video controls) to play/pause
+        item.addEventListener('click', (e) => {
+          // If clicking on the video itself while playing (controls area), don't toggle
+          if (e.target === video && !video.paused) return;
+          
+          if (video.paused) {
+            // Pause all other videos first and remove their controls
+            videoItems.forEach(other => {
+              const otherVideo = other.querySelector('video');
+              if (otherVideo && otherVideo !== video) {
+                otherVideo.pause();
+                otherVideo.removeAttribute('controls');
+                other.classList.remove('is-playing');
+              }
+            });
+            video.play();
+            video.setAttribute('controls', '');
+            item.classList.add('is-playing');
+          } else {
+            video.pause();
+            video.removeAttribute('controls');
+            item.classList.remove('is-playing');
+          }
+        });
+        
+        // Handle when video ends or is paused via controls
+        video.addEventListener('pause', () => {
+          // Small delay to check if it's actually paused (not just seeking)
+          setTimeout(() => {
+            if (video.paused && !video.seeking) {
+              video.removeAttribute('controls');
+              item.classList.remove('is-playing');
+            }
+          }, 100);
+        });
+        
+        // Keep controls visible while playing
+        video.addEventListener('play', () => {
+          video.setAttribute('controls', '');
+          item.classList.add('is-playing');
+        });
+      });
+      
+      // Fixed positioning logic
+      if (spacer) {
+        // For fixed_natural: capture the natural position BEFORE applying fixed positioning
+        if (positionMode === 'fixed_natural') {
+          // Temporarily make it relative to get natural position
+          banner.style.position = 'relative';
+          const naturalTop = banner.getBoundingClientRect().top + window.scrollY;
+          // Now apply fixed with the captured top position
+          banner.style.position = 'fixed';
+          banner.style.top = naturalTop + 'px';
+        }
+        
+        function updateSpacerHeight() {
+          spacer.style.height = banner.offsetHeight + 'px';
+        }
+        
+        updateSpacerHeight();
+        window.addEventListener('resize', updateSpacerHeight);
+        
+        // Cleanup on section unload (theme editor)
+        document.addEventListener('shopify:section:unload', function(event) {
+          if (event.detail.sectionId === '{{ section.id }}') {
+            window.removeEventListener('resize', updateSpacerHeight);
+          }
+        });
+      }
+    }
+  })();
+  </script>
+{%- endif -%}
+
+{%- if section.settings.custom_css != blank -%}
+<style>
+  {{ section.settings.custom_css }}
+</style>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "CC Product - Quote Badge",
+  "tag": "section",
+  "class": "quote-badge-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The Product Quote Badge",
+      "info": "A sleek, minimal profile banner that only appears when a creator has left a note or uploaded media for the current product. Clicking the CTA expands the banner to reveal the full quote and a media carousel. Features the creator's avatar with elegant light reflection effects."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "This section only works on product pages. It automatically detects if the current creator has a product enhancement (note or media) for this product. If no enhancement exists, the banner will not display. Make sure your creators have drops configured with product enhancement notes or media."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "If on the creator metaobject page, switch the creator in the top left hand corner. If on any other page, select the creator below."
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info": "Select any creator to preview this section with. Helpful for seeing how different data responds & looks in the section. This will not be seen on the live site.",
+      "metaobject_type": "creator"
+    },
+    {
+      "type": "header",
+      "content": "Visibility & Position",
+      "info": "Control when and how the banner appears"
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "label": "Show Banner",
+      "options": [
+        { "value": "always", "label": "When Product Has Enhancement" },
+        { "value": "creator_only", "label": "Only with Creator Context + Enhancement" }
+      ],
+      "default": "creator_only",
+      "info": "Banner only shows if creator has a note or media for this product"
+    },
+    {
+      "type": "select",
+      "id": "position_mode",
+      "label": "Position Mode",
+      "options": [
+        { "value": "normal", "label": "Normal (Scrolls with page)" },
+        { "value": "fixed_natural", "label": "Fixed in Place (Stays where it loads)" },
+        { "value": "fixed_top", "label": "Fixed to Top (Always at top)" },
+        { "value": "fixed_bottom", "label": "Fixed to Bottom (Always at bottom)" }
+      ],
+      "default": "fixed_bottom",
+      "info": "Normal scrolls with content. Fixed in Place stays locked to its natural position. Fixed to Top/Bottom pins to viewport edges."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure text elements. All fields support dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] for nested JSON paths."
+    },
+    {
+      "type": "text",
+      "id": "name_text",
+      "label": "Name Display",
+      "default": "[cc-creator-first-name] Reviewed",
+      "info": "Leave empty to auto-generate from creator first/last name fields. Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "tagline_text",
+      "label": "Tagline / Subtitle",
+      "default": "",
+      "info": "Optional subtitle below the name. Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "See the Review",
+      "info": "Clicking the button expands the banner to show the creator's note and media. Leave empty to hide button."
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show_arrow",
+      "label": "Show Arrow on Button",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge",
+      "label": "Show Discount Badge (Desktop)",
+      "default": true,
+      "info": "Displays the creator's discount amount on desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge_mobile",
+      "label": "Show Discount Badge (Mobile)",
+      "default": false,
+      "info": "Displays the creator's discount amount on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Fallback Content",
+      "info": "Content to display when creator data is incomplete"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback Profile Image",
+      "info": "Used when no creator profile picture is available"
+    },
+    {
+      "type": "text",
+      "id": "fallback_name",
+      "label": "Fallback Name",
+      "default": "Featured Creator",
+      "info": "Name shown when no creator data is available"
+    },
+    {
+      "type": "text",
+      "id": "fallback_initials",
+      "label": "Fallback Initials",
+      "default": "CC",
+      "info": "Initials shown when no profile picture or creator initials are available"
+    },
+    {
+      "type": "header",
+      "content": "Background Settings",
+      "info": "Choose between solid color, liquid glass effect, or image background"
+    },
+    {
+      "type": "select",
+      "id": "background_type",
+      "label": "Background Type",
+      "options": [
+        { "value": "color", "label": "Solid Color" },
+        { "value": "glass", "label": "Liquid Glass (Frosted)" },
+        { "value": "image", "label": "Image (30% Dark Overlay)" }
+      ],
+      "default": "glass",
+      "info": "Liquid Glass creates a beautiful frosted effect with blur and subtle reflections"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff",
+      "info": "Used for solid color background mode"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Used when Background Type is 'Image'. A 30% dark overlay is automatically applied."
+    },
+    {
+      "type": "header",
+      "content": "Liquid Glass Settings",
+      "info": "Fine-tune the frosted glass effect (only applies when Background Type is 'Liquid Glass')"
+    },
+    {
+      "type": "color",
+      "id": "glass_tint_color",
+      "label": "Tint Color",
+      "default": "#ffffff",
+      "info": "The base color of the frosted glass"
+    },
+    {
+      "type": "range",
+      "id": "glass_opacity",
+      "min": 10,
+      "max": 95,
+      "step": 5,
+      "unit": "%",
+      "label": "Tint Opacity",
+      "default": 30,
+      "info": "How solid the glass appears. Low = more see-through, High = more opaque"
+    },
+    {
+      "type": "range",
+      "id": "glass_blur_intensity",
+      "min": 10,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Background Blur",
+      "default": 40,
+      "info": "How much the content behind the banner is blurred"
+    },
+    {
+      "type": "range",
+      "id": "glass_filter_blur",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Soft Glow",
+      "default": 0,
+      "info": "Adds a soft, hazy glow to the glass surface"
+    },
+    {
+      "type": "header",
+      "content": "Avatar Styling",
+      "info": "Customize the profile picture appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_avatar",
+      "label": "Show Avatar",
+      "default": true,
+      "info": "Toggle to show or hide the profile picture/initials"
+    },
+    {
+      "type": "select",
+      "id": "avatar_display_type",
+      "label": "Avatar Display",
+      "options": [
+        { "value": "creator", "label": "Creator Profile Picture" },
+        { "value": "product", "label": "Product Featured Image" }
+      ],
+      "default": "product",
+      "info": "Choose to show the creator's profile picture or the current product's featured image"
+    },
+    {
+      "type": "range",
+      "id": "avatar_size",
+      "min": 32,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Avatar Size (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "avatar_size_mobile",
+      "min": 28,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Avatar Size (Mobile)",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "avatar_bg_color_1",
+      "label": "Avatar Gradient Start Color",
+      "default": "#444444",
+      "info": "First color of the gradient background (used for auto-contrast calculation)"
+    },
+    {
+      "type": "color",
+      "id": "avatar_bg_color_2",
+      "label": "Avatar Gradient End Color",
+      "default": "#000000",
+      "info": "Second color of the gradient background"
+    },
+    {
+      "type": "color",
+      "id": "avatar_initials_color",
+      "label": "Avatar Initials Color",
+      "default": "#ffffff",
+      "info": "Text color for initials when no profile picture is available. Ignored when Auto Text Contrast is enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_avatar_ring",
+      "label": "Show Avatar Ring",
+      "default": true,
+      "info": "Adds a subtle ring around the avatar"
+    },
+    {
+      "type": "color",
+      "id": "avatar_ring_color",
+      "label": "Avatar Ring Color",
+      "default": "#ffffff40"
+    },
+    {
+      "type": "header",
+      "content": "Typography",
+      "info": "Customize text appearance"
+    },
+    {
+      "type": "range",
+      "id": "name_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Name Font Size (Desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "name_font_size_mobile",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Name Font Size (Mobile)",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "name_font_weight",
+      "label": "Name Font Weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "tagline_font_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Tagline Font Size (Desktop)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "tagline_font_size_mobile",
+      "min": 10,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Tagline Font Size (Mobile)",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Text Colors",
+      "info": "Customize text color scheme"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_text_contrast",
+      "label": "Auto Text Contrast",
+      "default": true,
+      "info": "Automatically calculates optimal text colors (black or white) based on background for best readability"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Name Text Color",
+      "default": "#ffffff",
+      "info": "Ignored when Auto Text Contrast is enabled"
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline Text Color",
+      "default": "#ffffffb3",
+      "info": "Ignored when Auto Text Contrast is enabled"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling",
+      "info": "Customize the CTA button appearance"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#1a1a2e",
+      "info": "Ignored when Auto Text Contrast is enabled"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "rgba(0,0,0,0)"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Border Radius",
+      "default": 50,
+      "info": "50px = fully rounded pill shape"
+    },
+    {
+      "type": "header",
+      "content": "Discount Badge",
+      "info": "Customize the discount badge appearance"
+    },
+    {
+      "type": "color",
+      "id": "discount_bg_color",
+      "label": "Discount Badge Background",
+      "default": "#ffffff26"
+    },
+    {
+      "type": "color",
+      "id": "discount_text_color",
+      "label": "Discount Badge Text Color",
+      "default": "#ffffff",
+      "info": "Ignored when Auto Text Contrast is enabled"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Spacing",
+      "info": "Control container and spacing"
+    },
+    {
+      "type": "range",
+      "id": "banner_max_width",
+      "min": 800,
+      "max": 3840,
+      "step": 80,
+      "unit": "px",
+      "label": "Banner Max Width",
+      "default": 3840,
+      "info": "Maximum width of the entire banner container (3840 = 4K full width)"
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 800,
+      "max": 3840,
+      "step": 80,
+      "unit": "px",
+      "label": "Content Max Width",
+      "default": 1440,
+      "info": "Maximum width of the content inside the banner"
+    },
+    {
+      "type": "range",
+      "id": "banner_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner Roundness",
+      "default": 22,
+      "info": "Rounds the corners of the banner. 0 = square edges, 50 = very rounded"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 4,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "label": "Vertical Padding (Desktop)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 12,
+      "max": 60,
+      "step": 8,
+      "unit": "px",
+      "label": "Horizontal Padding (Desktop)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical_mobile",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "unit": "px",
+      "label": "Vertical Padding (Mobile)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal_mobile",
+      "min": 8,
+      "max": 32,
+      "step": 8,
+      "unit": "px",
+      "label": "Horizontal Padding (Mobile)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Margin Left",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "margin_right",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Margin Right",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Media Carousel",
+      "info": "Styling for the expanded media cards"
+    },
+    {
+      "type": "range",
+      "id": "media_card_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Media Card Corner Radius",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "media_card_width",
+      "min": 100,
+      "max": 240,
+      "step": 10,
+      "unit": "px",
+      "label": "Media Card Width",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "media_card_height",
+      "min": 120,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Media Card Height",
+      "default": 240
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Custom styling options"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Add custom CSS rules to override styles. Use this to apply custom fonts if theme fonts don't work out-of-the-box (e.g., font-family: 'Your Font', sans-serif;)."
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Product - Quote Badge"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

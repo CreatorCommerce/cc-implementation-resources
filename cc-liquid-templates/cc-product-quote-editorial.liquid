@@ -170,7 +170,7 @@
 
 {% schema %}
 {
-  "name": "Product - Quote Editorial",
+  "name": "CC Product - Quote",
   "tag": "section",
   "class": "section",
   "settings": [
@@ -187,7 +187,14 @@
     {
       "type": "header",
       "content": "For Testing",
-      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to a product page with this section. You should then see the co-branded quote editorial if the creator has left a note for that specific product. Use the preview toggle to see the section with sample content."
+      "info": "If on the creator metaobject page, switch the creator in the top left hand corner. If on any other page, select the creator below."
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info": "Select any creator to preview this section with. Helpful for seeing how different data responds & looks in the section. This will not be seen on the live site.",
+      "metaobject_type": "creator"
     },
     {
       "type": "header",
@@ -488,24 +495,17 @@
     {
       "type": "header",
       "content": "Advanced Settings",
-      "info": "Preview functionality and custom styling options"
+      "info": "Custom styling options"
     },
-    {
-      "type": "metaobject",
-      "id": "preview_creator",
-      "label": "Preview Any Creator",
-      "info":"Select any creator to preview this block with. Helpful for seeing how different data responds & looks in the block. This will not be seen on the live site.",
-      "metaobject_type": "creator"
-},
     {
       "type": "textarea",
       "id": "custom_css",
       "label": "Custom CSS",
-      "info": "Enter valid CSS code to customize this section's appearance. Example: .quote { color: #ff0000; }"
+      "info": "Add custom CSS rules to override styles. Use this to apply custom fonts if theme fonts don't work out-of-the-box (e.g., font-family: 'Your Font', sans-serif;)."
     }
   ],
   "presets": [{
-    "name": "Product - Quote Editorial"
+    "name": "CC Product - Quote Editorial"
   }],
   "enabled_on": {
     "templates": ["product"]

@@ -24,7 +24,7 @@ This rule documents the process and best practices for converting existing Shopi
 ```liquid
 {%- liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-  if template.name contains 'metaobject' and template.suffix == 'creator'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_creator = metaobjects.creator[cc_handle]
@@ -407,7 +407,7 @@ This rule documents the process and best practices for converting existing Shopi
 ```liquid
 {%- liquid
   assign cc_handle = cart.attributes['cc-creator-handle']
-  if template.name contains 'metaobject' and template.suffix == 'creator'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_creator = metaobjects.creator[cc_handle]

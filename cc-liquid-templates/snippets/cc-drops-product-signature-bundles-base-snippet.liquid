@@ -6,6 +6,21 @@
   if cc_creator == blank and request.design_mode
     assign cc_creator = cc_preview_creator
   endif
+
+  comment
+    Determine if we should use fallback mode:
+    - No creator present, OR
+    - Creator present but no drops data
+  endcomment
+  assign has_creator_drops = false
+  if cc_creator and cc_creator.data.value['cc-creator-drops'] and cc_creator.data.value['cc-creator-drops'].size > 0
+    assign has_creator_drops = true
+  endif
+  
+  assign use_fallback = false
+  if has_creator_drops == false and fallback_collection != blank
+    assign use_fallback = true
+  endif
 %}
 
 {%- comment -%}
@@ -81,7 +96,243 @@
       {{ custom_css }}
     {%- endif -%}
   </style>
-  {% if cc_creator.data.value['cc-creator-drops'] %}
+  {% comment %} ======================================
+     FALLBACK MODE: Use fallback collection as single bundle
+     ====================================== {% endcomment %}
+  {% if use_fallback %}
+    {%- liquid
+      assign drop_collection = fallback_collection
+      assign discount_percent = 0
+      if cc_creator and cc_creator.data.value['cc-collab-tier-discount-amount']
+        assign discount_percent = cc_creator.data.value['cc-collab-tier-discount-amount'] | plus: 0
+      endif
+    -%}
+    
+    {% comment %} Calculate bundle total price for fallback {% endcomment %}
+    {% assign bundle_total_cents = 0 %}
+    {% for product in fallback_collection.products %}
+      {% assign lowest_price_cents = product.price %}
+      {% assign bundle_total_cents = bundle_total_cents | plus: lowest_price_cents %}
+    {% endfor %}
+
+    {% comment %} Check if bundle meets price criteria {% endcomment %}
+    {% assign show_bundle = false %}
+    {% if max_bundle_price == blank %}
+      {% assign show_bundle = true %}
+    {% else %}
+      {% assign max_price_cents = max_bundle_price | times: 100 %}
+      {% if bundle_total_cents <= max_price_cents %}
+        {% assign show_bundle = true %}
+      {% endif %}
+    {% endif %}
+
+    {% if show_bundle %}
+      {% assign should_reverse = false %}
+      {% if desktop_layout == 'right' %}
+        {% assign should_reverse = true %}
+      {% endif %}
+
+      <div class="cc-bundles-bundle-container{% if should_reverse %} cc-bundles-bundle-container-reverse{% endif %}">
+        <div class="cc-bundles-left">
+          <div class="swiper cc-bundles-swiper">
+            <div class="swiper-wrapper">
+              {% for product in fallback_collection.products %}
+                {% if product.featured_image %}
+                  <div class="swiper-slide">
+                    <img 
+                      src="{{ product.featured_image | image_url: width: 800 }}" 
+                      alt="{{ product.title | escape }}"
+                      loading="lazy">
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <!-- Swiper Controls -->
+            <div class="swiper-pagination"></div>
+            <div class="cc-bundles-swiper-next swiper-button-next"></div>
+            <div class="cc-bundles-swiper-prev swiper-button-prev"></div>
+          </div>
+
+          {% if badge_text != blank and discount_percent > 0 %}
+          <div class="cc-bundles-badge" style="background-color: {{ badge_background_color }};">
+            <div class="cc-bundles-badge-inner">
+              <p style="color: {{ badge_text_color }};">{{ badge_text | replace: '[discount]', discount_percent }}</p>
+            </div>
+
+            <svg viewBox="0 0 200 200" class="cc-bundles-badge-text" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <path id="circlePath-{{ section_id }}" d="M100,100 m-75,0 a75,75 0 1,1 150,0 a75,75 0 1,1 -150,0" />
+              </defs>
+
+              <text dy="5" fill="{{ badge_text_color }}">
+                <textPath href="#circlePath-{{ section_id }}" startOffset="0%">
+                  {{ badge_circular_text }}
+                </textPath>
+              </text>
+            </svg>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="cc-bundles-right">
+          <div class="cc-bundles-content-group">
+            <p class="cc-bundles-eyebrow">
+              {% if eyebrow_text != blank %}
+                {{ eyebrow_text }}
+              {% elsif cc_creator %}
+                {{ cc_creator.data.value['cc-creator-first-name'] }} {{ cc_creator.data.value['cc-creator-last-name'] }}
+              {% else %}
+                Featured Bundle
+              {% endif %}
+            </p>
+            {% if title_size == 'h1' %}
+              <h1 class="cc-bundles-title">{{ fallback_collection.title | escape }}</h1>
+            {% elsif title_size == 'h2' %}
+              <h2 class="cc-bundles-title">{{ fallback_collection.title | escape }}</h2>
+            {% elsif title_size == 'h3' %}
+              <h3 class="cc-bundles-title">{{ fallback_collection.title | escape }}</h3>
+            {% else %}
+              <h2 class="cc-bundles-title">{{ fallback_collection.title | escape }}</h2>
+            {% endif %}
+            <p class="cc-bundles-description">{{ fallback_collection.description | escape }}</p>
+
+            {% assign total_price_cents = bundle_total_cents %}
+            {% assign discount_amount_cents = total_price_cents | times: discount_percent | divided_by: 100 | round %}
+            {% assign final_price_cents = total_price_cents | minus: discount_amount_cents %}
+
+            <div class="cc-bundles-pricing">
+              <p class="cc-bundles-discounted-price" style="{% if bold_bundle_price %}font-weight: 700;{% else %}font-weight: 400;{% endif %}">
+                {{ final_price_cents | money }}
+                {% if discount_percent > 0 %}
+                  <span class="cc-bundles-original-price">{{ total_price_cents | money }}</span>
+                {% endif %}
+              </p>
+            </div>
+
+            <div class="cc-bundles-included">
+              {% if whats_included_text != blank %}
+              <div class="cc-bundles-included-header">
+                {{ whats_included_text }}
+              </div>
+              {% endif %}
+
+              {% assign bundle_count = fallback_collection.products.size %}
+
+              {% if bundle_count > 4 %}
+                <!-- Carousel -->
+                <div class="swiper cc-bundles-included-swiper">
+                  <div class="cc-bundles-included-swiper-prev swiper-button-prev"></div>
+                  <div class="cc-bundles-included-swiper-next swiper-button-next"></div>
+                  <div class="swiper-wrapper">
+                    {% for product in fallback_collection.products %}
+                      {% assign mod_index = forloop.index0 | modulo: 4 %}
+                      {% if mod_index == 0 %}
+                        <div class="swiper-slide">
+                          <div class="cc-bundles-grid">
+                      {% endif %}
+
+                      <div class="cc-bundles-item">
+                        {% if product.featured_image %}
+                          <div class="cc-bundles-img">
+                            <a href="{{ product.url }}" class="cc-bundles-product-link">
+                              <img 
+                                src="{{ product.featured_image | image_url: width: 200 }}" 
+                                alt="{{ product.title | escape }}"
+                                loading="lazy">
+                            </a>
+                          </div>
+                        {% endif %}
+                        <div class="cc-bundles-info">
+                          {% if show_vendor %}
+                            <p class="cc-bundles-vendor">{{ product.vendor }}</p>
+                          {% endif %}
+                          <a href="{{ product.url }}" class="cc-bundles-product-link">
+                            <p class="cc-bundles-product-title">{{ product.title }}</p>
+                          </a>
+                          {% if show_price %}
+                            {% assign product_price_cents = product.price %}
+                            {% assign product_discount_amount_cents = product_price_cents | times: discount_percent | divided_by: 100 | round %}
+                            {% assign product_final_price_cents = product_price_cents | minus: product_discount_amount_cents %}
+                            <p class="cc-bundles-price">
+                              <span class="cc-bundles-discounted-price-item">{{ product_final_price_cents | money }}</span>
+                              {% if discount_percent > 0 %}
+                                <span class="cc-bundles-original-price-item">{{ product_price_cents | money }}</span>
+                              {% endif %}
+                            </p>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      {% if mod_index == 3 or forloop.last %}
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% else %}
+                <!-- Static grid for ≤ 4 -->
+                <div class="cc-bundles-grid">
+                  {% for product in fallback_collection.products %}
+                    <div class="cc-bundles-item">
+                      {% if product.featured_image %}
+                        <div class="cc-bundles-img">
+                          <a href="{{ product.url }}" class="cc-bundles-product-link">
+                            <img 
+                              src="{{ product.featured_image | image_url: width: 200 }}" 
+                              alt="{{ product.title | escape }}"
+                              loading="lazy">
+                          </a>
+                        </div>
+                      {% endif %}
+                      <div class="cc-bundles-info">
+                        {% if show_vendor %}
+                          <p class="cc-bundles-vendor">{{ product.vendor }}</p>
+                        {% endif %}
+                        <a href="{{ product.url }}" class="cc-bundles-product-link">
+                          <p class="cc-bundles-product-title">{{ product.title }}</p>
+                        </a>
+                        {% if show_price %}
+                          {% assign product_price_cents = product.price %}
+                          {% assign product_discount_amount_cents = product_price_cents | times: discount_percent | divided_by: 100 | round %}
+                          {% assign product_final_price_cents = product_price_cents | minus: product_discount_amount_cents %}
+                          <p class="cc-bundles-price">
+                            <span class="cc-bundles-discounted-price-item">{{ product_final_price_cents | money }}</span>
+                            {% if discount_percent > 0 %}
+                              <span class="cc-bundles-original-price-item">{{ product_price_cents | money }}</span>
+                            {% endif %}
+                          </p>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="cc-bundles-button-container">
+            <button 
+              type="button"
+              class="button cc-bundles-add-to-cart"
+              data-products='[
+                {%- for product in fallback_collection.products -%}
+                  {"id":{{ product.selected_or_first_available_variant.id }},"quantity":1}
+                  {%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]'
+              style="cursor: pointer;width: 100%;margin-top: 40px;">
+              {{ button_text | default: 'Add Bundle To Cart' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+  {% comment %} ======================================
+     CREATOR DROPS MODE: Use creator's configured drops
+     ====================================== {% endcomment %}
+  {% elsif cc_creator.data.value['cc-creator-drops'] %}
     {% for drop in cc_creator.data.value['cc-creator-drops'] %}
       {%- liquid
         assign drop_id = drop['cc-creator-drop-collection-id']
@@ -141,9 +392,9 @@
           {% assign should_reverse = true %}
         {% endif %}
 
-        <div class="bundle-container{% if should_reverse %} bundle-container-reverse{% endif %}">
-          <div class="cc-bundle-left">
-            <div class="swiper bundle-swiper">
+        <div class="cc-bundles-bundle-container{% if should_reverse %} cc-bundles-bundle-container-reverse{% endif %}">
+          <div class="cc-bundles-left">
+            <div class="swiper cc-bundles-swiper">
               <div class="swiper-wrapper">
                 {% for product in drop['cc-creator-drop-products'] %}
                   {% if product['images'] and product['images'].size > 0 %}
@@ -158,23 +409,23 @@
 
               <!-- Swiper Controls -->
               <div class="swiper-pagination"></div>
-               <div class="bundle-swiper-next swiper-button-next"></div>
-               <div class="bundle-swiper-prev swiper-button-prev"></div>
+               <div class="cc-bundles-swiper-next swiper-button-next"></div>
+               <div class="cc-bundles-swiper-prev swiper-button-prev"></div>
             </div>
 
             {% if badge_text != blank %}
-            <div class="cc-bundle-badge" style="background-color: {{ badge_background_color }};">
-              <div class="badge-inner">
+            <div class="cc-bundles-badge" style="background-color: {{ badge_background_color }};">
+              <div class="cc-bundles-badge-inner">
                 <p style="color: {{ badge_text_color }};">{{ badge_text | replace: '[discount]', cc_creator.data.value['cc-collab-tier-discount-amount'] }}</p>
               </div>
 
-              <svg viewBox="0 0 200 200" class="badge-text" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg viewBox="0 0 200 200" class="cc-bundles-badge-text" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
-                  <path id="circlePath" d="M100,100 m-75,0 a75,75 0 1,1 150,0 a75,75 0 1,1 -150,0" />
+                  <path id="circlePath-{{ section_id }}-{{ forloop.index }}" d="M100,100 m-75,0 a75,75 0 1,1 150,0 a75,75 0 1,1 -150,0" />
                 </defs>
 
                 <text dy="5" fill="{{ badge_text_color }}">
-                  <textPath href="#circlePath" startOffset="0%">
+                  <textPath href="#circlePath-{{ section_id }}-{{ forloop.index }}" startOffset="0%">
                     {{ badge_circular_text }}
                   </textPath>
                 </text>
@@ -183,9 +434,9 @@
             {% endif %}
           </div>
 
-          <div class="cc-bundle-right">
-            <div class="bundle-content-group">
-            <p class="cc-eyebrow">
+          <div class="cc-bundles-right">
+            <div class="cc-bundles-content-group">
+            <p class="cc-bundles-eyebrow">
               {% if eyebrow_text != blank %}
                 {{ eyebrow_text }}
               {% else %}
@@ -193,33 +444,33 @@
               {% endif %}
             </p>
             {% if title_size == 'h1' %}
-              <h1 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h1>
+              <h1 class="cc-bundles-title">{{ drop['cc-creator-drop-title'] | escape }}</h1>
             {% elsif title_size == 'h2' %}
-              <h2 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
+              <h2 class="cc-bundles-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
             {% elsif title_size == 'h3' %}
-              <h3 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h3>
+              <h3 class="cc-bundles-title">{{ drop['cc-creator-drop-title'] | escape }}</h3>
             {% else %}
-              <h2 class="cc-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
+              <h2 class="cc-bundles-title">{{ drop['cc-creator-drop-title'] | escape }}</h2>
             {% endif %}
-            <p class="cc-description">{{ drop['cc-creator-drop-description'] | escape }}</p>
+            <p class="cc-bundles-description">{{ drop['cc-creator-drop-description'] | escape }}</p>
 
                 {% assign total_price_cents = bundle_total_cents %}
                 {% assign discount_percent = cc_creator.data.value['cc-collab-tier-discount-amount'] | plus: 0 %}
                 {% assign discount_amount_cents = total_price_cents | times: discount_percent | divided_by: 100 | round %}
                 {% assign final_price_cents = total_price_cents | minus: discount_amount_cents %}
 
-                <div class="cc-bundle-pricing">
-                  <p class="cc-discounted-price" style="{% if bold_bundle_price %}font-weight: 700;{% else %}font-weight: 400;{% endif %}">
+                <div class="cc-bundles-pricing">
+                  <p class="cc-bundles-discounted-price" style="{% if bold_bundle_price %}font-weight: 700;{% else %}font-weight: 400;{% endif %}">
                     {{ final_price_cents | money }}
-                    <span class="cc-original-price">{{ total_price_cents | money }}</span>
+                    <span class="cc-bundles-original-price">{{ total_price_cents | money }}</span>
                   </p>
 
                 </div>
 
 
-            <div class="bundle-included">
+            <div class="cc-bundles-included">
               {% if whats_included_text != blank %}
-              <div class="bundle-included-header">
+              <div class="cc-bundles-included-header">
                 {{ whats_included_text }}
               </div>
               {% endif %}
@@ -228,39 +479,39 @@
 
               {% if bundle_count > 4 %}
                 <!-- Carousel -->
-                <div class="swiper bundle-included-swiper">
+                <div class="swiper cc-bundles-included-swiper">
                    <!-- Carousel Navigation Arrows -->
-                <div class="bundle-included-swiper-prev swiper-button-prev"></div>
-                <div class="bundle-included-swiper-next swiper-button-next"></div>
+                <div class="cc-bundles-included-swiper-prev swiper-button-prev"></div>
+                <div class="cc-bundles-included-swiper-next swiper-button-next"></div>
                   <div class="swiper-wrapper">
 
                     {% for product in drop['cc-creator-drop-products'] %}
                       {% assign mod_index = forloop.index0 | modulo: 4 %}
                       {% if mod_index == 0 %}
                         <div class="swiper-slide">
-                          <div class="bundle-grid">
+                          <div class="cc-bundles-grid">
                       {% endif %}
 
                                              <!-- product card -->
-                       <div class="bundle-item">
+                       <div class="cc-bundles-item">
                          {% if product['images'] and product['images'].size > 0 %}
-                           <div class="bundle-img">
-                             <a href="{{ product['url'] }}" class="bundle-product-link">
+                           <div class="cc-bundles-img">
+                             <a href="{{ product['url'] }}" class="cc-bundles-product-link">
                               <img 
                         src="{{ product['images'][0]['src'] }}" 
                         alt="{{ product['title'] | escape }}">
                              </a>
                            </div>
                          {% endif %}
-                         <div class="bundle-info">
+                         <div class="cc-bundles-info">
                            {% if show_vendor %}
-                             <p class="bundle-vendor">{{ product['vendor'] }}</p>
+                             <p class="cc-bundles-vendor">{{ product['vendor'] }}</p>
                            {% endif %}
-                           <a href="{{ product['url'] }}" class="bundle-product-link">
-                             <p class="bundle-title">{{ product['title'] }}</p>
+                           <a href="{{ product['url'] }}" class="cc-bundles-product-link">
+                             <p class="cc-bundles-product-title">{{ product['title'] }}</p>
                            </a>
                           {% if product['variant_title'] %}
-                            <p class="bundle-size">Product Size: {{ product['variant_title'] }}</p>
+                            <p class="cc-bundles-size">Product Size: {{ product['variant_title'] }}</p>
                           {% endif %}
                           {% if show_price %}
                             {% assign product_price_cents = blank %}
@@ -279,9 +530,9 @@
                               {% assign product_discount_percent = cc_creator.data.value['cc-collab-tier-discount-amount'] | plus: 0 %}
                               {% assign product_discount_amount_cents = product_price_cents | times: product_discount_percent | divided_by: 100 | round %}
                               {% assign product_final_price_cents = product_price_cents | minus: product_discount_amount_cents %}
-                              <p class="bundle-price">
-                                <span class="bundle-discounted-price">{{ product_final_price_cents | money }}</span>
-                                <span class="bundle-original-price">{{ product_price_cents | money }}</span>
+                              <p class="cc-bundles-price">
+                                <span class="cc-bundles-discounted-price-item">{{ product_final_price_cents | money }}</span>
+                                <span class="cc-bundles-original-price-item">{{ product_price_cents | money }}</span>
                               </p>
                             {% endif %}
                           {% endif %}
@@ -299,27 +550,27 @@
 
               {% else %}
                 <!-- Static grid for ≤ 4 -->
-                <div class="bundle-grid">
+                <div class="cc-bundles-grid">
                   {% for product in drop['cc-creator-drop-products'] %}
-                                         <div class="bundle-item">
+                                         <div class="cc-bundles-item">
                        {% if product['images'] and product['images'].size > 0 %}
-                         <div class="bundle-img">
-                           <a href="{{ product['url'] }}" class="bundle-product-link">
+                         <div class="cc-bundles-img">
+                           <a href="{{ product['url'] }}" class="cc-bundles-product-link">
                             <img 
                         src="{{ product['images'][0]['src'] }}" 
                         alt="{{ product['title'] | escape }}">
                            </a>
                          </div>
                        {% endif %}
-                       <div class="bundle-info">
+                       <div class="cc-bundles-info">
                          {% if show_vendor %}
-                           <p class="bundle-vendor">{{ product['vendor'] }}</p>
+                           <p class="cc-bundles-vendor">{{ product['vendor'] }}</p>
                          {% endif %}
-                         <a href="{{ product['url'] }}" class="bundle-product-link">
-                           <p class="bundle-title">{{ product['title'] }}</p>
+                         <a href="{{ product['url'] }}" class="cc-bundles-product-link">
+                           <p class="cc-bundles-product-title">{{ product['title'] }}</p>
                          </a>
                         {% if product['variant_title'] %}
-                          <p class="bundle-size">Product Size: {{ product['variant_title'] }}</p>
+                          <p class="cc-bundles-size">Product Size: {{ product['variant_title'] }}</p>
                         {% endif %}
                         {% if show_price %}
                           {% assign product_price_cents = blank %}
@@ -338,9 +589,9 @@
                             {% assign product_discount_percent = cc_creator.data.value['cc-collab-tier-discount-amount'] | plus: 0 %}
                             {% assign product_discount_amount_cents = product_price_cents | times: product_discount_percent | divided_by: 100 | round %}
                             {% assign product_final_price_cents = product_price_cents | minus: product_discount_amount_cents %}
-                            <p class="bundle-price">
-                              <span class="bundle-discounted-price">{{ product_final_price_cents | money }}</span>
-                              <span class="bundle-original-price">{{ product_price_cents | money }}</span>
+                            <p class="cc-bundles-price">
+                              <span class="cc-bundles-discounted-price-item">{{ product_final_price_cents | money }}</span>
+                              <span class="cc-bundles-original-price-item">{{ product_price_cents | money }}</span>
                             </p>
                           {% endif %}
                         {% endif %}
@@ -351,10 +602,10 @@
               {% endif %}
             </div>
 </div>
-<div class="bundle-button-container">
+<div class="cc-bundles-button-container">
            <button 
               type="button"
-              class="button add-bundle-to-cart"
+              class="button cc-bundles-add-to-cart"
               data-products='[
                 {%- for json_product in drop["cc-creator-drop-products"] -%}
                   {%- liquid
@@ -392,7 +643,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <style>
-.cc-bundle-badge {
+/* ================================================
+   CC Signature Bundles - Scoped Styles
+   All selectors prefixed with #shopify-section-{{ section_id }}
+   to prevent style bleeding into other sections
+   ================================================ */
+
+/* Badge Styles */
+#shopify-section-{{ section_id }} .cc-bundles-badge {
     position: absolute;
     width: 120px;
     height: 120px;
@@ -406,142 +664,163 @@
     right: 20px;
     z-index: 1;
 }
-.bundle-container .swiper-pagination {
+
+#shopify-section-{{ section_id }} .cc-bundles-bundle-container .swiper-pagination {
     bottom: 15px;
 }
-.badge-inner p {
+
+#shopify-section-{{ section_id }} .cc-bundles-badge-inner p {
   text-align: center;
   font-weight: 700;
   margin: 0;
   z-index: 2;
   line-height: 1.2;
 }
-.badge-inner span {
+
+#shopify-section-{{ section_id }} .cc-bundles-badge-inner span {
   font-size: 26px;
   display: block;
 }
 
-.badge-text {
+#shopify-section-{{ section_id }} .cc-bundles-badge-text {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
-  animation: rotateCircle 12s linear infinite; /* rotation */
+  animation: ccBundlesRotateCircle-{{ section_id }} 12s linear infinite;
 }
 
-.badge-text text {
+#shopify-section-{{ section_id }} .cc-bundles-badge-text text {
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-@keyframes rotateCircle {
+@keyframes ccBundlesRotateCircle-{{ section_id }} {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-.cc-bundle-left img {
+
+/* Main Image Container */
+#shopify-section-{{ section_id }} .cc-bundles-left img {
     max-width: 650px;
     width: 100%;
     border-radius: {{ large_image_corner_radius }}px;
     object-fit: cover;
     object-position: center;
 }
-.cc-bundle-left {
+
+#shopify-section-{{ section_id }} .cc-bundles-left {
     width: 100%;
     max-width: 50%;
     text-align: center;
     height: 100%;
-    position:relative;
+  position: relative;
     background: #F6F6F6;
     border-radius: {{ large_image_corner_radius }}px;
 }
-.bundle-container {
+
+/* Bundle Container Layout */
+#shopify-section-{{ section_id }} .cc-bundles-bundle-container {
     display: flex;
-    column-gap:70px;
+  column-gap: 70px;
 }
 
-.cc-eyebrow {
+/* Text Styles */
+#shopify-section-{{ section_id }} .cc-bundles-eyebrow {
     margin-top: 0px;
     margin-bottom: 10px;
 }
 
-.cc-title {
+#shopify-section-{{ section_id }} .cc-bundles-title {
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
+#shopify-section-{{ section_id }} .cc-bundles-description {
+  margin-bottom: 20px;
+}
+
 /* Desktop layout control using order */
 @media only screen and (min-width: 992px) {
-  .bundle-container-reverse .cc-bundle-left {
+  #shopify-section-{{ section_id }} .cc-bundles-bundle-container-reverse .cc-bundles-left {
       order: 2;
   }
 
-  
-  .bundle-container-reverse .cc-bundle-right {
+  #shopify-section-{{ section_id }} .cc-bundles-bundle-container-reverse .cc-bundles-right {
       order: 1;
   }
 }
-.cc-bundle-pricing {
+
+/* Pricing Styles */
+#shopify-section-{{ section_id }} .cc-bundles-pricing {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.cc-discounted-price {
+#shopify-section-{{ section_id }} .cc-bundles-discounted-price {
   font-size: 28px;
-  margin-bottom:20px;
-  margin:0;
+  margin: 0;
 }
 
-.cc-original-price {
+#shopify-section-{{ section_id }} .cc-bundles-original-price {
   font-size: 18px;
   color: #999;
   text-decoration: line-through;
 }
-.bundle-img img {
-    width: 100px;
-    height: 100px;
-}
-.cc-bundle-right {
+
+/* Right Column */
+#shopify-section-{{ section_id }} .cc-bundles-right {
     width: 100%;
     overflow: hidden;
 }
-.bundle-grid {
+
+/* Product Grid */
+#shopify-section-{{ section_id }} .cc-bundles-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.25rem;
   max-width: max-content;
 }
 
-.bundle-item {
+#shopify-section-{{ section_id }} .cc-bundles-item {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.bundle-img img {
+/* Product Images */
+#shopify-section-{{ section_id }} .cc-bundles-img img {
   max-width: 100px;
+  width: 100px;
+  height: 100px;
   border-radius: 6px;
+  object-fit: cover;
 }
-.bundle-img {
+
+#shopify-section-{{ section_id }} .cc-bundles-img {
     width: 100px;
     height: 100px;
     background: #F6F6F6;
     border-radius: 6px;
+  flex-shrink: 0;
 }
-.bundle-info {
+
+/* Product Info */
+#shopify-section-{{ section_id }} .cc-bundles-info {
   font-size: 14px;
   line-height: 1.4;
 }
 
-.bundle-vendor {
+#shopify-section-{{ section_id }} .cc-bundles-vendor {
   font-weight: 500;
   margin-bottom: 4px;
 }
 
-.bundle-title {
+#shopify-section-{{ section_id }} .cc-bundles-product-title {
   font-weight: 500;
   margin-bottom: 4px;
   overflow: hidden;
@@ -550,80 +829,90 @@
   max-width: 40ch;
 }
 
-.bundle-size {
+#shopify-section-{{ section_id }} .cc-bundles-size {
   color: #666;
   font-size: 13px;
 }
 
-.bundle-price {
+#shopify-section-{{ section_id }} .cc-bundles-price {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 4px;
 }
 
-.bundle-discounted-price {
+#shopify-section-{{ section_id }} .cc-bundles-discounted-price-item {
   font-size: 14px;
   font-weight: 600;
   margin: 0;
 }
 
-.bundle-original-price {
+#shopify-section-{{ section_id }} .cc-bundles-original-price-item {
   font-size: 14px;
   color: #999;
   text-decoration: line-through;
 }
 
-.bundle-included {
+/* Included Section */
+#shopify-section-{{ section_id }} .cc-bundles-included {
   position: relative;
   overflow: visible;
 }
 
-.bundle-included-header {
+#shopify-section-{{ section_id }} .cc-bundles-included-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 }
 
-.bundle-included-header h3 {
+#shopify-section-{{ section_id }} .cc-bundles-included-header h3,
+#shopify-section-{{ section_id }} .cc-bundles-included-header h4,
+#shopify-section-{{ section_id }} .cc-bundles-included-header h5 {
   margin: 0;
 }
 
-.bundle-product-link {
+/* Product Links */
+#shopify-section-{{ section_id }} .cc-bundles-product-link {
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s ease;
 }
 
-.bundle-product-link:hover {
+#shopify-section-{{ section_id }} .cc-bundles-product-link:hover {
   opacity: 0.8;
 }
 
-.bundle-product-link .bundle-title {
+#shopify-section-{{ section_id }} .cc-bundles-product-link .cc-bundles-product-title {
   color: inherit;
   text-decoration: none;
 }
 
-.bundle-product-link:hover .bundle-title {
+#shopify-section-{{ section_id }} .cc-bundles-product-link:hover .cc-bundles-product-title {
   text-decoration: underline;
 }
-span.swiper-pagination-bullet.swiper-pagination-bullet-active {
+
+/* Swiper Pagination */
+#shopify-section-{{ section_id }} span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     background: #233e3a;
 }
-.bundle-swiper-next.swiper-button-next:after {
+
+/* Main Image Carousel Navigation */
+#shopify-section-{{ section_id }} .cc-bundles-swiper-next.swiper-button-next:after {
     content: 'next';
     font-size: 20px;
     font-weight: bold;
     color: #000;
 }
-.bundle-swiper-prev.swiper-button-prev:after {
+
+#shopify-section-{{ section_id }} .cc-bundles-swiper-prev.swiper-button-prev:after {
     content: 'prev';
     font-size: 20px;
     font-weight: bold;
     color: #000;
 }
-.bundle-swiper-next.swiper-button-next {
+
+#shopify-section-{{ section_id }} .cc-bundles-swiper-next.swiper-button-next {
     display: flex !important;
     right: 20px;
     background: #fff;
@@ -633,7 +922,8 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     height: 40px;
     border-radius: 50px;
 }
-.bundle-swiper-prev.swiper-button-prev {
+
+#shopify-section-{{ section_id }} .cc-bundles-swiper-prev.swiper-button-prev {
     display: flex !important;
     left: 20px;
     background: #fff;
@@ -643,29 +933,31 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     height: 40px;
     border-radius: 50px;
 }
-.bundle-swiper-prev.swiper-button-prev.swiper-button-disabled {
+
+#shopify-section-{{ section_id }} .cc-bundles-swiper-prev.swiper-button-prev.swiper-button-disabled {
     display: none !important;
 }
-.bundle-swiper-next.swiper-button-next.swiper-button-disabled {
+
+#shopify-section-{{ section_id }} .cc-bundles-swiper-next.swiper-button-next.swiper-button-disabled {
     display: none !important;
 }
 
 /* Bundle Included Carousel Navigation */
-.bundle-included-swiper-prev.swiper-button-prev:after {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-prev.swiper-button-prev:after {
     content: 'prev';
     font-size: 16px;
     font-weight: bold;
     color: #000;
 }
 
-.bundle-included-swiper-next.swiper-button-next:after {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-next.swiper-button-next:after {
     content: 'next';
     font-size: 16px;
     font-weight: bold;
     color: #000;
 }
 
-.bundle-included-swiper-prev.swiper-button-prev {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-prev.swiper-button-prev {
     display: flex !important;
     background: #fff;
     align-items: center;
@@ -677,7 +969,7 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     border: 1px solid #ddd;
 }
 
-.bundle-included-swiper-next.swiper-button-next {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-next.swiper-button-next {
     display: flex !important;
     background: #fff;
     align-items: center;
@@ -689,70 +981,94 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
     border: 1px solid #ddd;
 }
 
-.bundle-included-swiper-prev.swiper-button-prev.swiper-button-disabled {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-prev.swiper-button-prev.swiper-button-disabled {
     display: none !important;
 }
 
-.bundle-included-swiper-next.swiper-button-next.swiper-button-disabled {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper-next.swiper-button-next.swiper-button-disabled {
     display: none !important;
 }
 
-.bundle-included-swiper {
+#shopify-section-{{ section_id }} .cc-bundles-included-swiper {
   overflow: visible;
 }
-@media only screen and (max-width:1024px){
-  .bundle-img img{
+
+/* Button Container */
+#shopify-section-{{ section_id }} .cc-bundles-button-container {
+  margin-top: 20px;
+}
+
+/* Responsive Styles */
+@media only screen and (max-width: 1024px) {
+  #shopify-section-{{ section_id }} .cc-bundles-img img {
      max-width: 80px;
+    width: 80px;
+    height: 80px;
   }
-  .bundle-img{
-    width:80px;
-    height:80px;
+  
+  #shopify-section-{{ section_id }} .cc-bundles-img {
+    width: 80px;
+    height: 80px;
   }
-  .cc-eyebrow {
+  
+  #shopify-section-{{ section_id }} .cc-bundles-eyebrow {
     margin-top: 20px;
     margin-bottom: 10px;
   }
 }
-@media only screen and (max-width:991px){
-  .bundle-container{
-    flex-wrap:wrap;
+
+@media only screen and (max-width: 991px) {
+  #shopify-section-{{ section_id }} .cc-bundles-bundle-container {
+    flex-wrap: wrap;
   }
-  .cc-bundle-left{
-    max-width:100%;
+  
+  #shopify-section-{{ section_id }} .cc-bundles-left {
+    max-width: 100%;
   }
-   .bundle-img img{
+  
+  #shopify-section-{{ section_id }} .cc-bundles-img img {
      max-width: 100px;
+    width: 100px;
+    height: 100px;
   }
-  .bundle-img{
-    width:100px;
-    height:100px;
+  
+  #shopify-section-{{ section_id }} .cc-bundles-img {
+    width: 100px;
+    height: 100px;
   }
-  .bundle-item{
+  
+  #shopify-section-{{ section_id }} .cc-bundles-item {
     align-items: {% if show_vendor or show_price %}flex-start{% else %}center{% endif %};
   }
 }
-@media only screen and (max-width:600px){
-  .cc-eyebrow {
+
+@media only screen and (max-width: 600px) {
+  #shopify-section-{{ section_id }} .cc-bundles-eyebrow {
     padding-top: 20px;
   }
-  .bundle-img img{
+  
+  #shopify-section-{{ section_id }} .cc-bundles-img img {
     max-width: 50px;
-    height:50px;
+    width: 50px;
+    height: 50px;
   }
-  .bundle-img{
-    width:50px;
-    height:50px;
+  
+  #shopify-section-{{ section_id }} .cc-bundles-img {
+    width: 50px;
+    height: 50px;
   }
-  .bundle-vendor{
+  
+  #shopify-section-{{ section_id }} .cc-bundles-vendor {
     font-size: 12px;
-    margin-top:0;
+    margin-top: 0;
   }
-  .bundle-title{
+  
+  #shopify-section-{{ section_id }} .cc-bundles-product-title {
     font-size: 12px;
-    margin-top:0;
+    margin-top: 0;
   }
-  .bundle-info{
-    .bundle-info {
+  
+  #shopify-section-{{ section_id }} .cc-bundles-info {
     font-size: 12px;
     line-height: 14px;
   }
@@ -766,55 +1082,54 @@ span.swiper-pagination-bullet.swiper-pagination-bullet-active {
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-  new Swiper(".bundle-swiper", {
-    loop: false,
-    spaceBetween: 20,
-    centeredSlides: true,
+  // Scope Swiper initialization to this section only
+  var sectionContainer = document.getElementById('shopify-section-{{ section_id }}');
+  if (!sectionContainer) return;
 
-    // Pagination dots
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
+  // Initialize main image carousel
+  sectionContainer.querySelectorAll('.cc-bundles-swiper').forEach(function(swiperEl) {
+    new Swiper(swiperEl, {
+      loop: false,
+      spaceBetween: 20,
+      centeredSlides: true,
 
-    // Navigation arrows
-    navigation: {
-      nextEl: ".bundle-swiper-next",
-      prevEl: ".bundle-swiper-prev",
-    },
+      // Pagination dots
+      pagination: {
+        el: swiperEl.querySelector('.swiper-pagination'),
+        clickable: true,
+      },
 
-    // Responsive
-    slidesPerView: 1,
-    breakpoints: {
-      768: {
-        slidesPerView: 1,
+      // Navigation arrows
+      navigation: {
+        nextEl: swiperEl.querySelector('.cc-bundles-swiper-next'),
+        prevEl: swiperEl.querySelector('.cc-bundles-swiper-prev'),
+      },
+
+      // Responsive
+      slidesPerView: 1,
+      breakpoints: {
+        768: {
+          slidesPerView: 1,
+        }
       }
-    }
+    });
   });
-});
-</script>
 
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-  new Swiper(".bundle-included-swiper", {
-    slidesPerView: 1, // 1 full "grid" per slide
-    spaceBetween: 20,
-    grabCursor: true,
-    navigation: {
-      nextEl: ".bundle-included-swiper-next",
-      prevEl: ".bundle-included-swiper-prev",
-    },
+  // Initialize bundle included carousel
+  sectionContainer.querySelectorAll('.cc-bundles-included-swiper').forEach(function(swiperEl) {
+    new Swiper(swiperEl, {
+      slidesPerView: 1, // 1 full "grid" per slide
+      spaceBetween: 20,
+      grabCursor: true,
+      navigation: {
+        nextEl: swiperEl.querySelector('.cc-bundles-included-swiper-next'),
+        prevEl: swiperEl.querySelector('.cc-bundles-included-swiper-prev'),
+      },
+    });
   });
-});
-</script>
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Add bundle to cart functionality - Universal compatibility
-  document.querySelectorAll('.add-bundle-to-cart').forEach(btn => {
+  // Add bundle to cart functionality - Universal compatibility (scoped to this section)
+  sectionContainer.querySelectorAll('.cc-bundles-add-to-cart').forEach(btn => {
     btn.addEventListener('click', async function() {
       console.log('Button clicked, data-products:', this.dataset.products);
       

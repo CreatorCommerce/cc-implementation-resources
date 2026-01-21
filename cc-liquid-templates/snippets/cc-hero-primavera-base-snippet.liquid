@@ -126,7 +126,7 @@
     max-width: 100%;
     text-align: center !important;
     display: flex !important;
-    padding-left: 0 !important;
+    padding-left: 20px !important;
   }
 
 
@@ -847,9 +847,11 @@ div#hero-image {
                           loading="lazy"
                           class="cc-logo-image"
                         >
+                      {% if collab_highlight_display != 'hide_labels' %}
                       <p class="cc-logo-text dynamic-text" style="{% if uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">
                         {{ brand_title }}
                         </p>
+                      {% endif %}
                         </div>
                     {% else %}
                       <div class="cc-logo">
@@ -876,7 +878,9 @@ div#hero-image {
                           loading="lazy"
                           class="cc-creator-image"
                         >
+                      {% if collab_highlight_display != 'hide_labels' %}
                       <p class="cc-creator-name dynamic-text" style="{% if uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: metaobject.cc-creator-first-name }}{% else %}{{ metaobject.cc-creator-first-name }}{% endif %}</p>
+                      {% endif %}
                       </div>
 
                       {% else %}
@@ -899,7 +903,9 @@ div#hero-image {
                           margin: 0;
                         ">{{ initials }}</h4>
                       </div>
+                      {% if collab_highlight_display != 'hide_labels' %}
                       <p class="cc-creator-name dynamic-text" style="{% if uppercase_accent_text %}text-transform:uppercase;{% endif %} font-size: {{ accent_text_size }}px; line-height: 1.2; text-align:center; margin: 0 auto; margin-top: 10px;font-weight:400;">{% if collab_highlight_display == 'shop_title' %}{{ metaobject.cc-creator-shop-title | default: first_name }}{% else %}{{ first_name }}{% endif %}</p>
+                      {% endif %}
                     </div>
                     {% endif %}
                   </div>

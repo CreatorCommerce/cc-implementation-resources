@@ -1,0 +1,696 @@
+---
+description: Rules for creating new co-branded Shopify section templates that support CreatorCommerce data. Use when building new hero sections, product grids, testimonials, or any section that displays creator content.
+alwaysApply: false
+---
+# Creating Co-Branded Shopify Section Templates
+
+## Overview
+
+This rule documents patterns and best practices for creating new Shopify Liquid sections that support CreatorCommerce co-branded data. These sections work seamlessly on creator metaobject pages and regular storefront pages with creator context from cart attributes.
+
+## Related Rules
+
+- [cc-referencing-co-branded-data.mdc](mdc:.cursor/rules/cc-referencing-co-branded-data.mdc) - Core data access patterns
+- [cc-referencing-drops-data.mdc](mdc:.cursor/rules/cc-referencing-drops-data.mdc) - Drops iteration and product matching
+- [cc-referencing-product-data.mdc](mdc:.cursor/rules/cc-referencing-product-data.mdc) - Product-level enhancement data
+
+## Creator Resolution Pattern
+
+### Standard Creator Resolution
+
+Use this pattern at the top of every co-branded section:
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+-%}
+```
+
+**Why `if metaobject` is preferred:**
+- Simpler and more direct - checks if the object actually exists
+- Works regardless of template naming conventions
+- More reliable across different Shopify theme structures
+
+### With Design Mode Preview Support
+
+For sections with a preview creator picker in the schema:
+
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = section.settings.preview_creator
+  
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+-%}
+```
+
+**This pattern enables:**
+- Live preview of creator data in the theme editor
+- Testing different creators without affiliate links
+- Fallback to preview creator only in design mode
+
+## Dynamic Text Processing
+
+### Processing Text Fields
+
+All user-configurable text fields should support dynamic replacement:
+
+```liquid
+{%- comment -%}
+  Process dynamic text using snippet for bracket replacement with dot notation support.
+  Supports both old format [field-name] and new format [cc_creator.path.to.field]
+  Objects/arrays → JSON, strings → unquoted.
+{%- endcomment -%}
+{% capture badge_text %}{% render 'cc-process-dynamic-text', input_text: section.settings.badge_text %}{% endcapture %}
+{% capture heading_text %}{% render 'cc-process-dynamic-text', input_text: section.settings.heading %}{% endcapture %}
+{% capture description_text %}{% render 'cc-process-dynamic-text', input_text: section.settings.description %}{% endcapture %}
+{% capture button_label %}{% render 'cc-process-dynamic-text', input_text: section.settings.button_label %}{% endcapture %}
+```
+
+### Dynamic Text Info for Schema
+
+Add this info pattern to all text-based settings:
+
+```json
+{
+  "type": "text",
+  "id": "heading",
+  "label": "Heading",
+  "default": "Welcome, [cc-creator-first-name]!",
+  "info": "Supports dynamic text: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths. Objects/arrays are converted to JSON, strings are unquoted."
+}
+```
+
+## Image Fallback Handling
+
+### Creator Image with Fallback
+
+```liquid
+{%- liquid
+  assign has_creator_image = false
+  if cc_creator and cc_creator.data.value.cc-creator-profile-picture
+    assign has_creator_image = true
+  endif
+  
+  assign has_fallback_image = false
+  if section.settings.image != blank
+    assign has_fallback_image = true
+  endif
+  
+  assign has_any_image = false
+  if has_creator_image or has_fallback_image
+    assign has_any_image = true
+  endif
+-%}
+
+{%- if has_any_image -%}
+  <div class="hero-image">
+    {%- if has_creator_image -%}
+      <img
+        src="{{ cc_creator.data.value.cc-creator-profile-picture }}"
+        alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}"
+        loading="lazy"
+      >
+    {%- elsif has_fallback_image -%}
+      <img
+        src="{{ section.settings.image | image_url: width: 1080 }}"
+        alt="{{ section.settings.image.alt | default: 'Hero image' | escape }}"
+        loading="lazy"
+      >
+    {%- endif -%}
+  </div>
+{%- endif -%}
+```
+
+## Auto-Contrast Text Colors
+
+### Dynamic Text Color Calculation
+
+For sections with customizable backgrounds:
+
+```liquid
+{%- liquid
+  if section.settings.dynamic_text_colors
+    capture computed_text_color
+      render 'cc-calculate-contrast-color', hex_color: section.settings.background_color, fallback_color: '#ffffff'
+    endcapture
+  else
+    assign computed_text_color = section.settings.text_color
+  endif
+-%}
+
+<div style="color: {{ computed_text_color }};">
+  {{ heading_text }}
+</div>
+```
+
+## Schema Organization
+
+### Required Schema Headers
+
+Every co-branded section should include these organized header sections:
+
+```json
+{
+  "name": "Section Name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The [Section Name]",
+      "info": "A clear description of what this section does, its key features, and ideal use cases. Explain the value proposition and what makes it unique."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has the required data configured (drops, profile picture, etc.). The section will automatically pull in data from the metaobject."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "To test creator context: preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements for your section. All fields support dynamic text replacement."
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors, layout, spacing, and visual appearance"
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Preview functionality and custom styling options"
+    }
+  ]
+}
+```
+
+### Standard Advanced Settings
+
+Always include these in the Advanced Settings section:
+
+```json
+{
+  "type": "metaobject",
+  "id": "preview_creator",
+  "label": "Preview Any Creator",
+  "info": "Select any creator to preview this section with. Helpful for seeing how different data responds & looks in the section. This will not be seen on the live site.",
+  "metaobject_type": "creator"
+},
+{
+  "type": "textarea",
+  "id": "custom_css",
+  "label": "Custom CSS",
+  "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-title { color: #ff0000; }"
+}
+```
+
+## CSS Scoping
+
+### Section-Scoped Styles
+
+Always scope CSS to the section ID to prevent conflicts:
+
+```liquid
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  #shopify-section-{{ section.id }} .cc-title {
+    font-size: {{ section.settings.title_font_size }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .cc-container {
+      max-width: {{ section.settings.max_width }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- if section.settings.custom_css != blank -%}
+<style>
+  {{ section.settings.custom_css }}
+</style>
+{%- endif -%}
+```
+
+## Collab Highlight Display
+
+### Brand × Creator Visual
+
+For sections showing brand and creator partnership:
+
+```liquid
+{% if section.settings.show_collab_highlight %}
+  {% assign brand_logo = cc_creator.data.value['cc-channel-brandkit-primary-logo'] %}
+  {% assign brand_title = cc_creator.data.value['cc-channel-brandkit-title'] %}
+  {% assign first_name = cc_creator['cc-creator-first-name'] | default: '' %}
+  {% assign last_name = cc_creator['cc-creator-last-name'] | default: '' %}
+  {% assign first_initial = first_name | slice: 0, 1 | upcase %}
+  {% assign last_initial = last_name | slice: 0, 1 | upcase %}
+  {% assign initials = first_initial | append: last_initial %}
+  {% assign fallback_bg = cc_creator.data.value['cc-channel-brandkit-primary-color'] | default: '#cccccc' %}
+
+  <div class="cc-logo-container">
+    {% if brand_logo %}
+      <div class="cc-logo">
+        <img src="{{ brand_logo }}" alt="{{ brand_title | default: shop.name | escape }}" loading="lazy">
+        <p class="cc-logo-text">{{ brand_title }}</p>
+      </div>
+    {% else %}
+      <div class="cc-logo">
+        <span class="h2">{{ shop.name }}</span>
+      </div>
+    {% endif %}
+
+    <span class="cc-logo-divider">×</span>
+
+    {% if cc_creator['cc-creator-profile-picture'] %}
+      <div class="cc-creator">
+        <img src="{{ cc_creator.cc-creator-profile-picture }}" alt="{{ first_name | escape }}" loading="lazy">
+        <p class="cc-creator-name">{{ first_name }}</p>
+      </div>
+    {% else %}
+      <div class="cc-creator">
+        <div class="cc-creator-initials" style="background-color: {{ fallback_bg }};">
+          <span>{{ initials }}</span>
+        </div>
+        <p class="cc-creator-name">{{ first_name }}</p>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+```
+
+## Common Setting Patterns
+
+### Text Settings with Dynamic Support
+
+```json
+{
+  "type": "text",
+  "id": "badge_text",
+  "label": "Badge Text",
+  "default": "Recommended by [cc-creator-first-name]",
+  "info": "Leave empty to hide badge. Supports dynamic text replacement."
+},
+{
+  "type": "textarea",
+  "id": "description",
+  "label": "Description",
+  "default": "Professional trail runner and ultramarathon champion.",
+  "info": "Supports dynamic text replacement."
+},
+{
+  "type": "richtext",
+  "id": "header",
+  "label": "Header",
+  "default": "<h2>Curated by [cc-creator-first-name]</h2>",
+  "info": "Supports dynamic text replacement."
+}
+```
+
+### Layout Settings
+
+```json
+{
+  "type": "range",
+  "id": "max_width",
+  "min": 1000,
+  "max": 1600,
+  "step": 50,
+  "unit": "px",
+  "label": "Maximum Section Width",
+  "default": 1200
+},
+{
+  "type": "range",
+  "id": "padding_vertical",
+  "min": 0,
+  "max": 100,
+  "step": 4,
+  "unit": "px",
+  "label": "Vertical Padding",
+  "default": 50,
+  "info": "Top and bottom padding for the section"
+},
+{
+  "type": "range",
+  "id": "border_radius",
+  "min": 0,
+  "max": 50,
+  "step": 1,
+  "unit": "px",
+  "label": "Border Radius",
+  "default": 10
+}
+```
+
+### Color Settings
+
+```json
+{
+  "type": "color_scheme",
+  "id": "color_scheme",
+  "label": "Color Scheme",
+  "default": "scheme-1"
+},
+{
+  "type": "checkbox",
+  "id": "dynamic_text_colors",
+  "label": "Auto-Adjust Text Contrast",
+  "default": false,
+  "info": "Automatically calculates optimal text colors based on background for maximum readability."
+},
+{
+  "type": "color",
+  "id": "background_color",
+  "label": "Background Color",
+  "default": "#ffffff"
+},
+{
+  "type": "color",
+  "id": "text_color",
+  "label": "Text Color",
+  "default": "#000000"
+}
+```
+
+## Drops Integration
+
+### Checking for Creator Drops
+
+```liquid
+{%- liquid
+  assign has_creator_drops = false
+  assign json_drops = blank
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign json_drops = cc_creator.data.value['cc-creator-drops']
+    if json_drops.size > 0 and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+      assign has_creator_drops = true
+    endif
+  endif
+-%}
+
+{%- if has_creator_drops -%}
+  <!-- Render drops content -->
+  {%- for json_drop in json_drops -%}
+    <!-- Drop iteration -->
+  {%- endfor -%}
+{%- else -%}
+  <!-- Fallback content or hide section -->
+{%- endif -%}
+```
+
+### Iterating Creator Media from Drops
+
+```liquid
+{%- assign total_media_count = 0 -%}
+{%- for drop in cc_creator.data.value['cc-creator-drops'] -%}
+  {%- for product in drop['cc-creator-drop-products'] -%}
+    {%- for media in product.enhancement.media -%}
+      {%- if media.url contains 'assets.drops.shop' -%}
+        {%- if media.mimeType contains 'video' or media.mimeType contains 'image' -%}
+          {%- assign total_media_count = total_media_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endfor -%}
+```
+
+## Complete Section Template
+
+### Minimal Co-Branded Section Example
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = section.settings.preview_creator
+  endif
+  
+  capture heading_text
+    render 'cc-process-dynamic-text', input_text: section.settings.heading
+  endcapture
+  
+  capture description_text
+    render 'cc-process-dynamic-text', input_text: section.settings.description
+  endcapture
+  
+  assign has_creator = cc_creator != blank
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .cc-section {
+    padding: {{ section.settings.padding_vertical }}px {{ section.settings.padding_horizontal }}px;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+  
+  {%- if section.settings.custom_css != blank -%}
+    {{ section.settings.custom_css }}
+  {%- endif -%}
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="cc-section">
+    {%- if heading_text != blank -%}
+      <h2 class="cc-heading">{{ heading_text }}</h2>
+    {%- endif -%}
+    
+    {%- if description_text != blank -%}
+      <p class="cc-description">{{ description_text }}</p>
+    {%- endif -%}
+    
+    {%- if has_creator and cc_creator.cc-creator-profile-picture -%}
+      <img 
+        src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 400 }}"
+        alt="{{ cc_creator.cc-creator-first-name | escape }}"
+        loading="lazy"
+      >
+    {%- elsif section.settings.fallback_image -%}
+      <img 
+        src="{{ section.settings.fallback_image | image_url: width: 400 }}"
+        alt="{{ section.settings.fallback_image.alt | escape }}"
+        loading="lazy"
+      >
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CC Example Section",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The Example Section",
+      "info": "A simple co-branded section demonstrating core patterns."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Add this section to the Creator metaobject page template."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "Use the Preview Creator setting below, or click a creator's affiliate link."
+    },
+    {
+      "type": "header",
+      "content": "Content & Text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome, [cc-creator-first-name]!",
+      "info": "Supports dynamic text replacement."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Discover curated products from your favorite creator.",
+      "info": "Supports dynamic text replacement."
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback Image",
+      "info": "Used when creator has no profile picture."
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "label": "Max Width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal Padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings"
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info": "Preview with any creator's data. Not shown on live site.",
+      "metaobject_type": "creator"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Custom styles scoped to this section."
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Example Section"
+    }
+  ]
+}
+{% endschema %}
+```
+
+## Testing Checklist
+
+Before deploying a new co-branded section:
+
+- [ ] **Creator metaobject page**: Section works when added to creator page template
+- [ ] **Cart attribute context**: Section works via affiliate link on regular pages
+- [ ] **No creator context**: Section gracefully handles missing creator data
+- [ ] **Design mode preview**: Preview creator picker works in theme editor
+- [ ] **Dynamic text**: All [cc-*] placeholders replaced correctly
+- [ ] **Fallback images**: Section displays fallbacks when creator images missing
+- [ ] **CSS scoping**: Styles don't leak to other sections
+- [ ] **Custom CSS**: Custom CSS textarea applies correctly
+- [ ] **Responsive design**: Section works on mobile and desktop
+- [ ] **Color scheme**: Theme color scheme applies correctly
+- [ ] **Empty states**: No broken UI when optional data is missing
+
+## Common Anti-Patterns
+
+### ❌ Don't Do This:
+
+```liquid
+<!-- Using template.name check instead of if metaobject -->
+{% if template.name contains 'metaobject' %}
+  {% assign cc_creator = metaobject %}
+{% endif %}
+
+<!-- Hardcoded creator handle -->
+{% assign cc_creator = metaobjects.creator['john-doe'] %}
+
+<!-- No fallback for creator images -->
+<img src="{{ cc_creator.cc-creator-profile-picture }}">
+
+<!-- Unscoped CSS -->
+<style>
+  .cc-title { color: red; }
+</style>
+
+<!-- No dynamic text processing -->
+<h1>{{ section.settings.heading }}</h1>
+```
+
+### ✅ Do This Instead:
+
+```liquid
+<!-- Direct metaobject check -->
+{% if metaobject %}
+  {% assign cc_creator = metaobject %}
+{% else %}
+  {% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% endif %}
+
+<!-- Dynamic creator resolution -->
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+<!-- Image with fallback -->
+{% if cc_creator and cc_creator.cc-creator-profile-picture %}
+  <img src="{{ cc_creator.cc-creator-profile-picture }}">
+{% elsif section.settings.fallback_image %}
+  <img src="{{ section.settings.fallback_image | image_url: width: 800 }}">
+{% endif %}
+
+<!-- Section-scoped CSS -->
+<style>
+  #shopify-section-{{ section.id }} .cc-title { color: red; }
+</style>
+
+<!-- Dynamic text processing -->
+{% capture heading %}{% render 'cc-process-dynamic-text', input_text: section.settings.heading %}{% endcapture %}
+<h1>{{ heading }}</h1>
+```
+
+## Key Reminders
+
+- **Use `if metaobject`**: Check for metaobject existence directly, not template name
+- **Process all text**: Run user-configurable text through `cc-process-dynamic-text`
+- **Scope CSS**: Always use `#shopify-section-{{ section.id }}` prefix
+- **Provide fallbacks**: Handle missing creator data gracefully
+- **Include preview**: Add preview_creator metaobject picker to Advanced Settings
+- **Document settings**: Use info text to explain dynamic text support
+- **Organize schema**: Use consistent header sections for discoverability

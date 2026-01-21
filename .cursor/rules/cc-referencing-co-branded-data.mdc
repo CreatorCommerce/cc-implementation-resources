@@ -57,11 +57,11 @@ Always treat "co-branded" data as coming from the `creator` metaobject. This inc
 
 ### 4. Template Context Branching
 
-For components that run on both PDP and metaobject pages:
+For components that run on both regular pages and metaobject pages, check directly if the `metaobject` variable exists:
 
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
@@ -69,6 +69,11 @@ For components that run on both PDP and metaobject pages:
   endif
 %}
 ```
+
+**Why `if metaobject` is preferred over `if template.name contains 'metaobject'`:**
+- Simpler and more direct - checks if the object actually exists
+- Works regardless of template naming conventions
+- More reliable across different Shopify theme structures
 
 ### 5. Collection/Product List Handling
 

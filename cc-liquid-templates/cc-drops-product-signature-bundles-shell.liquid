@@ -14,6 +14,7 @@
 -%}
 
 {% render 'cc-drops-product-signature-bundles-base-snippet',
+  fallback_collection: section.settings.fallback_collection,
   max_bundle_price: section.settings.max_bundle_price,
   eyebrow_text: section.settings.eyebrow_text,
   title_size: section.settings.title_size,
@@ -46,7 +47,7 @@
 
 {% schema %}
 {
-  "name": "Products - Bundles",
+  "name": "CC Products - Bundles",
   "tag": "section",
   "class": "section",
   "settings": [
@@ -55,15 +56,28 @@
       "content": "The Signature Bundles Block",
       "info": "The Signature Bundles Block displays curated product bundles from your creators with rich imagery, detailed product breakdowns, and one-click 'Add All to Cart' functionality. This section features a hero-style layout with a carousel of bundle images, product details, and an optional savings badge—perfect for showcasing premium product collections that deserve extra attention."
     },
-    {
-      "type": "header",
-      "content": "Before Building",
-      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured as bundles with products assigned and that the total bundle price is within your maximum price threshold. The section will automatically display all qualifying bundles from the creator's drops data."
-    },
+{
+    "type": "header",
+    "content": "Before Building",
+    "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template. Ensure your creator has drops configured as bundles with products assigned and that the total bundle price is within your maximum price threshold. The section will automatically display all qualifying bundles from the creator's drops data."
+  },
+  {
+    "type": "collection",
+    "id": "fallback_collection",
+    "label": "Fallback Collection",
+    "info": "Collection to display when no creator context or drops are available. Products from this collection will be shown as a bundle fallback."
+  },
     {
       "type": "header",
       "content": "For Testing",
-      "info": "To test, preview the theme with the section (saves the preview cookie). Then click the creator's affiliate link—but first ensure that creator is in a live campaign redirecting to the page with this section. You should then see the co-branded context with their bundles displayed. Verify the products, pricing calculations, and add-to-cart behavior work as expected."
+      "info": "If on the creator metaobject page, switch the creator in the top left hand corner. If on any other page, select the creator below."
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info": "Select any creator to preview this section with. Helpful for seeing how different data responds & looks in the section. This will not be seen on the live site.",
+      "metaobject_type": "creator"
     },
     {
       "type": "header",
@@ -304,25 +318,18 @@
     {
       "type": "header",
       "content": "Advanced Settings",
-      "info": "Preview functionality and custom styling options"
-    },
-    {
-      "type": "metaobject",
-      "id": "preview_creator",
-      "label": "Preview Any Creator",
-      "info":"Select any creator to preview this block with. Helpful for seeing how different data responds & looks in the block. This will not be seen on the live site.",
-      "metaobject_type": "creator"
+      "info": "Custom styling options"
     },
     {
       "type": "textarea",
       "id": "custom_css",
       "label": "Custom CSS",
-      "info": "Enter valid CSS code to customize this section's appearance. Example: #shopify-section-{{ section.id }} .cc-title { color: #ff0000; }"
+      "info": "Add custom CSS rules to override styles. Use this to apply custom fonts if theme fonts don't work out-of-the-box (e.g., font-family: 'Your Font', sans-serif;)."
     }
   ],
   "presets": [
     {
-      "name": "Products - Signature Bundles"
+      "name": "CC Products - Signature Bundles"
     }
   ]
 }

@@ -1,0 +1,1803 @@
+<style>
+.gradient-shader-hero {
+  position: relative;
+  width: 100%;
+  min-height: 80vh;
+  overflow: hidden;
+  background-color: #f9f9f9;
+}
+
+.gradient-shader-hero__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Image Background */
+.gradient-shader-hero__image-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.gradient-shader-hero__image-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gradient-shader-hero__image-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.gradient-shader-hero__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gradient-shader-hero__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.gradient-shader-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media screen and (min-width: 750px) {
+  .gradient-shader-hero__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Centered layout when no image column */
+.gradient-shader-hero__grid--single {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__badge {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__text-column {
+  align-items: center;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__heading,
+.gradient-shader-hero--centered .gradient-shader-hero__description,
+.gradient-shader-hero--centered .gradient-shader-hero__feature-title,
+.gradient-shader-hero--centered .gradient-shader-hero__feature-subtitle {
+  text-align: center;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__description {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__features {
+  align-items: center;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__feature-item {
+  flex-direction: column;
+  align-items: center;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__feature-dot {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.gradient-shader-hero--centered .gradient-shader-hero__button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* Text Column */
+.gradient-shader-hero__text-column {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* Badge - inline-block px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg */
+.gradient-shader-hero__badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-shader-hero__badge--no-shadow {
+  box-shadow: none;
+}
+
+.gradient-shader-hero__button--no-shadow {
+  box-shadow: none !important;
+}
+
+.gradient-shader-hero__image-container--no-shadow {
+  box-shadow: none !important;
+}
+
+.gradient-shader-hero__floating-badge--no-shadow {
+  box-shadow: none !important;
+}
+
+/* Badge text */
+.gradient-shader-hero__badge p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+}
+
+/* Text content */
+.gradient-shader-hero__text-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Heading - text-5xl md:text-6xl font-bold */
+.gradient-shader-hero__heading {
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 700;
+  margin: 0;
+}
+
+@media screen and (min-width: 750px) {
+  .gradient-shader-hero__heading {
+    font-size: 3.75rem;
+  }
+}
+
+.gradient-shader-hero__heading-accent {
+  font-style: italic;
+}
+
+/* Description - max-w-lg */
+.gradient-shader-hero__description {
+  max-width: 32rem;
+  line-height: 1.5;
+  font-size: 1.0625rem;
+}
+
+.gradient-shader-hero__description p {
+  margin: 0;
+}
+
+/* Features */
+.gradient-shader-hero__features {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Feature item - flex items-start gap-3 */
+.gradient-shader-hero__feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+/* Feature dot - w-1.5 h-1.5 rounded-full bg-yellow-400 mt-2 */
+.gradient-shader-hero__feature-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: oklch(0.852 0.199 91.936); /* yellow-400 */
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}
+
+/* Feature title */
+.gradient-shader-hero__feature-title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Feature subtitle */
+.gradient-shader-hero__feature-subtitle {
+  margin: 0;
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+}
+
+/* Button - bg-black text-white hover:bg-black/90 rounded-full px-8 py-6 text-base gap-3 shadow-2xl */
+.gradient-shader-hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
+  background-color: #000;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gradient-shader-hero__button:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Button icon - size-5 */
+.gradient-shader-hero__button-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Image Column */
+.gradient-shader-hero__image-column {
+  position: relative;
+  z-index: 1;
+}
+
+/* Image wrapper with animation - initial opacity 0, scale 0.95, animates to opacity 1, scale 1 over 0.8s with 0.2s delay */
+.gradient-shader-hero__image-wrapper {
+  position: relative;
+  opacity: 0;
+  transform: scale(0.95);
+  animation: fadeInScale 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+@keyframes fadeInScale {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Image container - relative overflow-hidden rounded-3xl shadow-2xl */
+.gradient-shader-hero__image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  margin: 0 auto;
+}
+
+/* Image - w-full h-[600px] object-cover */
+.gradient-shader-hero__image {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  display: block;
+}
+
+.gradient-shader-hero__image-placeholder {
+  width: 100%;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Image overlay - absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent */
+.gradient-shader-hero__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent, transparent);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Floating badge - absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-2xl */
+.gradient-shader-hero__floating-badge {
+  position: absolute;
+  bottom: -1.5rem;
+  left: -1.5rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Stat label - text-sm text-black/60 mb-1 */
+.gradient-shader-hero__stat-label {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Stat value - text-black font-weight normal */
+.gradient-shader-hero__stat-value {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: #000;
+}
+
+/* Mobile adjustments */
+@media screen and (max-width: 749px) {
+  .gradient-shader-hero__heading {
+    font-size: 2.5rem;
+  }
+  
+  .gradient-shader-hero__image {
+    height: 500px;
+  }
+  
+  .gradient-shader-hero__image-placeholder {
+    height: 500px;
+  }
+  
+  .gradient-shader-hero__floating-badge {
+    bottom: 1rem;
+    left: 1rem;
+  }
+}
+</style>
+
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_preview_creator = section.settings.preview_creator
+
+  assign cc_creator = metaobject | default: metaobjects.creator[cc_handle]
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = cc_preview_creator
+  endif
+  
+  # Process all text inputs through dynamic text processor
+  capture badge_text
+    render 'cc-process-dynamic-text', input_text: section.settings.badge_text
+  endcapture
+  
+  capture heading_text
+    render 'cc-process-dynamic-text', input_text: section.settings.heading
+  endcapture
+  
+  capture heading_accent_text
+    render 'cc-process-dynamic-text', input_text: section.settings.heading_accent
+  endcapture
+  
+  capture description_text
+    render 'cc-process-dynamic-text', input_text: section.settings.description
+  endcapture
+  
+  capture feature_title_text
+    render 'cc-process-dynamic-text', input_text: section.settings.feature_text
+  endcapture
+  
+  capture feature_subtitle_text
+    render 'cc-process-dynamic-text', input_text: section.settings.feature_subtitle
+  endcapture
+  
+  capture button_label_text
+    render 'cc-process-dynamic-text', input_text: section.settings.button_label
+  endcapture
+  
+  capture stat_label_text
+    render 'cc-process-dynamic-text', input_text: section.settings.stat_label
+  endcapture
+  
+  capture stat_value_text
+    render 'cc-process-dynamic-text', input_text: section.settings.stat_value
+  endcapture
+  
+  assign has_creator_image = false
+  if cc_creator and cc_creator.data.value.cc-creator-profile-picture
+    assign has_creator_image = true
+  endif
+  
+  assign has_fallback_image = false
+  if section.settings.image != blank
+    assign has_fallback_image = true
+  endif
+  
+  assign has_any_image = false
+  if has_creator_image or has_fallback_image
+    assign has_any_image = true
+  endif
+  
+  assign has_stats = false
+  if stat_label_text != blank
+    assign has_stats = true
+  endif
+  
+  assign show_image_column = false
+  if has_any_image or has_stats
+    assign show_image_column = true
+  endif
+  
+  # Dynamic text colors based on background
+  if section.settings.dynamic_text_colors
+    # Determine section background color (only for 'color' type)
+    assign section_bg = ''
+    if section.settings.background_type == 'color'
+      assign section_bg = section.settings.background_color
+    endif
+    
+    # Calculate section background text color (used as fallback)
+    capture section_bg_text_color
+      if section_bg != blank
+        render 'cc-calculate-contrast-color', hex_color: section_bg
+      else
+        echo '#ffffff'
+      endif
+    endcapture
+    
+    # Badge text color
+    capture badge_text_color
+      render 'cc-calculate-contrast-color', hex_color: section.settings.badge_bg_color, fallback_color: section_bg_text_color
+    endcapture
+    
+    # Main content text colors (heading, description, features)
+    assign main_text_color = section_bg_text_color
+    
+    # Button text color
+    capture button_text_color
+      render 'cc-calculate-contrast-color', hex_color: section.settings.button_bg_color, fallback_color: section_bg_text_color
+    endcapture
+    
+    # Stat label and value colors
+    capture stat_label_color
+      render 'cc-calculate-contrast-color', hex_color: section.settings.floating_badge_bg_color, fallback_color: section_bg_text_color
+    endcapture
+    
+    capture stat_value_color
+      render 'cc-calculate-contrast-color', hex_color: section.settings.floating_badge_bg_color, fallback_color: section_bg_text_color
+    endcapture
+  else
+    # Use manual colors from settings
+    assign badge_text_color = section.settings.badge_text_color
+    assign main_text_color = '#ffffff'
+    assign button_text_color = section.settings.button_text_color
+    assign stat_label_color = section.settings.stat_label_color
+    assign stat_value_color = section.settings.stat_value_color
+  endif
+-%}
+
+<div 
+  class="gradient-shader-hero{% unless show_image_column %} gradient-shader-hero--centered{% endunless %}" 
+  id="gradient-shader-hero-{{ section.id }}"
+  style="background-color: {% if section.settings.background_type == 'color' %}{{ section.settings.background_color }}{% else %}#f9f9f9{% endif %};"
+>
+  {%- comment -%} Canvas for WebGL Shader Background {%- endcomment -%}
+  {%- if section.settings.background_type == 'wave' -%}
+    <canvas 
+      id="gradient-canvas-{{ section.id }}" 
+      class="gradient-shader-hero__canvas"
+    ></canvas>
+  {%- elsif section.settings.background_type == 'image' and section.settings.background_image != blank -%}
+    <div class="gradient-shader-hero__image-bg">
+      <img 
+        src="{{ section.settings.background_image | image_url: width: 2400 }}"
+        srcset="{{ section.settings.background_image | image_url: width: 1200 }} 1200w,
+                {{ section.settings.background_image | image_url: width: 1800 }} 1800w,
+                {{ section.settings.background_image | image_url: width: 2400 }} 2400w"
+        alt="{{ section.settings.background_image.alt | default: 'Background' | escape }}"
+        class="gradient-shader-hero__image-bg-img"
+        loading="eager"
+      >
+      <div class="gradient-shader-hero__image-bg-overlay" style="background-color: rgba(0, 0, 0, {{ section.settings.background_overlay_opacity }});"></div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} Content Overlay {%- endcomment -%}
+  <div class="gradient-shader-hero__content">
+    <div class="gradient-shader-hero__container" style="max-width: {{ section.settings.container_max_width }}px; padding-left: {{ section.settings.container_padding_x }}rem; padding-right: {{ section.settings.container_padding_x }}rem; padding-top: {{ section.settings.container_padding_top_mobile }}rem; padding-bottom: {{ section.settings.container_padding_bottom_mobile }}rem;">
+      <div class="gradient-shader-hero__grid{% unless show_image_column %} gradient-shader-hero__grid--single{% endunless %}" style="gap: {{ section.settings.section_gap }}rem;">
+        {%- comment -%} Left Content Column {%- endcomment -%}
+        <div class="gradient-shader-hero__text-column">
+          {%- if badge_text != blank -%}
+            <div class="gradient-shader-hero__badge{% unless section.settings.badge_show_shadow %} gradient-shader-hero__badge--no-shadow{% endunless %}" style="background-color: {{ section.settings.badge_bg_color }}; border-radius: {{ section.settings.badge_border_radius }}px; border: {{ section.settings.badge_border_width }}px solid {{ section.settings.badge_border_color }}; padding: {{ section.settings.badge_padding_y }}rem {{ section.settings.badge_padding_x }}rem; margin-bottom: {{ section.settings.badge_margin_bottom }}rem;">
+              <p style="color: {{ badge_text_color }}; font-size: {{ section.settings.badge_font_size }}px; line-height: {{ section.settings.badge_line_height }};">{{ badge_text }}</p>
+            </div>
+          {%- endif -%}
+
+          <div class="gradient-shader-hero__text-content">
+            {%- if heading_text != blank -%}
+              <h1 class="gradient-shader-hero__heading" style="color: {{ main_text_color }}; font-size: {{ section.settings.heading_font_size }}px; line-height: {{ section.settings.heading_line_height }}; margin-bottom: {{ section.settings.heading_margin_bottom }}rem;">
+                {{ heading_text }}{%- if heading_accent_text != blank -%} <span class="gradient-shader-hero__heading-accent" style="color: {{ main_text_color }}; font-size: {{ section.settings.heading_accent_font_size }}px; line-height: {{ section.settings.heading_accent_line_height }};">{{ heading_accent_text }}</span>{%- endif -%}
+              </h1>
+            {%- endif -%}
+            
+            {%- if description_text != blank -%}
+              <p class="gradient-shader-hero__description" style="color: {{ main_text_color }}; font-size: {{ section.settings.description_font_size }}px; line-height: {{ section.settings.description_line_height }}; margin-bottom: {{ section.settings.description_margin_bottom }}rem;">
+                {{ description_text }}
+              </p>
+            {%- endif -%}
+
+            {%- if feature_title_text != blank -%}
+              <div class="gradient-shader-hero__features" style="margin-bottom: {{ section.settings.features_margin_bottom }}rem;">
+                <div class="gradient-shader-hero__feature-item">
+                  <div class="gradient-shader-hero__feature-dot"></div>
+                  <div>
+                    <p class="gradient-shader-hero__feature-title" style="color: {{ main_text_color }}; font-size: {{ section.settings.feature_title_font_size }}px; line-height: {{ section.settings.feature_title_line_height }};">{{ feature_title_text }}</p>
+                    {%- if feature_subtitle_text != blank -%}
+                      <p class="gradient-shader-hero__feature-subtitle" style="color: {{ main_text_color }}; font-size: {{ section.settings.feature_subtitle_font_size }}px; line-height: {{ section.settings.feature_subtitle_line_height }};">{{ feature_subtitle_text }}</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if button_label_text != blank -%}
+            <div class="gradient-shader-hero__button-wrapper">
+              <a 
+                href="{{ section.settings.button_link }}" 
+                class="gradient-shader-hero__button{% unless section.settings.button_show_shadow %} gradient-shader-hero__button--no-shadow{% endunless %}"
+                style="background-color: {{ section.settings.button_bg_color }}; color: {{ button_text_color }}; border-radius: {{ section.settings.button_border_radius }}px; padding: {{ section.settings.button_padding_y }}rem {{ section.settings.button_padding_x }}rem; border: {{ section.settings.button_border_width }}px solid {{ section.settings.button_border_color }}; font-size: {{ section.settings.button_font_size }}px; line-height: {{ section.settings.button_line_height }};"
+              >
+                {{ button_label_text }}
+                {%- if section.settings.button_show_arrow -%}
+                  <svg class="gradient-shader-hero__button-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                {%- endif -%}
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} Right Content Column - Image {%- endcomment -%}
+        {%- if show_image_column -%}
+          <div class="gradient-shader-hero__image-column">
+            <div class="gradient-shader-hero__image-wrapper">
+              {%- if has_any_image -%}
+                <div class="gradient-shader-hero__image-container{% unless section.settings.image_show_shadow %} gradient-shader-hero__image-container--no-shadow{% endunless %}" style="border-radius: {{ section.settings.image_border_radius }}px; max-width: {{ section.settings.image_max_width }}px; border: {{ section.settings.image_border_width }}px solid {{ section.settings.image_border_color }};">
+                  {%- if has_creator_image -%}
+                    {%- comment -%} Use creator profile picture {%- endcomment -%}
+                    <img
+                      src="{{ cc_creator.data.value.cc-creator-profile-picture }}"
+                      loading="lazy"
+                      alt="{{ cc_creator.data.value.cc-creator-first-name | default: 'Creator' | escape }}"
+                      class="gradient-shader-hero__image"
+                      style="width: 100%; height: 600px; object-fit: cover;"
+                    >
+                  {%- elsif has_fallback_image -%}
+                    {%- comment -%} Use fallback image from settings {%- endcomment -%}
+                    <img
+                      src="{{ section.settings.image | image_url: width: 1080 }}"
+                      srcset="{{ section.settings.image | image_url: width: 540 }} 540w,
+                              {{ section.settings.image | image_url: width: 720 }} 720w,
+                              {{ section.settings.image | image_url: width: 1080 }} 1080w"
+                      width="{{ section.settings.image.width }}"
+                      height="{{ section.settings.image.height }}"
+                      loading="lazy"
+                      alt="{{ section.settings.image.alt | default: 'Hero image' | escape }}"
+                      class="gradient-shader-hero__image"
+                    >
+                  {%- endif -%}
+                  <div class="gradient-shader-hero__image-overlay"></div>
+                </div>
+              {%- endif -%}
+              
+              {%- if has_stats -%}
+                <div class="gradient-shader-hero__floating-badge{% unless section.settings.stat_show_shadow %} gradient-shader-hero__floating-badge--no-shadow{% endunless %}" style="background-color: {{ section.settings.floating_badge_bg_color }}; border-radius: {{ section.settings.floating_badge_border_radius }}px; border: {{ section.settings.floating_badge_border_width }}px solid {{ section.settings.floating_badge_border_color }};">
+                  <p class="gradient-shader-hero__stat-label" style="font-size: {{ section.settings.stat_label_font_size }}px; line-height: {{ section.settings.stat_label_line_height }}; color: {{ stat_label_color }};">{{ stat_label_text }}</p>
+                  <p class="gradient-shader-hero__stat-value" style="font-size: {{ section.settings.stat_value_font_size }}px; line-height: {{ section.settings.stat_value_line_height }}; color: {{ stat_value_color }};">{{ stat_value_text }}</p>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @media screen and (min-width: 750px) {
+    #gradient-shader-hero-{{ section.id }} .gradient-shader-hero__container {
+      padding-top: {{ section.settings.container_padding_top_desktop }}rem;
+      padding-bottom: {{ section.settings.container_padding_bottom_desktop }}rem;
+    }
+  }
+</style>
+
+{%- if section.settings.custom_css != blank -%}
+<style>
+  /* Custom CSS */
+  {{ section.settings.custom_css }}
+</style>
+{%- endif -%}
+
+{%- if section.settings.background_type == 'wave' -%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+(function() {
+  const sectionId = '{{ section.id }}';
+  const canvas = document.getElementById('gradient-canvas-' + sectionId);
+  const container = document.getElementById('gradient-shader-hero-' + sectionId);
+  
+  if (!canvas || !container) return;
+
+  // Scene setup
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const renderer = new THREE.WebGLRenderer({ 
+    canvas: canvas,
+    alpha: false,
+    antialias: false
+  });
+  
+  // Helper function to convert hex color to RGB array
+  function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16) / 255.0,
+      parseInt(result[2], 16) / 255.0,
+      parseInt(result[3], 16) / 255.0
+    ] : [1.0, 1.0, 1.0];
+  }
+
+  // Get colors from settings
+  const colors = [
+    hexToRgb('{{ section.settings.wave_color_1 }}'),
+    hexToRgb('{{ section.settings.wave_color_2 }}'),
+    hexToRgb('{{ section.settings.wave_color_3 }}'),
+    hexToRgb('{{ section.settings.wave_color_4 }}'),
+    hexToRgb('{{ section.settings.wave_color_5 }}'),
+    hexToRgb('{{ section.settings.wave_color_6 }}'),
+    hexToRgb('{{ section.settings.wave_color_7 }}')
+  ];
+
+  // Shader uniforms
+  const uniforms = {
+    iTime: { value: 0.0 },
+    iResolution: { value: new THREE.Vector3() },
+    noiseIntensity: { value: 1.55 },
+    noiseScale: { value: 2.0 },
+    noiseSpeed: { value: 0.15 },
+    waveNoiseIntensity: { value: 1.2 },
+    waveNoiseScale1: { value: 0.5 },
+    waveNoiseScale2: { value: 0.8 },
+    waveNoiseScale3: { value: 1.2 },
+    waveNoiseSpeed1: { value: 0.24 },
+    waveNoiseSpeed2: { value: 0.2 },
+    waveNoiseSpeed3: { value: 0.3 },
+    ripplePositions: { value: [] },
+    rippleTimes: { value: [] },
+    rippleCount: { value: 0 },
+    color1: { value: new THREE.Vector3(...colors[0]) },
+    color2: { value: new THREE.Vector3(...colors[1]) },
+    color3: { value: new THREE.Vector3(...colors[2]) },
+    color4: { value: new THREE.Vector3(...colors[3]) },
+    color5: { value: new THREE.Vector3(...colors[4]) },
+    color6: { value: new THREE.Vector3(...colors[5]) },
+    color7: { value: new THREE.Vector3(...colors[6]) }
+  };
+
+  const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+
+  const fragmentShader = `
+    uniform vec3 iResolution;
+    uniform float iTime;
+    uniform float noiseIntensity;
+    uniform float noiseScale;
+    uniform float noiseSpeed;
+    uniform float waveNoiseIntensity;
+    uniform float waveNoiseScale1;
+    uniform float waveNoiseScale2;
+    uniform float waveNoiseScale3;
+    uniform float waveNoiseSpeed1;
+    uniform float waveNoiseSpeed2;
+    uniform float waveNoiseSpeed3;
+    uniform float ripplePositions[20];
+    uniform float rippleTimes[10];
+    uniform int rippleCount;
+    uniform vec3 color1;
+    uniform vec3 color2;
+    uniform vec3 color3;
+    uniform vec3 color4;
+    uniform vec3 color5;
+    uniform vec3 color6;
+    uniform vec3 color7;
+    varying vec2 vUv;
+
+    #define BLEND_MODE 2
+    #define SPEED 2.0
+    #define INTENSITY 0.075
+    #define MEAN 0.0
+    #define VARIANCE 0.5
+
+    vec2 hash(vec2 p) {
+      p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+      return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(
+        mix(dot(hash(i + vec2(0.0, 0.0)), f - vec2(0.0, 0.0)),
+            dot(hash(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), u.x),
+        mix(dot(hash(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)),
+            dot(hash(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), u.x),
+        u.y
+      );
+    }
+
+    vec3 mod289(vec3 x) {
+      return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+
+    vec4 mod289(vec4 x) {
+      return x - floor(x * (1.0 / 289.0)) * 289.0;
+    }
+
+    vec4 permute(vec4 x) {
+      return mod289(((x*34.0)+1.0)*x);
+    }
+
+    vec4 taylorInvSqrt(vec4 r) {
+      return 1.79284291400159 - 0.85373472095314 * r;
+    }
+
+    float snoise(vec3 v) { 
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+      vec3 i  = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+      i = mod289(i); 
+      vec4 p = permute(permute(permute(
+        i.z + vec4(0.0, i1.z, i2.z, 1.0))
+        + i.y + vec4(0.0, i1.y, i2.y, 1.0)) 
+        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+      float n_ = 0.142857142857;
+      vec3 ns = n_ * D.wyz - D.xzx;
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+      vec4 x = x_ * ns.x + ns.yyyy;
+      vec4 y = y_ * ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+      vec3 p0 = vec3(a0.xy,h.x);
+      vec3 p1 = vec3(a0.zw,h.y);
+      vec3 p2 = vec3(a1.xy,h.z);
+      vec3 p3 = vec3(a1.zw,h.w);
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+      p0 *= norm.x;
+      p1 *= norm.y;
+      p2 *= norm.z;
+      p3 *= norm.w;
+      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    }
+
+    vec2 warp(vec2 p) {
+      float n1 = noise(p * waveNoiseScale1 + vec2(iTime * waveNoiseSpeed1, 0.0));
+      float n2 = noise(p * waveNoiseScale1 + vec2(0.0, iTime * waveNoiseSpeed2));
+      float n3 = noise(p * waveNoiseScale2 + vec2(iTime * -waveNoiseSpeed3, iTime * waveNoiseSpeed3)) * 0.5;
+      float n4 = noise(p * waveNoiseScale3 + vec2(iTime * waveNoiseSpeed3, -iTime * waveNoiseSpeed3)) * 0.3;
+      return p + vec2(n1 + n3, n2 + n4) * waveNoiseIntensity;
+    }
+
+    float calculateRipples(vec2 uv) {
+      float rippleEffect = 0.0;
+      for (int i = 0; i < rippleCount && i < 10; i++) {
+        vec2 ripplePos = vec2(ripplePositions[i * 2], ripplePositions[i * 2 + 1]);
+        float rippleTime = rippleTimes[i];
+        float dist = distance(uv, ripplePos);
+        float rippleRadius = rippleTime * 1.0;
+        float rippleWidth = 0.05;
+        float ring = smoothstep(rippleRadius + rippleWidth, rippleRadius, dist) * 
+                     smoothstep(rippleRadius - rippleWidth, rippleRadius, dist);
+        float fadeOut = 1.0 - smoothstep(0.0, 2.0, rippleTime);
+        float wave = sin(dist * 15.0 - rippleTime * 8.0) * 0.5 + 0.5;
+        rippleEffect += ring * fadeOut * wave * 0.3;
+      }
+      return rippleEffect;
+    }
+
+    vec3 channel_mix(vec3 a, vec3 b, vec3 w) {
+      return vec3(mix(a.r, b.r, w.r), mix(a.g, b.g, w.g), mix(a.b, b.b, w.b));
+    }
+
+    float gaussian(float z, float u, float o) {
+      return (1.0 / (o * sqrt(2.0 * 3.1415))) * exp(-(((z - u) * (z - u)) / (2.0 * (o * o))));
+    }
+
+    vec3 overlay(vec3 a, vec3 b, float w) {
+      return mix(a, channel_mix(
+        2.0 * a * b,
+        vec3(1.0) - 2.0 * (vec3(1.0) - a) * (vec3(1.0) - b),
+        step(vec3(0.5), a)
+      ), w);
+    }
+
+    vec3 multiColorGradient(float t) {
+      vec3 colors[7];
+      colors[0] = color1;
+      colors[1] = color2;
+      colors[2] = color3;
+      colors[3] = color4;
+      colors[4] = color5;
+      colors[5] = color6;
+      colors[6] = color7;
+      t = clamp(t, 0.0, 1.0);
+      float scaledT = t * 6.0;
+      int index = int(floor(scaledT));
+      float localT = fract(scaledT);
+      if (index >= 6) return colors[6];
+      float smoothT = smoothstep(0.0, 1.0, localT);
+      return mix(colors[index], colors[index + 1], smoothT);
+    }
+
+    vec3 applyGrain(vec3 color, vec2 uv) {
+      float t = iTime * SPEED;
+      float seed = dot(uv, vec2(12.9898, 78.233));
+      float grainNoise = fract(sin(seed) * 43758.5453 + t);
+      grainNoise = gaussian(grainNoise, MEAN, VARIANCE * VARIANCE);
+      vec3 grain = vec3(grainNoise) * (1.0 - color);
+      float w = INTENSITY;
+      #if BLEND_MODE == 2
+      color = overlay(color, grain, w);
+      #endif
+      return color;
+    }
+
+    void main() {
+      vec2 fragCoord = vUv * iResolution.xy;
+      vec2 uv = (fragCoord - 0.5 * iResolution.xy) / iResolution.y;
+      vec2 warpedUv = warp(uv);
+      float simplexNoise = snoise(vec3(warpedUv * noiseScale, iTime * noiseSpeed)) * noiseIntensity;
+      warpedUv += simplexNoise;
+      float phase1 = iTime * 0.6;
+      float phase2 = iTime * 0.4;
+      float distanceFromCenter = length(warpedUv - vec2(0.0, 0.0));
+      float archFactor = 1.0 - distanceFromCenter * 0.5;
+      float wave1 = sin(warpedUv.x * 3.0 + phase1) * 0.5 * archFactor;
+      float wave2 = sin(warpedUv.x * 5.0 - phase2) * 0.3 * archFactor;
+      float wave3 = sin(warpedUv.y * 4.0 + phase1 * 0.7) * 0.15;
+      float parabolicArch = -pow(warpedUv.x, 2.0) * 0.2;
+      float breathing = sin(iTime * 0.5) * 0.1 + 0.9;
+      float combinedWave = (wave1 + wave2 + wave3 + parabolicArch) * breathing * 0.3;
+      float ripples = calculateRipples(uv);
+      float gradientPos = (vUv.y + combinedWave * 0.3 + ripples * 0.2);
+      float smoothGradientPos = smoothstep(0.0, 1.0, clamp(1.0 - gradientPos, 0.0, 1.0));
+      vec3 color = multiColorGradient(smoothGradientPos);
+      color += vec3(ripples * 0.3);
+      gl_FragColor = vec4(applyGrain(color, vUv), 1.0);
+    }
+  `;
+
+  // Create shader material
+  const material = new THREE.ShaderMaterial({
+    fragmentShader: fragmentShader,
+    vertexShader: vertexShader,
+    uniforms: uniforms
+  });
+
+  // Create plane mesh
+  const geometry = new THREE.PlaneGeometry(2, 2);
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  // Ripple state
+  const ripples = [];
+  let rippleId = 0;
+  const clock = new THREE.Clock();
+
+  // Handle resize
+  function handleResize() {
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    renderer.setSize(width, height);
+    uniforms.iResolution.value.set(width, height, 1);
+  }
+
+  // Handle click for ripples
+  function handleClick(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const currentTime = clock.getElapsedTime();
+    
+    const newRipple = {
+      id: rippleId++,
+      x: x,
+      y: y,
+      startTime: currentTime
+    };
+    
+    ripples.push(newRipple);
+    
+    setTimeout(function() {
+      const index = ripples.findIndex(function(r) { return r.id === newRipple.id; });
+      if (index > -1) ripples.splice(index, 1);
+    }, 2000);
+  }
+
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    
+    const currentTime = clock.getElapsedTime();
+    uniforms.iTime.value = currentTime;
+    
+    // Update ripples
+    const activeRipples = ripples.filter(function(ripple) {
+      return currentTime - ripple.startTime < 2.0;
+    });
+    
+    const positions = [];
+    const times = [];
+    
+    for (let i = 0; i < Math.min(activeRipples.length, 10); i++) {
+      const ripple = activeRipples[i];
+      const normalizedX = (ripple.x / canvas.width) * 2 - 1;
+      const normalizedY = 1 - (ripple.y / canvas.height) * 2;
+      positions.push(normalizedX, normalizedY);
+      times.push(currentTime - ripple.startTime);
+    }
+    
+    uniforms.ripplePositions.value = positions;
+    uniforms.rippleTimes.value = times;
+    uniforms.rippleCount.value = activeRipples.length;
+    
+    renderer.render(scene, camera);
+  }
+
+  // Initialize
+  handleResize();
+  animate();
+  
+  window.addEventListener('resize', handleResize);
+  canvas.addEventListener('click', handleClick);
+  
+  // Cleanup on section reload (for theme editor)
+  document.addEventListener('shopify:section:unload', function(event) {
+    if (event.detail.sectionId === sectionId) {
+      window.removeEventListener('resize', handleResize);
+      canvas.removeEventListener('click', handleClick);
+    }
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "CC Hero - Equinox",
+  "tag": "section",
+  "class": "custom-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "The Equinox Hero Section",
+      "info": "An immersive, interactive hero section featuring WebGL-powered animated gradient backgrounds with ripple effects. Perfect for creator collaborations with dynamic text replacement, responsive layouts, and extensive customization options. Built for high-impact first impressions."
+    },
+    {
+      "type": "header",
+      "content": "Before Building",
+      "info": "Make sure a page template exists for the Creator metaobject. Add this section to the Creator metaobject page template, or use on any page for general hero content. You can use Dynamic Sources with any text input (select the icon to the top right of each input) to inject co-branded content without additional development."
+    },
+    {
+      "type": "header",
+      "content": "For Testing",
+      "info": "If on the creator metaobject page, switch the creator in the top left hand corner. If on any other page, select the creator below."
+    },
+    {
+      "type": "metaobject",
+      "id": "preview_creator",
+      "label": "Preview Any Creator",
+      "info": "Select any creator to preview this section with. Helpful for seeing how different data responds & looks in the section. This will not be seen on the live site.",
+      "metaobject_type": "creator"
+    },
+    {
+      "type": "header",
+      "content": "Content & Text",
+      "info": "Configure all text elements for your hero section. All fields support dynamic text replacement: use [cc-creator-first-name] for simple fields, or [cc_creator.data.value.path.to.field] with dot notation for nested JSON paths."
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "Recommended by [cc-creator-first-name]",
+      "info": "Top badge content (leave empty to hide badge). Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Main Heading",
+      "default": "[cc-creator-first-name] [cc-creator-last-name], powered by",
+      "info": "Primary hero heading. Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading Accent (Italic)",
+      "default": "BRAND",
+      "info": "Text that appears in italics after the main heading. Supports dynamic text replacement."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description Text",
+      "default": "Professional trail runner and ultramarathon champion. [cc-creator-first-name] pushes the boundaries of human endurance, conquering the world's most challenging mountain races.",
+      "info": "Description text below the heading. Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "feature_text",
+      "label": "Feature Title",
+      "default": "• 2024 Ultra-Trail World Champion",
+      "info": "Feature highlight title (leave empty to hide). Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "feature_subtitle",
+      "label": "Feature Subtitle",
+      "default": "First to complete the 200-mile Alpine Challenge under 40 hours",
+      "info": "Feature highlight subtitle. Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Text",
+      "default": "Shop Now",
+      "info": "CTA button text (leave empty to hide button). Supports dynamic text replacement."
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button URL",
+      "default": "/collections/all",
+      "info": "Use #drops-anchor to scroll down to a products section"
+    },
+    {
+      "type": "text",
+      "id": "stat_label",
+      "label": "Stat Label",
+      "default": "Total Distance",
+      "info": "Floating badge stat label (leave empty to hide stat card). Supports dynamic text replacement."
+    },
+    {
+      "type": "text",
+      "id": "stat_value",
+      "label": "Stat Value",
+      "default": "50,000+ km",
+      "info": "Floating badge stat value. Supports dynamic text replacement."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero Image (Fallback)",
+      "info": "Automatically uses creator profile picture if available on metaobject pages, otherwise uses this fallback image. Recommended: 1080px width, portrait orientation. Leave empty to center all content."
+    },
+    {
+      "type": "header",
+      "content": "Background Settings",
+      "info": "Choose between animated wave gradient, static image, or solid color backgrounds"
+    },
+    {
+      "type": "select",
+      "id": "background_type",
+      "label": "Background Type",
+      "options": [
+        {
+          "value": "wave",
+          "label": "Wave (Animated Gradient)"
+        },
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "color",
+          "label": "Solid Color"
+        }
+      ],
+      "default": "wave",
+      "info": "Choose between animated WebGL gradient, static image, or solid color"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Only used when Background Type is 'Image'. Recommended: 2400px width for high-res displays"
+    },
+    {
+      "type": "range",
+      "id": "background_overlay_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Background Image Overlay Opacity",
+      "default": 0.4,
+      "info": "Black overlay opacity for background images (0 = transparent, 1 = solid black)"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Solid Background Color",
+      "default": "#f9f9f9",
+      "info": "Only used when Background Type is 'Solid Color'"
+    },
+    {
+      "type": "paragraph",
+      "content": "Wave Gradient Colors: Customize the 7 colors used in the animated wave gradient. Colors blend smoothly from top to bottom with organic wave motion."
+    },
+    {
+      "type": "color",
+      "id": "wave_color_1",
+      "label": "Wave Color 1 (Top)",
+      "default": "#FAD4FB"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_2",
+      "label": "Wave Color 2",
+      "default": "#FAC8E1"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_3",
+      "label": "Wave Color 3",
+      "default": "#FAB615"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_4",
+      "label": "Wave Color 4 (Middle)",
+      "default": "#FC681E"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_5",
+      "label": "Wave Color 5",
+      "default": "#0D5DF4"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_6",
+      "label": "Wave Color 6",
+      "default": "#0B4ABB"
+    },
+    {
+      "type": "color",
+      "id": "wave_color_7",
+      "label": "Wave Color 7 (Bottom)",
+      "default": "#170E07"
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling",
+      "info": "Customize colors, typography, layout, spacing, borders, and visual appearance"
+    },
+    {
+      "type": "paragraph",
+      "content": "Colors: Set background and text colors for all elements"
+    },
+    {
+      "type": "checkbox",
+      "id": "dynamic_text_colors",
+      "label": "Auto-Adjust Text Contrast",
+      "default": false,
+      "info": "Automatically calculates optimal text colors (black or white) based on background colors for maximum readability. Works best with solid color backgrounds."
+    },
+    {
+      "type": "paragraph",
+      "content": "Layout & Spacing: Control container width, gaps, and responsive padding"
+    },
+    {
+      "type": "range",
+      "id": "container_max_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Container Max Width",
+      "default": 1450
+    },
+    {
+      "type": "range",
+      "id": "section_gap",
+      "min": 1,
+      "max": 8,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Gap Between Content & Image",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "container_padding_x",
+      "min": 0,
+      "max": 6,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Horizontal Padding",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "container_padding_top_mobile",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Top Padding (Mobile)",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "container_padding_bottom_mobile",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Bottom Padding (Mobile)",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "container_padding_top_desktop",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Top Padding (Desktop)",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "container_padding_bottom_desktop",
+      "min": 0,
+      "max": 10,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Bottom Padding (Desktop)",
+      "default": 5
+    },
+    {
+      "type": "paragraph",
+      "content": "Badge Styling: Customize the top badge appearance, colors, and typography"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg_color",
+      "label": "Badge Background",
+      "default": "rgba(255, 255, 255, 0.9)"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "badge_font_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Badge Font Size",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "badge_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Badge Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Badge Border Radius",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "badge_border_color",
+      "label": "Badge Border Color",
+      "default": "rgba(255, 255, 255, 0.3)"
+    },
+    {
+      "type": "range",
+      "id": "badge_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Badge Border Width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_x",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Badge Horizontal Padding",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "badge_padding_y",
+      "min": 0.5,
+      "max": 2,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Badge Vertical Padding",
+      "default": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "badge_show_shadow",
+      "label": "Show Badge Shadow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "badge_margin_bottom",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Badge Bottom Spacing",
+      "default": 1.5
+    },
+    {
+      "type": "paragraph",
+      "content": "Heading Styling: Customize main heading and accent text appearance"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 0.8,
+      "max": 1.5,
+      "step": 0.1,
+      "label": "Heading Line Height",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "heading_accent_font_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Accent Font Size",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_accent_line_height",
+      "min": 0.8,
+      "max": 1.5,
+      "step": 0.1,
+      "label": "Heading Accent Line Height",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Heading Bottom Spacing",
+      "default": 1
+    },
+    {
+      "type": "paragraph",
+      "content": "Description Styling: Customize description text appearance"
+    },
+    {
+      "type": "range",
+      "id": "description_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Description Font Size",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Description Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "description_margin_bottom",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Description Bottom Spacing",
+      "default": 2
+    },
+    {
+      "type": "paragraph",
+      "content": "Feature Highlight Styling: Customize feature section with dot indicator"
+    },
+    {
+      "type": "range",
+      "id": "feature_title_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Feature Title Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "feature_title_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Feature Title Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "feature_subtitle_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Feature Subtitle Font Size",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "feature_subtitle_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Feature Subtitle Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "features_margin_bottom",
+      "min": 0,
+      "max": 8,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Feature Bottom Spacing",
+      "default": 3
+    },
+    {
+      "type": "paragraph",
+      "content": "Button Styling: Customize CTA button appearance, borders, and effects"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Button Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Border Radius",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Border Width",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "min": 1,
+      "max": 4,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Button Horizontal Padding",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "min": 0.5,
+      "max": 3,
+      "step": 0.5,
+      "unit": "rem",
+      "label": "Button Vertical Padding",
+      "default": 1.5
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show_arrow",
+      "label": "Show Arrow Icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "button_show_shadow",
+      "label": "Show Button Shadow",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Hero Image Styling: Customize image container appearance and borders"
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Image Border Radius",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "image_max_width",
+      "min": 400,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Image Max Width",
+      "default": 1000,
+      "info": "Maximum width of the image container"
+    },
+    {
+      "type": "color",
+      "id": "image_border_color",
+      "label": "Image Border Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "image_border_width",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Image Border Width",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "image_show_shadow",
+      "label": "Show Image Shadow",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "Floating Stat Card Styling: Customize stat badge that overlays the image"
+    },
+    {
+      "type": "color",
+      "id": "floating_badge_bg_color",
+      "label": "Floating Badge Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "floating_badge_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Floating Badge Border Radius",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "stat_label_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Stat Label Font Size",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "stat_label_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Stat Label Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "stat_value_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Stat Value Font Size",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "stat_value_line_height",
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1,
+      "label": "Stat Value Line Height",
+      "default": 1.5
+    },
+    {
+      "type": "color",
+      "id": "stat_label_color",
+      "label": "Stat Label Color",
+      "default": "rgba(0, 0, 0, 0.6)"
+    },
+    {
+      "type": "color",
+      "id": "stat_value_color",
+      "label": "Stat Value Color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "stat_show_shadow",
+      "label": "Show Stat Card Shadow",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "floating_badge_border_color",
+      "label": "Floating Badge Border Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "floating_badge_border_width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Floating Badge Border Width",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Advanced Settings",
+      "info": "Custom styling and advanced options"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Add custom CSS rules to override styles. Use this to apply custom fonts if theme fonts don't work out-of-the-box (e.g., font-family: 'Your Font', sans-serif;)."
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Hero - Equinox"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["*"]
+  }
+}
+{% endschema %}
+

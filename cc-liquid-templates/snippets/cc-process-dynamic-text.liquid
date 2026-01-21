@@ -21,6 +21,17 @@
   Returns: Processed text is assigned to the specified output_var
 {% endcomment %}
 
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+-%}
+
 {% liquid
   # Initialize processed_text with input_text, ensuring it's always set (even if blank)
   if input_text == blank or input_text == null

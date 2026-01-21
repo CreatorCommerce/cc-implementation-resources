@@ -498,15 +498,15 @@
 
   assign show_section = true
   assign use_fallback = false
-  assign fallback_collection = nil
+  assign fallback_collection_object = nil
   
   if has_drops == false
     if no_drops_behavior == 'hide'
       assign show_section = false
     elsif no_drops_behavior == 'fallback' and fallback_collection != blank
       assign use_fallback = true
-      assign fallback_collection = collections[fallback_collection]
-      if fallback_collection and fallback_collection.products_count > 0
+      assign fallback_collection_object = collections[fallback_collection]
+      if fallback_collection_object and fallback_collection_object.products_count > 0
         assign show_section = true
       else
         assign show_section = false
@@ -634,7 +634,7 @@
             {%- if use_fallback -%}
               {%- comment -%} Fallback collection display {%- endcomment -%}
               <div class="cc-products-grid cc-drop-products active">
-                {%- for product in fallback_collection.products limit: products_to_show -%}
+                {%- for product in fallback_collection_object.products limit: products_to_show -%}
                   {%- comment -%} Calculate creator discount pricing using snippet {%- endcomment -%}
                   {% capture price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'price' %}{% endcapture %}
                   {% capture compare_price_output %}{% render 'cc-price', product: product, cc_creator: cc_creator, output: 'compare_at_price' %}{% endcapture %}
