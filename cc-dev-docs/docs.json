@@ -50,20 +50,60 @@
                            "getting-started",
                            "how-to-use-these-docs",
                            "the-3-ms",
+                           "co-branded-collab-spectrum",
                            "shopify-compatibility",
                            "building-prerequisites",
                            "glossary"
                         ]
                      },
                      {
-                        "group":"CABABILITIES",
+                        "group":"CAPABILITIES",
                         "expanded":true,
                         "pages":[
-                           "Unite-your-collab-tech-stack",
-                           "make-your-first-collabs",
-                           "make-your-first-shopping-experiences",
-                           "attribute-analyze",
-                           "optimize-scale"
+                           {
+                              "group":"Core Platform Features",
+                              "expanded":true,
+                              "pages":[]
+                           },
+                           {
+                              "group":"Developer Use Cases",
+                              "expanded":true,
+                              "pages":[]
+                           },
+                           {
+                              "group":"Merchant Use Cases",
+                              "expanded":true,
+                              "pages":[
+                                 {
+                                    "group":"Getting Started",
+                                    "expanded":true,
+                                    "pages":[
+                                       "make-your-first-collabs",
+                                       "make-your-first-shopping-experiences"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Analytics & Optimization",
+                                    "expanded":true,
+                                    "pages":[
+                                       "attribute-analyze",
+                                       "optimize-scale"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Integrations",
+                                    "expanded":true,
+                                    "pages":[
+                                       "Unite-your-collab-tech-stack"
+                                    ]
+                                 }
+                              ]
+                           },
+                           {
+                              "group":"Use Cases for AI",
+                              "expanded":true,
+                              "pages":[]
+                           }
                         ]
                      },
                      {
@@ -88,7 +128,7 @@
                            },
                            "guides/shopify-mcp",
                            {
-                              "group":"Figma MCP",
+                              "group":"Figma Setup",
                               "expanded":true,
                               "pages":[
                                  "guides/figma-mcp",
@@ -571,11 +611,11 @@
                   ]
                },
                {
-                  "item":"Figma MCP",
+                  "item":"Figma Setup",
                   "icon":"image",
                   "groups":[
                      {
-                        "group":"Figma MCP",
+                        "group":"Figma Setup",
                         "expanded":true,
                         "pages":[
                            "guides/figma-mcp",
