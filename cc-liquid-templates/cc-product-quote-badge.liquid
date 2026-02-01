@@ -798,17 +798,17 @@
   # Process Dynamic Text
   # ============================================
   capture name_text
-    render 'cc-process-dynamic-text', input_text: section.settings.name_text
+    render 'cc-process-dynamic-text', input_text: section.settings.name_text, cc_creator: cc_creator, metaobject: metaobject
   endcapture
   assign name_text = name_text | strip
 
   capture tagline_text
-    render 'cc-process-dynamic-text', input_text: section.settings.tagline_text
+    render 'cc-process-dynamic-text', input_text: section.settings.tagline_text, cc_creator: cc_creator, metaobject: metaobject
   endcapture
   assign tagline_text = tagline_text | strip
 
   capture button_text
-    render 'cc-process-dynamic-text', input_text: section.settings.button_text
+    render 'cc-process-dynamic-text', input_text: section.settings.button_text, cc_creator: cc_creator, metaobject: metaobject
   endcapture
   assign button_text = button_text | strip
 
@@ -1387,7 +1387,7 @@
         { "value": "fixed_top", "label": "Fixed to Top (Always at top)" },
         { "value": "fixed_bottom", "label": "Fixed to Bottom (Always at bottom)" }
       ],
-      "default": "fixed_bottom",
+      "default": "normal",
       "info": "Normal scrolls with content. Fixed in Place stays locked to its natural position. Fixed to Top/Bottom pins to viewport edges."
     },
     {
@@ -1399,28 +1399,28 @@
       "type": "text",
       "id": "name_text",
       "label": "Name Display",
-      "default": "[cc-creator-first-name] Reviewed",
+      "default": "[cc-creator-first-name] [cc-creator-last-name]",
       "info": "Leave empty to auto-generate from creator first/last name fields. Supports dynamic text replacement."
     },
     {
       "type": "text",
       "id": "tagline_text",
       "label": "Tagline / Subtitle",
-      "default": "",
+      "default": "Recommended by me",
       "info": "Optional subtitle below the name. Supports dynamic text replacement."
     },
     {
       "type": "text",
       "id": "button_text",
       "label": "Button Text",
-      "default": "See the Review",
+      "default": "See why",
       "info": "Clicking the button expands the banner to show the creator's note and media. Leave empty to hide button."
     },
     {
       "type": "checkbox",
       "id": "button_show_arrow",
       "label": "Show Arrow on Button",
-      "default": false
+      "default": true
     },
     {
       "type": "checkbox",
@@ -1475,14 +1475,14 @@
         { "value": "glass", "label": "Liquid Glass (Frosted)" },
         { "value": "image", "label": "Image (30% Dark Overlay)" }
       ],
-      "default": "glass",
+      "default": "color",
       "info": "Liquid Glass creates a beautiful frosted effect with blur and subtle reflections"
     },
     {
       "type": "color",
       "id": "background_color",
       "label": "Background Color",
-      "default": "#ffffff",
+      "default": "#1a1a2e",
       "info": "Used for solid color background mode"
     },
     {
@@ -1556,7 +1556,7 @@
         { "value": "creator", "label": "Creator Profile Picture" },
         { "value": "product", "label": "Product Featured Image" }
       ],
-      "default": "product",
+      "default": "creator",
       "info": "Choose to show the creator's profile picture or the current product's featured image"
     },
     {
@@ -1583,14 +1583,14 @@
       "type": "color",
       "id": "avatar_bg_color_1",
       "label": "Avatar Gradient Start Color",
-      "default": "#444444",
+      "default": "#667eea",
       "info": "First color of the gradient background (used for auto-contrast calculation)"
     },
     {
       "type": "color",
       "id": "avatar_bg_color_2",
       "label": "Avatar Gradient End Color",
-      "default": "#000000",
+      "default": "#764ba2",
       "info": "Second color of the gradient background"
     },
     {
@@ -1611,7 +1611,7 @@
       "type": "color",
       "id": "avatar_ring_color",
       "label": "Avatar Ring Color",
-      "default": "#ffffff40"
+      "default": "rgba(255, 255, 255, 0.25)"
     },
     {
       "type": "header",
@@ -1679,7 +1679,7 @@
       "type": "checkbox",
       "id": "auto_text_contrast",
       "label": "Auto Text Contrast",
-      "default": true,
+      "default": false,
       "info": "Automatically calculates optimal text colors (black or white) based on background for best readability"
     },
     {
@@ -1693,7 +1693,7 @@
       "type": "color",
       "id": "tagline_color",
       "label": "Tagline Text Color",
-      "default": "#ffffffb3",
+      "default": "rgba(255, 255, 255, 0.7)",
       "info": "Ignored when Auto Text Contrast is enabled"
     },
     {
@@ -1718,7 +1718,7 @@
       "type": "color",
       "id": "button_border_color",
       "label": "Button Border Color",
-      "default": "rgba(0,0,0,0)"
+      "default": "transparent"
     },
     {
       "type": "range",
@@ -1740,7 +1740,7 @@
       "type": "color",
       "id": "discount_bg_color",
       "label": "Discount Badge Background",
-      "default": "#ffffff26"
+      "default": "rgba(255, 255, 255, 0.15)"
     },
     {
       "type": "color",
@@ -1784,7 +1784,7 @@
       "step": 2,
       "unit": "px",
       "label": "Corner Roundness",
-      "default": 22,
+      "default": 0,
       "info": "Rounds the corners of the banner. 0 = square edges, 50 = very rounded"
     },
     {
@@ -1815,7 +1815,7 @@
       "step": 4,
       "unit": "px",
       "label": "Vertical Padding (Mobile)",
-      "default": 12
+      "default": 8
     },
     {
       "type": "range",
@@ -1845,7 +1845,7 @@
       "step": 4,
       "unit": "px",
       "label": "Margin Bottom",
-      "default": 16
+      "default": 0
     },
     {
       "type": "range",
@@ -1855,7 +1855,7 @@
       "step": 4,
       "unit": "px",
       "label": "Margin Left",
-      "default": 16
+      "default": 0
     },
     {
       "type": "range",
@@ -1865,7 +1865,7 @@
       "step": 4,
       "unit": "px",
       "label": "Margin Right",
-      "default": 16
+      "default": 0
     },
     {
       "type": "header",
@@ -1919,8 +1919,9 @@
       "name": "CC Product - Quote Badge"
     }
   ],
-  "enabled_on": {
-    "templates": ["product"]
-  }
+   "enabled_on": {
+  "groups": ["custom.product"],
+  "templates": ["product"]
+}
 }
 {% endschema %}

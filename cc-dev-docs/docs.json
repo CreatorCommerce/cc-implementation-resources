@@ -47,13 +47,13 @@
                         "group":"FIRST STEPS",
                         "expanded":true,
                         "pages":[
-                           "getting-started",
-                           "how-to-use-these-docs",
-                           "the-3-ms",
-                           "co-branded-collab-spectrum",
-                           "shopify-compatibility",
-                           "building-prerequisites",
-                           "glossary"
+                           "guides/getting-started",
+                           "guides/how-to-use-these-docs",
+                           "guides/the-3-ms",
+                           "guides/co-branded-collab-spectrum",
+                           "guides/shopify-compatibility",
+                           "guides/building-prerequisites",
+                           "guides/glossary"
                         ]
                      },
                      {
@@ -78,23 +78,23 @@
                                     "group":"Getting Started",
                                     "expanded":true,
                                     "pages":[
-                                       "make-your-first-collabs",
-                                       "make-your-first-shopping-experiences"
+                                       "guides/make-your-first-collabs",
+                                       "guides/make-your-first-shopping-experiences"
                                     ]
                                  },
                                  {
                                     "group":"Analytics & Optimization",
                                     "expanded":true,
                                     "pages":[
-                                       "attribute-analyze",
-                                       "optimize-scale"
+                                       "guides/attribute-analyze",
+                                       "guides/optimize-scale"
                                     ]
                                  },
                                  {
                                     "group":"Integrations",
                                     "expanded":true,
                                     "pages":[
-                                       "Unite-your-collab-tech-stack"
+                                       "guides/connect-your-tech-stack"
                                     ]
                                  }
                               ]
@@ -102,7 +102,9 @@
                            {
                               "group":"Use Cases for AI",
                               "expanded":true,
-                              "pages":[]
+                              "pages":[
+                                 "ai-guides/ai-guide-first-landing-page"
+                              ]
                            }
                         ]
                      },
@@ -149,18 +151,18 @@
                         "group":"DATA MODEL",
                         "expanded":true,
                         "pages":[
-                           "data-model-overview",
-                           "creator-collab-data-model",
-                           "drops-products-data-model",
-                           "custom-fields-reference",
-                           "glossary"
+                           "references/data-model-overview",
+                           "references/creator-collab-data-model",
+                           "references/drops-products-data-model",
+                           "references/custom-fields-reference",
+                           "guides/glossary"
                         ]
                      },
                      {
                         "group":"SHOPIFY OBJECTS",
                         "expanded":true,
                         "pages":[
-                           "shopify-integration-data-model",
+                           "references/shopify-integration-data-model",
                            {
                               "group":"Shopify objects",
                               "expanded":true,
@@ -209,8 +211,8 @@
                         "group":"UNIFIED API",
                         "expanded":true,
                         "pages":[
-                           "unified-api-reference",
-                           "api-overview",
+                           "references/unified-api-reference",
+                           "references/api-overview",
                            "guides/authentication",
                            {
                               "group":"Endpoints",
@@ -277,24 +279,24 @@
                         "group":"Overview",
                         "expanded":true,
                         "pages":[
-                           "creator-dashboard"
+                           "guides/creator-dashboard"
                         ]
                      },
                      {
                         "group":"CSS Customization",
                         "expanded":true,
                         "pages":[
-                           "dashboard-overview-css",
-                           "css-reference",
-                           "css-applied-examples"
+                           "references/dashboard-overview-css",
+                           "references/css-reference",
+                           "references/css-applied-examples"
                         ]
                      },
                      {
                         "group":"UNIFIED API",
                         "expanded":true,
                         "pages":[
-                           "unified-api-reference",
-                           "api-overview",
+                           "references/unified-api-reference",
+                           "references/api-overview",
                            "guides/authentication",
                            {
                               "group":"Endpoints",
@@ -325,14 +327,14 @@
                   "anchor":"Creator Message Flows",
                   "icon":"message-circle",
                   "pages":[
-                     "creator-messaging"
+                     "guides/creator-messaging"
                   ]
                },
                {
                   "anchor":"Content Enrichment",
                   "icon":"workflow",
                   "pages":[
-                     "enrichment-flows"
+                     "guides/enrichment-flows"
                   ]
                }
             ]
@@ -348,7 +350,7 @@
                         "group":"Learning the basics",
                         "expanded":true,
                         "pages":[
-                           "co-branded-storefronts",
+                           "guides/co-branded-storefronts",
                            {
                               "title":"Shopify Objects",
                               "href":"/references/shopify-reference"
@@ -390,7 +392,7 @@
                   "anchor":"Co-branded Emails",
                   "icon":"mail",
                   "pages":[
-                     "co-branded-messaging"
+                     "guides/co-branded-messaging"
                   ]
                }
             ]
@@ -414,7 +416,7 @@
                         "group":"Getting Started",
                         "expanded":true,
                         "pages":[
-                           "api-overview",
+                           "references/api-overview",
                            "guides/authentication"
                         ]
                      },
@@ -464,7 +466,7 @@
                         "expanded":true,
                         "pages":[
                            "temp2",
-                           "glossary",
+                           "guides/glossary",
                            "temp3"
                         ]
                      }
@@ -478,7 +480,7 @@
                         "group":"SHOPIFY OBJECTS",
                         "expanded":true,
                         "pages":[
-                           "shopify-integration-data-model",
+                           "references/shopify-integration-data-model",
                            {
                               "group":"Shopify objects",
                               "expanded":true,

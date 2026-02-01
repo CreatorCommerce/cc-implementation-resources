@@ -1,0 +1,381 @@
+---
+description: Agentic workflow for implementing CreatorCommerce co-branded experiences in merchant Shopify themes via API calls. Use when asked to run the co-branding pipeline, implement CC in a theme, or set up co-branded funnels for a merchant.
+globs:
+alwaysApply: false
+---
+
+# CreatorCommerce Theme Co-Branding Pipeline
+
+This rule defines an agentic workflow for implementing co-branded experiences in merchant themes. Execute steps sequentially, making API calls via terminal (curl).
+
+## Workflow Summary
+
+```
+1. FETCH THEME → 2. GATHER CONTEXT → 3. FORM STRATEGY → 4. FETCH FILES → 5. TRANSFORM → 6. PUSH → 7. HUMAN REVIEW
+```
+
+## Required Variables
+
+Before starting, confirm these with the user or use defaults:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MERCHANT_DOMAIN` | Merchant's myshopify.com domain | `example-store.myshopify.com` |
+| `THEME_ID` | Target theme ID (default: production) | `123456789` |
+| `DEV_THEME_ID` | Dev theme to push changes to | `987654321` |
+| `CC_API_TOKEN` | CreatorCommerce API token | `[ASK USER]` |
+
+### API Endpoints (PLACEHOLDERS - NEED REAL VALUES)
+
+```bash
+# Theme API
+THEME_API_BASE="[PLACEHOLDER - e.g. https://api.creatorcommerce.shop/themes]"
+
+# CreatorCommerce API  
+CC_API_BASE="[PLACEHOLDER - e.g. https://api.creatorcommerce.shop/v1]"
+
+# Attio CRM
+ATTIO_API_BASE="https://api.attio.com/v2"
+ATTIO_API_KEY="[ASK USER OR USE ENV]"
+
+# Mantle
+MANTLE_API_BASE="[PLACEHOLDER]"
+MANTLE_API_KEY="[ASK USER OR USE ENV]"
+```
+
+---
+
+## Step 1: Fetch Theme Structure
+
+**Goal:** Get `index.json` and `product.json` to understand theme layout.
+
+```bash
+# Fetch homepage template
+curl -X GET "${THEME_API_BASE}/${MERCHANT_DOMAIN}/themes/${THEME_ID}/files/templates/index.json" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json"
+
+# Fetch product page template
+curl -X GET "${THEME_API_BASE}/${MERCHANT_DOMAIN}/themes/${THEME_ID}/files/templates/product.json" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json"
+```
+
+**AI Analysis Tasks:**
+- List all section types found
+- Identify hero section type (image-banner, slideshow, custom, etc.)
+- Identify product grid/collection sections
+- Note any existing customizations that suggest brand style
+
+**Output to User:**
+```
+Found sections in index.json:
+- [section-type]: [section-id]
+- ...
+
+Theme appears to be: [Dawn-based / Heavily customized / Third-party theme]
+```
+
+---
+
+## Step 2: Gather Customer Context
+
+### 2a. Attio - Customer Record
+
+```bash
+curl -X GET "${ATTIO_API_BASE}/objects/companies?filter[domains]=${MERCHANT_DOMAIN}" \
+  -H "Authorization: Bearer ${ATTIO_API_KEY}" \
+  -H "Content-Type: application/json"
+```
+
+**Extract:**
+- Industry/vertical
+- Company size
+- Implementation notes
+- Onboarding status
+
+### 2b. Mantle - Subscription Data
+
+```bash
+curl -X GET "${MANTLE_API_BASE}/customers?shop=${MERCHANT_DOMAIN}" \
+  -H "Authorization: Bearer ${MANTLE_API_KEY}" \
+  -H "Content-Type: application/json"
+```
+
+**Extract:**
+- Plan tier
+- Feature flags
+- Usage metrics
+
+**Output to User:**
+```
+Customer Context:
+- Industry: [value]
+- Plan: [value]
+- Status: [value]
+- Notes: [any relevant notes]
+```
+
+---
+
+## Step 3: Form Co-Branding Strategy
+
+### Strategy Decision Matrix
+
+Based on gathered context, determine approach:
+
+| Factor | Condition | Recommendation |
+|--------|-----------|----------------|
+| Theme complexity | Dawn-based, minimal custom | Use prebuilt CC sections |
+| Theme complexity | Heavily customized | Convert existing sections |
+| Plan tier | Starter | 1 funnel, prebuilt only |
+| Plan tier | Pro+ | 2 funnels, both approaches |
+| Industry | Fashion/Beauty | Visual-heavy, UGC grid priority |
+| Industry | Health/Wellness | Testimonials, trust signals |
+| Industry | Sports/Fitness | Action imagery, performance stats |
+
+### Define Funnels
+
+**Funnel A: Prebuilt Sections (Fast Path)**
+- Add CC sections without modifying existing theme
+- Sections to add: `cc-hero-equinox`, `cc-drops-product-curated-lists-shell`
+- Lower risk, faster implementation
+
+**Funnel B: Converted Sections (Deep Integration)**
+- Modify existing theme sections to be co-brand aware
+- More seamless, matches existing brand feel
+- Higher effort, better long-term result
+
+### Create Test Creators
+
+```bash
+# Create test creator 1
+curl -X POST "${CC_API_BASE}/channels/${MERCHANT_DOMAIN}/collabs" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Alex",
+    "lastName": "Demo",
+    "email": "test-creator-1@creatorcommerce.test",
+    "handle": "alex-demo",
+    "profilePicture": "https://assets.creatorcommerce.shop/demo/creator-1.jpg",
+    "bio": "Test creator for implementation preview"
+  }'
+
+# Create test creator 2
+curl -X POST "${CC_API_BASE}/channels/${MERCHANT_DOMAIN}/collabs" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Jordan",
+    "lastName": "Demo", 
+    "email": "test-creator-2@creatorcommerce.test",
+    "handle": "jordan-demo",
+    "profilePicture": "https://assets.creatorcommerce.shop/demo/creator-2.jpg",
+    "bio": "Test creator for implementation preview"
+  }'
+```
+
+**Output to User:**
+```
+Strategy:
+- Funnel A: [Prebuilt sections - list which]
+- Funnel B: [Converted sections - list which]
+
+Test creators created:
+- alex-demo
+- jordan-demo
+```
+
+---
+
+## Step 4: Fetch Individual Theme Files
+
+Based on sections identified in Step 1, fetch each file needed:
+
+```bash
+# Pattern for any file
+curl -X GET "${THEME_API_BASE}/${MERCHANT_DOMAIN}/themes/${THEME_ID}/files/${FILE_PATH}" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json"
+```
+
+**Files to fetch (adjust based on Step 1 analysis):**
+
+For Funnel A (Prebuilt):
+- `templates/index.json` - To add new sections
+- `config/settings_data.json` - Theme settings
+
+For Funnel B (Converted):
+- `sections/[hero-section-name].liquid`
+- `sections/[collection-section-name].liquid`
+- `snippets/product-card.liquid`
+- `snippets/price.liquid`
+
+---
+
+## Step 5: Transform Files
+
+### For Funnel A: Adding Prebuilt Sections
+
+1. Copy section files from `cc-liquid-templates/`:
+   - `cc-hero-equinox.liquid` → `sections/`
+   - `cc-drops-product-curated-lists-shell.liquid` → `sections/`
+
+2. Copy required snippets:
+   - `cc-process-dynamic-text.liquid` → `snippets/`
+   - `cc-calculate-contrast-color.liquid` → `snippets/`
+
+3. Update `templates/index.json` to include new sections in the order array
+
+### For Funnel B: Converting Existing Sections
+
+Apply these patterns to existing Liquid files:
+
+**Add creator context resolution at top:**
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+**Wrap personalized content:**
+```liquid
+{% if has_creator %}
+  <div class="creator-endorsement">
+    <span>Recommended by {{ cc_creator.cc-creator-first-name }}</span>
+  </div>
+{% endif %}
+```
+
+**Add preview_creator setting to schema:**
+```json
+{
+  "type": "metaobject",
+  "id": "preview_creator",
+  "label": "Preview Creator",
+  "metaobject_type": "creator"
+}
+```
+
+Follow patterns from:
+- `.cursor/rules/cc-creating-co-branded-templates.mdc`
+- `.cursor/rules/cc-referencing-drops-data.mdc`
+- Always-applied workspace rules for Liquid patterns
+
+---
+
+## Step 6: Push Files to Dev Theme
+
+```bash
+# Push each transformed file
+curl -X PUT "${THEME_API_BASE}/${MERCHANT_DOMAIN}/themes/${DEV_THEME_ID}/files/${FILE_PATH}" \
+  -H "Authorization: Bearer ${CC_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "BASE64_ENCODED_OR_ESCAPED_CONTENT"
+  }'
+```
+
+**Push order (dependencies first):**
+1. Snippets (`snippets/*.liquid`)
+2. Sections (`sections/*.liquid`)
+3. Templates (`templates/*.json`)
+4. Config (`config/settings_data.json`) - if modified
+
+---
+
+## Step 7: Human Review
+
+**Provide preview URLs:**
+```
+Funnel A Preview:
+https://${MERCHANT_DOMAIN}/?preview_theme_id=${DEV_THEME_ID}&cc-creator-handle=alex-demo
+
+Funnel B Preview:
+https://${MERCHANT_DOMAIN}/?preview_theme_id=${DEV_THEME_ID_B}&cc-creator-handle=alex-demo
+
+Without creator (fallback test):
+https://${MERCHANT_DOMAIN}/?preview_theme_id=${DEV_THEME_ID}
+```
+
+**Review Checklist (share with user):**
+- [ ] Homepage loads with creator context
+- [ ] Homepage loads without creator (neutral fallback)
+- [ ] Product page displays correctly
+- [ ] Mobile responsive
+- [ ] No console errors
+- [ ] Creator name/image displays correctly
+- [ ] Discount code shows (if applicable)
+
+---
+
+## PLACEHOLDERS TO CLARIFY
+
+Before this workflow is fully operational, define:
+
+### API Endpoints
+- [ ] `THEME_API_BASE` - Theme file read/write service URL
+- [ ] `CC_API_BASE` - CreatorCommerce API base URL
+- [ ] `MANTLE_API_BASE` - Mantle API base URL
+- [ ] Test creator payload schema - exact fields required
+
+### Authentication
+- [ ] How to obtain `CC_API_TOKEN` per merchant?
+- [ ] Is there a service-level token or per-merchant?
+- [ ] Token refresh mechanism?
+
+### Theme Management
+- [ ] How to get production theme ID for a merchant?
+- [ ] How to create/get dev theme ID?
+- [ ] File content encoding (base64? escaped JSON string?)
+
+### External Systems
+- [ ] Attio object schema - which fields to query?
+- [ ] Mantle customer lookup - by domain or ID?
+
+---
+
+## Quick Start Command
+
+When user says "Run co-branding pipeline for [merchant]":
+
+```bash
+# Set merchant
+export MERCHANT_DOMAIN="[merchant].myshopify.com"
+
+# Confirm tokens are set
+echo "CC_API_TOKEN: ${CC_API_TOKEN:0:10}..."
+echo "ATTIO_API_KEY: ${ATTIO_API_KEY:0:10}..."
+
+# Begin Step 1
+# [execute fetch commands]
+```
+
+---
+
+## Error Handling
+
+| Error | Likely Cause | Resolution |
+|-------|--------------|------------|
+| 401 Unauthorized | Invalid/expired token | Refresh token or check credentials |
+| 404 Theme not found | Wrong theme ID | Verify theme ID with merchant |
+| 404 File not found | Wrong file path | Check exact path from index.json |
+| 422 Validation error | Invalid file content | Check Liquid syntax, escape properly |
+
+---
+
+## Success Criteria
+
+Pipeline is complete when:
+1. ✅ All files pushed to dev theme without errors
+2. ✅ Preview URLs generated and shared
+3. ✅ Human has reviewed and approved
+4. ✅ (Optional) Changes merged to production theme
