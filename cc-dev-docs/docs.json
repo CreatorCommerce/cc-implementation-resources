@@ -1,7 +1,7 @@
 {
    "$schema":"https://mintlify.com/docs.json",
    "theme":"mint",
-   "name":"Your Docs",
+   "name":"CreatorCommerce.dev",
       "logo": {
         "light": "https://assets.creatorcommerce.shop/dx-back-icon.png",
         "dark": "https://assets.creatorcommerce.shop/dx-red-icon.png",
@@ -670,5 +670,7 @@
             ]
          }
       ]
-   }
+  },
+  "description": "Access technical docs and AI resources for implementing co-branded commerce accross your brand. Build for Shopify storefronts.",
+  "favicon": "/images/67c504a629e1808cd4f400d0_favicon-feb.png"
 }
