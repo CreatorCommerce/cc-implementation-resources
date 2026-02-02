@@ -676,7 +676,12 @@
   "footer": {
     "socials": {
       "github": "https://github.com/CreatorCommerce/cc-implementation-resources",
-      "youtube": "https://www.youtube.com/@creator_shops"
+      "youtube": "https://www.youtube.com/@creator_shops",
+      "linkedin": "https://www.linkedin.com/company/creatorcommerce/",
+      "website": "https://creatorcommerce.shop/"
     }
+  },
+  "seo": {
+    "indexing": "all"
   }
 }
