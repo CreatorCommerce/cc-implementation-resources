@@ -1,0 +1,541 @@
+---
+title: 'Step 7: Advanced Strategies'
+description: 'For professional and publisher partners: 100% co-branded whitelabel sites and product embeds on their existing sites.'
+---
+
+## Beyond Standard Co-branding
+
+For most partners, the standard co-branded funnel is perfect. But some partners need more:
+
+- **Professional practitioners** with their own patient portals
+- **Publishers** who want products embedded in their content
+- **Large influencers** who want their own "brand within a brand"
+- **Business partners** who need wholesale or B2B experiences
+
+This step covers advanced strategies for these high-value relationships.
+
+---
+
+## Whitelabel Sites
+
+### What It Means
+
+A **whitelabel site** is a fully co-branded shopping experience that feels like the partner's own store:
+
+- Partner's branding dominates (or exclusive)
+- Full product catalog or curated selection
+- Partner-managed content and merchandising
+- Your fulfillment and backend
+
+### When to Offer Whitelabel
+
+<Tabs>
+  <Tab title="Good Candidates">
+    - Partners driving significant volume (top 1-5%)
+    - Practitioners with established patient bases
+    - Publishers with high-intent traffic
+    - Business partners or wholesalers
+    - Long-term strategic relationships
+    
+    **Key signal:** Partner is asking for more control and customization
+  </Tab>
+  
+  <Tab title="Not Ready Yet">
+    - Partners without proven track record
+    - Low-volume partners (not worth the investment)
+    - Partners who don't have their own brand identity
+    - Short-term or campaign-based relationships
+    
+    **Key signal:** Partner hasn't maximized standard co-branding yet
+  </Tab>
+</Tabs>
+
+### Whitelabel Architecture
+
+<AccordionGroup>
+  <Accordion title="Subdomain Approach">
+    **Structure:** `partner.yourbrand.com`
+    
+    **Pros:**
+    - Stays on your domain (SEO, trust)
+    - Easier to manage technically
+    - Clear brand connection
+    
+    **Cons:**
+    - Less "independent" feeling
+    - Partner may want own domain
+    
+    **Best for:** Practitioners, brand ambassadors
+  </Accordion>
+  
+  <Accordion title="Custom Domain Approach">
+    **Structure:** `partnerbrand.com` → Your backend
+    
+    **Pros:**
+    - Fully independent appearance
+    - Partner controls domain
+    - Maximum flexibility
+    
+    **Cons:**
+    - More complex setup
+    - SSL and domain management
+    - Potential brand dilution
+    
+    **Best for:** Publishers, large influencers, business partners
+  </Accordion>
+  
+  <Accordion title="Expansion Store Approach">
+    **Structure:** Separate Shopify store connected to yours
+    
+    **Pros:**
+    - Full Shopify capabilities
+    - Independent but connected
+    - Easier multi-currency/region
+    
+    **Cons:**
+    - Inventory sync complexity
+    - Additional Shopify costs
+    - More to manage
+    
+    **Best for:** International partners, high-volume relationships
+  </Accordion>
+</AccordionGroup>
+
+### Whitelabel Design Considerations
+
+| Element | Standard Co-brand | Whitelabel |
+|---------|-------------------|------------|
+| Logo | Your brand prominent | Partner brand or co-brand |
+| Colors | Your palette + accent | Partner palette primary |
+| Navigation | Your standard nav | Partner-customized |
+| Product selection | Partner's picks | Full or partner-curated catalog |
+| Content | Partner personalization | Partner-managed |
+| Footer | Your brand info | Shared or partner-focused |
+
+### Whitelabel Implementation
+
+<Steps>
+  <Step title="Partner Agreement">
+    Define scope, responsibilities, and revenue share
+  </Step>
+  
+  <Step title="Brand Assets">
+    Collect partner logos, colors, fonts, imagery
+  </Step>
+  
+  <Step title="Template Customization">
+    Create partner-specific theme or template variation
+  </Step>
+  
+  <Step title="Catalog Setup">
+    Define which products available; custom pricing if applicable
+  </Step>
+  
+  <Step title="Domain/Subdomain">
+    Configure routing and SSL
+  </Step>
+  
+  <Step title="Launch & Train">
+    Go live and train partner on any management tools
+  </Step>
+</Steps>
+
+---
+
+## Product Embeds
+
+### What It Means
+
+**Product embeds** let partners feature your products on their existing websites:
+
+- Embeddable product cards or widgets
+- Shoppable content blocks
+- Add-to-cart functionality on partner's site
+- Checkout on your site (or embedded checkout)
+
+### When to Offer Embeds
+
+<Tabs>
+  <Tab title="Good Candidates">
+    - Publishers with established websites
+    - Bloggers and content creators
+    - Practitioners with patient portals
+    - Businesses with existing e-commerce
+    
+    **Key signal:** Partner already has traffic and doesn't want to redirect it
+  </Tab>
+  
+  <Tab title="Not a Fit">
+    - Social-first influencers (no website)
+    - Partners without technical capability
+    - Low-traffic sites (not worth integration effort)
+    
+    **Key signal:** Redirecting to your site would work fine
+  </Tab>
+</Tabs>
+
+### Embed Types
+
+<AccordionGroup>
+  <Accordion title="Product Card Widget">
+    **What it is:** Embeddable card showing single product
+    
+    **Features:**
+    - Product image, title, price
+    - Partner's discount applied
+    - Add-to-cart button
+    - Links to full product page
+    
+    **Use case:** Product mentions in blog posts
+    
+    **Implementation:** JavaScript embed code or iframe
+  </Accordion>
+  
+  <Accordion title="Product Grid Widget">
+    **What it is:** Embeddable grid of multiple products
+    
+    **Features:**
+    - Partner's curated selection
+    - Category or collection display
+    - Carousel or grid layout
+    - Links to partner's co-branded store
+    
+    **Use case:** "Shop my picks" section on partner's site
+    
+    **Implementation:** JavaScript widget with configuration
+  </Accordion>
+  
+  <Accordion title="Buy Button">
+    **What it is:** Simple add-to-cart button
+    
+    **Features:**
+    - Minimal footprint
+    - Direct add-to-cart
+    - Redirect to checkout
+    - Partner attribution preserved
+    
+    **Use case:** Inline product recommendations
+    
+    **Implementation:** Shopify Buy Button or custom
+  </Accordion>
+  
+  <Accordion title="Full Embedded Store">
+    **What it is:** Complete shopping experience in iframe
+    
+    **Features:**
+    - Full browsing and checkout
+    - Partner branding
+    - Embedded in partner's page
+    
+    **Use case:** Partner wants storefront without redirect
+    
+    **Implementation:** Custom iframe with postMessage communication
+    
+    **Caution:** Complex, with UX and security considerations
+  </Accordion>
+</AccordionGroup>
+
+### Embed Implementation
+
+<Tabs>
+  <Tab title="JavaScript Widget">
+    ```html
+    <!-- Partner embeds this on their site -->
+    <div id="cc-product-widget" 
+         data-partner="partner-handle"
+         data-products="product-handle-1,product-handle-2">
+    </div>
+    <script src="https://yourbrand.com/cc-embed.js"></script>
+    ```
+    
+    **Pros:**
+    - Easy to implement
+    - Dynamic content loading
+    - Full styling control
+    
+    **Cons:**
+    - JavaScript dependency
+    - Potential performance impact
+  </Tab>
+  
+  <Tab title="Shopify Buy Button">
+    Use Shopify's native Buy Button for simple embeds:
+    
+    - Configure in Shopify admin
+    - Customize styling
+    - Generate embed code
+    - Partner adds to their site
+    
+    **Pros:**
+    - Officially supported
+    - Reliable checkout integration
+    - Minimal custom code
+    
+    **Cons:**
+    - Limited customization
+    - Shopify branding
+  </Tab>
+  
+  <Tab title="API Integration">
+    For technical partners, provide API access:
+    
+    - Product data API
+    - Cart/checkout API
+    - Partner authentication
+    - Webhook notifications
+    
+    **Pros:**
+    - Maximum flexibility
+    - Native integration
+    
+    **Cons:**
+    - Requires development
+    - Ongoing maintenance
+  </Tab>
+</Tabs>
+
+---
+
+## Practitioner Portals
+
+### What It Is
+
+A **practitioner portal** is a specialized interface for professional partners:
+
+- Patient recommendation tools
+- Wholesale ordering
+- Clinical resources and protocols
+- Practice management integration
+
+### Portal Components
+
+<AccordionGroup>
+  <Accordion title="Patient Recommendations">
+    **Features:**
+    - Generate personalized patient links
+    - Pre-select products for patient's protocol
+    - Patient discount management
+    - Track patient orders
+    
+    **Example flow:**
+    1. Practitioner logs into portal
+    2. Creates recommendation for patient
+    3. Sends patient personalized link
+    4. Patient orders with practitioner's discount
+    5. Practitioner earns commission
+  </Accordion>
+  
+  <Accordion title="Wholesale Ordering">
+    **Features:**
+    - Wholesale pricing display
+    - Bulk ordering interface
+    - Practice inventory management
+    - Reorder reminders
+    
+    **Use case:** Practitioners who stock products in-office
+  </Accordion>
+  
+  <Accordion title="Clinical Resources">
+    **Features:**
+    - Dosing protocols and guidelines
+    - Clinical studies and research
+    - Patient education materials
+    - Continuing education content
+    
+    **Use case:** Product education and confidence building
+  </Accordion>
+  
+  <Accordion title="Practice Integration">
+    **Features:**
+    - Integration with practice management software
+    - Patient record connection
+    - Automated recommendations
+    - Insurance and billing tools
+    
+    **Use case:** Seamless workflow integration
+  </Accordion>
+</AccordionGroup>
+
+### Portal Implementation
+
+Most practitioner portals combine:
+
+1. **CreatorCommerce** for partner profiles and co-branded pages
+2. **Custom admin panel** for practitioner-specific features
+3. **API integrations** for practice software
+4. **Wholesale pricing** via customer tags or app
+
+---
+
+## B2B and Wholesale Considerations
+
+### When Partners Are Businesses
+
+Some "partners" are actually businesses that need:
+
+- **Volume pricing** — Tiered discounts for quantity
+- **Net terms** — Invoice with payment terms
+- **Bulk ordering** — Larger quantities, fewer shipments
+- **Custom products** — Private label or exclusive items
+
+### B2B Implementation Options
+
+<Tabs>
+  <Tab title="Shopify B2B">
+    Use Shopify's native B2B features:
+    
+    - Company accounts
+    - Custom catalogs and pricing
+    - Payment terms
+    - Draft orders and quotes
+    
+    **Best for:** Shopify Plus merchants
+  </Tab>
+  
+  <Tab title="Separate Wholesale Store">
+    Create a separate Shopify store for wholesale:
+    
+    - Different pricing structure
+    - Minimum order quantities
+    - Bulk discounts
+    - Separate checkout flow
+    
+    **Best for:** High wholesale volume
+  </Tab>
+  
+  <Tab title="Wholesale App">
+    Use apps like Wholesale Club or Bold Custom Pricing:
+    
+    - Tag-based pricing
+    - Minimum orders
+    - B2B checkout features
+    
+    **Best for:** Mixed B2C and B2B on same store
+  </Tab>
+</Tabs>
+
+---
+
+## Managing Advanced Relationships
+
+Advanced partnerships require more management:
+
+### Tiered Partnership Structure
+
+| Tier | Access Level | Support Level |
+|------|--------------|---------------|
+| Standard | Co-branded page | Self-service |
+| Premium | Premium templates, features | Priority support |
+| Enterprise | Whitelabel, custom integration | Dedicated manager |
+
+### Enterprise Partner Management
+
+<Checklist>
+  - [ ] Dedicated account manager assigned
+  - [ ] Quarterly business reviews scheduled
+  - [ ] Custom SLA and support channels
+  - [ ] Revenue share and terms documented
+  - [ ] Technical integration support
+  - [ ] Co-marketing opportunities explored
+</Checklist>
+
+---
+
+## ROI Considerations
+
+Advanced strategies require more investment. Ensure the math works:
+
+### Whitelabel ROI
+
+| Investment | Cost |
+|------------|------|
+| Custom design/development | $X one-time |
+| Ongoing maintenance | $Y/month |
+| Partner management | Z hours/month |
+
+| Return | Value |
+|--------|-------|
+| Partner revenue | $A/month |
+| LTV of partner-acquired customers | $B |
+| Strategic value (exclusivity, market access) | Hard to quantify |
+
+**Rule of thumb:** Whitelabel should be reserved for partners generating 10x+ the cost in revenue.
+
+### Embed ROI
+
+| Investment | Cost |
+|------------|------|
+| Widget development | $X one-time |
+| Maintenance | $Y/month |
+| Partner support | Z hours/month |
+
+| Return | Value |
+|--------|-------|
+| Revenue from embeds | $A/month |
+| New customer acquisition | $B |
+| SEO/traffic benefit | Indirect |
+
+---
+
+## Summary: The Full Framework
+
+You've now seen the complete collaboration strategy:
+
+<Steps>
+  <Step title="Step 0: Segment Strategy">
+    Identify which partner segments to win
+  </Step>
+  
+  <Step title="Step 1: Partner Enrollment">
+    Build funnels that attract the right partners
+  </Step>
+  
+  <Step title="Step 2: Partner Activation">
+    Create shock-and-awe co-branded experiences
+  </Step>
+  
+  <Step title="Step 3: Co-branded Storefronts">
+    Design converting landing pages by persona
+  </Step>
+  
+  <Step title="Step 4: Funnel Details">
+    Extend co-branding across the full journey
+  </Step>
+  
+  <Step title="Step 5: Launch & Track">
+    Go live and measure what matters
+  </Step>
+  
+  <Step title="Step 6: Optimize">
+    Test, improve, and retain
+  </Step>
+  
+  <Step title="Step 7: Advanced">
+    Whitelabel and embeds for enterprise partners
+  </Step>
+</Steps>
+
+---
+
+## What's Next
+
+You have the complete framework. Now it's time to implement.
+
+<CardGroup cols={2}>
+  <Card title="AI Implementation Guides" icon="robot" href="/ai-guides/ai-guide-first-landing-page">
+    Use AI-assisted guides to build specific components
+  </Card>
+  <Card title="Template Library" icon="palette" href="/guides/co-branded-storefronts">
+    Explore ready-to-use CC templates
+  </Card>
+</CardGroup>
+
+---
+
+## Need Help?
+
+<Card title="Book a Strategy Call" icon="calendar" href="https://calendly.com/creatorcommerce/30min">
+  Work with the CreatorCommerce team on your collaboration strategy
+</Card>
+
+For technical implementation support, contact **help@creatorcommerce.shop**

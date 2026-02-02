@@ -75,7 +75,47 @@
                               "expanded":true,
                               "pages":[
                                  {
-                                    "group":"Getting Started",
+                                    "group":"End-to-End Collaboration Strategy",
+                                    "expanded":true,
+                                    "pages":[
+                                       "guides/collab-strategy/overview",
+                                       {
+                                          "group":"Foundation",
+                                          "pages":[
+                                             "guides/collab-strategy/segment-strategy"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Build",
+                                          "pages":[
+                                             "guides/collab-strategy/partner-enrollment",
+                                             "guides/collab-strategy/partner-activation"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Launch",
+                                          "pages":[
+                                             "guides/collab-strategy/co-branded-storefronts",
+                                             "guides/collab-strategy/funnel-details"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Scale",
+                                          "pages":[
+                                             "guides/collab-strategy/launch-track",
+                                             "guides/collab-strategy/optimize"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Expand",
+                                          "pages":[
+                                             "guides/collab-strategy/advanced"
+                                          ]
+                                       }
+                                    ]
+                                 },
+                                 {
+                                    "group":"Quick Start Guides",
                                     "expanded":true,
                                     "pages":[
                                        "guides/make-your-first-collabs",

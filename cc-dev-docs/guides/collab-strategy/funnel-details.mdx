@@ -1,0 +1,442 @@
+---
+title: 'Step 4: Funnel Details'
+description: 'Go beyond the landing page with co-branded pop-ups, product pages, carts, and every touchpoint in the shopping experience.'
+---
+
+## Beyond the Landing Page
+
+A great landing page gets the click. But conversion happens across the entire shopping journey.
+
+This step is about extending co-branding beyond the landing page—into every touchpoint where partner context can increase trust and conversion:
+
+- **Pop-ups and modals**
+- **Product pages**
+- **Cart and checkout**
+- **Post-purchase flows**
+
+Every moment is an opportunity to reinforce: "You're shopping with [Partner]."
+
+---
+
+## The Full Co-branded Funnel
+
+```
+Landing Page → Product Page → Cart → Checkout → Thank You → Email
+      ↑                              ↑                        ↑
+   Pop-ups                    Discount Applied          Co-branded Email
+```
+
+Let's break down each touchpoint.
+
+---
+
+## Co-branded Pop-ups
+
+Pop-ups are controversial—but when personalized, they convert.
+
+### Pop-up Types
+
+<AccordionGroup>
+  <Accordion title="Entry Pop-up">
+    **When:** On landing page load or after delay
+    
+    **Purpose:** Capture email, reinforce discount
+    
+    **Co-branding elements:**
+    - Partner name: "[Partner] recommends..."
+    - Partner photo (thumbnail)
+    - Personalized discount code
+    - Partner-specific messaging
+    
+    **Example:**
+    ```
+    ┌──────────────────────────────────┐
+    │  [Photo] Sarah's followers get   │
+    │        15% off today!            │
+    │                                  │
+    │  Enter email for your code:      │
+    │  [_______________________]       │
+    │       [Get My Discount]          │
+    └──────────────────────────────────┘
+    ```
+  </Accordion>
+  
+  <Accordion title="Exit Intent Pop-up">
+    **When:** Mouse moves toward browser close
+    
+    **Purpose:** Prevent abandonment
+    
+    **Co-branding elements:**
+    - "Before you go..." + partner name
+    - Partner's product recommendation
+    - Discount reminder
+    - Partner testimonial
+    
+    **Example:**
+    ```
+    ┌──────────────────────────────────┐
+    │  Wait! Sarah wanted you to see   │
+    │         her #1 pick:             │
+    │                                  │
+    │    [Product Image]               │
+    │    [Add to Cart - 15% Off]       │
+    └──────────────────────────────────┘
+    ```
+  </Accordion>
+  
+  <Accordion title="Add-to-Cart Pop-up">
+    **When:** After adding product to cart
+    
+    **Purpose:** Cross-sell, reinforce discount
+    
+    **Co-branding elements:**
+    - "[Partner] also recommends..."
+    - Complementary product suggestions
+    - Discount confirmation
+    - Cart summary
+    
+    **Example:**
+    ```
+    ┌──────────────────────────────────┐
+    │  Added to cart! ✓                │
+    │  Your 15% discount is applied    │
+    │                                  │
+    │  Sarah also recommends:          │
+    │  [Product] [Product] [Product]   │
+    │                                  │
+    │  [Continue Shopping] [Checkout]  │
+    └──────────────────────────────────┘
+    ```
+  </Accordion>
+  
+  <Accordion title="Scroll-triggered Pop-up">
+    **When:** After scrolling X% of page
+    
+    **Purpose:** Engagement checkpoint
+    
+    **Co-branding elements:**
+    - Partner tip or recommendation
+    - Social proof element
+    - Gentle conversion nudge
+  </Accordion>
+</AccordionGroup>
+
+### Pop-up Best Practices for CC Funnels
+
+<Tip>
+**Block competing pop-ups:** When a visitor arrives via partner link, disable your regular site pop-ups. The partner funnel IS the pop-up experience. Conflicting pop-ups confuse visitors and dilute the co-branded message.
+</Tip>
+
+<Checklist>
+  - [ ] Partner context carried into pop-up
+  - [ ] Discount code displayed or auto-applied
+  - [ ] Mobile-friendly sizing and interactions
+  - [ ] Easy close (X button clearly visible)
+  - [ ] Frequency capping (don't show same pop-up repeatedly)
+  - [ ] A/B test pop-up vs. no pop-up
+</Checklist>
+
+---
+
+## Co-branded Product Pages
+
+When visitors click through to product pages, maintain the partner context:
+
+### Product Page Co-branding Elements
+
+<Tabs>
+  <Tab title="Above the Fold">
+    **Partner endorsement banner:**
+    - "Recommended by [Partner Name]"
+    - Partner thumbnail photo
+    - Link back to partner's landing page
+    
+    **Discount reminder:**
+    - Partner's discount code displayed
+    - "Your discount will be applied at checkout"
+    - Compare price (crossed out original)
+    
+    **Placement:** Sticky header or inline below product title
+  </Tab>
+  
+  <Tab title="Product Details">
+    **Partner testimonial:**
+    - Partner's quote about this specific product
+    - Star rating or recommendation badge
+    - "Why [Partner] loves this"
+    
+    **Partner-specific content:**
+    - Usage tips from the partner
+    - Partner's photos with product
+    - Partner's routine/protocol featuring product
+  </Tab>
+  
+  <Tab title="Social Proof">
+    **UGC integration:**
+    - Partner's UGC featuring product
+    - Other customer reviews
+    - "As seen with [Partner]" badge
+    
+    **Trust indicators:**
+    - Partner credibility (follower count, credentials)
+    - Community validation
+  </Tab>
+</Tabs>
+
+### Implementation Pattern
+
+```liquid
+{% comment %} Check for partner context {% endcomment %}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{% if cc_creator %}
+  <div class="cc-partner-endorsement">
+    <img src="{{ cc_creator.data.value.cc-creator-profile-picture }}" 
+         alt="{{ cc_creator.cc-creator-first-name }}" />
+    <span>Recommended by {{ cc_creator.cc-creator-first-name }}</span>
+    <span class="cc-discount">Use code: {{ cc_creator.cc-collab-discount-code }}</span>
+  </div>
+{% endif %}
+```
+
+---
+
+## Co-branded Cart
+
+The cart is a critical conversion moment. Reinforce partner context:
+
+### Cart Co-branding Elements
+
+<AccordionGroup>
+  <Accordion title="Cart Header">
+    - "Your cart with [Partner]'s picks"
+    - Partner photo thumbnail
+    - Discount status confirmation
+  </Accordion>
+  
+  <Accordion title="Discount Application">
+    - Discount code pre-filled or auto-applied
+    - Savings amount displayed
+    - "Thanks to [Partner], you're saving $X"
+  </Accordion>
+  
+  <Accordion title="Partner Upsells">
+    - "Complete your routine with [Partner]'s other picks"
+    - Cross-sell products from partner's recommendations
+    - Bundle suggestions
+  </Accordion>
+  
+  <Accordion title="Trust Reinforcement">
+    - Partner testimonial sidebar
+    - "X people bought this with [Partner]"
+    - Shipping and guarantee reminders
+  </Accordion>
+</AccordionGroup>
+
+### Auto-Apply vs. Manual Discount
+
+<Tabs>
+  <Tab title="Auto-Apply">
+    **How it works:**
+    - Discount code stored in cart attributes
+    - Applied automatically at checkout
+    - Visitor sees discounted prices throughout
+    
+    **Pros:**
+    - Seamless experience
+    - Higher conversion (no friction)
+    - Price comparison built-in
+    
+    **Cons:**
+    - Less "reveal" moment
+    - May reduce perceived value of discount
+  </Tab>
+  
+  <Tab title="Manual Entry">
+    **How it works:**
+    - Discount code displayed prominently
+    - Visitor enters at checkout
+    - "Aha" moment when applied
+    
+    **Pros:**
+    - Partner code feels like a gift
+    - Clear attribution to partner
+    - Works with all checkout types
+    
+    **Cons:**
+    - Friction in checkout
+    - Risk of forgetting or mistyping
+    - Potential abandonment
+  </Tab>
+  
+  <Tab title="Hybrid Approach">
+    **How it works:**
+    - Code displayed throughout funnel
+    - Auto-applied at checkout (if possible)
+    - Fallback to manual if auto-apply fails
+    
+    **Implementation:**
+    - Use cart attributes to pass code
+    - Checkout script applies automatically
+    - Show code as backup option
+    
+    **This is the recommended approach.**
+  </Tab>
+</Tabs>
+
+---
+
+## Checkout Co-branding
+
+Shopify checkout has limitations, but you can still reinforce partner context:
+
+### What's Possible
+
+<Tabs>
+  <Tab title="Checkout UI Extensions">
+    **Available with Shopify Plus or Checkout Extensibility:**
+    - Custom banners in checkout
+    - Partner branding elements
+    - Discount confirmation messaging
+    - Thank-you page customization
+  </Tab>
+  
+  <Tab title="Standard Checkout">
+    **What you can do:**
+    - Discount auto-applied via URL parameter
+    - Order notes with partner attribution
+    - Thank-you page redirect to co-branded page
+    
+    **Limitations:**
+    - Can't add partner photos or custom elements
+    - Limited branding control
+  </Tab>
+</Tabs>
+
+### Attribution Tracking
+
+Ensure every order from a partner funnel is properly attributed:
+
+```liquid
+{% comment %} Set cart attributes for tracking {% endcomment %}
+<input type="hidden" name="attributes[cc-creator-handle]" value="{{ cc_creator.handle }}" />
+<input type="hidden" name="attributes[cc-collab-id]" value="{{ cc_creator.cc-collab-id }}" />
+<input type="hidden" name="attributes[cc-discount-code]" value="{{ cc_creator.cc-collab-discount-code }}" />
+```
+
+---
+
+## Post-Purchase Co-branding
+
+The sale isn't the end—it's the beginning of the relationship:
+
+### Thank-You Page
+
+<AccordionGroup>
+  <Accordion title="Partner Appreciation">
+    - "Thanks for shopping with [Partner]!"
+    - Partner photo and message
+    - Reminder of their ongoing relationship with brand
+  </Accordion>
+  
+  <Accordion title="Social Sharing">
+    - "Share your purchase with [Partner]"
+    - Pre-filled social share buttons
+    - Incentive for sharing (future discount)
+  </Accordion>
+  
+  <Accordion title="Cross-sell">
+    - "Other picks from [Partner]"
+    - Products they might have missed
+    - Future purchase incentive
+  </Accordion>
+  
+  <Accordion title="Community Invitation">
+    - Follow [Partner] on social
+    - Join brand community
+    - Sign up for partner's content
+  </Accordion>
+</AccordionGroup>
+
+### Order Confirmation Email
+
+<Checklist>
+  - [ ] Partner name mentioned in subject or preview
+  - [ ] Partner photo in email header
+  - [ ] "You shopped with [Partner]" messaging
+  - [ ] Partner's discount for next purchase
+  - [ ] Social links to partner
+  - [ ] UGC request tied to partner
+</Checklist>
+
+---
+
+## Content Utilization
+
+Use the content you've collected throughout the funnel:
+
+### Where Content Appears
+
+| Content Type | Landing Page | Pop-ups | Product Pages | Cart | Emails |
+|--------------|--------------|---------|---------------|------|--------|
+| Partner photo | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Partner bio | ✓ |  |  |  | ✓ |
+| Partner quote | ✓ | ✓ | ✓ |  | ✓ |
+| UGC gallery | ✓ |  | ✓ |  |  |
+| Product picks | ✓ | ✓ |  | ✓ | ✓ |
+| Discount code | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+### Dynamic Text Tokens
+
+Use tokens to personalize messaging at scale:
+
+```liquid
+{% comment %} Available tokens in CC templates {% endcomment %}
+[cc-creator-first-name]     → "Sarah"
+[cc-creator-discount-code]  → "SARAH15"
+[cc-creator-discount-amount]→ "15%"
+[cc-creator-shop-tagline]   → "Clean beauty picks"
+```
+
+---
+
+## Funnel Consistency
+
+Maintain visual and messaging consistency across all touchpoints:
+
+### Consistency Checklist
+
+<Checklist>
+  - [ ] Partner name spelled/displayed consistently
+  - [ ] Same photo used across touchpoints
+  - [ ] Discount code matches everywhere
+  - [ ] Color accents (if used) are consistent
+  - [ ] Messaging tone matches partner's voice
+  - [ ] CTAs use consistent language
+  - [ ] Mobile experience matches desktop
+</Checklist>
+
+### Common Inconsistencies to Avoid
+
+<Warning>
+**Mistake 1:** Different partner photos on landing page vs. emails
+
+**Mistake 2:** Discount code displayed differently (15% vs $15 off)
+
+**Mistake 3:** Partner name in hero but not in cart
+
+**Mistake 4:** Forgetting partner context on product pages
+
+**Mistake 5:** Generic checkout with no partner messaging
+</Warning>
+
+---
+
+## What's Next
+
+Your funnels are designed and detailed. Time to launch them and track performance.
+
+<Card title="Next: Launch & Track" icon="arrow-right" href="/guides/collab-strategy/launch-track">
+  Step 5: Enable integrations, spin up funnels, and monitor metrics →
+</Card>

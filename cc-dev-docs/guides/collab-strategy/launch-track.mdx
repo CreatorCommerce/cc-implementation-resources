@@ -1,0 +1,415 @@
+---
+title: 'Step 5: Launch & Track'
+description: 'Enable integrations, spin up funnels behind existing affiliate links, and monitor conversion rate, AOV, CLTV, and affiliate retention.'
+---
+
+## Going Live
+
+You've built the strategy, enrolled partners, designed the funnels. Now it's time to launch.
+
+This step covers:
+- **Integration setup** — Connecting CreatorCommerce to your stack
+- **Funnel deployment** — Getting partner pages live
+- **Tracking implementation** — Measuring what matters
+- **Monitoring rhythm** — Ongoing performance review
+
+---
+
+## Integration Enablement
+
+### Core Integrations
+
+<CardGroup cols={2}>
+  <Card title="Shopify" icon="shopify">
+    CreatorCommerce is native to Shopify. Metaobjects, theme sections, and checkout integration work out of the box.
+  </Card>
+  <Card title="Affiliate Platform" icon="link">
+    Connect your existing affiliate tracking (Impact, ShareASale, etc.) to maintain commission tracking alongside co-branding.
+  </Card>
+  <Card title="Email/SMS" icon="envelope">
+    Klaviyo, Postscript, and others can trigger co-branded flows based on partner attribution.
+  </Card>
+  <Card title="Analytics" icon="chart-line">
+    GA4, Triple Whale, Northbeam for attribution and performance tracking.
+  </Card>
+</CardGroup>
+
+### Integration Checklist
+
+<Checklist>
+  - [ ] CreatorCommerce app installed and configured
+  - [ ] Creator metaobject type active with web pages enabled
+  - [ ] Theme sections added to relevant templates
+  - [ ] Cart attribute tracking implemented
+  - [ ] Discount code sync verified
+  - [ ] Affiliate platform integrated (if applicable)
+  - [ ] Email platform connected for co-branded flows
+  - [ ] Analytics events configured
+</Checklist>
+
+---
+
+## Funnel Deployment
+
+### Deploying Behind Existing Links
+
+If partners already have affiliate links, you can upgrade them to co-branded funnels:
+
+<Steps>
+  <Step title="Map Existing Partners">
+    Identify all active partners with existing affiliate links
+  </Step>
+  
+  <Step title="Create CC Profiles">
+    Create CreatorCommerce records for each partner (can be automated)
+  </Step>
+  
+  <Step title="Generate CC Links">
+    Each partner gets a co-branded URL (e.g., `/pages/creators/partner-handle`)
+  </Step>
+  
+  <Step title="Update Link Destinations">
+    Option A: Update affiliate links to point to CC pages
+    Option B: Use redirect rules to route traffic
+  </Step>
+  
+  <Step title="Verify Tracking">
+    Ensure affiliate commission tracking still works with new flow
+  </Step>
+</Steps>
+
+### Link Architecture
+
+<Tabs>
+  <Tab title="Direct CC Links">
+    **Format:** `yourstore.com/pages/creators/partner-handle`
+    
+    **Pros:**
+    - Clean, branded URLs
+    - Full CC experience
+    - Easy to share
+    
+    **Cons:**
+    - Requires updating existing links
+    - Partner needs to know new URL
+  </Tab>
+  
+  <Tab title="Redirect Approach">
+    **Format:** Existing affiliate link → CC page
+    
+    **Pros:**
+    - No link changes needed
+    - Existing tracking preserved
+    - Gradual rollout possible
+    
+    **Cons:**
+    - Extra redirect (minor speed impact)
+    - More complex setup
+  </Tab>
+  
+  <Tab title="Hybrid with UTM">
+    **Format:** `yourstore.com/partner?ref=partner-handle`
+    
+    **Pros:**
+    - Works with existing link structure
+    - Query parameter triggers CC experience
+    - Easy A/B testing
+    
+    **Cons:**
+    - Less clean URLs
+    - Requires detection logic
+  </Tab>
+</Tabs>
+
+---
+
+## Tracking Implementation
+
+### Key Metrics to Track
+
+<AccordionGroup>
+  <Accordion title="Conversion Rate (CVR)">
+    **What:** Percentage of visitors who purchase
+    
+    **Why it matters:** Primary measure of funnel effectiveness
+    
+    **Benchmark:** 30%+ CVR is the CC target (vs. typical 2-3% eComm)
+    
+    **How to measure:**
+    - Orders attributed to partner / Sessions on partner page
+    - Segment by partner, segment, and funnel variation
+  </Accordion>
+  
+  <Accordion title="Average Order Value (AOV)">
+    **What:** Average revenue per order
+    
+    **Why it matters:** Measures depth of purchase
+    
+    **Benchmark:** 67%+ higher than non-partner traffic
+    
+    **How to measure:**
+    - Total revenue from partner / Orders from partner
+    - Compare to site-wide AOV
+  </Accordion>
+  
+  <Accordion title="Customer Lifetime Value (CLTV)">
+    **What:** Total value of a customer over time
+    
+    **Why it matters:** Partner-acquired customers may have different retention
+    
+    **Benchmark:** Varies by vertical; track trend over time
+    
+    **How to measure:**
+    - Cohort analysis by acquisition source
+    - Tag customers with partner attribution at purchase
+  </Accordion>
+  
+  <Accordion title="Affiliate Retention">
+    **What:** Partner engagement and activity over time
+    
+    **Why it matters:** Active partners drive ongoing revenue
+    
+    **Benchmark:** 50%+ monthly active rate for established programs
+    
+    **How to measure:**
+    - Partners generating traffic in period / Total partners
+    - Partners generating sales in period / Total partners
+  </Accordion>
+</AccordionGroup>
+
+### Tracking Architecture
+
+```
+Partner Link Click
+       ↓
+Landing Page View (GA4 page_view + custom event)
+       ↓
+Product Click (custom event)
+       ↓
+Add to Cart (add_to_cart event + partner attribution)
+       ↓
+Begin Checkout (begin_checkout event)
+       ↓
+Purchase (purchase event + partner attribution)
+       ↓
+Post-Purchase (custom events for upsell, email signup, etc.)
+```
+
+### Attribution Implementation
+
+<Tabs>
+  <Tab title="Cart Attributes">
+    Store partner info in cart for checkout attribution:
+    
+    ```liquid
+    {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+    {% assign cc_code = cart.attributes['cc-discount-code'] %}
+    ```
+    
+    These persist to the order and enable reporting.
+  </Tab>
+  
+  <Tab title="Order Tags">
+    Tag orders with partner attribution for easy filtering:
+    
+    ```
+    cc-partner:[handle]
+    cc-segment:[segment]
+    cc-discount:[code]
+    ```
+    
+    Use Shopify Flow or API to automate tagging.
+  </Tab>
+  
+  <Tab title="Customer Tags">
+    Tag customers for CLTV tracking:
+    
+    ```
+    cc-acquired:[handle]
+    cc-first-order:[date]
+    ```
+    
+    Enables cohort analysis by partner.
+  </Tab>
+</Tabs>
+
+---
+
+## Monitoring Dashboard
+
+Build a dashboard that surfaces the metrics that matter:
+
+### Daily View
+
+| Metric | Description |
+|--------|-------------|
+| Partner sessions | Traffic to CC pages today |
+| Partner orders | Orders attributed today |
+| Partner revenue | Revenue from partner orders |
+| Top performers | Highest-traffic partners today |
+
+### Weekly View
+
+| Metric | Description |
+|--------|-------------|
+| CVR trend | Week-over-week conversion rate |
+| AOV trend | Week-over-week order value |
+| New partners | Partners activated this week |
+| Partner churn | Partners inactive this week |
+
+### Monthly View
+
+| Metric | Description |
+|--------|-------------|
+| Revenue attribution | % of revenue from partners |
+| Partner health | Active vs. inactive partners |
+| Segment performance | Metrics by partner type |
+| Funnel performance | Metrics by template/variation |
+
+---
+
+## Monitoring Rhythm
+
+### Daily Check (5 minutes)
+
+<Checklist>
+  - [ ] Any major drops in partner traffic?
+  - [ ] Any technical issues (broken pages, checkout errors)?
+  - [ ] Top performer highlights
+</Checklist>
+
+### Weekly Review (30 minutes)
+
+<Checklist>
+  - [ ] CVR and AOV trends
+  - [ ] New partner activations
+  - [ ] Partner support issues
+  - [ ] Test results (if running experiments)
+</Checklist>
+
+### Monthly Deep Dive (2 hours)
+
+<Checklist>
+  - [ ] Full funnel performance analysis
+  - [ ] Partner cohort analysis (activation, retention)
+  - [ ] Segment performance comparison
+  - [ ] Strategic planning for next month
+  - [ ] Partner communication (top performer recognition)
+</Checklist>
+
+---
+
+## Alerting
+
+Set up alerts for critical issues:
+
+### Recommended Alerts
+
+| Alert | Trigger | Action |
+|-------|---------|--------|
+| Traffic drop | Partner sessions down 50%+ vs. prior day | Investigate source |
+| CVR drop | Conversion rate down 20%+ vs. baseline | Check for technical issues |
+| Checkout errors | Order failures from partner traffic | Immediate technical review |
+| Partner complaint | Support ticket from partner | Priority response |
+
+### Alert Channels
+
+- **Email** — For daily summaries and non-urgent alerts
+- **Slack** — For real-time issues requiring immediate attention
+- **SMS** — For critical issues (use sparingly)
+
+---
+
+## Launch Communication
+
+### Partner Announcement
+
+When their co-branded page goes live:
+
+<AccordionGroup>
+  <Accordion title="Email Template">
+    **Subject:** Your [Brand] page is live! 🎉
+    
+    Hi [Partner Name],
+    
+    Your personalized [Brand] storefront is now live at:
+    **[Partner URL]**
+    
+    Here's what's ready for you:
+    - Your custom landing page featuring your picks
+    - Your exclusive discount code: [CODE]
+    - Your personal link to share with your audience
+    
+    [Preview Your Page] [Share Now]
+    
+    We're tracking everything—you'll earn [commission rate] on every sale.
+    
+    Questions? Reply to this email anytime.
+  </Accordion>
+  
+  <Accordion title="Social Assets">
+    Provide partners with ready-to-share content:
+    
+    - Story templates with their link
+    - Caption suggestions
+    - Product photos they can repost
+    - Discount code graphics
+  </Accordion>
+</AccordionGroup>
+
+### Internal Launch Communication
+
+Keep stakeholders informed:
+
+<Checklist>
+  - [ ] Marketing team briefed on partner program status
+  - [ ] Customer service trained on partner-related inquiries
+  - [ ] Finance aware of new revenue attribution
+  - [ ] Leadership has access to performance dashboard
+</Checklist>
+
+---
+
+## Common Launch Issues
+
+<Warning>
+**Issue:** Partner pages showing blank or broken
+
+**Cause:** Metaobject not published, template not assigned, or missing data
+
+**Fix:** Check CC dashboard for partner status, verify template assignment
+</Warning>
+
+<Warning>
+**Issue:** Discount code not applying at checkout
+
+**Cause:** Code mismatch, expired code, or cart attribute not passed
+
+**Fix:** Verify code in Shopify admin, check cart attribute implementation
+</Warning>
+
+<Warning>
+**Issue:** Attribution not tracking
+
+**Cause:** Cart attributes not set, order tags not firing
+
+**Fix:** Test full funnel flow, verify Shopify Flow or API automation
+</Warning>
+
+<Warning>
+**Issue:** Partner seeing wrong content
+
+**Cause:** Wrong creator handle, cached data, or data sync issue
+
+**Fix:** Clear caches, verify metaobject data, resync from CC
+</Warning>
+
+---
+
+## What's Next
+
+Your funnels are live and tracking. Now it's time to optimize—running tests, improving content, and scaling what works.
+
+<Card title="Next: Optimize" icon="arrow-right" href="/guides/collab-strategy/optimize">
+  Step 6: Run content campaigns, funnel tests, and retention strategies →
+</Card>
