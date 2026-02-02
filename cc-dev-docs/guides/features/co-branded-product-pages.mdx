@@ -1,0 +1,49 @@
+---
+title: 'Co-branded Product Pages'
+description: 'Product detail pages that show creator endorsements, personalized quotes, and discounted pricing.'
+---
+
+## What It Is
+
+When customers arrive from a creator's link, product pages display creator context—their photo, a product quote, and the discounted price they'll receive at checkout.
+
+## Key Capabilities
+
+- **Creator quote badges** — "Why I love this" testimonials on products
+- **Discounted price display** — Show savings before checkout
+- **Creator attribution** — Small creator callout on any PDP
+- **UGC integration** — Creator content/photos on product pages
+- **Persistent context** — Creator info follows through browsing
+
+## How It Works
+
+```liquid
+{% if cc_creator %}
+  <div class="cc-product-endorsement">
+    <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 60 }}" />
+    <blockquote>
+      {{ product_quote | default: "One of my favorites!" }}
+      <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
+    </blockquote>
+  </div>
+  
+  <div class="cc-price">
+    <span class="original">{{ product.price | money }}</span>
+    <span class="discounted">{{ discounted_price | money }}</span>
+  </div>
+{% endif %}
+```
+
+## Use Cases
+
+| Scenario | Implementation |
+|----------|----------------|
+| Product recommendations | Quote badge + discounted price |
+| Expert endorsements | Credential display + detailed review |
+| UGC showcase | Creator photo using product |
+| Bundle recommendations | Multi-product creator picks |
+
+## Related
+
+- [Show Discounted Prices](/guides/dev/show-discounted-prices)
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details)

@@ -21,6 +21,17 @@
    "mcp":{
       "enabled":true
    },
+   "contextual":{
+      "options":[
+         "copy",
+         "chatgpt",
+         "claude",
+         "perplexity",
+         "cursor",
+         "vscode",
+         "mcp"
+      ]
+   },
    "navbar":{
       "links":[
          {
@@ -45,7 +56,7 @@
                   "groups":[
                      {
                         "group":"FIRST STEPS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/getting-started",
                            "guides/how-to-use-these-docs",
@@ -58,56 +69,112 @@
                      },
                      {
                         "group":"CAPABILITIES",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            {
                               "group":"Core Platform Features",
-                              "expanded":true,
-                              "pages":[]
+                              "expanded":false,
+                              "pages":[
+                                 "guides/features/co-branded-landing-pages",
+                                 "guides/features/co-branded-product-pages",
+                                 "guides/features/co-branded-carts-checkout",
+                                 "guides/features/co-branded-product-lists",
+                                 "guides/features/co-branded-popups",
+                                 "guides/features/shopify-native-attribution",
+                                 "guides/features/recruitment-integrations",
+                                 "guides/features/whitelabel-forms-dashboards",
+                                 "guides/features/collab-messaging-integrations",
+                                 "guides/features/content-automation-workflows",
+                                 "guides/features/co-branded-consumer-emails",
+                                 "guides/features/maintained-discount-protection"
+                              ]
                            },
                            {
                               "group":"Developer Use Cases",
-                              "expanded":true,
-                              "pages":[]
+                              "expanded":false,
+                              "pages":[
+                                 {
+                                    "group":"Quick Start Guides",
+                                    "expanded":false,
+                                    "pages":[
+                                       "guides/dev/create-collaboration-integration",
+                                       "guides/dev/co-brand-shopify-theme",
+                                       "guides/dev/build-custom-forms-dashboards",
+                                       "guides/dev/create-co-branded-email-sync",
+                                       "guides/dev/implement-shopify-flow",
+                                       "guides/dev/show-discounted-prices",
+                                       "guides/dev/support-unique-discounts",
+                                       "guides/dev/structure-store-data-seo-geo",
+                                       "guides/dev/distribute-web-components",
+                                       "guides/dev/enable-cc-web-pixel",
+                                       "guides/dev/enable-cc-sdk",
+                                       "guides/dev/get-cc-api-access"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Base Case Funnel Tests",
+                                    "expanded":false,
+                                    "pages":[
+                                       "guides/dev/base-funnels/overview"
+                                    ]
+                                 }
+                              ]
                            },
                            {
                               "group":"Merchant Use Cases",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  {
                                     "group":"End-to-End Collaboration Strategy",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "guides/collab-strategy/overview",
                                        {
-                                          "group":"Foundation",
+                                          "group":"Step 0: Segment Strategy",
                                           "pages":[
                                              "guides/collab-strategy/segment-strategy"
                                           ]
                                        },
                                        {
-                                          "group":"Build",
+                                          "group":"Step 1: Partner Enrollment",
                                           "pages":[
-                                             "guides/collab-strategy/partner-enrollment",
+                                             "guides/collab-strategy/partner-enrollment"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Step 2: Partner Activation",
+                                          "pages":[
                                              "guides/collab-strategy/partner-activation"
                                           ]
                                        },
                                        {
-                                          "group":"Launch",
+                                          "group":"Step 3: Co-branded Storefronts",
                                           "pages":[
-                                             "guides/collab-strategy/co-branded-storefronts",
-                                             "guides/collab-strategy/funnel-details"
+                                             "guides/collab-strategy/co-branded-storefronts"
                                           ]
                                        },
                                        {
-                                          "group":"Scale",
+                                          "group":"Step 4: Funnel Details",
                                           "pages":[
-                                             "guides/collab-strategy/launch-track",
-                                             "guides/collab-strategy/optimize"
+                                             "guides/collab-strategy/funnel-details",
+                                             "guides/collab-strategy/your-first-two-funnels"
                                           ]
                                        },
                                        {
-                                          "group":"Expand",
+                                          "group":"Step 5: Launch & Track",
+                                          "pages":[
+                                             "guides/collab-strategy/launch-track"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Step 6: Optimize",
+                                          "pages":[
+                                             "guides/collab-strategy/optimize",
+                                             "guides/collab-strategy/scaling-your-program"
+                                          ]
+                                       },
+                                       {
+                                          "group":"Step 7: Advanced Strategies",
                                           "pages":[
                                              "guides/collab-strategy/advanced"
                                           ]
@@ -116,32 +183,32 @@
                                  },
                                  {
                                     "group":"Quick Start Guides",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "guides/make-your-first-collabs",
-                                       "guides/make-your-first-shopping-experiences"
+                                       "guides/make-your-first-shopping-experiences",
+                                       "guides/connect-your-tech-stack",
+                                       "guides/collect-creator-content",
+                                       "guides/send-co-branded-emails",
+                                       "guides/create-workflow-automation",
+                                       "guides/get-fancy-with-discounts",
+                                       "guides/improve-seo-geo-discoverability",
+                                       "guides/embed-products-on-other-sites",
+                                       "guides/track-funnel-traffic"
                                     ]
                                  },
                                  {
-                                    "group":"Analytics & Optimization",
-                                    "expanded":true,
+                                    "group":"Analytics & Reporting",
+                                    "expanded":false,
                                     "pages":[
-                                       "guides/attribute-analyze",
-                                       "guides/optimize-scale"
-                                    ]
-                                 },
-                                 {
-                                    "group":"Integrations",
-                                    "expanded":true,
-                                    "pages":[
-                                       "guides/connect-your-tech-stack"
+                                       "guides/attribute-analyze"
                                     ]
                                  }
                               ]
                            },
                            {
                               "group":"Use Cases for AI",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "ai-guides/ai-guide-first-landing-page"
                               ]
@@ -154,7 +221,7 @@
                         "pages":[
                            {
                               "group":"Cursor Setup",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "guides/cursor-coding",
                                  "guides/cursor-rules"
@@ -162,7 +229,7 @@
                            },
                            {
                               "group":"Claude Setup",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "guides/claude-coding",
                                  "guides/claude-rules"
@@ -171,7 +238,7 @@
                            "guides/shopify-mcp",
                            {
                               "group":"Figma Setup",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "guides/figma-mcp",
                                  "guides/designing-for-cobranded-ui",
@@ -189,7 +256,7 @@
                   "groups":[
                      {
                         "group":"DATA MODEL",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/data-model-overview",
                            "references/creator-collab-data-model",
@@ -200,37 +267,37 @@
                      },
                      {
                         "group":"SHOPIFY OBJECTS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/shopify-integration-data-model",
                            {
                               "group":"Shopify objects",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "shopify-objects"
                               ]
                            },
                            {
                               "group":"Metaobjects schema",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "metaobjects-schema"
                               ]
                            },
                            {
                               "group":"Tags",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  {
                                     "group":"Order object tags",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "order-object-tags"
                                     ]
                                  },
                                  {
                                     "group":"Customer object tags",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "customer-object-tags"
                                     ]
@@ -241,7 +308,7 @@
                      },
                      {
                         "group":"SDKS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "temp2",
                            "temp3"
@@ -249,14 +316,14 @@
                      },
                      {
                         "group":"UNIFIED API",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication",
                            {
                               "group":"Endpoints",
-                              "expanded":true,
+                              "expanded":false,
                               "openapi": "api-reference/unified-api.yaml",
                               "pages":[
                                    "GET /channels/{myshopifyDomain}/creators/magic-link",
@@ -285,7 +352,7 @@
                      },
                      {
                         "group":"WEBHOOKS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "temp2",
                            {
@@ -317,14 +384,14 @@
                   "groups":[
                      {
                         "group":"Overview",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/creator-dashboard"
                         ]
                      },
                      {
                         "group":"CSS Customization",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/dashboard-overview-css",
                            "references/css-reference",
@@ -333,14 +400,14 @@
                      },
                      {
                         "group":"UNIFIED API",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication",
                            {
                               "group":"Endpoints",
-                              "expanded":true,
+                              "expanded":false,
                               "openapi": "api-reference/unified-api.yaml",
                               "pages":[
                                   "GET /creators/{creatorId}/drops/{dropId}/cart",
@@ -388,7 +455,7 @@
                   "groups":[
                      {
                         "group":"Learning the basics",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/co-branded-storefronts",
                            {
@@ -403,27 +470,27 @@
                      },
                      {
                         "group":"Landing pages",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[]
                      },
                      {
                         "group":"Full funnel",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[]
                      },
                      {
                         "group":"Pop-ups",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[]
                      },
                      {
                         "group":"Checkout blocks",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[]
                      },
                      {
                         "group":"Headless",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[]
                      }
                   ]
@@ -442,8 +509,10 @@
             "href":"https://external-link.com/blog"
          },
          {
-            "tab":"MCP (Coming Soon)",
-            "href":"#"
+            "tab":"MCP",
+            "pages":[
+               "mcp"
+            ]
          },
          {
             "tab":"References",
@@ -454,7 +523,7 @@
                   "groups":[
                      {
                         "group":"Getting Started",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/api-overview",
                            "guides/authentication"
@@ -462,7 +531,7 @@
                      },
                      {
                         "group":"Checkout",
-                        "expanded":true,
+                        "expanded":false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages":[
                            "GET /creators/{creatorId}/drops/{dropId}/cart"
@@ -470,7 +539,7 @@
                      },
                      {
                         "group":"Magic Links",
-                        "expanded":true,
+                        "expanded":false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages":[
                            "GET /channels/{myshopifyDomain}/creators/magic-link"
@@ -478,7 +547,7 @@
                      },
                      {
                         "group":"Collabs",
-                        "expanded":true,
+                        "expanded":false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages":[
                            "GET /creators/collabs",
@@ -488,7 +557,7 @@
                      },
                      {
                         "group":"Drops",
-                        "expanded":true,
+                        "expanded":false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages":[
                            "POST /creators/collabs/{collabId}/drops",
@@ -503,7 +572,7 @@
                   "groups":[
                      {
                         "group":"DATA MODEL",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "temp2",
                            "guides/glossary",
@@ -518,37 +587,37 @@
                   "groups":[
                      {
                         "group":"SHOPIFY OBJECTS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "references/shopify-integration-data-model",
                            {
                               "group":"Shopify objects",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "shopify-objects"
                               ]
                            },
                            {
                               "group":"Metaobjects schema",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  "metaobjects-schema"
                               ]
                            },
                            {
                               "group":"Tags",
-                              "expanded":true,
+                              "expanded":false,
                               "pages":[
                                  {
                                     "group":"Order object tags",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "order-object-tags"
                                     ]
                                  },
                                  {
                                     "group":"Customer object tags",
-                                    "expanded":true,
+                                    "expanded":false,
                                     "pages":[
                                        "customer-object-tags"
                                     ]
@@ -565,7 +634,7 @@
                   "groups":[
                      {
                         "group":"SDKS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "temp2",
                            "temp3"
@@ -579,7 +648,7 @@
                   "groups":[
                      {
                         "group":"WEBHOOKS",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "temp2",
                            {
@@ -623,7 +692,7 @@
                   "groups":[
                      {
                         "group":"Cursor Setup",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/cursor-coding",
                            "guides/cursor-rules"
@@ -637,7 +706,7 @@
                   "groups":[
                      {
                         "group":"Claude Setup",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/claude-coding",
                            "guides/claude-rules"
@@ -658,7 +727,7 @@
                   "groups":[
                      {
                         "group":"Figma Setup",
-                        "expanded":true,
+                        "expanded":false,
                         "pages":[
                            "guides/figma-mcp",
                            "guides/designing-for-cobranded-ui",

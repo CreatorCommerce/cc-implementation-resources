@@ -1,0 +1,447 @@
+---
+title: 'Get CC API Access'
+description: 'Request and configure API credentials for the CreatorCommerce Unified API—authentication, scopes, rate limits, and best practices.'
+---
+
+## Overview
+
+The CreatorCommerce API enables:
+
+- **Partner management** — Create, update, list creators/collabs
+- **Drop management** — Manage product collections per creator
+- **Order attribution** — Track and attribute orders
+- **Analytics** — Access performance metrics
+- **Webhooks** — Receive real-time event notifications
+
+---
+
+## Getting API Credentials
+
+### Step 1: Access API Settings
+
+1. Log in to CreatorCommerce admin
+2. Navigate to **Settings → API**
+3. Click **Generate API Key**
+
+### Step 2: Choose Scopes
+
+Select the permissions your integration needs:
+
+| Scope | Access |
+|-------|--------|
+| `collabs:read` | Read partner/collab data |
+| `collabs:write` | Create/update partners |
+| `drops:read` | Read product drops |
+| `drops:write` | Create/update drops |
+| `orders:read` | Read attributed orders |
+| `analytics:read` | Access metrics and reports |
+| `webhooks:write` | Configure webhooks |
+
+### Step 3: Store Credentials Securely
+
+```bash
+# Environment variables (recommended)
+CC_API_KEY=cc_live_abc123...
+CC_API_SECRET=cc_secret_xyz789...
+CC_WEBHOOK_SECRET=whsec_...
+
+# Never commit these to version control!
+```
+
+---
+
+## Authentication
+
+### API Key Authentication
+
+```bash
+curl -X GET "https://api.creatorcommerce.com/v1/collabs" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json"
+```
+
+### OAuth 2.0 (For Partner Integrations)
+
+For apps distributed to multiple merchants:
+
+```javascript
+// Step 1: Redirect to OAuth
+const authUrl = `https://app.creatorcommerce.com/oauth/authorize?
+  client_id=${CLIENT_ID}&
+  redirect_uri=${REDIRECT_URI}&
+  scope=collabs:read,drops:read&
+  state=${CSRF_TOKEN}`;
+
+// Step 2: Exchange code for token
+const response = await fetch('https://api.creatorcommerce.com/oauth/token', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    grant_type: 'authorization_code',
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    code: authCode,
+    redirect_uri: REDIRECT_URI
+  })
+});
+
+const { access_token, refresh_token, expires_in } = await response.json();
+
+// Step 3: Use access token
+const apiResponse = await fetch('https://api.creatorcommerce.com/v1/collabs', {
+  headers: { 'Authorization': `Bearer ${access_token}` }
+});
+```
+
+---
+
+## API Base URLs
+
+| Environment | Base URL |
+|-------------|----------|
+| Production | `https://api.creatorcommerce.com/v1` |
+| Sandbox | `https://sandbox.api.creatorcommerce.com/v1` |
+
+---
+
+## Request Format
+
+### Headers
+
+```http
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+Accept: application/json
+X-CC-Version: 2024-01-01
+```
+
+### Versioning
+
+Specify API version via header:
+
+```bash
+curl -H "X-CC-Version: 2024-01-01" ...
+```
+
+Or via URL:
+
+```bash
+curl https://api.creatorcommerce.com/v1/2024-01/collabs ...
+```
+
+---
+
+## Rate Limits
+
+### Default Limits
+
+| Endpoint Type | Limit |
+|---------------|-------|
+| Read endpoints | 100 requests/minute |
+| Write endpoints | 30 requests/minute |
+| Bulk operations | 10 requests/minute |
+| Analytics queries | 20 requests/minute |
+
+### Rate Limit Headers
+
+```http
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Reset: 1642089600
+```
+
+### Handling Rate Limits
+
+```javascript
+async function apiRequest(url, options, retries = 3) {
+  const response = await fetch(url, options);
+  
+  if (response.status === 429) {
+    const resetTime = parseInt(response.headers.get('X-RateLimit-Reset'));
+    const waitTime = (resetTime * 1000) - Date.now() + 1000;
+    
+    if (retries > 0) {
+      await sleep(waitTime);
+      return apiRequest(url, options, retries - 1);
+    }
+    throw new Error('Rate limit exceeded');
+  }
+  
+  return response;
+}
+```
+
+---
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The field 'email' is required",
+    "field": "email",
+    "status": 400,
+    "requestId": "req_abc123"
+  }
+}
+```
+
+### Error Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| `INVALID_REQUEST` | 400 | Bad request data |
+| `UNAUTHORIZED` | 401 | Invalid or missing API key |
+| `FORBIDDEN` | 403 | Insufficient permissions |
+| `NOT_FOUND` | 404 | Resource doesn't exist |
+| `RATE_LIMITED` | 429 | Too many requests |
+| `SERVER_ERROR` | 500 | Internal error |
+
+### Robust Error Handling
+
+```javascript
+async function makeAPIRequest(endpoint, options = {}) {
+  try {
+    const response = await fetch(
+      `https://api.creatorcommerce.com/v1${endpoint}`,
+      {
+        ...options,
+        headers: {
+          'Authorization': `Bearer ${process.env.CC_API_KEY}`,
+          'Content-Type': 'application/json',
+          ...options.headers
+        }
+      }
+    );
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new CCAPIError(data.error);
+    }
+    
+    return data;
+  } catch (error) {
+    if (error instanceof CCAPIError) {
+      switch (error.code) {
+        case 'RATE_LIMITED':
+          // Implement backoff and retry
+          break;
+        case 'UNAUTHORIZED':
+          // Refresh credentials or alert
+          break;
+        default:
+          console.error('API Error:', error.message);
+      }
+    }
+    throw error;
+  }
+}
+
+class CCAPIError extends Error {
+  constructor(error) {
+    super(error.message);
+    this.code = error.code;
+    this.status = error.status;
+    this.field = error.field;
+    this.requestId = error.requestId;
+  }
+}
+```
+
+---
+
+## Webhook Configuration
+
+### Setting Up Webhooks
+
+```javascript
+// Register webhook endpoint
+await ccApi.post('/webhooks', {
+  url: 'https://yoursite.com/webhooks/cc',
+  events: [
+    'collab.created',
+    'collab.updated',
+    'order.attributed',
+    'drop.created'
+  ]
+});
+```
+
+### Webhook Payload Verification
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
+  
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+
+// Express middleware
+app.post('/webhooks/cc', express.json({ 
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}), (req, res) => {
+  const signature = req.headers['x-cc-signature'];
+  
+  if (!verifyWebhookSignature(req.rawBody, signature, process.env.CC_WEBHOOK_SECRET)) {
+    return res.status(401).send('Invalid signature');
+  }
+  
+  // Process webhook
+  const { event, data } = req.body;
+  handleWebhookEvent(event, data);
+  
+  res.status(200).send('OK');
+});
+```
+
+---
+
+## SDK Libraries
+
+### Official SDKs
+
+| Language | Package |
+|----------|---------|
+| Node.js | `npm install @creatorcommerce/node-sdk` |
+| Python | `pip install creatorcommerce` |
+| Ruby | `gem install creatorcommerce` |
+| PHP | `composer require creatorcommerce/php-sdk` |
+
+### Node.js SDK Example
+
+```javascript
+const CreatorCommerce = require('@creatorcommerce/node-sdk');
+
+const cc = new CreatorCommerce({
+  apiKey: process.env.CC_API_KEY
+});
+
+// List collabs
+const collabs = await cc.collabs.list({ limit: 50 });
+
+// Get specific collab
+const collab = await cc.collabs.get('collab_123');
+
+// Create collab
+const newCollab = await cc.collabs.create({
+  creatorEmail: 'sarah@example.com',
+  firstName: 'Sarah',
+  lastName: 'Jones',
+  tier: 'silver'
+});
+
+// Update collab
+await cc.collabs.update('collab_123', {
+  tier: 'gold'
+});
+```
+
+---
+
+## Testing
+
+### Sandbox Environment
+
+Use sandbox for development:
+
+```javascript
+const cc = new CreatorCommerce({
+  apiKey: process.env.CC_SANDBOX_API_KEY,
+  baseUrl: 'https://sandbox.api.creatorcommerce.com/v1'
+});
+```
+
+### Test Data
+
+Sandbox provides test data:
+- Test creators with predictable handles
+- Test products and collections
+- Test orders for attribution testing
+
+### Mock Webhook Events
+
+```bash
+# Trigger test webhook
+curl -X POST "https://sandbox.api.creatorcommerce.com/v1/webhooks/test" \
+  -H "Authorization: Bearer YOUR_SANDBOX_KEY" \
+  -d '{"event": "collab.created"}'
+```
+
+---
+
+## Security Best Practices
+
+### Credential Management
+
+```javascript
+// ❌ Don't hardcode credentials
+const apiKey = 'cc_live_abc123...';
+
+// ✅ Use environment variables
+const apiKey = process.env.CC_API_KEY;
+
+// ✅ Use a secrets manager
+const apiKey = await secretsManager.getSecret('cc-api-key');
+```
+
+### Minimum Permissions
+
+Request only the scopes you need:
+
+```javascript
+// ❌ Don't request all scopes
+scopes: ['collabs:read', 'collabs:write', 'drops:read', 'drops:write', 'orders:read', 'analytics:read']
+
+// ✅ Request minimum needed
+scopes: ['collabs:read', 'orders:read']
+```
+
+### Rotate Keys Regularly
+
+```javascript
+// Rotate API keys periodically
+async function rotateAPIKey() {
+  const newKey = await cc.apiKeys.create();
+  await updateSecrets({ CC_API_KEY: newKey.key });
+  await cc.apiKeys.revoke(oldKeyId);
+}
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Access API settings in CC admin
+  - [ ] Generate API key with required scopes
+  - [ ] Store credentials in environment variables
+  - [ ] Test authentication with a simple request
+  - [ ] Configure webhooks if needed
+  - [ ] Set up webhook signature verification
+  - [ ] Implement error handling with retries
+  - [ ] Test in sandbox environment
+  - [ ] Review rate limits for your use case
+  - [ ] Plan for key rotation
+</Checklist>
+
+---
+
+## Related Resources
+
+- [CC API Reference](/references/unified-api-reference) — Full API documentation
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — Integration guide
+- [Implement a Shopify Flow](/guides/dev/implement-shopify-flow) — Flow automation

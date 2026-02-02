@@ -1,0 +1,51 @@
+---
+title: 'Co-branded Carts & Checkout'
+description: 'Cart drawers and checkout flows that maintain creator context, auto-apply discounts, and show personalized messaging.'
+---
+
+## What It Is
+
+The shopping cart and checkout experience stays personalized with creator branding, automatic discount application, and attribution tracking that ensures proper commission credit.
+
+## Key Capabilities
+
+- **Auto-applied discounts** — Creator code added at checkout automatically
+- **Cart attribution** — Creator context stored in cart attributes
+- **Savings display** — Show projected savings in cart
+- **Creator reminder** — Small callout in cart/checkout
+- **Order tagging** — Attributed orders tagged for reporting
+
+## How It Works
+
+```liquid
+{% comment %} Cart drawer with creator context {% endcomment %}
+{% if cc_creator %}
+  <div class="cc-cart-banner">
+    Shopping with {{ cc_creator.cc-creator-first-name }} • 
+    {{ cc_creator.cc-collab-discount-amount }}% OFF applied
+  </div>
+  
+  <div class="cc-cart-savings">
+    You're saving {{ total_savings | money }} with {{ cc_creator.cc-collab-discount-code }}
+  </div>
+{% endif %}
+
+{% comment %} Checkout URL with discount {% endcomment %}
+<a href="/checkout?discount={{ cc_creator.cc-collab-discount-code }}">
+  Checkout
+</a>
+```
+
+## Cart Attributes Set
+
+| Attribute | Value |
+|-----------|-------|
+| `cc-creator-handle` | Creator's handle for attribution |
+| `cc-discount-code` | Discount code to apply |
+| `cc-landing-url` | Original landing page URL |
+| `cc-landing-time` | Timestamp of first visit |
+
+## Related
+
+- [Support Unique Discounts](/guides/dev/support-unique-discounts)
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel)

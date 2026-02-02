@@ -1,0 +1,58 @@
+---
+title: 'Whitelabel Forms & Dashboards'
+description: 'Customizable partner application forms and creator dashboards that match your brand identity.'
+---
+
+## What It Is
+
+Give partners branded experiences—from the application form they fill out to the dashboard where they manage their page. Full CSS customization and optional custom builds.
+
+## Key Capabilities
+
+- **Custom application forms** — Collect the data you need
+- **Branded dashboards** — Your colors, logo, domain
+- **CSS injection** — Override any dashboard styles
+- **Custom domains** — `partners.yourbrand.com`
+- **Role-based access** — Different views by tier
+
+## Dashboard Customization
+
+```css
+/* Injected via CC admin */
+:root {
+  --cc-primary-color: #FF4438;
+  --cc-font-family: 'Your Brand Font', sans-serif;
+}
+
+.cc-dashboard-header {
+  background: var(--cc-primary-color);
+}
+
+.cc-logo {
+  content: url('https://yourbrand.com/logo.svg');
+}
+```
+
+## Form Customization
+
+| Field Type | Options |
+|------------|---------|
+| Text | Required, validation, placeholder |
+| Dropdown | Static or dynamic options |
+| File upload | Image, video, document |
+| Multi-select | Products, categories |
+| Conditional | Show/hide based on answers |
+
+## Dashboard Sections
+
+- **Home** — Performance overview, quick stats
+- **My Page** — Edit bio, photo, social links
+- **Products** — Manage drops and product picks
+- **Content** — Upload UGC, testimonials
+- **Earnings** — Commission tracking, payouts
+- **Settings** — Account, notifications
+
+## Related
+
+- [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards)
+- [CSS Reference](/references/css-reference)

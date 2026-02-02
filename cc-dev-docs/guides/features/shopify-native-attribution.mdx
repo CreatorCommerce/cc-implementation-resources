@@ -1,0 +1,60 @@
+---
+title: 'Shopify-native Attribution'
+description: 'Track orders back to creators using native Shopify objects—discount codes, order tags, cart attributes, and metafields.'
+---
+
+## What It Is
+
+CreatorCommerce attribution lives entirely within Shopify's data model. Orders are tracked via discount codes, cart attributes, and tags—no external tracking required.
+
+## Key Capabilities
+
+- **Discount code matching** — Each creator has a unique code
+- **Cart attribute storage** — Creator handle persisted in cart
+- **Order tagging** — Attributed orders tagged automatically
+- **Customer tagging** — Customers tagged by referral source
+- **Metafield storage** — Extended data on orders/customers
+
+## Attribution Methods
+
+| Method | How It Works | Reliability |
+|--------|--------------|-------------|
+| Discount code | Unique code per creator | ⭐⭐⭐ Highest |
+| Cart attributes | Creator handle in cart | ⭐⭐ High |
+| UTM parameters | `?ref=creator-handle` | ⭐ Good |
+| Cookie/localStorage | Session persistence | ⭐ Backup |
+
+## Order Tags Applied
+
+```
+cc-attributed
+cc-creator:sarah-jones
+cc-discount:SARAH15
+cc-tier:gold
+```
+
+## Customer Tags Applied
+
+```
+cc-referred
+cc-first-creator:sarah-jones
+cc-lifetime-orders:3
+```
+
+## Shopify Flow Integration
+
+Trigger workflows on attributed orders:
+
+```yaml
+trigger: order_created
+condition: order.tags contains "cc-attributed"
+actions:
+  - Calculate commission
+  - Notify creator
+  - Update partner metrics
+```
+
+## Related
+
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel)
+- [Implement a Shopify Flow](/guides/dev/implement-shopify-flow)

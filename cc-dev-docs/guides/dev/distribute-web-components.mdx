@@ -1,0 +1,515 @@
+---
+title: 'Distribute Web Components to Affiliates'
+description: 'Give affiliates embeddable web components they can add to their own websites—product carousels, buy buttons, and mini-storefronts.'
+---
+
+## Overview
+
+Empower affiliates to sell your products on their own sites with embeddable components:
+
+- **Product carousels** — Showcase creator's picks
+- **Buy buttons** — Direct add-to-cart functionality
+- **Mini-storefronts** — Full browsing experience
+- **Floating widgets** — Persistent discount reminders
+
+---
+
+## Component Architecture
+
+### How Embedded Components Work
+
+```
+Affiliate's Website          Your Shopify Store
+┌─────────────────┐          ┌─────────────────┐
+│                 │          │                 │
+│  <cc-product>   │  ─API─>  │  Product Data   │
+│  Web Component  │          │                 │
+│                 │  <─JSON─ │  Cart API       │
+│                 │          │                 │
+└─────────────────┘          └─────────────────┘
+```
+
+### Embed Script
+
+Provide affiliates with a single script tag:
+
+```html
+<!-- Affiliate adds this to their site -->
+<script 
+  src="https://cdn.yourstore.com/cc-embed.js"
+  data-creator="sarah-jones"
+  data-shop="your-store.myshopify.com"
+  async
+></script>
+```
+
+---
+
+## Product Carousel Component
+
+### Component Definition
+
+```javascript
+// cc-embed.js
+class CCProductCarousel extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+  
+  async connectedCallback() {
+    const creatorHandle = this.getAttribute('creator');
+    const products = await this.fetchProducts(creatorHandle);
+    this.render(products);
+  }
+  
+  async fetchProducts(creatorHandle) {
+    const response = await fetch(
+      `https://your-store.myshopify.com/api/cc/products?creator=${creatorHandle}`
+    );
+    return response.json();
+  }
+  
+  render(products) {
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          font-family: system-ui, sans-serif;
+        }
+        .carousel {
+          display: flex;
+          gap: 16px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding: 16px 0;
+        }
+        .product {
+          flex: 0 0 200px;
+          scroll-snap-align: start;
+          border: 1px solid #eee;
+          border-radius: 8px;
+          padding: 16px;
+          text-align: center;
+        }
+        .product img {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 4px;
+        }
+        .product-title {
+          font-weight: 600;
+          margin: 8px 0 4px;
+        }
+        .product-price {
+          color: #666;
+          margin-bottom: 12px;
+        }
+        .buy-btn {
+          background: var(--cc-primary, #000);
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 4px;
+          cursor: pointer;
+          width: 100%;
+        }
+        .buy-btn:hover {
+          opacity: 0.9;
+        }
+      </style>
+      
+      <div class="carousel">
+        ${products.map(p => `
+          <div class="product">
+            <img src="${p.image}" alt="${p.title}">
+            <div class="product-title">${p.title}</div>
+            <div class="product-price">${p.price}</div>
+            <button class="buy-btn" data-variant="${p.variantId}">
+              Buy Now
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    this.shadowRoot.querySelectorAll('.buy-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.handleBuy(btn.dataset.variant));
+    });
+  }
+  
+  handleBuy(variantId) {
+    const creatorHandle = this.getAttribute('creator');
+    const checkoutUrl = `https://your-store.myshopify.com/cart/${variantId}:1?discount=${creatorHandle.toUpperCase()}`;
+    window.open(checkoutUrl, '_blank');
+  }
+}
+
+customElements.define('cc-product-carousel', CCProductCarousel);
+```
+
+### Affiliate Usage
+
+```html
+<cc-product-carousel creator="sarah-jones"></cc-product-carousel>
+```
+
+---
+
+## Buy Button Component
+
+### Simple Buy Button
+
+```javascript
+class CCBuyButton extends HTMLElement {
+  connectedCallback() {
+    const productId = this.getAttribute('product');
+    const creatorHandle = this.getAttribute('creator');
+    const buttonText = this.getAttribute('text') || 'Buy Now';
+    
+    this.innerHTML = `
+      <button class="cc-buy-btn" style="
+        background: var(--cc-primary, #000);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      ">
+        ${buttonText}
+      </button>
+    `;
+    
+    this.querySelector('button').addEventListener('click', () => {
+      window.open(
+        `https://your-store.myshopify.com/products/${productId}?ref=${creatorHandle}`,
+        '_blank'
+      );
+    });
+  }
+}
+
+customElements.define('cc-buy-button', CCBuyButton);
+```
+
+### Affiliate Usage
+
+```html
+<cc-buy-button 
+  product="hydrating-serum" 
+  creator="sarah-jones"
+  text="Get Sarah's Favorite →"
+></cc-buy-button>
+```
+
+---
+
+## Mini-Storefront Component
+
+### Full Browsing Experience
+
+```javascript
+class CCMiniStore extends HTMLElement {
+  async connectedCallback() {
+    const creatorHandle = this.getAttribute('creator');
+    const theme = this.getAttribute('theme') || 'light';
+    
+    // Create iframe for full experience
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://your-store.myshopify.com/pages/embed/${creatorHandle}`;
+    iframe.style.cssText = `
+      width: 100%;
+      height: ${this.getAttribute('height') || '600px'};
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    `;
+    
+    this.appendChild(iframe);
+    
+    // Listen for messages from iframe
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'https://your-store.myshopify.com') return;
+      
+      if (event.data.type === 'cc-checkout') {
+        // Handle checkout redirect
+        window.open(event.data.checkoutUrl, '_blank');
+      }
+    });
+  }
+}
+
+customElements.define('cc-mini-store', CCMiniStore);
+```
+
+### Embedded Page Template
+
+Create `/pages/embed/[creator-handle]` in Shopify:
+
+```liquid
+{% comment %} templates/page.embed.liquid {% endcomment %}
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+    }
+    .cc-embed-store {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="cc-embed-store">
+    {% if cc_creator %}
+      <header>
+        <h1>{{ cc_creator.cc-creator-first-name }}'s Picks</h1>
+        <p>Use code <strong>{{ cc_creator.cc-collab-discount-code }}</strong> for {{ cc_creator.cc-collab-discount-amount }}% off</p>
+      </header>
+      
+      <div class="product-grid">
+        {% for drop in cc_creator.data.value.cc-creator-drops %}
+          {% for product in drop.products %}
+            <div class="product-card">
+              <!-- Product content -->
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  
+  <script>
+    // Communicate with parent window
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', () => {
+        parent.postMessage({
+          type: 'cc-checkout',
+          checkoutUrl: btn.dataset.checkoutUrl
+        }, '*');
+      });
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+
+## Floating Discount Widget
+
+### Persistent Reminder
+
+```javascript
+class CCFloatingWidget extends HTMLElement {
+  connectedCallback() {
+    const creatorHandle = this.getAttribute('creator');
+    const discountCode = this.getAttribute('discount');
+    const discountAmount = this.getAttribute('amount');
+    
+    const position = this.getAttribute('position') || 'bottom-right';
+    
+    this.innerHTML = `
+      <div class="cc-widget" style="
+        position: fixed;
+        ${position.includes('bottom') ? 'bottom: 20px;' : 'top: 20px;'}
+        ${position.includes('right') ? 'right: 20px;' : 'left: 20px;'}
+        background: var(--cc-primary, #000);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 9999;
+        cursor: pointer;
+        transition: transform 0.2s;
+      ">
+        <div style="font-weight: bold; margin-bottom: 4px;">
+          🎁 ${discountAmount}% OFF
+        </div>
+        <div style="font-size: 14px;">
+          Use code: <strong>${discountCode}</strong>
+        </div>
+      </div>
+    `;
+    
+    const widget = this.querySelector('.cc-widget');
+    widget.addEventListener('mouseenter', () => {
+      widget.style.transform = 'scale(1.05)';
+    });
+    widget.addEventListener('mouseleave', () => {
+      widget.style.transform = 'scale(1)';
+    });
+    widget.addEventListener('click', () => {
+      window.open(`https://your-store.myshopify.com/pages/creators/${creatorHandle}`, '_blank');
+    });
+  }
+}
+
+customElements.define('cc-floating-widget', CCFloatingWidget);
+```
+
+---
+
+## Affiliate Dashboard for Embed Codes
+
+### Generate Embed Codes
+
+```javascript
+// API endpoint for affiliates
+app.get('/api/embed-codes/:creatorHandle', async (req, res) => {
+  const { creatorHandle } = req.params;
+  const creator = await getCreator(creatorHandle);
+  
+  const embedCodes = {
+    carousel: `<script src="https://cdn.yourstore.com/cc-embed.js"></script>
+<cc-product-carousel creator="${creatorHandle}"></cc-product-carousel>`,
+    
+    buyButton: `<script src="https://cdn.yourstore.com/cc-embed.js"></script>
+<cc-buy-button creator="${creatorHandle}" product="PRODUCT_HANDLE"></cc-buy-button>`,
+    
+    miniStore: `<script src="https://cdn.yourstore.com/cc-embed.js"></script>
+<cc-mini-store creator="${creatorHandle}" height="600px"></cc-mini-store>`,
+    
+    widget: `<script src="https://cdn.yourstore.com/cc-embed.js"></script>
+<cc-floating-widget 
+  creator="${creatorHandle}" 
+  discount="${creator.discountCode}"
+  amount="${creator.discountAmount}"
+></cc-floating-widget>`
+  };
+  
+  res.json(embedCodes);
+});
+```
+
+### Dashboard UI
+
+```html
+<div class="embed-codes-section">
+  <h2>Embed on Your Website</h2>
+  <p>Copy these code snippets to add to your website</p>
+  
+  <div class="embed-option">
+    <h3>Product Carousel</h3>
+    <p>Show your curated products in a scrollable carousel</p>
+    <div class="code-preview">
+      <!-- Live preview -->
+    </div>
+    <textarea readonly id="carousel-code"></textarea>
+    <button onclick="copyCode('carousel-code')">Copy Code</button>
+  </div>
+  
+  <div class="embed-option">
+    <h3>Buy Button</h3>
+    <p>Add a simple buy button for any product</p>
+    <select id="product-select">
+      <!-- Product options -->
+    </select>
+    <textarea readonly id="button-code"></textarea>
+    <button onclick="copyCode('button-code')">Copy Code</button>
+  </div>
+  
+  <!-- More embed options -->
+</div>
+```
+
+---
+
+## Analytics for Embedded Components
+
+### Track Impressions and Clicks
+
+```javascript
+class CCProductCarousel extends HTMLElement {
+  connectedCallback() {
+    // Track impression
+    this.trackEvent('impression');
+    
+    // ... render logic
+  }
+  
+  handleBuy(variantId) {
+    // Track click
+    this.trackEvent('click', { variantId });
+    
+    // ... checkout logic
+  }
+  
+  trackEvent(action, data = {}) {
+    const payload = {
+      creator: this.getAttribute('creator'),
+      component: 'carousel',
+      action,
+      source: window.location.href,
+      ...data
+    };
+    
+    // Send to analytics
+    fetch('https://your-store.myshopify.com/api/cc/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(() => {}); // Silent fail
+  }
+}
+```
+
+---
+
+## Security Considerations
+
+### CORS Configuration
+
+```javascript
+// Allow embed requests from any origin
+app.use('/api/cc/*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+```
+
+### Referrer Validation
+
+```javascript
+app.get('/api/cc/products', (req, res) => {
+  const referrer = req.get('Referer');
+  const creatorHandle = req.query.creator;
+  
+  // Log referrer for affiliate tracking
+  logAffiliateSiteVisit(creatorHandle, referrer);
+  
+  // Return products
+  const products = getCreatorProducts(creatorHandle);
+  res.json(products);
+});
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Build product carousel web component
+  - [ ] Build buy button component
+  - [ ] Create mini-storefront iframe template
+  - [ ] Build floating widget component
+  - [ ] Bundle and host components on CDN
+  - [ ] Create affiliate dashboard for embed codes
+  - [ ] Add analytics tracking
+  - [ ] Configure CORS for API endpoints
+  - [ ] Test on various affiliate sites
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel) — Event tracking
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API integration
+- [Whitelabel & Embedded Commerce](/guides/collab-strategy/advanced) — Advanced embedding

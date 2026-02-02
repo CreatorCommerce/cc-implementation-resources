@@ -1,0 +1,51 @@
+---
+title: 'Co-branded Pop-ups'
+description: 'Smart pop-ups that show creator-specific messaging, discount reminders, and email capture with proper attribution.'
+---
+
+## What It Is
+
+Pop-ups that recognize creator context and display personalized messaging—welcome offers, exit intent, email capture—all tied to the creator who referred the customer.
+
+## Key Capabilities
+
+- **Creator-aware triggers** — Show different pop-ups based on referral source
+- **Personalized messaging** — Include creator name and discount
+- **Email capture with attribution** — Sign-ups tagged to creator
+- **Exit intent** — Remind leaving visitors of their exclusive discount
+- **Suppression logic** — Hide generic pop-ups for CC traffic
+
+## How It Works
+
+```liquid
+{% if cc_creator %}
+  <div class="cc-popup" id="cc-welcome-popup">
+    <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 80 }}" />
+    <h3>Welcome! {{ cc_creator.cc-creator-first-name }} sent you</h3>
+    <p>Enjoy {{ cc_creator.cc-collab-discount-amount }}% off with code:</p>
+    <strong>{{ cc_creator.cc-collab-discount-code }}</strong>
+    <button onclick="copyDiscount()">Copy Code</button>
+  </div>
+{% endif %}
+```
+
+```javascript
+// Suppress generic pop-ups for CC traffic
+if (localStorage.getItem('cc_creator_handle')) {
+  window.POPUP_SUPPRESSED = true;
+}
+```
+
+## Pop-up Types
+
+| Type | Trigger | Content |
+|------|---------|---------|
+| Welcome | Page load (first visit) | Creator intro + discount |
+| Exit intent | Mouse leaves viewport | Don't forget your code! |
+| Email capture | Scroll depth / time | Join + get creator's picks |
+| Cart reminder | Idle on cart page | Creator says checkout now |
+
+## Related
+
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details)
+- [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)

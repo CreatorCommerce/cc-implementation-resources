@@ -1,0 +1,485 @@
+---
+title: 'Embed Products on Other Websites'
+description: 'Let partners feature your products on their own sites with embeddable widgets, buy buttons, and shoppable content blocks.'
+---
+
+## Why Embeds Matter
+
+Some partners have their own high-traffic websites and don't want to send visitors away. Product embeds let them:
+
+- **Keep visitors on their site** while still driving sales
+- **Integrate products naturally** into their content
+- **Maintain their brand experience** with your products
+- **Earn commissions** without requiring redirects
+
+---
+
+## Embed Types
+
+### Buy Button
+
+The simplest embed—a button that adds a product to cart.
+
+<Tabs>
+  <Tab title="What It Does">
+    - Displays product with price
+    - "Add to Cart" button
+    - Opens cart or redirects to checkout
+    - Partner attribution preserved
+  </Tab>
+  
+  <Tab title="Best For">
+    - Blog posts with product mentions
+    - Inline product recommendations
+    - Simple, low-friction integration
+    - Partners with minimal technical skill
+  </Tab>
+  
+  <Tab title="Shopify Buy Button">
+    Shopify's native solution:
+    
+    1. Create Buy Button in Shopify admin
+    2. Customize styling
+    3. Generate embed code
+    4. Partner adds to their site
+    
+    **Limitations:**
+    - Shopify branding
+    - Limited customization
+    - Basic analytics
+  </Tab>
+</Tabs>
+
+### Product Card Widget
+
+A richer embed showing product details.
+
+<Tabs>
+  <Tab title="What It Does">
+    - Product image
+    - Title and price
+    - Short description
+    - Partner's discount applied
+    - Add to cart functionality
+    - Links to full product page
+  </Tab>
+  
+  <Tab title="Best For">
+    - Product features in articles
+    - "Shop this look" sections
+    - Recipe ingredient links
+    - Tutorial supply lists
+  </Tab>
+  
+  <Tab title="Implementation">
+    ```html
+    <!-- Partner adds this where they want the product -->
+    <div class="cc-product-embed" 
+         data-product="product-handle"
+         data-partner="partner-handle">
+    </div>
+    <script src="https://yourstore.com/embeds/cc-widget.js"></script>
+    ```
+  </Tab>
+</Tabs>
+
+### Product Grid/Carousel
+
+Multiple products in a single embed.
+
+<Tabs>
+  <Tab title="What It Does">
+    - Displays multiple products
+    - Grid or carousel layout
+    - Partner's curated selection
+    - Bulk add or individual add
+    - Links to partner's full storefront
+  </Tab>
+  
+  <Tab title="Best For">
+    - "My favorite products" sections
+    - Category showcases
+    - Seasonal recommendations
+    - Complete routine/kit displays
+  </Tab>
+  
+  <Tab title="Implementation">
+    ```html
+    <!-- Partner's curated grid -->
+    <div class="cc-product-grid" 
+         data-partner="partner-handle"
+         data-collection="partner-picks"
+         data-limit="6">
+    </div>
+    <script src="https://yourstore.com/embeds/cc-widget.js"></script>
+    ```
+  </Tab>
+</Tabs>
+
+### Full Embedded Storefront
+
+A complete shopping experience within an iframe.
+
+<Tabs>
+  <Tab title="What It Does">
+    - Full browsing experience
+    - Product search and filtering
+    - Cart management
+    - Checkout (embedded or redirect)
+    - Complete partner branding
+  </Tab>
+  
+  <Tab title="Best For">
+    - Publishers with dedicated shop sections
+    - Partners who want full store on their site
+    - High-volume relationships
+    - Whitelabel arrangements
+  </Tab>
+  
+  <Tab title="Considerations">
+    - More complex implementation
+    - Security considerations
+    - Mobile responsiveness challenges
+    - Checkout flow decisions
+  </Tab>
+</Tabs>
+
+---
+
+## Implementation Approaches
+
+### JavaScript Widget
+
+<AccordionGroup>
+  <Accordion title="How It Works">
+    1. Partner adds a script tag to their site
+    2. Script loads your widget code
+    3. Widget renders in designated container
+    4. Events (add to cart) communicate with your store
+  </Accordion>
+  
+  <Accordion title="Pros & Cons">
+    **Pros:**
+    - Easy for partners to implement
+    - Full styling control
+    - Dynamic content loading
+    - Real-time inventory/pricing
+    
+    **Cons:**
+    - JavaScript dependency
+    - Potential performance impact
+    - Cross-origin considerations
+    - Requires hosting/maintenance
+  </Accordion>
+  
+  <Accordion title="Example Implementation">
+    **Partner's site:**
+    ```html
+    <div id="cc-products" data-partner="sarah"></div>
+    <script src="https://yourstore.com/embed.js"></script>
+    ```
+    
+    **Your widget script:**
+    ```javascript
+    (function() {
+      const container = document.getElementById('cc-products');
+      const partner = container.dataset.partner;
+      
+      // Fetch partner's products
+      fetch(`https://yourstore.com/api/partners/${partner}/products`)
+        .then(res => res.json())
+        .then(products => {
+          // Render products with add-to-cart functionality
+          container.innerHTML = renderProducts(products);
+        });
+    })();
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Shopify Buy Button SDK
+
+<AccordionGroup>
+  <Accordion title="How It Works">
+    Shopify's official SDK for embedding products:
+    
+    1. Include Shopify Buy Button script
+    2. Initialize with your store credentials
+    3. Create product components programmatically
+    4. Style to match partner's site
+  </Accordion>
+  
+  <Accordion title="Setup">
+    ```javascript
+    // Initialize the client
+    const client = ShopifyBuy.buildClient({
+      domain: 'your-store.myshopify.com',
+      storefrontAccessToken: 'your-access-token'
+    });
+    
+    // Create UI instance
+    const ui = ShopifyBuy.UI.init(client);
+    
+    // Create a product component
+    ui.createComponent('product', {
+      id: '1234567890',
+      node: document.getElementById('product-embed'),
+      options: {
+        product: {
+          styles: {
+            // Custom styling
+          }
+        }
+      }
+    });
+    ```
+  </Accordion>
+  
+  <Accordion title="Adding Partner Attribution">
+    Customize the cart to include partner attribution:
+    
+    ```javascript
+    options: {
+      cart: {
+        customAttributes: [
+          { key: 'cc-creator-handle', value: 'partner-handle' },
+          { key: 'cc-discount-code', value: 'PARTNER15' }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### iFrame Embed
+
+<AccordionGroup>
+  <Accordion title="How It Works">
+    Embed your storefront page directly:
+    
+    ```html
+    <iframe 
+      src="https://yourstore.com/pages/creators/sarah?embed=true" 
+      width="100%" 
+      height="600"
+      frameborder="0">
+    </iframe>
+    ```
+  </Accordion>
+  
+  <Accordion title="Pros & Cons">
+    **Pros:**
+    - Simple implementation
+    - Full experience embedded
+    - No JavaScript complexity
+    - Isolated styling
+    
+    **Cons:**
+    - Fixed height challenges
+    - Limited communication with parent
+    - SEO implications
+    - Mobile responsiveness issues
+  </Accordion>
+  
+  <Accordion title="Responsive iFrame">
+    Use postMessage for dynamic height:
+    
+    **In iframe:**
+    ```javascript
+    window.parent.postMessage({
+      type: 'cc-resize',
+      height: document.body.scrollHeight
+    }, '*');
+    ```
+    
+    **On partner's site:**
+    ```javascript
+    window.addEventListener('message', (e) => {
+      if (e.data.type === 'cc-resize') {
+        document.querySelector('iframe').style.height = e.data.height + 'px';
+      }
+    });
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Partner Attribution in Embeds
+
+Ensure every embed purchase is attributed to the partner:
+
+### Cart Attributes
+
+```javascript
+// When adding to cart from embed
+const cartAttributes = {
+  'cc-creator-handle': 'partner-handle',
+  'cc-discount-code': 'PARTNER15',
+  'cc-source': 'embed'
+};
+```
+
+### URL Parameters
+
+```
+https://yourstore.com/cart?cc-creator=partner-handle&discount=PARTNER15
+```
+
+### Cookie/Storage
+
+```javascript
+// Set partner context when widget loads
+localStorage.setItem('cc-partner', 'partner-handle');
+
+// Read when checking out
+const partner = localStorage.getItem('cc-partner');
+```
+
+---
+
+## Styling Embeds
+
+### Brand Matching
+
+Provide styling options so embeds match partner sites:
+
+```javascript
+// Widget configuration
+{
+  theme: {
+    primaryColor: '#ff5733',
+    fontFamily: 'Helvetica, sans-serif',
+    borderRadius: '8px',
+    buttonStyle: 'rounded' // or 'square', 'pill'
+  }
+}
+```
+
+### CSS Variables
+
+Allow CSS customization:
+
+```css
+:root {
+  --cc-primary-color: #333;
+  --cc-button-color: #ff5733;
+  --cc-font-family: inherit;
+  --cc-border-radius: 4px;
+}
+```
+
+Partners can override:
+
+```css
+.cc-embed {
+  --cc-primary-color: #0066cc;
+  --cc-button-color: #00cc66;
+}
+```
+
+---
+
+## Checkout Flow Options
+
+### Redirect to Your Store
+
+Simplest approach—"Buy" button opens your checkout.
+
+**Pros:** Full checkout experience, no complexity
+**Cons:** Leaves partner's site
+
+### Cart Drawer/Modal
+
+Open cart in overlay without leaving page.
+
+**Pros:** Stays on partner site longer
+**Cons:** More complex, may feel disjointed
+
+### Embedded Checkout
+
+Full checkout within iframe/modal.
+
+**Pros:** Never leaves partner site
+**Cons:** Complex, security considerations, PCI compliance
+
+**Recommendation:** Start with redirect, graduate to more advanced as needed.
+
+---
+
+## Analytics & Tracking
+
+### Track Embed Performance
+
+| Metric | What to Track |
+|--------|---------------|
+| Impressions | How often embed loads |
+| Clicks | Product clicks from embed |
+| Add to cart | Items added from embed |
+| Purchases | Orders from embed traffic |
+| Revenue | Revenue attributed to embeds |
+
+### Implementation
+
+```javascript
+// Track embed load
+analytics.track('embed_loaded', {
+  partner: 'partner-handle',
+  location: document.referrer,
+  products: ['product-1', 'product-2']
+});
+
+// Track add to cart
+analytics.track('embed_add_to_cart', {
+  partner: 'partner-handle',
+  product: 'product-handle',
+  source: 'embed'
+});
+```
+
+---
+
+## Partner Onboarding for Embeds
+
+### Provide Partners With
+
+<Checklist>
+  - [ ] Clear embed code with their partner ID
+  - [ ] Styling documentation
+  - [ ] Implementation guide for common platforms
+  - [ ] Test page to verify embed works
+  - [ ] Support contact for issues
+</Checklist>
+
+### Platform-Specific Guides
+
+Create guides for where partners typically embed:
+
+- **WordPress** — Plugin or shortcode
+- **Squarespace** — Code injection
+- **Wix** — HTML embed widget
+- **Substack** — Limited HTML support
+- **Ghost** — HTML card
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Decide which embed type(s) to offer
+  - [ ] Build or configure widget/embed code
+  - [ ] Implement partner attribution in embeds
+  - [ ] Create styling options for brand matching
+  - [ ] Set up analytics tracking for embeds
+  - [ ] Create partner documentation
+  - [ ] Test on multiple platforms/browsers
+  - [ ] Provide support channel for partner issues
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Whitelabel & Embedded Commerce](/guides/collab-strategy/advanced) — Advanced embed strategies
+- [Track Your Funnel Traffic](/guides/track-funnel-traffic) — Attribution tracking
+- [Connect Your Tech Stack](/guides/connect-your-tech-stack) — Technical integrations

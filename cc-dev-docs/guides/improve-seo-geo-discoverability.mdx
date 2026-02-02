@@ -1,0 +1,411 @@
+---
+title: 'Improve SEO & GEO Discoverability'
+description: 'Optimize partner pages for search engines and AI discovery—from meta tags to structured data to geographic targeting.'
+---
+
+## Why Partner Pages Need SEO
+
+Your partner pages aren't just for traffic from partner links—they can also rank in search and AI results for:
+
+- **Partner name searches** — "[Partner Name] + [Your Brand]"
+- **Product + recommendation** — "best [product category] recommended by experts"
+- **Local searches** — "nutritionist near me + supplements"
+- **AI answers** — Featured in ChatGPT, Perplexity, and other AI assistants
+
+Good SEO turns your partner pages into evergreen traffic sources.
+
+---
+
+## SEO Fundamentals for Partner Pages
+
+### Page Titles
+
+<Tabs>
+  <Tab title="Best Practices">
+    **Format:** `[Partner Name]'s [Product/Brand] Recommendations | [Brand]`
+    
+    **Examples:**
+    - "Sarah's Skincare Picks | GlowBrand"
+    - "Dr. Jones's Supplement Protocol | HealthCo"
+    - "FitnessMom's Workout Essentials | ActiveGear"
+    
+    **Guidelines:**
+    - Keep under 60 characters
+    - Partner name first (what they're searching)
+    - Brand name for recognition
+    - Avoid generic titles
+  </Tab>
+  
+  <Tab title="Implementation">
+    In your Liquid template:
+    
+    ```liquid
+    {% capture page_title %}
+      {{ cc_creator.cc-creator-first-name }}'s 
+      {{ cc_creator.cc-creator-shop-tagline | default: 'Picks' }} 
+      | {{ shop.name }}
+    {% endcapture %}
+    
+    <title>{{ page_title | strip }}</title>
+    ```
+  </Tab>
+</Tabs>
+
+### Meta Descriptions
+
+<Tabs>
+  <Tab title="Best Practices">
+    **Format:** Action-oriented description with partner context and value prop.
+    
+    **Examples:**
+    - "Shop Sarah's curated skincare routine. Get 15% off her favorite products with exclusive access to her top picks."
+    - "Dr. Jones recommends these supplements for gut health. Professional-grade products with practitioner discount."
+    
+    **Guidelines:**
+    - 150-160 characters
+    - Include partner name
+    - Mention discount or exclusive access
+    - Include call-to-action
+  </Tab>
+  
+  <Tab title="Implementation">
+    ```liquid
+    {% capture meta_description %}
+      Shop {{ cc_creator.cc-creator-first-name }}'s curated 
+      {{ shop.name }} picks. 
+      {% if cc_creator.cc-collab-discount-amount %}
+        Get {{ cc_creator.cc-collab-discount-amount }}% off 
+      {% endif %}
+      with exclusive access to their top recommendations.
+    {% endcapture %}
+    
+    <meta name="description" content="{{ meta_description | strip }}">
+    ```
+  </Tab>
+</Tabs>
+
+### URL Structure
+
+**Good URLs:**
+```
+/pages/creators/sarah-jones
+/shop/recommended-by/dr-sarah-jones
+/partners/fitness-mom-picks
+```
+
+**Bad URLs:**
+```
+/pages/creator?id=12345
+/p/c/sj123
+/partner-page-1
+```
+
+**Guidelines:**
+- Human-readable
+- Include partner name/handle
+- Consistent pattern across all partner pages
+- Avoid query parameters in canonical URL
+
+---
+
+## Structured Data (Schema Markup)
+
+### Why Structured Data Matters
+
+Structured data helps search engines understand your pages and enables rich results like:
+
+- Star ratings
+- Product information
+- Author/creator attribution
+- FAQ snippets
+- Breadcrumbs
+
+### Person Schema for Partners
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Sarah Jones",
+  "jobTitle": "Wellness Influencer",
+  "url": "https://yourstore.com/pages/creators/sarah-jones",
+  "image": "https://cdn.yourstore.com/sarah-jones.jpg",
+  "sameAs": [
+    "https://instagram.com/sarahjones",
+    "https://tiktok.com/@sarahjones"
+  ]
+}
+```
+
+### Product Collection Schema
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Sarah Jones's Top Picks",
+  "description": "Curated product recommendations from Sarah Jones",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Product",
+        "name": "Product Name",
+        "url": "https://yourstore.com/products/...",
+        "image": "...",
+        "offers": {
+          "@type": "Offer",
+          "price": "49.99",
+          "priceCurrency": "USD"
+        }
+      }
+    }
+  ]
+}
+```
+
+### Implementing Schema in Liquid
+
+```liquid
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": {{ cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name | json }},
+  "url": {{ request.origin | append: request.path | json }},
+  "image": {{ cc_creator.data.value.cc-creator-profile-picture | json }},
+  "description": {{ cc_creator.cc-creator-shop-description | json }}
+}
+</script>
+```
+
+---
+
+## GEO/Local SEO
+
+For practitioners and location-based partners, local SEO drives relevant traffic.
+
+### LocalBusiness Schema
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Dr. Sarah Jones, ND",
+  "description": "Naturopathic physician specializing in gut health",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "123 Wellness Way",
+    "addressLocality": "Portland",
+    "addressRegion": "OR",
+    "postalCode": "97201"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "45.5234",
+    "longitude": "-122.6762"
+  },
+  "telephone": "(503) 555-1234",
+  "url": "https://yourstore.com/pages/practitioners/dr-sarah-jones"
+}
+```
+
+### Location-Based Content
+
+For practitioner pages, include:
+
+<Checklist>
+  - [ ] Practice name and location
+  - [ ] Service area/regions covered
+  - [ ] "Near me" friendly content
+  - [ ] Local landmarks or neighborhood references
+  - [ ] Contact information
+</Checklist>
+
+### Multi-Location Partners
+
+If a partner has multiple locations:
+- Create separate pages per location, or
+- Use location selector on single page
+- Include all locations in structured data
+
+---
+
+## AI Discovery (GEO - Generative Engine Optimization)
+
+### Optimizing for AI Assistants
+
+AI assistants like ChatGPT, Perplexity, and Google AI Overview pull from web content. To be included:
+
+<AccordionGroup>
+  <Accordion title="Clear, Factual Content">
+    Write content that directly answers questions:
+    
+    **Instead of:** "Sarah has amazing taste in skincare!"
+    
+    **Write:** "Sarah Jones is a licensed esthetician who recommends products for sensitive, acne-prone skin."
+  </Accordion>
+  
+  <Accordion title="Question-Answer Format">
+    Include FAQ sections that match how people ask questions:
+    
+    - "What products does [Partner] recommend for [condition]?"
+    - "Why does [Partner] choose [Brand]?"
+    - "What's [Partner]'s skincare routine?"
+  </Accordion>
+  
+  <Accordion title="Expertise Signals">
+    Highlight partner credentials and expertise:
+    
+    - Professional certifications
+    - Years of experience
+    - Specializations
+    - Published work or features
+  </Accordion>
+  
+  <Accordion title="Structured Data">
+    Schema markup helps AI understand:
+    
+    - Who the partner is
+    - What they recommend
+    - Why they're credible
+    - How to access their recommendations
+  </Accordion>
+</AccordionGroup>
+
+### Content for AI Crawlers
+
+Include clear, extractable information:
+
+```markdown
+## About Sarah Jones
+
+Sarah Jones is a certified wellness coach with 10+ years of experience 
+specializing in holistic skincare. She has been featured in Vogue, 
+Well+Good, and Healthline.
+
+## Sarah's Top Recommendations
+
+1. **Product A** - For morning hydration
+2. **Product B** - For evening repair
+3. **Product C** - For weekly treatment
+
+## Why Sarah Chooses [Brand]
+
+"I recommend [Brand] because of their commitment to clean ingredients 
+and clinical efficacy..." - Sarah Jones
+```
+
+---
+
+## Technical SEO Checklist
+
+### Page Speed
+
+<Checklist>
+  - [ ] Optimize partner images (WebP, lazy loading)
+  - [ ] Minimize JavaScript on partner pages
+  - [ ] Use efficient CSS
+  - [ ] Leverage browser caching
+  - [ ] Target < 3 second load time
+</Checklist>
+
+### Mobile Optimization
+
+<Checklist>
+  - [ ] Responsive design
+  - [ ] Touch-friendly buttons (44px+ tap targets)
+  - [ ] Readable text without zooming
+  - [ ] No horizontal scrolling
+  - [ ] Fast mobile load time
+</Checklist>
+
+### Indexation
+
+<Checklist>
+  - [ ] Partner pages are indexable (no noindex)
+  - [ ] Included in sitemap
+  - [ ] Internal links to partner pages
+  - [ ] Canonical URLs set correctly
+  - [ ] Hreflang for multi-language (if applicable)
+</Checklist>
+
+### Crawlability
+
+<Checklist>
+  - [ ] robots.txt allows crawling
+  - [ ] Clean URL structure
+  - [ ] Proper redirects (no chains)
+  - [ ] No orphan pages
+  - [ ] Logical site architecture
+</Checklist>
+
+---
+
+## Content Strategy for SEO
+
+### Partner Page Content
+
+Each partner page should have:
+
+| Section | SEO Value |
+|---------|-----------|
+| Partner bio | Keyword-rich, establishes expertise |
+| Product descriptions | Product + partner keywords |
+| Testimonials/quotes | Unique, authentic content |
+| FAQ section | Question-based queries |
+| Related content | Internal linking opportunities |
+
+### Blog/Content Integration
+
+Create supporting content that links to partner pages:
+
+- "[Partner]'s favorite products for [use case]"
+- "Expert picks: [Partner] on [topic]"
+- Roundups featuring multiple partners
+
+---
+
+## Measuring SEO Success
+
+### Metrics to Track
+
+| Metric | Tool | Target |
+|--------|------|--------|
+| Organic traffic to partner pages | GA4 | Growing MoM |
+| Keyword rankings | Search Console, Ahrefs | Page 1 for partner names |
+| Click-through rate | Search Console | 3%+ |
+| Page speed | PageSpeed Insights | 90+ score |
+| Core Web Vitals | Search Console | All green |
+
+### Partner Page SEO Report
+
+Monthly, review:
+- Which partner pages get organic traffic
+- What keywords they rank for
+- Page speed and mobile scores
+- Opportunities for improvement
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Optimize title tags with partner names
+  - [ ] Write unique meta descriptions per partner
+  - [ ] Implement Person schema markup
+  - [ ] Add LocalBusiness schema for practitioners
+  - [ ] Ensure pages are fast and mobile-friendly
+  - [ ] Submit partner pages to sitemap
+  - [ ] Add internal links to partner pages
+  - [ ] Include FAQ content for AI discovery
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Designing Storefronts by Persona](/guides/collab-strategy/co-branded-storefronts) — Page structure and content
+- [Going Live & Measuring](/guides/collab-strategy/launch-track) — Analytics setup
+- [Track Your Funnel Traffic](/guides/track-funnel-traffic) — Traffic measurement

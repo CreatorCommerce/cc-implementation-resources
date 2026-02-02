@@ -1,0 +1,150 @@
+---
+title: 'Connect to CreatorCommerce MCP'
+description: 'Use AI assistants like Claude, ChatGPT, Cursor, and VS Code to explore these docs and get implementation help.'
+---
+
+## What is MCP?
+
+The **Model Context Protocol (MCP)** lets AI assistants read and understand documentation directly. Instead of copy-pasting code snippets, you can ask questions and get answers with full context from these docs.
+
+<CardGroup cols={2}>
+  <Card title="Ask Questions" icon="message-question">
+    "How do I display creator discounts on product pages?"
+  </Card>
+  <Card title="Get Code" icon="code">
+    "Show me the Liquid for a co-branded hero section"
+  </Card>
+  <Card title="Debug Issues" icon="bug">
+    "Why isn't my creator data showing up?"
+  </Card>
+  <Card title="Plan Implementation" icon="map">
+    "What's the best order to implement co-branding?"
+  </Card>
+</CardGroup>
+
+---
+
+## Connect Your AI Tool
+
+### Cursor
+
+<Steps>
+  <Step title="Open Cursor Settings">
+    Press `Cmd+,` (Mac) or `Ctrl+,` (Windows)
+  </Step>
+  <Step title="Go to MCP Servers">
+    Navigate to Features → MCP Servers
+  </Step>
+  <Step title="Add Server">
+    Click "Add Server" and paste:
+    ```
+    https://creatorcommerce.dev/mcp
+    ```
+  </Step>
+  <Step title="Start Asking">
+    In any chat, reference `@creatorcommerce` to include docs context
+  </Step>
+</Steps>
+
+### VS Code (with Continue or Cline)
+
+<Steps>
+  <Step title="Install Extension">
+    Install Continue or Cline from the VS Code marketplace
+  </Step>
+  <Step title="Configure MCP">
+    Add to your extension settings:
+    ```json
+    {
+      "mcp": {
+        "servers": {
+          "creatorcommerce": {
+            "url": "https://creatorcommerce.dev/mcp"
+          }
+        }
+      }
+    }
+    ```
+  </Step>
+  <Step title="Start Asking">
+    Open the chat panel and ask about CreatorCommerce
+  </Step>
+</Steps>
+
+### Claude (via MCP)
+
+Use the contextual menu on any page of these docs:
+
+1. Click the **contextual menu** (top right of any page)
+2. Select **Claude**
+3. The page content is automatically loaded as context
+
+### ChatGPT / Perplexity
+
+Use the contextual menu on any page:
+
+1. Click the **contextual menu** (top right of any page)
+2. Select **ChatGPT** or **Perplexity**
+3. Start asking questions with the docs as context
+
+---
+
+## Quick Access from Any Page
+
+Every page in these docs has a **contextual menu** with one-click access to:
+
+| Option | What It Does |
+|--------|--------------|
+| **Copy** | Copy page as markdown for pasting into any AI |
+| **ChatGPT** | Open ChatGPT with page as context |
+| **Claude** | Open Claude with page as context |
+| **Perplexity** | Open Perplexity with page as context |
+| **Cursor** | Install MCP server in Cursor |
+| **VS Code** | Install MCP server in VS Code |
+| **MCP URL** | Copy the MCP server URL |
+
+---
+
+## Example Prompts
+
+Once connected, try these prompts:
+
+**Implementation:**
+> "Show me how to build a co-branded hero section with creator photo and discount code"
+
+**Strategy:**
+> "What are the steps to launch a collaboration program with CreatorCommerce?"
+
+**Debugging:**
+> "My creator discount isn't showing on product pages. What should I check?"
+
+**API:**
+> "How do I create a new collab via the CC API?"
+
+**Best Practices:**
+> "What's the recommended way to handle creator context across my Shopify theme?"
+
+---
+
+## Full Documentation Index
+
+For AI tools that support it, fetch the complete documentation index:
+
+```
+https://creatorcommerce.dev/llms.txt
+```
+
+This file lists all available pages for comprehensive context.
+
+---
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Book a Call" icon="calendar" href="https://calendly.com/creatorcommerce/30min">
+    Talk to our team about your implementation
+  </Card>
+  <Card title="Email Support" icon="envelope" href="mailto:help@creatorcommerce.shop">
+    Get help via email
+  </Card>
+</CardGroup>

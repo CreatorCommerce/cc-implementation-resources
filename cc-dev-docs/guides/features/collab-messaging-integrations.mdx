@@ -1,0 +1,55 @@
+---
+title: 'Collab Messaging Integrations'
+description: 'Automated email and SMS flows to partners—welcome sequences, activation nudges, and performance updates.'
+---
+
+## What It Is
+
+Keep partners engaged with automated messaging. From welcome emails when they join to monthly performance digests, messaging integrations keep your creator community active.
+
+## Key Capabilities
+
+- **Welcome sequences** — Onboarding email series
+- **Activation nudges** — Remind inactive partners
+- **Performance updates** — Weekly/monthly digests
+- **Milestone celebrations** — First order, tier upgrades
+- **Broadcast messaging** — Announcements to all partners
+
+## Integration Points
+
+| Platform | Capabilities |
+|----------|--------------|
+| Klaviyo | Flows, segments, events |
+| Mailchimp | Automations, tags |
+| Postscript | SMS campaigns |
+| Attentive | SMS + email |
+| Custom SMTP | Direct email |
+
+## Triggered Events
+
+| Event | Use Case |
+|-------|----------|
+| `partner.created` | Welcome email |
+| `partner.activated` | Congratulations + next steps |
+| `order.attributed` | Order notification |
+| `milestone.reached` | Celebration message |
+| `partner.dormant` | Re-engagement nudge |
+
+## Example Flow
+
+```
+Partner Created
+     ↓
+Welcome Email (immediate)
+     ↓
+Setup Reminder (day 2)
+     ↓
+First Order? → Celebration Email
+     ↓
+No Orders after 14 days? → Tips Email
+```
+
+## Related
+
+- [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)
+- [Creating Shock & Awe Moments](/guides/collab-strategy/partner-activation)

@@ -1,0 +1,484 @@
+---
+title: 'Support Unique Discounts'
+description: 'Handle per-creator discount codes, tiered discount structures, and stacking rules in your Shopify implementation.'
+---
+
+## Overview
+
+CreatorCommerce supports flexible discount structures:
+
+- **Unique codes per creator** — `SARAH15`, `MIKE20`, etc.
+- **Tiered discounts** — Different percentages by partner tier
+- **Product-specific discounts** — Different rates for different products
+- **Stacking rules** — How creator discounts interact with sales
+
+---
+
+## Discount Data Model
+
+### Creator Discount Fields
+
+| Field | Description | Example |
+|-------|-------------|---------|
+| `cc-collab-discount-code` | Unique code string | `SARAH15` |
+| `cc-collab-discount-amount` | Percentage off | `15` |
+| `cc-collab-discount-type` | `percentage` or `fixed` | `percentage` |
+| `cc-collab-max-discount` | Cap on discount amount | `50.00` |
+| `cc-collab-min-order` | Minimum order for discount | `25.00` |
+
+### Tiered Discount Structure
+
+Discounts often vary by partner tier:
+
+| Tier | Discount | Commission |
+|------|----------|------------|
+| Starter | 10% | 10% |
+| Silver | 15% | 12% |
+| Gold | 20% | 15% |
+| Platinum | 25% | 20% |
+
+---
+
+## Generating Unique Codes
+
+### Code Naming Patterns
+
+```javascript
+// Pattern: FIRSTNAME + DISCOUNT
+function generateCode(creator, discountPercent) {
+  const name = creator.firstName.toUpperCase().replace(/[^A-Z]/g, '');
+  return `${name}${discountPercent}`;
+}
+// Sarah + 15% = SARAH15
+
+// Pattern: HANDLE + RANDOM
+function generateUniqueCode(creator) {
+  const handle = creator.handle.toUpperCase().slice(0, 6);
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${handle}-${random}`;
+}
+// sarah-jones = SARAH-A3F9
+```
+
+### Shopify Discount Creation via API
+
+```javascript
+const SHOPIFY_ADMIN_API = `https://${SHOP_DOMAIN}/admin/api/2024-01/graphql.json`;
+
+async function createShopifyDiscount(code, percentOff, creatorId) {
+  const mutation = `
+    mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+      discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+        codeDiscountNode {
+          id
+          codeDiscount {
+            ... on DiscountCodeBasic {
+              codes(first: 1) {
+                nodes {
+                  code
+                }
+              }
+            }
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;
+  
+  const variables = {
+    basicCodeDiscount: {
+      title: `CC Partner: ${code}`,
+      code: code,
+      startsAt: new Date().toISOString(),
+      customerGets: {
+        value: {
+          percentage: percentOff / 100
+        },
+        items: {
+          all: true
+        }
+      },
+      customerSelection: {
+        all: true
+      },
+      usageLimit: null, // Unlimited uses
+      appliesOncePerCustomer: true,
+      metafields: [
+        {
+          namespace: "creatorcommerce",
+          key: "creator_id",
+          value: creatorId,
+          type: "single_line_text_field"
+        }
+      ]
+    }
+  };
+  
+  const response = await fetch(SHOPIFY_ADMIN_API, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN
+    },
+    body: JSON.stringify({ query: mutation, variables })
+  });
+  
+  return response.json();
+}
+```
+
+---
+
+## Tiered Discount Logic
+
+### Assigning Discount by Tier
+
+```javascript
+const tierDiscounts = {
+  starter: { discount: 10, commission: 0.10 },
+  silver: { discount: 15, commission: 0.12 },
+  gold: { discount: 20, commission: 0.15 },
+  platinum: { discount: 25, commission: 0.20 }
+};
+
+async function assignTierDiscount(collab) {
+  const tier = collab.tier || 'starter';
+  const { discount, commission } = tierDiscounts[tier];
+  
+  const code = generateCode(collab.creator, discount);
+  
+  // Create in Shopify
+  await createShopifyDiscount(code, discount, collab.creator.id);
+  
+  // Update collab in CC
+  await ccApi.updateCollab(collab.id, {
+    discountCode: code,
+    discountAmount: discount,
+    commissionRate: commission
+  });
+  
+  return { code, discount, commission };
+}
+```
+
+### Liquid Display by Tier
+
+```liquid
+{% liquid
+  assign tier = cc_creator.tier | default: 'starter'
+  
+  case tier
+    when 'platinum'
+      assign tier_color = '#e5c100'
+      assign tier_label = 'Platinum Partner'
+    when 'gold'
+      assign tier_color = '#ffd700'
+      assign tier_label = 'Gold Partner'
+    when 'silver'
+      assign tier_color = '#c0c0c0'
+      assign tier_label = 'Silver Partner'
+    else
+      assign tier_color = '#cd7f32'
+      assign tier_label = 'Partner'
+  endcase
+%}
+
+<div class="cc-partner-badge" style="background: {{ tier_color }}">
+  {{ tier_label }} • {{ cc_creator.cc-collab-discount-amount }}% OFF
+</div>
+```
+
+---
+
+## Product-Specific Discounts
+
+### Per-Product Discount Data
+
+Store in creator's custom fields:
+
+```json
+{
+  "product_discounts": {
+    "gid://shopify/Product/123": 25,
+    "gid://shopify/Product/456": 15,
+    "default": 10
+  }
+}
+```
+
+### Liquid Product Discount Lookup
+
+```liquid
+{% liquid
+  assign product_discounts = cc_creator.data.value.product_discounts
+  assign product_id_str = product.id | prepend: 'gid://shopify/Product/'
+  
+  assign product_discount = product_discounts[product_id_str]
+  if product_discount == blank
+    assign product_discount = product_discounts['default'] | default: cc_creator.cc-collab-discount-amount
+  endif
+%}
+
+{% if product_discount > 0 %}
+  {% assign discount_multiplier = 100 | minus: product_discount | divided_by: 100.0 %}
+  {% assign discounted_price = product.price | times: discount_multiplier %}
+  
+  <span class="sale-price">{{ discounted_price | money }}</span>
+  <span class="original-price">{{ product.price | money }}</span>
+{% endif %}
+```
+
+---
+
+## Discount Stacking Rules
+
+### Stacking Scenarios
+
+| Scenario | Rule | Implementation |
+|----------|------|----------------|
+| Creator + Sale | Apply creator discount to sale price | Stack |
+| Creator + Volume | Allow both | Stack |
+| Creator + Promo | Use better discount | Best-of |
+| Creator + Gift Card | Allow both | Stack |
+
+### Best-of Logic
+
+```liquid
+{% liquid
+  # Get all applicable discounts
+  assign creator_discount = cc_creator.cc-collab-discount-amount | default: 0
+  assign sale_discount = 0
+  
+  if product.compare_at_price > product.price
+    assign sale_discount = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | floor
+  endif
+  
+  assign promo_discount = settings.sitewide_discount | default: 0
+  
+  # Determine best discount
+  assign best_discount = creator_discount
+  assign discount_source = 'creator'
+  
+  if sale_discount > best_discount
+    assign best_discount = sale_discount
+    assign discount_source = 'sale'
+  endif
+  
+  if promo_discount > best_discount
+    assign best_discount = promo_discount
+    assign discount_source = 'promo'
+  endif
+%}
+
+{% if best_discount > 0 %}
+  <div class="discount-badge discount-badge--{{ discount_source }}">
+    {{ best_discount }}% OFF
+    {% if discount_source == 'creator' %}
+      with {{ cc_creator.cc-creator-first-name }}'s code
+    {% endif %}
+  </div>
+{% endif %}
+```
+
+### Stacking Enforcement
+
+```liquid
+{% liquid
+  # Allow stacking creator discount on top of existing sale
+  assign base_price = product.price
+  
+  # If product is on sale, use sale price as base
+  if product.compare_at_price > product.price
+    assign base_price = product.price
+    assign was_on_sale = true
+  endif
+  
+  # Apply creator discount on top
+  if cc_creator.cc-collab-discount-amount > 0
+    assign discount_multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    assign final_price = base_price | times: discount_multiplier
+  else
+    assign final_price = base_price
+  endif
+%}
+
+<div class="price">
+  {% if was_on_sale %}
+    <span class="compare-at">{{ product.compare_at_price | money }}</span>
+  {% endif %}
+  {% if cc_creator.cc-collab-discount-amount > 0 and was_on_sale %}
+    <span class="sale-price">{{ product.price | money }}</span>
+  {% endif %}
+  <span class="final-price">{{ final_price | money }}</span>
+</div>
+```
+
+---
+
+## Discount Validation
+
+### Minimum Order Check
+
+```liquid
+{% liquid
+  assign min_order = cc_creator.cc-collab-min-order | default: 0
+  assign cart_total = cart.total_price | divided_by: 100.0
+  assign discount_valid = true
+  
+  if cart_total < min_order
+    assign discount_valid = false
+    assign amount_needed = min_order | minus: cart_total
+  endif
+%}
+
+{% if cc_creator and discount_valid == false %}
+  <div class="discount-threshold-notice">
+    Add {{ amount_needed | money }} more to unlock 
+    {{ cc_creator.cc-creator-first-name }}'s 
+    {{ cc_creator.cc-collab-discount-amount }}% discount!
+  </div>
+{% endif %}
+```
+
+### Maximum Discount Cap
+
+```liquid
+{% liquid
+  assign max_discount = cc_creator.cc-collab-max-discount | default: 99999
+  assign calculated_savings = cart.total_price | times: cc_creator.cc-collab-discount-amount | divided_by: 100
+  
+  if calculated_savings > max_discount
+    # Cap the savings
+    assign actual_savings = max_discount
+    assign effective_percent = max_discount | times: 100 | divided_by: cart.total_price | floor
+  else
+    assign actual_savings = calculated_savings
+    assign effective_percent = cc_creator.cc-collab-discount-amount
+  endif
+%}
+
+<div class="savings-display">
+  You'll save: {{ actual_savings | money }}
+  {% if effective_percent != cc_creator.cc-collab-discount-amount %}
+    <span class="cap-note">(capped at {{ max_discount | money }})</span>
+  {% endif %}
+</div>
+```
+
+---
+
+## Code Management
+
+### Bulk Code Generation
+
+```javascript
+async function generateCodesForTier(tier, discountPercent) {
+  const partners = await ccApi.listPartners({ tier });
+  
+  const results = [];
+  for (const partner of partners) {
+    const code = generateCode(partner, discountPercent);
+    
+    // Create in Shopify
+    await createShopifyDiscount(code, discountPercent, partner.id);
+    
+    // Update partner
+    await ccApi.updatePartner(partner.id, {
+      discountCode: code,
+      discountAmount: discountPercent
+    });
+    
+    results.push({ partner: partner.id, code });
+  }
+  
+  return results;
+}
+```
+
+### Code Expiration
+
+```javascript
+async function createExpiringDiscount(code, percentOff, expiresAt) {
+  const mutation = `
+    mutation discountCodeBasicCreate($basicCodeDiscount: DiscountCodeBasicInput!) {
+      discountCodeBasicCreate(basicCodeDiscount: $basicCodeDiscount) {
+        codeDiscountNode { id }
+        userErrors { field message }
+      }
+    }
+  `;
+  
+  const variables = {
+    basicCodeDiscount: {
+      title: `CC Partner: ${code}`,
+      code: code,
+      startsAt: new Date().toISOString(),
+      endsAt: expiresAt, // ISO date string
+      customerGets: {
+        value: { percentage: percentOff / 100 },
+        items: { all: true }
+      },
+      customerSelection: { all: true }
+    }
+  };
+  
+  return shopifyGraphQL(mutation, variables);
+}
+```
+
+---
+
+## Tracking Discount Usage
+
+### Attribution via Metafields
+
+```javascript
+// When order is placed with discount code
+async function attributeOrder(order) {
+  const discountCode = order.discount_codes[0]?.code;
+  
+  if (!discountCode) return;
+  
+  // Look up creator by discount code
+  const creator = await ccApi.getCreatorByDiscountCode(discountCode);
+  
+  if (creator) {
+    // Attribute the order
+    await ccApi.attributeOrder({
+      orderId: order.id,
+      creatorId: creator.id,
+      discountCode,
+      orderValue: order.total_price,
+      commissionAmount: order.total_price * creator.commissionRate
+    });
+  }
+}
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Define tier-based discount structure
+  - [ ] Implement code generation pattern
+  - [ ] Create Shopify discounts via API
+  - [ ] Build Liquid discount display
+  - [ ] Handle product-specific discounts
+  - [ ] Implement stacking rules
+  - [ ] Add minimum order threshold UI
+  - [ ] Set up maximum discount caps
+  - [ ] Configure discount attribution tracking
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Show Discounted Prices](/guides/dev/show-discounted-prices) — Price display implementation
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API integration
+- [Testing & Retention Strategies](/guides/collab-strategy/optimize) — Discount optimization

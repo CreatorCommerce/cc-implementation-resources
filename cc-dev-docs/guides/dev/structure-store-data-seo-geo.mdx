@@ -1,0 +1,428 @@
+---
+title: 'Structure Store Data for SEO/GEO'
+description: 'Optimize your co-branded pages for search engines and AI-powered search with proper schema markup, metadata, and content structure.'
+---
+
+## Overview
+
+Co-branded creator pages can rank for:
+
+- Creator name searches ("Sarah Jones skincare routine")
+- Product + endorsement searches ("best moisturizer dermatologist recommended")
+- Local searches (if creator has geographic relevance)
+- AI/GEO search (ChatGPT, Perplexity, etc.)
+
+This guide covers technical SEO and emerging GEO optimization.
+
+---
+
+## Meta Tags for Creator Pages
+
+### Dynamic Title and Description
+
+```liquid
+{% comment %} In theme.liquid or page template {% endcomment %}
+
+{% if cc_creator %}
+  {% capture page_title %}{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}'s Favorites | {{ shop.name }}{% endcapture %}
+  {% capture page_description %}Shop {{ cc_creator.cc-creator-first-name }}'s handpicked products. Get {{ cc_creator.cc-collab-discount-amount }}% off with code {{ cc_creator.cc-collab-discount-code }}. Free shipping on orders over $50.{% endcapture %}
+{% else %}
+  {% assign page_title = page.title | append: ' | ' | append: shop.name %}
+  {% assign page_description = page.description | default: shop.description %}
+{% endif %}
+
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description | truncate: 160 }}">
+```
+
+### Open Graph Tags
+
+```liquid
+{% if cc_creator %}
+  <meta property="og:title" content="{{ cc_creator.cc-creator-first-name }}'s Picks | {{ shop.name }}">
+  <meta property="og:description" content="Discover {{ cc_creator.cc-creator-first-name }}'s favorite products. Exclusive {{ cc_creator.cc-collab-discount-amount }}% discount.">
+  <meta property="og:image" content="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 1200, height: 630 }}">
+  <meta property="og:type" content="profile">
+  <meta property="profile:first_name" content="{{ cc_creator.cc-creator-first-name }}">
+  <meta property="profile:last_name" content="{{ cc_creator.cc-creator-last-name }}">
+{% endif %}
+```
+
+### Twitter Cards
+
+```liquid
+{% if cc_creator %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ cc_creator.cc-creator-first-name }}'s Favorites">
+  <meta name="twitter:description" content="Shop curated picks with {{ cc_creator.cc-collab-discount-amount }}% off">
+  <meta name="twitter:image" content="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 1200, height: 600 }}">
+{% endif %}
+```
+
+---
+
+## Schema.org Structured Data
+
+### Person Schema for Creator
+
+```liquid
+{% if cc_creator %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}",
+  "description": {{ cc_creator.cc-creator-shop-description | json }},
+  "image": "{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 400 }}",
+  "url": "{{ shop.url }}/pages/creators/{{ cc_creator.handle }}",
+  {% if cc_creator.data.value.instagram %}
+  "sameAs": [
+    "https://instagram.com/{{ cc_creator.data.value.instagram | remove: '@' }}"
+    {% if cc_creator.data.value.tiktok %},
+    "https://tiktok.com/@{{ cc_creator.data.value.tiktok | remove: '@' }}"
+    {% endif %}
+  ],
+  {% endif %}
+  "jobTitle": {{ cc_creator.data.value.profession | default: 'Content Creator' | json }},
+  "affiliation": {
+    "@type": "Organization",
+    "name": "{{ shop.name }}",
+    "url": "{{ shop.url }}"
+  }
+}
+</script>
+{% endif %}
+```
+
+### ItemList for Creator's Product Picks
+
+```liquid
+{% if cc_creator and cc_creator.cc-creator-drops.value %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ cc_creator.cc-creator-first-name }}'s Product Picks",
+  "description": "Curated products recommended by {{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}",
+  "itemListElement": [
+    {% assign drops_data = cc_creator.data.value.cc-creator-drops %}
+    {% for drop in drops_data limit: 10 %}
+      {% assign collection_id = drop['cc-creator-drop-collection-id'] %}
+      {% for collection in collections %}
+        {% if collection.id | append: '' == collection_id %}
+          {% for product in collection.products limit: 5 %}
+          {
+            "@type": "ListItem",
+            "position": {{ forloop.index }},
+            "item": {
+              "@type": "Product",
+              "name": {{ product.title | json }},
+              "description": {{ product.description | strip_html | truncate: 200 | json }},
+              "image": "{{ product.featured_image | image_url: width: 800 }}",
+              "url": "{{ shop.url }}{{ product.url }}",
+              "offers": {
+                "@type": "Offer",
+                "price": "{{ product.price | money_without_currency }}",
+                "priceCurrency": "{{ cart.currency.iso_code }}",
+                "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+              }
+            }
+          }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+```
+
+### Review/Endorsement Schema
+
+```liquid
+{% if cc_creator.data.value.testimonial %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Review",
+  "reviewBody": {{ cc_creator.data.value.testimonial | json }},
+  "author": {
+    "@type": "Person",
+    "name": "{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}"
+  },
+  "itemReviewed": {
+    "@type": "Brand",
+    "name": "{{ shop.name }}"
+  },
+  "reviewRating": {
+    "@type": "Rating",
+    "ratingValue": "5",
+    "bestRating": "5"
+  }
+}
+</script>
+{% endif %}
+```
+
+---
+
+## URL Structure
+
+### Clean, SEO-friendly URLs
+
+**Recommended patterns:**
+```
+/creators/sarah-jones          # Creator landing page
+/creators/sarah-jones/picks    # Product picks
+/creators/sarah-jones/routine  # Routine/bundle page
+```
+
+**Configuration in Shopify:**
+- Use metaobject template routing
+- Or create pages with consistent slug patterns
+
+### Canonical URLs
+
+```liquid
+{% if cc_creator %}
+  <link rel="canonical" href="{{ shop.url }}/creators/{{ cc_creator.handle }}">
+{% else %}
+  <link rel="canonical" href="{{ canonical_url }}">
+{% endif %}
+```
+
+---
+
+## Content Optimization for GEO
+
+### What is GEO?
+
+Generative Engine Optimization (GEO) optimizes content for AI-powered search engines like ChatGPT, Perplexity, Google AI Overviews, and Bing Copilot.
+
+### Key GEO Principles
+
+1. **Clear, direct answers** — Structure content as Q&A
+2. **Authoritative attribution** — Cite credentials and expertise
+3. **Structured data** — Help AI understand relationships
+4. **Concise summaries** — Provide scannable key points
+
+### GEO-Optimized Creator Bio
+
+```liquid
+<section class="creator-bio" itemscope itemtype="https://schema.org/Person">
+  <h1 itemprop="name">{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}</h1>
+  
+  {% if cc_creator.data.value.profession %}
+    <p class="creator-title" itemprop="jobTitle">
+      {{ cc_creator.data.value.profession }}
+    </p>
+  {% endif %}
+  
+  {% if cc_creator.data.value.credentials %}
+    <p class="creator-credentials">
+      <strong>Credentials:</strong> {{ cc_creator.data.value.credentials }}
+    </p>
+  {% endif %}
+  
+  <div class="creator-summary" itemprop="description">
+    {{ cc_creator.cc-creator-shop-description }}
+  </div>
+  
+  {% if cc_creator.data.value.expertise %}
+    <div class="creator-expertise">
+      <strong>Areas of Expertise:</strong>
+      <ul>
+        {% assign expertise_list = cc_creator.data.value.expertise | split: ',' %}
+        {% for area in expertise_list %}
+          <li>{{ area | strip }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</section>
+```
+
+### FAQ Schema for AI Search
+
+```liquid
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Who is {{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ cc_creator.cc-creator-first-name }} is a {{ cc_creator.data.value.profession | default: 'content creator' }} who partners with {{ shop.name }}. {{ cc_creator.cc-creator-shop-description | truncate: 200 }}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What products does {{ cc_creator.cc-creator-first-name }} recommend?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ cc_creator.cc-creator-first-name }} has curated a selection of their favorite products from {{ shop.name }}, including {% for drop in cc_creator.data.value.cc-creator-drops limit: 3 %}{{ drop['cc-creator-drop-name'] }}{% unless forloop.last %}, {% endunless %}{% endfor %}."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I get {{ cc_creator.cc-creator-first-name }}'s discount?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use code {{ cc_creator.cc-collab-discount-code }} at checkout to get {{ cc_creator.cc-collab-discount-amount }}% off your order."
+      }
+    }
+  ]
+}
+</script>
+```
+
+---
+
+## Content Structure for AI Crawlers
+
+### Key Information First
+
+```liquid
+<article class="creator-page">
+  <!-- Summary paragraph for AI extraction -->
+  <p class="creator-intro">
+    <strong>{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}</strong>
+    is a {{ cc_creator.data.value.profession | default: 'trusted partner' }} of {{ shop.name }}.
+    Shop their curated picks and save {{ cc_creator.cc-collab-discount-amount }}% with code 
+    <strong>{{ cc_creator.cc-collab-discount-code }}</strong>.
+  </p>
+  
+  <!-- Key facts list -->
+  <ul class="creator-facts">
+    <li><strong>Discount:</strong> {{ cc_creator.cc-collab-discount-amount }}% off with code {{ cc_creator.cc-collab-discount-code }}</li>
+    <li><strong>Specialty:</strong> {{ cc_creator.data.value.specialty | default: 'Curated products' }}</li>
+    <li><strong>Collections:</strong> {{ cc_creator.data.value.cc-creator-drops | size }} curated drops</li>
+  </ul>
+  
+  <!-- Detailed content follows -->
+  ...
+</article>
+```
+
+### Semantic HTML Structure
+
+```html
+<main role="main">
+  <article itemscope itemtype="https://schema.org/Person">
+    <header>
+      <h1 itemprop="name">Creator Name</h1>
+      <p itemprop="jobTitle">Professional Title</p>
+    </header>
+    
+    <section aria-labelledby="about-heading">
+      <h2 id="about-heading">About</h2>
+      <p itemprop="description">Bio content...</p>
+    </section>
+    
+    <section aria-labelledby="picks-heading">
+      <h2 id="picks-heading">Product Picks</h2>
+      <!-- Product list -->
+    </section>
+    
+    <section aria-labelledby="discount-heading">
+      <h2 id="discount-heading">Exclusive Discount</h2>
+      <!-- Discount info -->
+    </section>
+  </article>
+</main>
+```
+
+---
+
+## Sitemap Configuration
+
+### Include Creator Pages
+
+```xml
+<!-- In sitemap.xml -->
+{% for creator in metaobjects.creator %}
+  <url>
+    <loc>{{ shop.url }}/creators/{{ creator.handle }}</loc>
+    <lastmod>{{ creator.updated_at | date: '%Y-%m-%d' }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+{% endfor %}
+```
+
+### Robots.txt Considerations
+
+```
+# Allow creator pages
+Allow: /creators/
+Allow: /pages/creators/
+
+# Block duplicate parameter URLs
+Disallow: /*?ref=*
+Disallow: /*?utm_*
+```
+
+---
+
+## Performance for SEO
+
+### Image Optimization
+
+```liquid
+{% if cc_creator.data.value.cc-creator-profile-picture %}
+  <img 
+    src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 400 }}"
+    srcset="
+      {{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 200 }} 200w,
+      {{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 400 }} 400w,
+      {{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 800 }} 800w
+    "
+    sizes="(max-width: 600px) 200px, 400px"
+    alt="{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}"
+    loading="lazy"
+    decoding="async"
+    width="400"
+    height="400"
+  >
+{% endif %}
+```
+
+### Critical CSS for LCP
+
+```liquid
+<style>
+  /* Inline critical CSS for creator hero */
+  .creator-hero { display: flex; align-items: center; gap: 2rem; }
+  .creator-hero__image { width: 200px; height: 200px; border-radius: 50%; }
+  .creator-hero__name { font-size: 2rem; margin: 0; }
+</style>
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Add dynamic meta title and description
+  - [ ] Implement Open Graph and Twitter cards
+  - [ ] Add Person schema for creator
+  - [ ] Add ItemList schema for product picks
+  - [ ] Structure URLs cleanly
+  - [ ] Add FAQ schema for GEO
+  - [ ] Ensure semantic HTML structure
+  - [ ] Include creator pages in sitemap
+  - [ ] Optimize images with srcset
+  - [ ] Test with Google Rich Results tool
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) — Theme integration
+- [Schema.org Documentation](https://schema.org) — Structured data reference
+- [Google Rich Results Test](https://search.google.com/test/rich-results) — Test your markup

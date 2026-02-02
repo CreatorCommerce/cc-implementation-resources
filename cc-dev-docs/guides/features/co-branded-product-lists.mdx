@@ -1,0 +1,51 @@
+---
+title: 'Co-branded Product Lists'
+description: 'Creator-curated collections and "drops" displayed as personalized product grids with custom ordering and featured items.'
+---
+
+## What It Is
+
+Drops are creator-curated product collections. Each creator can have multiple drops (e.g., "Summer Favorites", "Daily Essentials"), and these display as branded product lists on their pages.
+
+## Key Capabilities
+
+- **Multiple drops per creator** — Organize products into themed collections
+- **Custom product ordering** — Creator controls display order
+- **Featured media** — Hero image/video per drop
+- **Drop-level quotes** — Creator description for each collection
+- **Quick add-to-cart** — Streamlined purchase flow
+
+## How It Works
+
+```liquid
+{% assign drops = cc_creator.data.value.cc-creator-drops %}
+
+{% for drop in drops %}
+  <section class="cc-drop">
+    <h2>{{ drop['cc-creator-drop-name'] }}</h2>
+    <p>{{ drop['cc-creator-drop-description'] }}</p>
+    
+    <div class="cc-products-grid">
+      {% for product_data in drop['cc-creator-drop-products'] %}
+        {% assign product_id = product_data['cc-creator-drop-product-shopify-id'] %}
+        {% comment %} Render product card {% endcomment %}
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+```
+
+## Drop Data Structure
+
+| Field | Description |
+|-------|-------------|
+| `cc-creator-drop-name` | Display name for the collection |
+| `cc-creator-drop-description` | Creator's description |
+| `cc-creator-drop-collection-id` | Linked Shopify collection |
+| `cc-creator-drop-products` | Array of product references |
+| `cc-creator-drop-featured-media` | Hero image/video URL |
+
+## Related
+
+- [Drops & Products Data Model](/references/drops-products-data-model)
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme)

@@ -1,0 +1,472 @@
+---
+title: 'Show Discounted Prices on Your Theme'
+description: 'Display creator-specific discounted prices throughout your Shopify theme—product pages, collection pages, cart, and checkout.'
+---
+
+## Overview
+
+When a customer arrives via a creator's link, you can show them prices reflecting their exclusive discount. This creates urgency and improves conversion.
+
+**Key Locations:**
+- Product pages
+- Collection/grid pages
+- Quick-view modals
+- Cart drawer/page
+- Mini-cart
+
+---
+
+## Getting Discount Data
+
+### From Creator Metaobject
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_discount = cc_creator.cc-collab-discount-amount != blank
+  assign discount_percent = cc_creator.cc-collab-discount-amount | default: 0
+  assign discount_code = cc_creator.cc-collab-discount-code
+%}
+```
+
+### Discount Types
+
+| Field | Type | Example |
+|-------|------|---------|
+| `cc-collab-discount-amount` | Percentage | `15` (means 15%) |
+| `cc-collab-discount-code` | String | `SARAH15` |
+| `cc-collab-discount-type` | String | `percentage` or `fixed` |
+
+---
+
+## Product Page Pricing
+
+### Basic Price Display
+
+```liquid
+{% comment %} snippets/cc-product-price.liquid {% endcomment %}
+
+{% liquid
+  assign original_price = product.price
+  assign show_discount = false
+  assign discounted_price = original_price
+  
+  if cc_creator and cc_creator.cc-collab-discount-amount
+    assign discount_multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    assign discounted_price = original_price | times: discount_multiplier
+    assign show_discount = true
+  endif
+%}
+
+<div class="cc-price {% if show_discount %}cc-price--discounted{% endif %}">
+  {% if show_discount %}
+    <span class="cc-price__original">{{ original_price | money }}</span>
+    <span class="cc-price__sale">{{ discounted_price | money }}</span>
+    <span class="cc-price__badge">
+      {{ cc_creator.cc-collab-discount-amount }}% OFF
+    </span>
+  {% else %}
+    <span class="cc-price__regular">{{ original_price | money }}</span>
+  {% endif %}
+</div>
+
+<style>
+  .cc-price--discounted .cc-price__original {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9em;
+  }
+  
+  .cc-price__sale {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .cc-price__badge {
+    background: #e74c3c;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    margin-left: 8px;
+  }
+</style>
+```
+
+### Handling Compare-at Prices
+
+When the product already has a sale price:
+
+```liquid
+{% liquid
+  assign base_price = product.price
+  assign compare_at = product.compare_at_price
+  
+  if cc_creator and cc_creator.cc-collab-discount-amount
+    assign discount_multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    
+    if compare_at > base_price
+      # Product already on sale, apply discount to sale price
+      assign discounted_price = base_price | times: discount_multiplier
+      assign show_compare = compare_at
+    else
+      # No existing sale, apply discount to regular price
+      assign discounted_price = base_price | times: discount_multiplier
+      assign show_compare = base_price
+    endif
+    
+    assign show_discount = true
+  else
+    assign discounted_price = base_price
+    assign show_compare = compare_at
+    assign show_discount = compare_at > base_price
+  endif
+%}
+
+<div class="cc-price">
+  {% if show_compare > discounted_price %}
+    <span class="cc-price__compare">{{ show_compare | money }}</span>
+  {% endif %}
+  <span class="cc-price__current {% if show_discount %}cc-price__current--sale{% endif %}">
+    {{ discounted_price | money }}
+  </span>
+</div>
+```
+
+---
+
+## Collection/Grid Pricing
+
+### Product Card Integration
+
+```liquid
+{% comment %} In your product card template {% endcomment %}
+
+{% render 'cc-product-price', 
+  product: product, 
+  cc_creator: cc_creator 
+%}
+```
+
+### Grid-wide Discount Banner
+
+```liquid
+{% if cc_creator and cc_creator.cc-collab-discount-amount %}
+  <div class="cc-discount-banner">
+    🎉 {{ cc_creator.cc-creator-first-name }}'s fans get 
+    <strong>{{ cc_creator.cc-collab-discount-amount }}% OFF</strong> 
+    with code <strong>{{ cc_creator.cc-collab-discount-code }}</strong>
+  </div>
+{% endif %}
+```
+
+---
+
+## Cart Pricing
+
+### Cart Line Items
+
+```liquid
+{% comment %} In cart line item template {% endcomment %}
+
+{% liquid
+  assign line_price = item.original_line_price
+  
+  if cc_creator and cc_creator.cc-collab-discount-amount
+    assign discount_multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    assign discounted_line = line_price | times: discount_multiplier
+    assign savings = line_price | minus: discounted_line
+  endif
+%}
+
+<div class="cart-item__price">
+  {% if discounted_line %}
+    <span class="original">{{ line_price | money }}</span>
+    <span class="sale">{{ discounted_line | money }}</span>
+    <span class="savings">You save {{ savings | money }}</span>
+  {% else %}
+    <span>{{ line_price | money }}</span>
+  {% endif %}
+</div>
+```
+
+### Cart Total with Projected Savings
+
+```liquid
+{% comment %} In cart totals section {% endcomment %}
+
+{% liquid
+  assign cart_total = cart.total_price
+  
+  if cc_creator and cc_creator.cc-collab-discount-amount
+    assign discount_multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0
+    assign projected_total = cart_total | times: discount_multiplier
+    assign total_savings = cart_total | minus: projected_total
+  endif
+%}
+
+<div class="cart-totals">
+  <div class="cart-totals__subtotal">
+    <span>Subtotal</span>
+    <span>{{ cart_total | money }}</span>
+  </div>
+  
+  {% if total_savings %}
+    <div class="cart-totals__discount">
+      <span>{{ cc_creator.cc-creator-first-name }}'s Discount ({{ cc_creator.cc-collab-discount-amount }}%)</span>
+      <span class="savings">-{{ total_savings | money }}</span>
+    </div>
+    
+    <div class="cart-totals__projected">
+      <span>Estimated Total</span>
+      <span>{{ projected_total | money }}</span>
+    </div>
+    
+    <p class="cart-totals__note">
+      Use code <strong>{{ cc_creator.cc-collab-discount-code }}</strong> at checkout
+    </p>
+  {% endif %}
+</div>
+```
+
+---
+
+## Auto-Apply Discount Code
+
+### Via Cart Attributes
+
+```liquid
+{% comment %} On creator landing page load {% endcomment %}
+
+{% if cc_creator and cc_creator.cc-collab-discount-code %}
+  <script>
+    // Store discount code for checkout
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        attributes: {
+          'cc-discount-code': '{{ cc_creator.cc-collab-discount-code | escape }}'
+        }
+      })
+    });
+  </script>
+{% endif %}
+```
+
+### Checkout URL with Discount
+
+```liquid
+{% assign checkout_url = '/checkout' %}
+
+{% if cc_creator and cc_creator.cc-collab-discount-code %}
+  {% assign checkout_url = checkout_url | append: '?discount=' | append: cc_creator.cc-collab-discount-code %}
+{% endif %}
+
+<a href="{{ checkout_url }}" class="checkout-btn">
+  Proceed to Checkout
+</a>
+```
+
+---
+
+## JavaScript Price Updates
+
+### Dynamic Price Calculation
+
+```javascript
+// For dynamic updates (variants, quantity changes)
+class CCPriceCalculator {
+  constructor(discountPercent) {
+    this.discountPercent = discountPercent;
+    this.discountMultiplier = (100 - discountPercent) / 100;
+  }
+  
+  calculate(price) {
+    if (!this.discountPercent) return price;
+    return Math.round(price * this.discountMultiplier);
+  }
+  
+  formatMoney(cents) {
+    return (cents / 100).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
+  }
+  
+  updatePriceDisplay(element, originalPrice) {
+    const discounted = this.calculate(originalPrice);
+    
+    if (this.discountPercent) {
+      element.innerHTML = `
+        <span class="original">${this.formatMoney(originalPrice)}</span>
+        <span class="sale">${this.formatMoney(discounted)}</span>
+      `;
+    } else {
+      element.innerHTML = this.formatMoney(originalPrice);
+    }
+  }
+}
+
+// Initialize from Liquid
+const ccPriceCalc = new CCPriceCalculator(
+  {{ cc_creator.cc-collab-discount-amount | default: 0 }}
+);
+```
+
+### Variant Change Handler
+
+```javascript
+document.querySelectorAll('[data-variant-select]').forEach(select => {
+  select.addEventListener('change', function() {
+    const variantId = this.value;
+    const variant = window.productVariants.find(v => v.id == variantId);
+    
+    if (variant) {
+      const priceEl = document.querySelector('[data-product-price]');
+      ccPriceCalc.updatePriceDisplay(priceEl, variant.price);
+    }
+  });
+});
+```
+
+---
+
+## Handling Edge Cases
+
+### Product Already Discounted
+
+```liquid
+{% liquid
+  assign product_discount = 0
+  if product.compare_at_price > product.price
+    assign product_discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price
+  endif
+  
+  assign cc_discount = cc_creator.cc-collab-discount-amount | default: 0
+  
+  # Show which discount is better
+  if cc_discount > product_discount
+    assign best_discount = cc_discount
+    assign best_discount_label = cc_creator.cc-creator-first-name | append: "'s discount"
+    assign final_price = product.compare_at_price | default: product.price | times: discount_multiplier
+  else
+    assign best_discount = product_discount
+    assign best_discount_label = "Sale"
+    assign final_price = product.price
+  endif
+%}
+```
+
+### Minimum Price Guarantee
+
+```liquid
+{% liquid
+  assign discounted_price = original_price | times: discount_multiplier
+  
+  # Ensure price doesn't go below a minimum (e.g., $1)
+  assign min_price = 100
+  if discounted_price < min_price
+    assign discounted_price = min_price
+  endif
+%}
+```
+
+### Excluded Products
+
+```liquid
+{% liquid
+  assign excluded_tags = 'no-discount,clearance,bundle' | split: ','
+  assign allow_discount = true
+  
+  for tag in product.tags
+    if excluded_tags contains tag
+      assign allow_discount = false
+      break
+    endif
+  endfor
+  
+  if allow_discount and cc_creator.cc-collab-discount-amount
+    # Apply discount
+  else
+    # Show regular price
+  endif
+%}
+```
+
+---
+
+## CSS Styling
+
+```css
+/* Discounted price styling */
+.cc-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cc-price__original,
+.cc-price__compare {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.9em;
+}
+
+.cc-price__sale,
+.cc-price__current--sale {
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+.cc-price__badge {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cart-totals__discount {
+  color: #27ae60;
+}
+
+.cart-totals__discount .savings {
+  font-weight: bold;
+}
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Create cc-product-price snippet
+  - [ ] Add discount display to product pages
+  - [ ] Update collection/grid product cards
+  - [ ] Update cart line item pricing
+  - [ ] Add cart total savings display
+  - [ ] Implement auto-apply discount at checkout
+  - [ ] Handle variant price changes in JS
+  - [ ] Style discount badges and crossed-out prices
+  - [ ] Test with and without creator context
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Support Unique Discounts](/guides/dev/support-unique-discounts) — Multi-discount handling
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) — Full theme integration
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details) — Complete funnel design

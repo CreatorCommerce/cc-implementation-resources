@@ -1,0 +1,407 @@
+---
+title: 'Track Your Funnel Traffic'
+description: 'Set up analytics and attribution to measure partner performance—from clicks to conversions to lifetime value.'
+---
+
+## Why Tracking Matters
+
+Without proper tracking, you're flying blind. Good attribution tells you:
+
+- **Which partners drive revenue** — and which don't
+- **What funnels convert best** — so you can optimize
+- **Where traffic comes from** — to understand the journey
+- **How customers behave** — to improve the experience
+- **What's your ROI** — on partner program investment
+
+---
+
+## The Attribution Stack
+
+### What to Track
+
+| Stage | Metrics | Why It Matters |
+|-------|---------|----------------|
+| **Awareness** | Impressions, link shares | Partner reach |
+| **Traffic** | Sessions, unique visitors | Partner engagement |
+| **Engagement** | Pages/session, time on site | Traffic quality |
+| **Conversion** | Add to cart, checkout | Purchase intent |
+| **Revenue** | Orders, AOV, revenue | Business impact |
+| **Retention** | Repeat purchase, LTV | Long-term value |
+
+### Attribution Points
+
+```
+Partner Link Click
+       ↓ (UTM parameters, referrer)
+Landing Page View
+       ↓ (cart attributes set)
+Product Views
+       ↓ (events tracked)
+Add to Cart
+       ↓ (cart attributes persist)
+Checkout
+       ↓ (discount code applied)
+Purchase
+       ↓ (order tagged)
+Post-Purchase
+       ↓ (customer tagged)
+Retention
+```
+
+---
+
+## Setting Up UTM Parameters
+
+### Standard UTM Structure for Partners
+
+```
+https://yourstore.com/pages/creators/sarah?
+  utm_source=partner&
+  utm_medium=affiliate&
+  utm_campaign=sarah-jones&
+  utm_content=instagram-bio
+```
+
+| Parameter | Value | Purpose |
+|-----------|-------|---------|
+| `utm_source` | partner | Identifies partner channel |
+| `utm_medium` | affiliate | Traffic type |
+| `utm_campaign` | partner-handle | Which partner |
+| `utm_content` | link-location | Where link was placed |
+
+### Generating Partner Links
+
+<Tabs>
+  <Tab title="Manual">
+    Create links per partner with UTM builder.
+    
+    **Best for:** Small programs, testing
+  </Tab>
+  
+  <Tab title="Automated">
+    Generate links automatically when partners join.
+    
+    ```
+    Base URL: yourstore.com/pages/creators/{handle}
+    + UTM source: partner
+    + UTM medium: affiliate
+    + UTM campaign: {handle}
+    ```
+    
+    **Best for:** Scalable programs
+  </Tab>
+  
+  <Tab title="Link Shortener">
+    Use branded short links:
+    
+    ```
+    yourbrand.link/sarah
+    → yourstore.com/pages/creators/sarah?utm_...
+    ```
+    
+    **Benefits:**
+    - Cleaner for sharing
+    - Additional click tracking
+    - Easier for partners
+  </Tab>
+</Tabs>
+
+---
+
+## Cart Attribute Tracking
+
+### Setting Attributes on Landing
+
+When visitor arrives via partner link, store context in cart:
+
+```liquid
+{% if request.path contains '/creators/' %}
+  {% assign cc_handle = request.path | split: '/creators/' | last | split: '?' | first %}
+  
+  <script>
+    // Set cart attributes via AJAX
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        attributes: {
+          'cc-creator-handle': '{{ cc_handle }}',
+          'cc-landing-page': window.location.pathname,
+          'cc-landing-time': new Date().toISOString()
+        }
+      })
+    });
+  </script>
+{% endif %}
+```
+
+### Attributes to Track
+
+| Attribute | Value | Use |
+|-----------|-------|-----|
+| `cc-creator-handle` | Partner identifier | Primary attribution |
+| `cc-discount-code` | Partner's code | Discount tracking |
+| `cc-landing-page` | First page visited | Funnel analysis |
+| `cc-landing-time` | Timestamp | Session analysis |
+| `cc-utm-source` | UTM source value | Traffic source |
+| `cc-utm-campaign` | UTM campaign value | Campaign tracking |
+
+---
+
+## Google Analytics 4 Setup
+
+### Custom Events
+
+Track partner-specific events:
+
+```javascript
+// Partner page view
+gtag('event', 'partner_page_view', {
+  partner_handle: 'sarah-jones',
+  partner_tier: 'gold',
+  page_type: 'creator_landing'
+});
+
+// Add to cart from partner page
+gtag('event', 'add_to_cart', {
+  partner_handle: 'sarah-jones',
+  currency: 'USD',
+  value: 49.99,
+  items: [{ item_id: 'SKU123', item_name: 'Product Name' }]
+});
+
+// Purchase with partner attribution
+gtag('event', 'purchase', {
+  partner_handle: 'sarah-jones',
+  partner_discount_code: 'SARAH15',
+  transaction_id: 'ORDER123',
+  value: 149.99,
+  currency: 'USD'
+});
+```
+
+### Custom Dimensions
+
+Set up custom dimensions in GA4:
+
+| Dimension | Scope | Value |
+|-----------|-------|-------|
+| Partner Handle | Event | Partner identifier |
+| Partner Tier | Event | Bronze/Silver/Gold |
+| Discount Code | Event | Code used |
+| Partner Revenue | Event | Order value |
+
+### Creating Partner Reports
+
+Build reports showing:
+
+- Traffic by partner
+- Conversion rate by partner
+- Revenue by partner
+- AOV by partner
+- Partner comparison over time
+
+---
+
+## Shopify Analytics Integration
+
+### Order Tagging
+
+Automatically tag orders for easy filtering:
+
+```liquid
+{% comment %} In Shopify Flow or via API {% endcomment %}
+Tags to add:
+- cc-partner:{{ order.attributes['cc-creator-handle'] }}
+- cc-discount:{{ order.discount_codes.first.code }}
+- cc-attributed
+```
+
+### Admin Filtering
+
+With proper tagging, filter orders in Shopify admin:
+
+- Search: `tag:cc-partner:sarah-jones`
+- Export: Partner-specific order reports
+- Analyze: Revenue by partner
+
+### Shopify Reports
+
+Create custom reports:
+
+| Report | Filters | Metrics |
+|--------|---------|---------|
+| Partner Sales | Tag contains "cc-partner" | Orders, Revenue, AOV |
+| Partner by Discount | Discount code | Orders, Revenue |
+| Partner Customers | Customer tag "cc-acquired" | Customer count, LTV |
+
+---
+
+## Third-Party Attribution Tools
+
+### Triple Whale
+
+**Best for:** Full-funnel attribution, ad spend correlation
+
+**Setup:**
+- Install Triple Whale pixel
+- Configure partner source identification
+- Build partner-specific dashboards
+
+### Northbeam
+
+**Best for:** Multi-touch attribution modeling
+
+**Setup:**
+- Implement Northbeam tracking
+- Define partner touchpoints
+- Analyze partner contribution to conversions
+
+### Rockerbox
+
+**Best for:** Marketing attribution, channel mix
+
+**Setup:**
+- Rockerbox pixel implementation
+- Partner channel configuration
+- Cross-channel attribution reports
+
+---
+
+## Building a Partner Dashboard
+
+### Metrics to Display
+
+<Tabs>
+  <Tab title="For Partners">
+    What partners want to see:
+    
+    - Clicks to their page
+    - Conversion rate
+    - Orders attributed
+    - Revenue generated
+    - Commission earned
+    - Comparison to last period
+  </Tab>
+  
+  <Tab title="For Internal">
+    What you need to track:
+    
+    - Partner performance ranking
+    - Revenue by partner
+    - AOV by partner
+    - LTV of partner-acquired customers
+    - Partner activity/engagement
+    - Program ROI
+  </Tab>
+</Tabs>
+
+### Dashboard Tools
+
+| Tool | Best For |
+|------|----------|
+| **Looker/Data Studio** | Custom dashboards from GA4/BigQuery |
+| **Klaviyo** | Email attribution dashboards |
+| **Spreadsheets** | Simple tracking, manual updates |
+| **Custom Build** | Full control, branded experience |
+
+---
+
+## Debugging Attribution Issues
+
+### Common Problems
+
+<AccordionGroup>
+  <Accordion title="Orders Not Attributed">
+    **Symptoms:** Orders have partner discount code but no attribution
+    
+    **Causes:**
+    - Cart attributes not set on landing
+    - Attributes cleared during checkout
+    - Customer used direct link instead of partner link
+    
+    **Fixes:**
+    - Verify cart attribute setting script
+    - Check if checkout clears attributes
+    - Use discount code as backup attribution
+  </Accordion>
+  
+  <Accordion title="Duplicate Attribution">
+    **Symptoms:** Same order attributed to multiple partners
+    
+    **Causes:**
+    - Customer visited multiple partner pages
+    - Attribution not updating properly
+    - Multiple discount codes applied
+    
+    **Fixes:**
+    - Define attribution rules (first touch vs. last touch)
+    - Clear previous attribution on new partner visit
+    - Document attribution logic
+  </Accordion>
+  
+  <Accordion title="Missing Traffic Data">
+    **Symptoms:** Partners report shares but no traffic shows
+    
+    **Causes:**
+    - UTM parameters stripped
+    - Ad blockers preventing tracking
+    - Wrong page being tracked
+    
+    **Fixes:**
+    - Verify UTM parameters persist
+    - Use server-side tracking for accuracy
+    - Implement first-party tracking
+  </Accordion>
+</AccordionGroup>
+
+### Testing Your Tracking
+
+<Checklist>
+  - [ ] Click partner link, verify UTM parameters arrive
+  - [ ] Check cart attributes are set on landing
+  - [ ] Add product to cart, verify attributes persist
+  - [ ] Complete test purchase
+  - [ ] Verify order has correct tags/attributes
+  - [ ] Check GA4 events fired correctly
+  - [ ] Confirm partner dashboard updates
+</Checklist>
+
+---
+
+## Privacy Considerations
+
+### Cookie Consent
+
+- Ensure tracking respects cookie consent preferences
+- Use first-party tracking where possible
+- Document what data is collected
+
+### Data Retention
+
+- Define how long attribution data is stored
+- Comply with GDPR/CCPA requirements
+- Provide data deletion capability
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Set up UTM parameter structure for partner links
+  - [ ] Implement cart attribute tracking on landing pages
+  - [ ] Configure GA4 custom events for partner actions
+  - [ ] Set up order tagging for attribution
+  - [ ] Create partner performance reports
+  - [ ] Build internal dashboard for program overview
+  - [ ] Test full attribution flow end-to-end
+  - [ ] Document attribution rules and logic
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Going Live & Measuring](/guides/collab-strategy/launch-track) — Launch and metrics setup
+- [Connect Your Tech Stack](/guides/connect-your-tech-stack) — Integration setup
+- [Analytics & Reporting](/guides/attribute-analyze) — Analysis strategies

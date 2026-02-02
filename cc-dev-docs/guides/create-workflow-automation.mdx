@@ -1,0 +1,370 @@
+---
+title: 'Create a Workflow or Automation'
+description: 'Build automated workflows for partner onboarding, content collection, notifications, and operational efficiency.'
+---
+
+## Why Automate?
+
+As your partner program grows, manual processes become bottlenecks. Automation lets you:
+
+- **Scale without hiring** — Handle 1,000 partners like you handle 10
+- **Ensure consistency** — Same experience for every partner
+- **Reduce errors** — No forgotten follow-ups or missed steps
+- **Save time** — Focus on strategy, not operations
+
+---
+
+## Common Automations
+
+### Partner Onboarding
+
+<AccordionGroup>
+  <Accordion title="Welcome Sequence">
+    **Trigger:** Partner approved in CreatorCommerce
+    
+    **Actions:**
+    1. Send welcome email with portal access
+    2. Wait 2 days
+    3. Send "getting started" email with first steps
+    4. Wait 3 days
+    5. Check if they've shared their link
+    6. If not → Send reminder email
+    7. If yes → Send congratulations + tips
+  </Accordion>
+  
+  <Accordion title="Profile Completion">
+    **Trigger:** Partner created but profile incomplete
+    
+    **Actions:**
+    1. Wait 3 days
+    2. Check if profile complete
+    3. If not → Send reminder with direct link
+    4. Wait 5 days
+    5. If still not → Send final reminder
+    6. Tag as "needs attention" for manual follow-up
+  </Accordion>
+  
+  <Accordion title="First Share Celebration">
+    **Trigger:** Partner's first referral traffic detected
+    
+    **Actions:**
+    1. Send celebration email
+    2. Add to "active partners" segment
+    3. Update partner tier/status
+    4. Notify account manager (for VIPs)
+  </Accordion>
+</AccordionGroup>
+
+### Order & Attribution
+
+<AccordionGroup>
+  <Accordion title="Partner Attribution">
+    **Trigger:** Order placed with partner discount code
+    
+    **Actions:**
+    1. Tag order with partner handle
+    2. Tag customer as partner-acquired
+    3. Update partner's sales count
+    4. If first sale → trigger first sale flow
+    5. If milestone (10, 50, 100) → trigger milestone flow
+  </Accordion>
+  
+  <Accordion title="Commission Notification">
+    **Trigger:** Order with partner attribution fulfilled
+    
+    **Actions:**
+    1. Calculate commission amount
+    2. Send partner email with sale details
+    3. Update running commission total
+    4. Add to payout queue
+  </Accordion>
+  
+  <Accordion title="First Sale Celebration">
+    **Trigger:** Partner's first attributed sale
+    
+    **Actions:**
+    1. Send celebration email to partner
+    2. Include tips for getting more sales
+    3. Offer bonus/incentive for next milestone
+    4. Update partner status to "proven"
+  </Accordion>
+</AccordionGroup>
+
+### Content & Engagement
+
+<AccordionGroup>
+  <Accordion title="Content Request Campaign">
+    **Trigger:** Quarterly schedule or manual trigger
+    
+    **Actions:**
+    1. Segment partners by tier/activity
+    2. Send personalized content request
+    3. Wait 7 days
+    4. If no response → Send reminder
+    5. If submitted → Send thank you + usage preview
+    6. Moderate and approve content
+  </Accordion>
+  
+  <Accordion title="Re-activation Campaign">
+    **Trigger:** Partner inactive for 30 days
+    
+    **Actions:**
+    1. Send "we miss you" email
+    2. Wait 7 days
+    3. If still inactive → Send offer/incentive
+    4. Wait 14 days
+    5. If still inactive → Tag for manual outreach
+    6. If reactivated → Send welcome back
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Automation Tools
+
+### Shopify Flow
+
+<Tabs>
+  <Tab title="Best For">
+    - Order-based triggers
+    - Customer tagging
+    - Inventory actions
+    - Internal notifications
+    
+    **Strengths:**
+    - Native to Shopify
+    - No additional cost (Plus or higher)
+    - Real-time triggers
+    - Deep Shopify integration
+  </Tab>
+  
+  <Tab title="Example Workflow">
+    **Partner Order Attribution**
+    
+    ```
+    TRIGGER: Order created
+    
+    CONDITION: Order discount code contains "CC-"
+    
+    ACTIONS:
+    → Add order tag: "cc-partner-sale"
+    → Add customer tag: "cc-acquired"
+    → Send internal notification to #partnerships Slack
+    ```
+  </Tab>
+  
+  <Tab title="Limitations">
+    - Can't trigger email sends directly (need ESP integration)
+    - Limited conditional logic
+    - No external API calls (without apps)
+    - Shopify-only scope
+  </Tab>
+</Tabs>
+
+### Klaviyo
+
+<Tabs>
+  <Tab title="Best For">
+    - Email/SMS sequences
+    - Customer journey flows
+    - Behavioral triggers
+    - Segmentation-based actions
+    
+    **Strengths:**
+    - Powerful flow builder
+    - Deep personalization
+    - Multi-channel (email + SMS)
+    - Rich analytics
+  </Tab>
+  
+  <Tab title="Example Workflow">
+    **Partner Welcome Sequence**
+    
+    ```
+    TRIGGER: Added to "New Partners" list
+    
+    FLOW:
+    → Email 1: Welcome + portal access
+    → Wait 2 days
+    → Email 2: Getting started guide
+    → Wait 3 days
+    → Conditional split: Has shared link?
+      → Yes: Congratulations email
+      → No: Reminder email
+    ```
+  </Tab>
+  
+  <Tab title="Limitations">
+    - Email/SMS focused (not operational)
+    - Can't update Shopify directly
+    - Requires separate flows for different triggers
+  </Tab>
+</Tabs>
+
+### Make (Integromat) / Zapier
+
+<Tabs>
+  <Tab title="Best For">
+    - Cross-platform automations
+    - API integrations
+    - Complex conditional logic
+    - Data transformations
+    
+    **Strengths:**
+    - Connects anything to anything
+    - Powerful logic and filters
+    - Scheduled and trigger-based
+    - No code required
+  </Tab>
+  
+  <Tab title="Example Workflow">
+    **New Partner Setup**
+    
+    ```
+    TRIGGER: New row in partner spreadsheet
+    
+    ACTIONS:
+    → Create CreatorCommerce partner record
+    → Generate unique discount code in Shopify
+    → Add to Klaviyo "New Partners" list
+    → Send Slack notification
+    → Add to CRM
+    → Create Notion task for onboarding
+    ```
+  </Tab>
+  
+  <Tab title="Limitations">
+    - Per-task pricing adds up
+    - Complexity can get unwieldy
+    - Debugging can be tricky
+    - Requires maintenance
+  </Tab>
+</Tabs>
+
+---
+
+## Building Your First Workflow
+
+### Step 1: Define the Trigger
+
+What starts this workflow?
+
+| Trigger Type | Examples |
+|--------------|----------|
+| **Event** | Order placed, partner created, form submitted |
+| **Schedule** | Daily, weekly, monthly |
+| **Condition** | Partner inactive for X days, milestone reached |
+| **Manual** | Button click, spreadsheet update |
+
+### Step 2: Map the Actions
+
+What should happen?
+
+<Checklist>
+  - [ ] What's the first action?
+  - [ ] Are there wait periods?
+  - [ ] Are there conditional branches?
+  - [ ] What are the possible outcomes?
+  - [ ] How does it end?
+</Checklist>
+
+### Step 3: Identify Data Needs
+
+What data is required?
+
+| Data Point | Source | How to Access |
+|------------|--------|---------------|
+| Partner name | CreatorCommerce | Metaobject fields |
+| Partner email | Application form | Customer record |
+| Sales data | Shopify | Order tags/attributes |
+| Activity status | Analytics | Custom tracking |
+
+### Step 4: Choose Your Tool
+
+Match tool to need:
+
+| Need | Best Tool |
+|------|-----------|
+| Email/SMS sequences | Klaviyo, Postscript |
+| Order-based actions | Shopify Flow |
+| Cross-platform | Make, Zapier |
+| Complex logic | Make |
+| Simple notifications | Slack + Zapier |
+
+### Step 5: Build and Test
+
+<Checklist>
+  - [ ] Build the workflow
+  - [ ] Test with sample data
+  - [ ] Verify all branches work
+  - [ ] Check error handling
+  - [ ] Monitor first real runs
+  - [ ] Iterate based on results
+</Checklist>
+
+---
+
+## Starter Workflows
+
+### Essential: Partner Welcome
+
+```
+TRIGGER: Partner approved
+
+DAY 0: Welcome email with portal access
+DAY 2: Getting started guide
+DAY 5: Check activity
+  → Active: Tips for success email
+  → Inactive: Gentle reminder
+DAY 14: Check activity
+  → Active: Continue nurture
+  → Inactive: Tag for outreach
+```
+
+### Essential: Order Attribution
+
+```
+TRIGGER: Order created with CC discount code
+
+IMMEDIATE:
+→ Tag order: cc-partner:[handle]
+→ Tag customer: cc-acquired:[handle]
+→ Update partner metrics
+
+IF first sale for partner:
+→ Trigger first sale celebration flow
+```
+
+### Essential: Monthly Check-in
+
+```
+TRIGGER: 1st of month
+
+FOR EACH active partner:
+→ Send performance summary email
+→ Include: sales, clicks, earnings
+→ Include: tips for next month
+→ Include: upcoming promotions
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Identify your most time-consuming manual process
+  - [ ] Map out the current steps
+  - [ ] Choose appropriate automation tool
+  - [ ] Build a simple version first
+  - [ ] Test thoroughly before going live
+  - [ ] Monitor and iterate
+  - [ ] Document for team reference
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Partner Enrollment](/guides/collab-strategy/partner-enrollment) — Enrollment flow design
+- [Partner Activation](/guides/collab-strategy/partner-activation) — Activation automation
+- [Connect Your Tech Stack](/guides/connect-your-tech-stack) — Integration setup

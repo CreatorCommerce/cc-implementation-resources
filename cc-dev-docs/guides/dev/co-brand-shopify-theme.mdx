@@ -1,0 +1,453 @@
+---
+title: 'Co-brand Your Shopify Theme'
+description: 'Implement CreatorCommerce co-branding in your Shopify theme using Liquid templates, metaobject data, and CSS variables.'
+---
+
+## Overview
+
+Co-branding your Shopify theme means making sections and templates that dynamically personalize based on creator context. This guide covers:
+
+- Accessing creator data in Liquid
+- Building co-branded sections
+- Implementing CSS variables for theming
+- Handling fallbacks gracefully
+
+---
+
+## Creator Data Access Patterns
+
+### On Metaobject Pages
+
+When on a creator's dedicated page (metaobject template):
+
+```liquid
+{% comment %} Creator data is available directly {% endcomment %}
+{% assign cc_creator = metaobject %}
+
+{{ cc_creator.cc-creator-first-name }}
+{{ cc_creator.cc-creator-shop-description }}
+{{ cc_creator.data.value.cc-creator-profile-picture }}
+```
+
+### On All Other Pages
+
+Resolve creator from cart attributes:
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+
+{% if cc_creator %}
+  {{ cc_creator.cc-creator-first-name }}
+{% endif %}
+```
+
+### Universal Pattern
+
+Handle both contexts:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+---
+
+## Building a Co-branded Section
+
+### Basic Section Structure
+
+```liquid
+{% comment %} sections/cc-hero.liquid {% endcomment %}
+
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: section.settings.fallback_heading
+  assign creator_bio = cc_creator.cc-creator-shop-description | default: section.settings.fallback_description
+  assign creator_image = cc_creator.data.value.cc-creator-profile-picture
+  assign discount_code = cc_creator.cc-collab-discount-code
+%}
+
+<section class="cc-hero">
+  {% if has_creator %}
+    <div class="cc-hero__creator">
+      {% if creator_image %}
+        <img 
+          src="{{ creator_image | image_url: width: 400 }}" 
+          alt="{{ creator_name | escape }}"
+          loading="lazy"
+          class="cc-hero__avatar"
+        >
+      {% endif %}
+      
+      <h1 class="cc-hero__title">
+        {{ creator_name }}'s Picks
+      </h1>
+      
+      <p class="cc-hero__bio">
+        {{ creator_bio | escape }}
+      </p>
+      
+      {% if discount_code %}
+        <div class="cc-hero__discount">
+          Use code <strong>{{ discount_code }}</strong> for 
+          {{ cc_creator.cc-collab-discount-amount }}% off
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="cc-hero__fallback">
+      <h1>{{ section.settings.fallback_heading }}</h1>
+      <p>{{ section.settings.fallback_description }}</p>
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "CC Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "fallback_heading",
+      "label": "Fallback Heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "textarea",
+      "id": "fallback_description",
+      "label": "Fallback Description",
+      "default": "Shop our curated collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "CC Hero"
+    }
+  ]
+}
+{% endschema %}
+```
+
+---
+
+## CSS Variables for Dynamic Theming
+
+### Injecting Creator Colors
+
+```liquid
+{% if cc_creator and cc_creator.cc-creator-shop-theme-primary-color %}
+  <style>
+    :root {
+      --cc-primary-color: {{ cc_creator.cc-creator-shop-theme-primary-color | default: '#000000' }};
+      --cc-secondary-color: {{ cc_creator.cc-creator-shop-theme-secondary-color | default: '#666666' }};
+      --cc-accent-color: {{ cc_creator.cc-creator-shop-theme-accent-color | default: '#ff5733' }};
+    }
+  </style>
+{% endif %}
+```
+
+### Using CSS Variables
+
+```css
+/* In your theme CSS */
+.cc-hero {
+  background-color: var(--cc-primary-color, #ffffff);
+}
+
+.cc-hero__title {
+  color: var(--cc-primary-color, #000000);
+}
+
+.cc-hero__cta {
+  background-color: var(--cc-accent-color, #ff5733);
+  color: white;
+}
+
+.cc-hero__discount {
+  border-color: var(--cc-accent-color, #ff5733);
+}
+```
+
+### Contrast Color Calculation
+
+```liquid
+{% comment %} snippets/cc-calculate-contrast.liquid {% endcomment %}
+
+{% liquid
+  assign bg_color = cc_creator.cc-creator-shop-theme-primary-color | default: '#ffffff'
+  assign bg_color_clean = bg_color | remove: '#'
+  
+  assign r = bg_color_clean | slice: 0, 2 | hex_to_decimal
+  assign g = bg_color_clean | slice: 2, 2 | hex_to_decimal
+  assign b = bg_color_clean | slice: 4, 2 | hex_to_decimal
+  
+  assign luminance = r | times: 299 | plus: g | times: 587 | plus: b | times: 114 | divided_by: 1000
+  
+  if luminance > 128
+    assign text_color = '#000000'
+  else
+    assign text_color = '#ffffff'
+  endif
+%}
+
+<style>
+  .cc-section {
+    background-color: {{ bg_color }};
+    color: {{ text_color }};
+  }
+</style>
+```
+
+---
+
+## Product Grid with Creator Drops
+
+### Displaying Creator's Product Picks
+
+```liquid
+{% comment %} sections/cc-drops-grid.liquid {% endcomment %}
+
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+
+{% if cc_creator and cc_creator.cc-creator-drops.value %}
+  {% assign drops_data = cc_creator.data.value.cc-creator-drops %}
+  
+  <section class="cc-drops-grid">
+    <h2>{{ cc_creator.cc-creator-first-name }}'s Picks</h2>
+    
+    {% for drop in drops_data %}
+      {% assign drop_collection_id = drop['cc-creator-drop-collection-id'] %}
+      
+      {% for collection in collections %}
+        {% comment %} Convert to string for comparison {% endcomment %}
+        {% if collection.id | append: '' == drop_collection_id %}
+          <div class="cc-drop">
+            <h3>{{ drop['cc-creator-drop-name'] | default: collection.title }}</h3>
+            
+            <div class="cc-drop__products">
+              {% for product in collection.products limit: 4 %}
+                {% render 'cc-product-card', product: product, cc_creator: cc_creator %}
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </section>
+{% endif %}
+```
+
+### Product Card with Creator Context
+
+```liquid
+{% comment %} snippets/cc-product-card.liquid {% endcomment %}
+
+<div class="cc-product-card">
+  <a href="{{ product.url }}">
+    <img 
+      src="{{ product.featured_image | image_url: width: 300 }}" 
+      alt="{{ product.title | escape }}"
+      loading="lazy"
+    >
+  </a>
+  
+  <h4>{{ product.title }}</h4>
+  
+  {% if cc_creator and cc_creator.cc-collab-discount-amount %}
+    {% assign discount = cc_creator.cc-collab-discount-amount | times: 0.01 %}
+    {% assign discounted_price = product.price | times: 1 | minus: product.price | times: discount %}
+    
+    <div class="cc-product-card__price">
+      <span class="cc-product-card__original-price">
+        {{ product.price | money }}
+      </span>
+      <span class="cc-product-card__sale-price">
+        {{ discounted_price | money }}
+      </span>
+    </div>
+  {% else %}
+    <div class="cc-product-card__price">
+      {{ product.price | money }}
+    </div>
+  {% endif %}
+  
+  <button 
+    class="cc-product-card__add-to-cart"
+    data-product-id="{{ product.variants.first.id }}"
+  >
+    Add to Cart
+  </button>
+</div>
+```
+
+---
+
+## Setting Cart Attributes
+
+### On Landing Page Load
+
+```liquid
+{% comment %} In your theme.liquid or section {% endcomment %}
+
+{% if request.path contains '/creators/' or request.path contains '/pages/creators/' %}
+  <script>
+    (function() {
+      const creatorHandle = '{{ cc_creator.handle | escape }}';
+      const discountCode = '{{ cc_creator.cc-collab-discount-code | escape }}';
+      
+      // Set cart attributes
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attributes: {
+            'cc-creator-handle': creatorHandle,
+            'cc-discount-code': discountCode,
+            'cc-landing-time': new Date().toISOString()
+          }
+        })
+      });
+    })();
+  </script>
+{% endif %}
+```
+
+### Hidden Form Fields
+
+```liquid
+{% comment %} In your add-to-cart form {% endcomment %}
+
+{% if cc_creator %}
+  <input type="hidden" name="attributes[cc-creator-handle]" value="{{ cc_creator.handle }}">
+  <input type="hidden" name="attributes[cc-discount-code]" value="{{ cc_creator.cc-collab-discount-code }}">
+{% endif %}
+```
+
+---
+
+## Theme Editor Preview
+
+### Preview Creator Setting
+
+Add a preview creator setting for theme editor testing:
+
+```liquid
+{% schema %}
+{
+  "name": "CC Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "preview_creator_handle",
+      "label": "Preview Creator Handle",
+      "info": "For theme editor preview only"
+    }
+  ]
+}
+{% endschema %}
+```
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  elsif request.design_mode and section.settings.preview_creator_handle != blank
+    assign cc_creator = metaobjects.creator[section.settings.preview_creator_handle]
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+
+---
+
+## Dynamic Text Replacement
+
+### Token Replacement Snippet
+
+```liquid
+{% comment %} snippets/cc-dynamic-text.liquid {% endcomment %}
+{% comment %} Usage: {% render 'cc-dynamic-text', text: section.settings.heading, cc_creator: cc_creator %} {% endcomment %}
+
+{% liquid
+  assign output = text
+  
+  if cc_creator
+    assign output = output | replace: '[cc-creator-first-name]', cc_creator.cc-creator-first-name
+    assign output = output | replace: '[cc-creator-last-name]', cc_creator.cc-creator-last-name
+    assign output = output | replace: '[cc-discount-code]', cc_creator.cc-collab-discount-code
+    assign output = output | replace: '[cc-discount-amount]', cc_creator.cc-collab-discount-amount
+  else
+    assign output = output | replace: '[cc-creator-first-name]', 'our expert'
+    assign output = output | replace: '[cc-creator-last-name]', ''
+    assign output = output | replace: '[cc-discount-code]', ''
+    assign output = output | replace: '[cc-discount-amount]', ''
+  endif
+%}
+
+{{ output }}
+```
+
+### Usage in Sections
+
+```liquid
+<h1>
+  {% render 'cc-dynamic-text', 
+    text: section.settings.heading, 
+    cc_creator: cc_creator 
+  %}
+</h1>
+
+{% comment %} Setting value: "Shop [cc-creator-first-name]'s favorites" {% endcomment %}
+{% comment %} Output: "Shop Sarah's favorites" {% endcomment %}
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Create universal creator resolution snippet
+  - [ ] Build first co-branded section (hero)
+  - [ ] Implement CSS variable injection
+  - [ ] Add cart attribute setting on creator pages
+  - [ ] Create product card with discount display
+  - [ ] Add preview creator setting for theme editor
+  - [ ] Implement dynamic text replacement
+  - [ ] Test on metaobject pages and regular pages
+  - [ ] Verify fallbacks work when no creator context
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Designing Storefronts by Persona](/guides/collab-strategy/co-branded-storefronts) — Design strategy
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details) — Full funnel co-branding
+- [Show Discounted Prices](/guides/dev/show-discounted-prices) — Price display implementation

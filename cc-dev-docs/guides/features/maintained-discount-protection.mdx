@@ -1,0 +1,70 @@
+---
+title: 'Maintained Discount Protection'
+description: 'Ensure creator discounts stay applied throughout the shopping journey—from landing to checkout completion.'
+---
+
+## What It Is
+
+Customers who arrive via a creator link shouldn't lose their discount. Maintained discount protection ensures the code persists across sessions, page navigations, and checkout flows.
+
+## Key Capabilities
+
+- **Session persistence** — Discount survives page refreshes
+- **Cross-device hints** — Email links include discount
+- **Auto-application** — Code applied at checkout automatically
+- **Stacking rules** — Define how creator discounts interact with promos
+- **Expiration handling** — Graceful fallback when codes expire
+
+## Protection Layers
+
+| Layer | Method | Persistence |
+|-------|--------|-------------|
+| URL parameter | `?discount=CODE` | Single page |
+| Cart attributes | `cc-discount-code` | Cart session |
+| Local storage | `cc_discount_code` | 30 days |
+| Checkout URL | `/checkout?discount=CODE` | Checkout |
+| Email links | Pre-applied in URLs | Per-click |
+
+## Implementation
+
+```liquid
+{% comment %} On every page {% endcomment %}
+{% if cart.attributes['cc-discount-code'] == blank %}
+  {% assign stored_code = request.params['discount'] %}
+  {% if stored_code %}
+    <script>
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          attributes: { 'cc-discount-code': '{{ stored_code }}' }
+        })
+      });
+    </script>
+  {% endif %}
+{% endif %}
+```
+
+## Checkout Auto-Apply
+
+```javascript
+// Before redirect to checkout
+const discountCode = cart.attributes['cc-discount-code'];
+if (discountCode) {
+  window.location.href = `/checkout?discount=${discountCode}`;
+}
+```
+
+## Edge Cases Handled
+
+| Scenario | Solution |
+|----------|----------|
+| Customer clears cookies | Email links restore discount |
+| Code expires mid-session | Show notification + alternative |
+| Multiple codes entered | Last code wins or best-of |
+| Checkout timeout | Discount re-applied on return |
+
+## Related
+
+- [Support Unique Discounts](/guides/dev/support-unique-discounts)
+- [Show Discounted Prices](/guides/dev/show-discounted-prices)

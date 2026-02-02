@@ -1,0 +1,339 @@
+---
+title: 'Send Co-branded Emails'
+description: 'Create personalized email flows that maintain partner context—from cart abandonment to post-purchase sequences.'
+---
+
+## Why Co-branded Emails Matter
+
+When a customer comes through a partner's funnel, every touchpoint should reinforce that relationship. Generic emails break the spell.
+
+**Co-branded emails:**
+- Maintain partner context throughout the journey
+- Increase open rates with personalization
+- Drive higher click-through with relevance
+- Build trust through consistency
+- Encourage repeat purchases through partner relationship
+
+---
+
+## Email Types to Co-brand
+
+### Transactional Emails
+
+<CardGroup cols={2}>
+  <Card title="Order Confirmation" icon="check">
+    "Thanks for shopping with [Partner]!"
+  </Card>
+  <Card title="Shipping Updates" icon="truck">
+    "[Partner]'s picks are on the way!"
+  </Card>
+  <Card title="Delivery Confirmation" icon="box">
+    "Your order from [Partner] has arrived"
+  </Card>
+  <Card title="Review Request" icon="star">
+    "How did you like [Partner]'s recommendations?"
+  </Card>
+</CardGroup>
+
+### Marketing Emails
+
+<CardGroup cols={2}>
+  <Card title="Cart Abandonment" icon="cart-shopping">
+    "You left [Partner]'s picks behind"
+  </Card>
+  <Card title="Browse Abandonment" icon="eye">
+    "[Partner] thought you'd like these"
+  </Card>
+  <Card title="Replenishment" icon="rotate">
+    "Time to restock [Partner]'s favorites"
+  </Card>
+  <Card title="Win-back" icon="heart">
+    "[Partner] has new recommendations for you"
+  </Card>
+</CardGroup>
+
+---
+
+## Setting Up Co-branded Flows
+
+### Data Requirements
+
+To personalize emails with partner context, you need:
+
+| Data Point | Source | Use |
+|------------|--------|-----|
+| Partner name | Cart attributes | Email copy personalization |
+| Partner photo | Metaobject | Visual personalization |
+| Discount code | Cart attributes | Continued discount access |
+| Partner handle | Cart attributes | Link back to storefront |
+
+### Passing Partner Data
+
+<Tabs>
+  <Tab title="Cart Attributes">
+    Store partner info in cart, which flows to order:
+    
+    ```liquid
+    {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+    {% assign cc_name = cart.attributes['cc-creator-name'] %}
+    {% assign cc_code = cart.attributes['cc-discount-code'] %}
+    ```
+    
+    These persist to the order and are available in email platforms.
+  </Tab>
+  
+  <Tab title="Order Properties">
+    Access in Klaviyo/email platforms:
+    
+    ```
+    {{ event.extra.cc-creator-handle }}
+    {{ event.extra.cc-creator-name }}
+    {{ event.extra.cc-discount-code }}
+    ```
+  </Tab>
+  
+  <Tab title="Customer Properties">
+    Sync partner data to customer profile:
+    
+    ```
+    cc_acquired_by: "partner-handle"
+    cc_first_partner: "partner-name"
+    cc_discount_code: "PARTNER15"
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Klaviyo Implementation
+
+### Flow Setup
+
+<Steps>
+  <Step title="Create Partner-Aware Flow">
+    Clone your existing flow (e.g., cart abandonment) and add partner logic.
+  </Step>
+  
+  <Step title="Add Conditional Split">
+    Split based on whether partner context exists:
+    
+    ```
+    IF {{ event.extra.cc-creator-handle }} IS SET
+    → Partner branch (co-branded emails)
+    ELSE
+    → Standard branch (regular emails)
+    ```
+  </Step>
+  
+  <Step title="Create Partner Email Variant">
+    Design email with partner personalization (see below).
+  </Step>
+  
+  <Step title="Test with Partner Traffic">
+    Send test orders through partner funnels to verify personalization.
+  </Step>
+</Steps>
+
+### Email Template Structure
+
+```html
+<!-- Partner header section -->
+{% if event.extra.cc-creator-name %}
+<div class="partner-header">
+  <img src="{{ event.extra.cc-creator-photo }}" alt="{{ event.extra.cc-creator-name }}" />
+  <p>Recommended by {{ event.extra.cc-creator-name }}</p>
+</div>
+{% endif %}
+
+<!-- Email content -->
+<h1>Your cart is waiting!</h1>
+<p>The items {{ event.extra.cc-creator-name }} picked for you are still available.</p>
+
+<!-- Discount reminder -->
+{% if event.extra.cc-discount-code %}
+<div class="discount-box">
+  <p>Use code <strong>{{ event.extra.cc-discount-code }}</strong> for your discount!</p>
+</div>
+{% endif %}
+
+<!-- CTA back to partner page -->
+<a href="https://yourstore.com/pages/creators/{{ event.extra.cc-creator-handle }}">
+  Return to {{ event.extra.cc-creator-name }}'s Page
+</a>
+```
+
+---
+
+## Must-Have Co-branded Flows
+
+### Cart Abandonment (Critical)
+
+<AccordionGroup>
+  <Accordion title="Email 1: Reminder (1-2 hours)">
+    **Subject:** You left [Partner]'s picks in your cart
+    
+    **Content:**
+    - Partner photo + name
+    - Cart contents
+    - Discount code reminder
+    - Direct link back to cart
+    
+    **Tone:** Helpful, not pushy
+  </Accordion>
+  
+  <Accordion title="Email 2: Value Add (24 hours)">
+    **Subject:** [Partner] wanted you to know this
+    
+    **Content:**
+    - Partner testimonial about product
+    - Social proof (reviews, UGC)
+    - Benefits reminder
+    - Discount still valid
+    
+    **Tone:** Add value, build trust
+  </Accordion>
+  
+  <Accordion title="Email 3: Urgency (48 hours)">
+    **Subject:** Last chance for [Partner]'s discount
+    
+    **Content:**
+    - Urgency messaging
+    - Final discount reminder
+    - Clear CTA
+    
+    **Tone:** Urgent but not desperate
+  </Accordion>
+</AccordionGroup>
+
+### Post-Purchase (Critical)
+
+<AccordionGroup>
+  <Accordion title="Order Confirmation">
+    **Subject:** Thanks for shopping with [Partner]! 🎉
+    
+    **Content:**
+    - Partner photo + thank you message
+    - Order details
+    - "You saved $X with [Partner]'s code"
+    - Social share prompt
+    - Next steps / what to expect
+  </Accordion>
+  
+  <Accordion title="Shipping Notification">
+    **Subject:** [Partner]'s picks are on the way!
+    
+    **Content:**
+    - Partner name mention
+    - Tracking info
+    - Delivery expectations
+    - Usage tips from partner (optional)
+  </Accordion>
+  
+  <Accordion title="Review Request (7-14 days)">
+    **Subject:** How did you like [Partner]'s recommendations?
+    
+    **Content:**
+    - Partner connection reminder
+    - Review request with product link
+    - UGC submission prompt
+    - Incentive for next purchase
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Subject Line Personalization
+
+<Tabs>
+  <Tab title="Cart Abandonment">
+    - "You left [Partner]'s picks behind"
+    - "[Partner] saved these for you"
+    - "Still thinking about [Partner]'s recommendations?"
+    - "Don't forget your [Partner] discount!"
+  </Tab>
+  
+  <Tab title="Post-Purchase">
+    - "Thanks for shopping with [Partner]! 🎉"
+    - "[Partner]'s picks are on the way!"
+    - "How are you loving [Partner]'s recommendations?"
+    - "[Partner] has new picks for you"
+  </Tab>
+  
+  <Tab title="Win-back">
+    - "[Partner] missed you!"
+    - "New recommendations from [Partner]"
+    - "[Partner]'s latest favorites"
+    - "Come back to [Partner]'s page"
+  </Tab>
+</Tabs>
+
+---
+
+## Design Best Practices
+
+### Partner Visibility
+
+<Checklist>
+  - [ ] Partner photo in header or above fold
+  - [ ] Partner name in subject line or preview text
+  - [ ] "Recommended by [Partner]" messaging
+  - [ ] Link back to partner's storefront
+  - [ ] Discount code prominently displayed
+</Checklist>
+
+### Consistency
+
+<Checklist>
+  - [ ] Same partner photo across all emails
+  - [ ] Consistent partner name spelling
+  - [ ] Matching discount code everywhere
+  - [ ] Visual style matches storefront
+  - [ ] Tone consistent with partner's voice
+</Checklist>
+
+---
+
+## Testing Your Flows
+
+### Test Scenarios
+
+| Scenario | What to Verify |
+|----------|----------------|
+| Partner traffic → cart abandon | Partner context appears |
+| Partner traffic → purchase | Order confirmation personalized |
+| Non-partner traffic | Falls back to standard emails |
+| Missing partner data | Graceful fallback, no broken tags |
+
+### QA Checklist
+
+<Checklist>
+  - [ ] Partner name renders correctly
+  - [ ] Partner photo displays (with fallback)
+  - [ ] Discount code is accurate
+  - [ ] Links go to partner storefront
+  - [ ] Mobile rendering looks good
+  - [ ] Fallback works when partner data missing
+</Checklist>
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Ensure cart attributes pass partner data to orders
+  - [ ] Set up Klaviyo (or ESP) to receive partner properties
+  - [ ] Create conditional split for partner vs. non-partner
+  - [ ] Design co-branded email templates
+  - [ ] Build cart abandonment flow with partner variant
+  - [ ] Build post-purchase flow with partner variant
+  - [ ] Test with real partner traffic
+  - [ ] Monitor performance vs. standard emails
+</Checklist>
+
+---
+
+## Related Resources
+
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details) — Co-branding across all touchpoints
+- [Testing & Retention](/guides/collab-strategy/optimize) — Email optimization strategies
+- [Co-branded Messaging](/guides/co-branded-messaging) — Broader messaging strategy

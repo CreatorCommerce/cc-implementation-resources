@@ -1,0 +1,52 @@
+---
+title: 'Recruitment Integrations'
+description: 'Connect CreatorCommerce to affiliate platforms, influencer tools, and CRMs to automate partner onboarding.'
+---
+
+## What It Is
+
+Sync partners from your existing recruitment tools into CreatorCommerce. When a creator signs up through your affiliate platform or CRM, they're automatically set up with a co-branded page.
+
+## Key Capabilities
+
+- **Affiliate platform sync** — Impact, ShareASale, Refersion, etc.
+- **CRM integration** — HubSpot, Salesforce, Attentive
+- **Influencer platforms** — Grin, CreatorIQ, Aspire
+- **Custom webhooks** — Any system that can POST data
+- **Bi-directional sync** — Data flows both ways
+
+## Supported Platforms
+
+| Platform | Sync Type | Features |
+|----------|-----------|----------|
+| Impact | API | Partners, commissions, codes |
+| Refersion | Webhook | Partners, orders |
+| Grin | API | Creators, campaigns |
+| HubSpot | API | Contacts, deals |
+| Klaviyo | Events | Profiles, segments |
+| Custom | Webhook | Any data structure |
+
+## Sync Flow
+
+```
+Affiliate Platform → Webhook/API → CreatorCommerce
+        ↓                                ↓
+   Partner Created              CC Page Created
+        ↓                                ↓
+   Discount Code ←←←←←←←←←← Synced Back
+```
+
+## Data Mapped
+
+| Source Field | CC Field |
+|--------------|----------|
+| Email | Creator email |
+| Name | First/last name |
+| Promo code | Discount code |
+| Commission rate | Collab commission |
+| Tier/status | Partner tier |
+
+## Related
+
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration)
+- [Building Enrollment Funnels](/guides/collab-strategy/partner-enrollment)

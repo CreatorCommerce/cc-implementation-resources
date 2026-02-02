@@ -1,0 +1,350 @@
+---
+title: 'Get Fancy with Discounts'
+description: 'Advanced discount strategies for partner programs—tiered discounts, stackable codes, automatic application, and strategic pricing.'
+---
+
+## Beyond Basic Discount Codes
+
+A simple "PARTNER15" code is just the beginning. Strategic discount structures can:
+
+- **Incentivize higher-value partners** with better rates
+- **Increase AOV** with threshold-based discounts
+- **Drive urgency** with time-limited offers
+- **Improve attribution** with unique per-partner codes
+- **Enable A/B testing** of discount strategies
+
+---
+
+## Discount Structures
+
+### Flat Percentage
+
+The simplest approach—every partner gets the same discount.
+
+| Pros | Cons |
+|------|------|
+| Easy to manage | No differentiation |
+| Clear to partners | No incentive to perform |
+| Simple attribution | May leave money on table |
+
+**Best for:** Starting out, simple programs
+
+### Tiered by Partner Level
+
+Different discounts based on partner performance or tier.
+
+<Tabs>
+  <Tab title="Structure">
+    | Tier | Criteria | Discount |
+    |------|----------|----------|
+    | Bronze | New partners | 10% |
+    | Silver | 10+ sales | 15% |
+    | Gold | 50+ sales | 20% |
+    | Platinum | 200+ sales | 25% |
+  </Tab>
+  
+  <Tab title="Implementation">
+    **In CreatorCommerce:**
+    - Set tier in partner profile
+    - Assign discount code based on tier
+    - Update automatically when thresholds hit
+    
+    **In Shopify:**
+    - Create discount code per tier
+    - Or use dynamic pricing app
+  </Tab>
+  
+  <Tab title="Communication">
+    Show partners their progress:
+    - Current tier and discount
+    - Sales to next tier
+    - Benefits of upgrading
+    - Leaderboard (optional)
+  </Tab>
+</Tabs>
+
+### Threshold-Based (Spend More, Save More)
+
+Discount increases with cart value.
+
+<Tabs>
+  <Tab title="Structure">
+    | Cart Value | Discount |
+    |------------|----------|
+    | $50+ | 10% off |
+    | $100+ | 15% off |
+    | $150+ | 20% off |
+    | $200+ | 25% off |
+  </Tab>
+  
+  <Tab title="Why It Works">
+    - Increases AOV significantly
+    - Customers feel rewarded for buying more
+    - Higher absolute savings = higher perceived value
+    - Works well with partner recommendation bundles
+  </Tab>
+  
+  <Tab title="Implementation">
+    Use Shopify's automatic discounts with minimum purchase requirements, or use apps for more complex logic.
+  </Tab>
+</Tabs>
+
+### Product-Specific Discounts
+
+Different discounts for different products or categories.
+
+**Use cases:**
+- Higher margins on some products → deeper discount
+- New product launches → promotional discount
+- Clearance items → extra discount
+- Bundles → special pricing
+
+### Stackable Discounts
+
+Allow partner discount to stack with other offers.
+
+<Warning>
+Be careful with stacking—it can erode margins quickly. Set clear rules about what stacks.
+</Warning>
+
+| Stacks With | Doesn't Stack With |
+|-------------|-------------------|
+| Free shipping thresholds | Other discount codes |
+| Automatic sale pricing | BOGO offers |
+| Loyalty points | Clearance pricing |
+
+---
+
+## Unique Per-Partner Codes
+
+### Why Unique Codes Matter
+
+| Shared Code (PARTNER15) | Unique Code (SARAH15) |
+|-------------------------|------------------------|
+| Easy to set up | Clear attribution |
+| Hard to track who drove sale | Partner feels ownership |
+| Can be shared/leaked | Easier leak detection |
+| No personalization | Brandable for partner |
+
+### Generating Unique Codes
+
+<Tabs>
+  <Tab title="Manual">
+    Create codes one-by-one in Shopify admin.
+    
+    **Naming convention:** `[PARTNERNAME][DISCOUNT]`
+    - SARAH15
+    - DRJONES20
+    - FITNESSMOM10
+    
+    **Best for:** Small programs (<50 partners)
+  </Tab>
+  
+  <Tab title="Bulk via CSV">
+    Generate codes in spreadsheet, import to Shopify.
+    
+    **Best for:** Medium programs, periodic updates
+  </Tab>
+  
+  <Tab title="Automated via API">
+    Use Shopify API or apps to create codes automatically when partners join.
+    
+    **Best for:** Large programs, automated onboarding
+  </Tab>
+  
+  <Tab title="CreatorCommerce">
+    Codes synced automatically with partner profiles.
+    
+    **Best for:** Full CC implementation
+  </Tab>
+</Tabs>
+
+---
+
+## Automatic Discount Application
+
+### URL-Based Auto-Apply
+
+Apply discount automatically when customer arrives via partner link.
+
+**How it works:**
+```
+yourstore.com/discount/SARAH15?redirect=/pages/creators/sarah
+```
+
+Customer lands on Sarah's page with discount already applied.
+
+### Cart Attribute Method
+
+Store discount in cart attributes, apply at checkout.
+
+```liquid
+{% if cart.attributes['cc-discount-code'] %}
+  <!-- Discount code pre-populated -->
+  <input type="hidden" name="discount" value="{{ cart.attributes['cc-discount-code'] }}">
+{% endif %}
+```
+
+### Automatic Discounts (Shopify)
+
+Use Shopify's automatic discounts feature:
+- Discount applies automatically when conditions met
+- No code entry required
+- Combine with partner attribution via cart attributes
+
+---
+
+## Strategic Discount Tactics
+
+### First-Time Customer Bonus
+
+Extra discount for first-time buyers through partner links.
+
+```
+Regular partner discount: 15%
+First-time buyer bonus: +5%
+Total for new customers: 20%
+```
+
+**Implementation:** Use customer tags to identify new vs. returning.
+
+### Limited-Time Boosts
+
+Temporary discount increases for campaigns.
+
+<AccordionGroup>
+  <Accordion title="Flash Sales">
+    **Duration:** 24-48 hours
+    **Boost:** +5-10%
+    **Communication:** Email partners 24hrs before, give them exclusive heads up
+  </Accordion>
+  
+  <Accordion title="Seasonal Campaigns">
+    **Duration:** 1-2 weeks
+    **Boost:** +5%
+    **Communication:** Marketing materials, social assets
+  </Accordion>
+  
+  <Accordion title="Partner Anniversaries">
+    **Duration:** 1 week around partner's join date
+    **Boost:** Special offer for their audience
+    **Communication:** Personal outreach to partner
+  </Accordion>
+</AccordionGroup>
+
+### Bundle Discounts
+
+Special pricing when buying partner-curated bundles.
+
+| Individual Products | Bundle Price | Savings |
+|--------------------|--------------|---------|
+| $30 + $25 + $20 = $75 | $60 | 20% |
+
+**Why bundles work:**
+- Higher AOV
+- Partner can curate meaningful combinations
+- Perceived value is high
+- Simplifies purchase decision
+
+---
+
+## Discount Display Strategies
+
+### On the Storefront
+
+<Checklist>
+  - [ ] Discount prominently in hero section
+  - [ ] Show both original and discounted price
+  - [ ] Discount code visible without scrolling
+  - [ ] "Copy code" button for easy use
+  - [ ] Reminder in sticky bar or cart
+</Checklist>
+
+### Price Comparison Display
+
+```
+Was: $100
+Partner Price: $85
+You Save: $15 (15%)
+```
+
+### Urgency Elements
+
+<Warning>
+Use urgency authentically. Fake countdown timers erode trust.
+</Warning>
+
+**Authentic urgency:**
+- Limited inventory
+- Seasonal products
+- Genuine sale end dates
+- Partner-exclusive limited offers
+
+---
+
+## Tracking & Analytics
+
+### Metrics to Monitor
+
+| Metric | What It Tells You |
+|--------|-------------------|
+| Redemption rate | Are customers using codes? |
+| Code leakage | Is code spreading beyond partner? |
+| Discount impact on AOV | Does discount drive larger orders? |
+| Partner tier distribution | Are partners progressing? |
+| Margin by partner | Which partners are most profitable? |
+
+### Detecting Code Leakage
+
+Signs a code has leaked:
+- Sudden spike in usage from unknown sources
+- Usage from non-partner traffic sources
+- Social media mentions without partner involvement
+- Coupon site appearances
+
+**Response:**
+1. Rotate the code
+2. Investigate source
+3. Consider per-use limits
+4. Communicate with partner
+
+---
+
+## Shopify Discount Limits
+
+<Info>
+Be aware of Shopify's discount limitations:
+- One discount code per checkout (standard)
+- Automatic discounts can combine
+- 20M total discount codes per store
+- 100 uses per day per code (can be increased)
+</Info>
+
+### Working Around Limits
+
+**Multiple discounts needed?**
+- Use automatic discounts + manual code
+- Use apps that enable stacking
+- Create bundle products with built-in discount
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Define your discount structure (flat, tiered, threshold)
+  - [ ] Create unique codes per partner (or automate)
+  - [ ] Set up auto-apply method
+  - [ ] Design discount display on storefronts
+  - [ ] Configure tracking and attribution
+  - [ ] Document rules for stacking/exclusions
+  - [ ] Communicate clearly to partners
+</Checklist>
+
+---
+
+## Related Resources
+
+- [The Full Shopping Journey](/guides/collab-strategy/funnel-details) — Discount presentation across funnel
+- [Going Live & Measuring](/guides/collab-strategy/launch-track) — Tracking discount performance
+- [Co-branded Storefronts](/guides/collab-strategy/co-branded-storefronts) — Displaying discounts effectively

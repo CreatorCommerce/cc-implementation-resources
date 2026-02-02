@@ -1,0 +1,492 @@
+---
+title: 'Enable the CC SDK'
+description: 'Install and configure the CreatorCommerce JavaScript SDK for advanced client-side functionality—creator resolution, cart management, and dynamic UI updates.'
+---
+
+## Overview
+
+The CC SDK provides:
+
+- **Creator resolution** — Automatically detect and persist creator context
+- **Cart management** — Set attributes, apply discounts, manage line items
+- **Dynamic UI** — Update prices, show creator content without page reload
+- **Event tracking** — Integrated with CC Web Pixel
+- **Checkout optimization** — Auto-apply discounts, pre-fill fields
+
+---
+
+## Installation
+
+### Via CDN
+
+```html
+<script src="https://cdn.creatorcommerce.com/sdk/v1/cc-sdk.min.js"></script>
+<script>
+  CC.init({
+    shopDomain: 'your-store.myshopify.com',
+    pixelId: 'YOUR_CC_PIXEL_ID',
+    debug: false
+  });
+</script>
+```
+
+### Via npm
+
+```bash
+npm install @creatorcommerce/sdk
+```
+
+```javascript
+import CC from '@creatorcommerce/sdk';
+
+CC.init({
+  shopDomain: 'your-store.myshopify.com',
+  pixelId: 'YOUR_CC_PIXEL_ID'
+});
+```
+
+### In Shopify Theme
+
+```liquid
+{% comment %} In theme.liquid before </body> {% endcomment %}
+
+<script src="https://cdn.creatorcommerce.com/sdk/v1/cc-sdk.min.js"></script>
+<script>
+  CC.init({
+    shopDomain: {{ shop.permanent_domain | json }},
+    pixelId: 'YOUR_CC_PIXEL_ID',
+    creatorHandle: {{ cart.attributes['cc-creator-handle'] | json }},
+    debug: {{ request.design_mode }}
+  });
+</script>
+```
+
+---
+
+## Creator Resolution
+
+### Auto-Detection
+
+The SDK automatically detects creator context from:
+
+1. URL parameter: `?ref=creator-handle`
+2. URL path: `/creators/creator-handle`
+3. Cart attributes: `cc-creator-handle`
+4. Local storage (persisted from previous session)
+
+```javascript
+// Access current creator
+const creator = await CC.getCreator();
+
+if (creator) {
+  console.log('Creator:', creator.firstName);
+  console.log('Discount:', creator.discountCode);
+}
+```
+
+### Manual Resolution
+
+```javascript
+// Set creator explicitly
+await CC.setCreator('sarah-jones');
+
+// Clear creator context
+CC.clearCreator();
+
+// Check if creator is set
+const hasCreator = CC.hasCreator();
+```
+
+### Creator Data
+
+```javascript
+const creator = await CC.getCreator();
+
+// Available properties
+creator.id              // Creator ID
+creator.handle          // Handle/slug
+creator.firstName       // First name
+creator.lastName        // Last name
+creator.email           // Email
+creator.bio             // Shop description
+creator.profileImage    // Profile picture URL
+creator.discountCode    // Discount code
+creator.discountAmount  // Discount percentage
+creator.tier            // Partner tier
+creator.drops           // Product collections
+creator.customFields    // Custom field data
+```
+
+---
+
+## Cart Management
+
+### Set Cart Attributes
+
+```javascript
+// Set creator context on cart
+await CC.cart.setCreatorContext();
+
+// Set custom attributes
+await CC.cart.setAttributes({
+  'cc-creator-handle': 'sarah-jones',
+  'cc-discount-code': 'SARAH15',
+  'cc-landing-url': window.location.href
+});
+```
+
+### Add to Cart with Context
+
+```javascript
+// Add product with creator attribution
+await CC.cart.add({
+  variantId: 12345678901234,
+  quantity: 1,
+  attributes: {
+    'cc-recommended-by': 'sarah-jones'
+  }
+});
+
+// Add multiple items
+await CC.cart.add([
+  { variantId: 123, quantity: 1 },
+  { variantId: 456, quantity: 2 }
+]);
+```
+
+### Get Cart with Discount Preview
+
+```javascript
+const cart = await CC.cart.get();
+
+// Cart includes discounted prices
+cart.items.forEach(item => {
+  console.log('Original:', item.originalPrice);
+  console.log('Discounted:', item.discountedPrice);
+  console.log('Savings:', item.savings);
+});
+
+console.log('Cart total:', cart.total);
+console.log('Projected total:', cart.projectedTotal);
+console.log('Total savings:', cart.totalSavings);
+```
+
+### Apply Discount at Checkout
+
+```javascript
+// Auto-apply discount when going to checkout
+CC.checkout.enableAutoDiscount();
+
+// Or generate checkout URL with discount
+const checkoutUrl = CC.checkout.getUrl();
+// Returns: /checkout?discount=SARAH15
+```
+
+---
+
+## Dynamic UI Updates
+
+### Price Updates
+
+```javascript
+// Calculate discounted price
+const originalPrice = 5999; // in cents
+const discountedPrice = CC.price.calculate(originalPrice);
+
+// Format for display
+const formatted = CC.price.format(discountedPrice);
+// Returns: "$50.99"
+
+// Get savings
+const savings = CC.price.getSavings(originalPrice);
+// Returns: { amount: 899, percentage: 15, formatted: "$8.99" }
+```
+
+### Update All Prices on Page
+
+```javascript
+// Update all prices with discount
+CC.price.updateAll('[data-price]');
+
+// With custom selector and template
+CC.price.updateAll('.product-price', {
+  template: '<span class="original">{{original}}</span> <span class="sale">{{discounted}}</span>'
+});
+```
+
+### Creator UI Injection
+
+```javascript
+// Inject creator header into page
+CC.ui.injectCreatorHeader('#main-header', {
+  template: 'compact' // or 'full', 'minimal'
+});
+
+// Inject discount banner
+CC.ui.injectDiscountBanner('body', {
+  position: 'top', // or 'bottom'
+  sticky: true
+});
+```
+
+---
+
+## Event Tracking
+
+### Track Custom Events
+
+```javascript
+// Track engagement
+CC.track('engagement', {
+  action: 'video_play',
+  videoId: 'abc123'
+});
+
+// Track product interaction
+CC.track('product_interaction', {
+  productId: 123,
+  action: 'quick_view'
+});
+
+// Track content scroll
+CC.track('content_scroll', {
+  section: 'creator-bio',
+  percentViewed: 75
+});
+```
+
+### Event Listeners
+
+```javascript
+// Listen for SDK events
+CC.on('creator:resolved', (creator) => {
+  console.log('Creator found:', creator.firstName);
+});
+
+CC.on('cart:updated', (cart) => {
+  console.log('Cart updated:', cart.itemCount);
+});
+
+CC.on('checkout:started', (checkout) => {
+  console.log('Checkout started:', checkout.total);
+});
+```
+
+---
+
+## Product Recommendations
+
+### Get Creator's Drops
+
+```javascript
+const drops = await CC.drops.getAll();
+
+drops.forEach(drop => {
+  console.log('Drop:', drop.name);
+  console.log('Products:', drop.products.length);
+});
+```
+
+### Get Products with Creator Data
+
+```javascript
+const products = await CC.products.getFromDrop('summer-picks');
+
+products.forEach(product => {
+  console.log('Product:', product.title);
+  console.log('Creator quote:', product.creatorQuote);
+  console.log('Discounted price:', product.discountedPrice);
+});
+```
+
+---
+
+## Checkout Optimization
+
+### Pre-fill Checkout
+
+```javascript
+CC.checkout.prefill({
+  email: 'customer@example.com',
+  shippingAddress: {
+    firstName: 'John',
+    lastName: 'Doe',
+    // ... address fields
+  }
+});
+```
+
+### Checkout Redirect with Context
+
+```javascript
+// Redirect to checkout with all context
+CC.checkout.go({
+  applyDiscount: true,
+  trackConversion: true
+});
+```
+
+### Post-Purchase Tracking
+
+```javascript
+// On thank you page
+CC.checkout.complete({
+  orderId: '{{ order.id }}',
+  orderTotal: {{ order.total_price }},
+  items: {{ order.line_items | json }}
+});
+```
+
+---
+
+## Configuration Options
+
+### Full Configuration
+
+```javascript
+CC.init({
+  // Required
+  shopDomain: 'your-store.myshopify.com',
+  
+  // Tracking
+  pixelId: 'YOUR_CC_PIXEL_ID',
+  trackingEnabled: true,
+  
+  // Attribution
+  attributionWindow: 30, // days
+  attributionModel: 'last-touch', // or 'first-touch', 'linear'
+  
+  // Creator context
+  creatorHandle: null, // Pre-set from server
+  persistCreator: true, // Save to localStorage
+  
+  // Cart
+  autoSetCartAttributes: true,
+  
+  // Checkout
+  autoApplyDiscount: true,
+  
+  // UI
+  currency: 'USD',
+  locale: 'en-US',
+  
+  // Debug
+  debug: false,
+  
+  // Callbacks
+  onCreatorResolved: (creator) => {},
+  onCartUpdated: (cart) => {},
+  onError: (error) => {}
+});
+```
+
+---
+
+## Error Handling
+
+### SDK Errors
+
+```javascript
+CC.on('error', (error) => {
+  console.error('CC SDK Error:', error.message);
+  
+  // Send to error tracking
+  Sentry.captureException(error);
+});
+
+// Or use try-catch
+try {
+  const creator = await CC.getCreator();
+} catch (error) {
+  if (error.code === 'CREATOR_NOT_FOUND') {
+    // Handle missing creator
+  }
+}
+```
+
+### Fallback Behavior
+
+```javascript
+// SDK gracefully degrades if issues occur
+const creator = await CC.getCreator();
+
+if (!creator) {
+  // Show non-personalized experience
+  showGenericContent();
+} else {
+  // Show co-branded experience
+  showCreatorContent(creator);
+}
+```
+
+---
+
+## Performance
+
+### Lazy Loading
+
+```javascript
+// Load SDK only when needed
+if (hasCreatorContext()) {
+  const CC = await import('@creatorcommerce/sdk');
+  CC.init({ ... });
+}
+```
+
+### Bundle Size
+
+The SDK is ~15KB gzipped and includes:
+- Core functionality
+- Cart management
+- Price calculations
+- Basic UI utilities
+
+Optional modules can be loaded separately:
+```javascript
+// Load analytics module separately
+await CC.loadModule('analytics');
+
+// Load UI components separately
+await CC.loadModule('ui-components');
+```
+
+---
+
+## TypeScript Support
+
+```typescript
+import CC, { Creator, Cart, Drop } from '@creatorcommerce/sdk';
+
+CC.init({
+  shopDomain: 'your-store.myshopify.com',
+  pixelId: 'YOUR_CC_PIXEL_ID'
+});
+
+const creator: Creator | null = await CC.getCreator();
+const cart: Cart = await CC.cart.get();
+const drops: Drop[] = await CC.drops.getAll();
+```
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Install SDK via CDN or npm
+  - [ ] Initialize with shop domain and pixel ID
+  - [ ] Test creator auto-resolution
+  - [ ] Implement cart attribute setting
+  - [ ] Add dynamic price updates
+  - [ ] Configure checkout optimization
+  - [ ] Set up event tracking
+  - [ ] Handle errors gracefully
+  - [ ] Test full purchase flow
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel) — Event tracking setup
+- [Show Discounted Prices](/guides/dev/show-discounted-prices) — Price display
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) — Theme integration

@@ -1,0 +1,181 @@
+---
+title: 'Your First 2 Funnels'
+description: 'Build two co-branded funnel approaches—one with ready-made CC sections, one by converting your existing theme sections.'
+---
+
+## The Two-Funnel Strategy
+
+Before scaling to hundreds of creator pages, start with two test funnels that prove the concept and establish your co-branding approach.
+
+<CardGroup cols={2}>
+  <Card title="Funnel A: Out-of-the-Box" icon="box">
+    Use pre-built CC sections for fast deployment. Perfect for validating the concept.
+  </Card>
+  <Card title="Funnel B: Theme-Native" icon="paintbrush">
+    Convert your existing sections for seamless brand consistency. Better long-term scalability.
+  </Card>
+</CardGroup>
+
+---
+
+## Funnel A: Out-of-the-Box CC Sections
+
+### What You Get
+
+CreatorCommerce provides ready-made Liquid sections that work immediately:
+
+| Section | Purpose |
+|---------|---------|
+| **CC Hero** | Creator photo, name, bio, and discount callout |
+| **CC Product Grid** | Displays creator's "drops" with discounted pricing |
+| **CC Quote Badge** | Creator testimonial on product cards |
+| **CC Banner** | Persistent discount reminder |
+| **CC Email Capture** | Newsletter signup with creator attribution |
+
+### When to Use This Approach
+
+- **Testing the waters** — Validate co-branding before committing development time
+- **Fast launch** — Get live in hours, not weeks
+- **Limited dev resources** — No custom development required
+- **Proof of concept** — Show stakeholders what's possible
+
+### The Tradeoff
+
+Out-of-the-box sections may not perfectly match your existing theme aesthetic. They're designed to be functional and good-looking, but they won't have your exact fonts, spacing, or component patterns.
+
+### Implementation Path
+
+1. Install CC sections from the template library
+2. Add sections to your metaobject template
+3. Configure section settings (colors, layout options)
+4. Assign a test creator to preview
+5. Launch with a small cohort of partners
+
+<Info>
+**Time to launch:** 2-4 hours for basic setup
+</Info>
+
+---
+
+## Funnel B: Converting Your Theme Sections
+
+### What You Get
+
+Take the sections you've already built and perfected—your hero, your product grid, your testimonial blocks—and make them creator-aware.
+
+| Your Section | What Changes |
+|--------------|--------------|
+| **Hero section** | Add creator photo, name, bio fields |
+| **Product grid** | Pull from creator's drops instead of static collection |
+| **Testimonial block** | Display creator's quote about products |
+| **Header/nav** | Show creator context for returning visitors |
+| **Price display** | Calculate and show discounted prices |
+
+### When to Use This Approach
+
+- **Brand consistency is critical** — Your theme represents years of design iteration
+- **Long-term scalability** — One codebase, many creators
+- **Custom functionality** — Need specific features your sections already have
+- **Developer capacity** — You have resources to implement properly
+
+### The Tradeoff
+
+Requires development time upfront. Someone needs to modify Liquid templates to read creator data and conditionally display co-branded content.
+
+### Implementation Path
+
+1. Identify 3-5 key sections to convert (hero, product grid, etc.)
+2. Add creator data resolution logic
+3. Create conditional rendering for creator vs. non-creator views
+4. Build fallback states for when no creator context exists
+5. Test with multiple creator profiles
+6. Launch alongside Funnel A for A/B comparison
+
+<Info>
+**Time to launch:** 1-2 weeks depending on complexity
+</Info>
+
+---
+
+## Running Both Funnels
+
+### Why Test Both?
+
+Running Funnel A and Funnel B simultaneously gives you data to make informed decisions:
+
+| Metric | What It Tells You |
+|--------|-------------------|
+| **Conversion rate** | Does brand consistency matter to your customers? |
+| **Bounce rate** | Are visitors confused by different aesthetics? |
+| **Time on page** | Which layout keeps attention longer? |
+| **AOV** | Does one approach drive larger carts? |
+| **Creator feedback** | Which version do partners prefer to share? |
+
+### Test Structure
+
+```
+Creator Cohort A (10 partners)
+  └── Funnel A: Out-of-the-box sections
+  
+Creator Cohort B (10 partners)
+  └── Funnel B: Theme-native sections
+  
+Run for: 30 days
+Primary metric: Conversion rate
+Secondary: AOV, creator satisfaction
+```
+
+### Decision Framework
+
+After 30 days of data:
+
+- **Funnel A wins significantly** → Stick with out-of-the-box, invest in customizing those sections
+- **Funnel B wins significantly** → Commit to theme-native approach, convert more sections
+- **Results are similar** → Choose based on maintenance burden and team preference
+- **Both underperform** → Review landing page content, not just design
+
+---
+
+## What Each Funnel Needs
+
+### Minimum Viable Funnel
+
+Both approaches need these core elements:
+
+<Steps>
+  <Step title="Creator Hero">
+    Above-the-fold introduction with photo, name, and value prop
+  </Step>
+  <Step title="Product Showcase">
+    Creator's recommended products with clear pricing
+  </Step>
+  <Step title="Discount Visibility">
+    Code prominently displayed, savings calculated
+  </Step>
+  <Step title="Clear CTA">
+    "Shop [Creator]'s Picks" or similar action
+  </Step>
+</Steps>
+
+### Nice-to-Have Elements
+
+- Creator video or UGC content
+- "Why I love this" product quotes
+- Social proof (follower count, credentials)
+- Email capture with creator context
+- Exit-intent discount reminder
+
+---
+
+## Next Steps
+
+Once you've validated with your first two funnels:
+
+<CardGroup cols={2}>
+  <Card title="Scale What Works" icon="arrow-up-right-dots" href="/guides/collab-strategy/scaling-your-program">
+    Roll out the winning approach to all partners
+  </Card>
+  <Card title="Technical Implementation" icon="code" href="/guides/dev/base-funnels/overview">
+    Detailed developer guides for both approaches
+  </Card>
+</CardGroup>

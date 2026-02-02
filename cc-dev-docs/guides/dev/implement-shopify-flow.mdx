@@ -1,0 +1,397 @@
+---
+title: 'Implement a Shopify Flow'
+description: 'Use CreatorCommerce triggers and actions in Shopify Flow to automate partner management, tier upgrades, and notifications.'
+---
+
+## Overview
+
+CreatorCommerce integrates with Shopify Flow, providing:
+
+- **Triggers** — Events that start workflows (order attributed, partner created, etc.)
+- **Actions** — Operations to perform (update tier, send notification, etc.)
+- **Conditions** — Check CC-specific data before taking action
+
+---
+
+## Available CC Triggers
+
+| Trigger | Fires When |
+|---------|------------|
+| `CC Order Attributed` | An order is attributed to a partner |
+| `CC Partner Created` | A new partner/collab is created |
+| `CC Partner Activated` | A partner activates their page |
+| `CC Tier Changed` | A partner's tier changes |
+| `CC Drop Created` | A partner creates a new drop |
+| `CC Partner Milestone` | Partner hits a custom milestone |
+
+### Trigger Data Available
+
+**CC Order Attributed:**
+```json
+{
+  "order": { /* Shopify order object */ },
+  "partner": {
+    "id": "creator_123",
+    "handle": "sarah-jones",
+    "firstName": "Sarah",
+    "lastName": "Jones",
+    "email": "sarah@example.com",
+    "tier": "gold"
+  },
+  "attribution": {
+    "discountCode": "SARAH15",
+    "commissionAmount": 15.00,
+    "orderValue": 150.00
+  }
+}
+```
+
+**CC Partner Created:**
+```json
+{
+  "partner": {
+    "id": "creator_123",
+    "handle": "sarah-jones",
+    "firstName": "Sarah",
+    "lastName": "Jones",
+    "email": "sarah@example.com",
+    "tier": "starter",
+    "createdAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+---
+
+## Available CC Actions
+
+| Action | What It Does |
+|--------|--------------|
+| `Update Partner Tier` | Changes a partner's tier |
+| `Send Partner Email` | Emails the partner |
+| `Update Partner Field` | Updates custom field value |
+| `Create Partner Notification` | Creates in-dashboard notification |
+| `Tag Partner` | Adds tags to partner profile |
+
+---
+
+## Common Workflow Examples
+
+### Auto-Upgrade Tier on Revenue Milestone
+
+**Goal:** Upgrade partner to Gold tier when they hit $5,000 in attributed revenue.
+
+```
+Trigger: CC Order Attributed
+  ↓
+Condition: Partner tier is "Silver" AND Partner total revenue >= $5,000
+  ↓
+Action: Update Partner Tier → "Gold"
+  ↓
+Action: Send Partner Email → "Congratulations on Gold!"
+```
+
+**Flow Configuration:**
+
+```yaml
+trigger:
+  type: cc_order_attributed
+  
+conditions:
+  - field: partner.tier
+    operator: equals
+    value: silver
+  - field: partner.metrics.totalRevenue
+    operator: greater_than_or_equal
+    value: 5000
+    
+actions:
+  - type: cc_update_partner_tier
+    tier: gold
+    
+  - type: cc_send_partner_email
+    template: tier_upgrade_gold
+    subject: "🎉 You've reached Gold status!"
+```
+
+### Welcome New Partners
+
+**Goal:** Send welcome email and Slack notification when partner is created.
+
+```
+Trigger: CC Partner Created
+  ↓
+Action: Send Partner Email → Welcome template
+  ↓
+Action: Send Slack Message → #partnerships channel
+  ↓
+Action: Create Partner Notification → "Welcome! Complete your profile"
+```
+
+**Flow Configuration:**
+
+```yaml
+trigger:
+  type: cc_partner_created
+  
+actions:
+  - type: cc_send_partner_email
+    template: welcome_new_partner
+    subject: "Welcome to the partner program!"
+    
+  - type: send_slack_message
+    channel: partnerships
+    message: "New partner joined: {{ partner.firstName }} {{ partner.lastName }} ({{ partner.email }})"
+    
+  - type: cc_create_partner_notification
+    title: "Welcome to the program!"
+    body: "Complete your profile to unlock your personalized page."
+    action_url: "/dashboard/profile"
+```
+
+### Partner Activation Follow-up
+
+**Goal:** Notify team when partner activates, schedule review task.
+
+```
+Trigger: CC Partner Activated
+  ↓
+Action: Send Slack Message → Review needed
+  ↓
+Action: Create Asana Task → Review partner page
+  ↓
+Wait: 3 days
+  ↓
+Condition: Partner has zero orders
+  ↓
+Action: Send Partner Email → Tips to drive traffic
+```
+
+### High-Value Order Alert
+
+**Goal:** Alert team when a partner drives a $500+ order.
+
+```
+Trigger: CC Order Attributed
+  ↓
+Condition: Order value >= $500
+  ↓
+Action: Send Slack Message → #big-wins channel
+  ↓
+Action: Tag Partner → "high-value-driver"
+```
+
+---
+
+## Building Flows in Shopify Admin
+
+### Step 1: Access Shopify Flow
+
+1. Go to Shopify Admin → Apps → Flow
+2. Click "Create workflow"
+3. Choose a trigger
+
+### Step 2: Select CC Trigger
+
+Search for "CreatorCommerce" in the trigger list:
+
+1. Select your desired trigger (e.g., "CC Order Attributed")
+2. Configure any trigger filters if needed
+
+### Step 3: Add Conditions
+
+Click "+" → "Condition" to add logic:
+
+```
+If partner.tier equals "starter"
+AND attribution.orderValue >= 100
+```
+
+### Step 4: Add Actions
+
+Click "+" → "Action" to add operations:
+
+1. Search for "CreatorCommerce" actions
+2. Configure action parameters
+3. Use dynamic values from trigger data
+
+---
+
+## Custom Flow Actions via HTTP
+
+For actions not built-in, use the HTTP Request action:
+
+### Update External CRM
+
+```yaml
+action:
+  type: send_http_request
+  method: POST
+  url: https://api.hubspot.com/contacts/v1/contact/email/{{ partner.email }}/profile
+  headers:
+    Authorization: Bearer {{ secrets.HUBSPOT_API_KEY }}
+    Content-Type: application/json
+  body: |
+    {
+      "properties": [
+        { "property": "cc_tier", "value": "{{ partner.tier }}" },
+        { "property": "cc_total_orders", "value": "{{ partner.metrics.totalOrders }}" }
+      ]
+    }
+```
+
+### Trigger Zapier Webhook
+
+```yaml
+action:
+  type: send_http_request
+  method: POST
+  url: https://hooks.zapier.com/hooks/catch/123456/abcdef/
+  body: |
+    {
+      "event": "partner_milestone",
+      "partner_email": "{{ partner.email }}",
+      "milestone": "first_order",
+      "order_value": {{ attribution.orderValue }}
+    }
+```
+
+---
+
+## Liquid Templates in Flow Emails
+
+### Email Action with Dynamic Content
+
+```yaml
+action:
+  type: cc_send_partner_email
+  subject: "Great news, {{ partner.firstName }}!"
+  template_id: flow_milestone_email
+  template_data:
+    partner_name: "{{ partner.firstName }}"
+    order_value: "{{ attribution.orderValue | money }}"
+    commission: "{{ attribution.commissionAmount | money }}"
+    total_revenue: "{{ partner.metrics.totalRevenue | money }}"
+```
+
+### Custom Email Body
+
+```liquid
+Hey {{ partner.firstName }},
+
+Congratulations! You just drove a {{ order.total_price | money }} order.
+
+Your commission: {{ attribution.commissionAmount | money }}
+
+Your total earnings this month: {{ partner.metrics.monthlyRevenue | money }}
+
+Keep up the great work!
+
+— The {{ shop.name }} Team
+```
+
+---
+
+## Flow Templates for CC
+
+### Tiered Commission Structure
+
+```yaml
+# Automatically adjust commission based on performance
+trigger: cc_partner_milestone
+conditions:
+  - milestone.type: "monthly_revenue"
+  
+branches:
+  - if: milestone.value >= 10000
+    actions:
+      - type: cc_update_partner_field
+        field: commission_rate
+        value: 0.25
+      - type: cc_update_partner_tier
+        tier: platinum
+        
+  - if: milestone.value >= 5000
+    actions:
+      - type: cc_update_partner_field
+        field: commission_rate
+        value: 0.20
+      - type: cc_update_partner_tier
+        tier: gold
+        
+  - if: milestone.value >= 1000
+    actions:
+      - type: cc_update_partner_field
+        field: commission_rate
+        value: 0.15
+      - type: cc_update_partner_tier
+        tier: silver
+```
+
+### Dormant Partner Re-engagement
+
+```yaml
+trigger: scheduled
+schedule: weekly
+  
+query:
+  type: cc_partners
+  conditions:
+    - tier: not_equal "inactive"
+    - last_order_date: older_than "30 days"
+    
+for_each: partner
+actions:
+  - type: cc_send_partner_email
+    template: reengagement_nudge
+    
+  - wait: 14 days
+  
+  - condition:
+      partner.orders_in_last_30_days: 0
+    action:
+      type: cc_update_partner_tier
+      tier: inactive
+```
+
+---
+
+## Debugging Flows
+
+### View Flow Run History
+
+1. Go to Shopify Admin → Apps → Flow
+2. Select your workflow
+3. Click "Runs" tab
+4. Inspect individual run details
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Trigger not firing | Verify CC webhook is configured |
+| Condition always false | Check data types (string vs number) |
+| Action failing | Check API credentials and permissions |
+| Email not sending | Verify partner email is valid |
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Access Shopify Flow in admin
+  - [ ] Create welcome flow for new partners
+  - [ ] Create tier upgrade automation
+  - [ ] Create high-value order alerts
+  - [ ] Test flows with test partners
+  - [ ] Monitor flow run history
+  - [ ] Set up error notifications
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Shopify Flow Overview](/guides/shopify-flow-overview) — Flow basics
+- [CC Flow Templates](/templates/flow) — Pre-built templates
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API integration

@@ -1,0 +1,382 @@
+---
+title: 'Create a Co-branded Email Sync'
+description: 'Sync creator data to Klaviyo, Mailchimp, or custom email platforms for personalized co-branded email campaigns.'
+---
+
+## Overview
+
+Co-branded emails drive 2-3x higher engagement than generic campaigns. This guide covers:
+
+- Syncing creator data to email platforms
+- Setting up dynamic content blocks
+- Triggering automated co-branded flows
+- Tracking attribution back to CC
+
+---
+
+## Klaviyo Integration
+
+### Data Sync Flow
+
+```
+CreatorCommerce → Klaviyo Profile Properties → Flow Triggers → Co-branded Emails
+```
+
+### Syncing Creator to Klaviyo Profile
+
+When a customer lands on a creator page, sync their creator context:
+
+```javascript
+// In your theme JavaScript
+async function syncToKlaviyo(creatorData, customerEmail) {
+  const klaviyoPayload = {
+    token: 'YOUR_KLAVIYO_PUBLIC_KEY',
+    properties: {
+      $email: customerEmail,
+      // CC-specific properties
+      cc_creator_handle: creatorData.handle,
+      cc_creator_name: creatorData.firstName + ' ' + creatorData.lastName,
+      cc_discount_code: creatorData.discountCode,
+      cc_discount_amount: creatorData.discountAmount,
+      cc_creator_profile_photo: creatorData.profilePhoto,
+      cc_landing_page_url: window.location.href,
+      cc_landing_timestamp: new Date().toISOString()
+    }
+  };
+  
+  await fetch('https://a.klaviyo.com/api/identify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(klaviyoPayload)
+  });
+}
+```
+
+### Liquid-based Klaviyo Tracking
+
+```liquid
+{% comment %} snippets/cc-klaviyo-sync.liquid {% endcomment %}
+
+{% if cc_creator %}
+<script>
+  // Wait for Klaviyo to load
+  var _learnq = _learnq || [];
+  
+  _learnq.push(['identify', {
+    'cc_creator_handle': {{ cc_creator.handle | json }},
+    'cc_creator_name': {{ cc_creator.cc-creator-first-name | json }},
+    'cc_discount_code': {{ cc_creator.cc-collab-discount-code | json }},
+    'cc_discount_amount': {{ cc_creator.cc-collab-discount-amount | json }},
+    'cc_creator_image': {{ cc_creator.data.value.cc-creator-profile-picture | json }}
+  }]);
+  
+  // Track co-branded page view
+  _learnq.push(['track', 'CC Creator Page View', {
+    'creator_handle': {{ cc_creator.handle | json }},
+    'creator_name': {{ cc_creator.cc-creator-first-name | json }},
+    'page_url': window.location.href
+  }]);
+</script>
+{% endif %}
+```
+
+### Klaviyo Flow Trigger
+
+Create a flow triggered by `CC Creator Page View`:
+
+```json
+{
+  "trigger": {
+    "type": "metric",
+    "metric_name": "CC Creator Page View"
+  },
+  "filters": [
+    {
+      "property": "$value.creator_handle",
+      "operator": "is not empty"
+    }
+  ]
+}
+```
+
+### Dynamic Email Content in Klaviyo
+
+```html
+<!-- In Klaviyo email template -->
+{% if person|lookup:'cc_creator_name' %}
+  <div class="creator-block">
+    <img src="{{ person.cc_creator_image }}" alt="{{ person.cc_creator_name }}" />
+    <h2>{{ person.cc_creator_name }}'s Picks for You</h2>
+    <p>
+      Use code <strong>{{ person.cc_discount_code }}</strong> 
+      for {{ person.cc_discount_amount }}% off!
+    </p>
+  </div>
+{% else %}
+  <div class="generic-block">
+    <h2>Featured Products</h2>
+  </div>
+{% endif %}
+```
+
+---
+
+## CC-Specific Klaviyo Events
+
+### Track Product Added from Creator Page
+
+```javascript
+function trackCreatorAddToCart(product, creator) {
+  _learnq.push(['track', 'CC Add to Cart', {
+    'ProductName': product.title,
+    'ProductID': product.id,
+    'Price': product.price,
+    'CreatorHandle': creator.handle,
+    'CreatorName': creator.firstName,
+    'DiscountCode': creator.discountCode
+  }]);
+}
+```
+
+### Track Checkout Started with Creator Context
+
+```javascript
+function trackCreatorCheckoutStarted(cart, creator) {
+  _learnq.push(['track', 'CC Checkout Started', {
+    'ItemCount': cart.item_count,
+    'TotalPrice': cart.total_price / 100,
+    'CreatorHandle': creator.handle,
+    'CreatorName': creator.firstName,
+    'DiscountCode': creator.discountCode,
+    'Items': cart.items.map(item => ({
+      'ProductID': item.product_id,
+      'ProductName': item.title,
+      'Quantity': item.quantity,
+      'Price': item.price / 100
+    }))
+  }]);
+}
+```
+
+---
+
+## Automated Co-branded Flows
+
+### Cart Abandonment with Creator Context
+
+**Flow Trigger:** Checkout Started but not Checkout Completed (48 hours)
+
+**Email 1 (4 hours):**
+```html
+<h1>Hey {{ first_name }}, you left something behind!</h1>
+
+{% if person|lookup:'cc_creator_name' %}
+  <div class="creator-nudge">
+    <img src="{{ person.cc_creator_image }}" alt="" />
+    <p>
+      <strong>{{ person.cc_creator_name }}</strong> handpicked these items for you.
+      Don't forget your exclusive code: <strong>{{ person.cc_discount_code }}</strong>
+    </p>
+  </div>
+{% endif %}
+
+<!-- Cart contents -->
+{% for item in event.Items %}
+  <div class="cart-item">
+    <img src="{{ item.ImageURL }}" alt="{{ item.ProductName }}" />
+    <p>{{ item.ProductName }}</p>
+  </div>
+{% endfor %}
+
+<a href="{{ event.CheckoutURL }}" class="cta-btn">Complete Your Order</a>
+```
+
+### Post-Purchase Thank You
+
+**Flow Trigger:** Order Placed
+
+```html
+<h1>Thank you for your order, {{ first_name }}!</h1>
+
+{% if person|lookup:'cc_creator_name' %}
+  <div class="creator-thanks">
+    <img src="{{ person.cc_creator_image }}" alt="" />
+    <p>
+      Thanks for shopping through <strong>{{ person.cc_creator_name }}</strong>'s page!
+      Keep following them for more picks.
+    </p>
+    <a href="{{ person.cc_landing_page_url }}">Visit Their Page Again</a>
+  </div>
+{% endif %}
+```
+
+### Win-Back with Creator Re-engagement
+
+**Flow Trigger:** Has not ordered in 60 days + Has CC creator context
+
+```html
+<h1>We miss you, {{ first_name }}!</h1>
+
+{% if person|lookup:'cc_creator_name' %}
+  <p>
+    {{ person.cc_creator_name }} has new recommendations for you.
+    Your code <strong>{{ person.cc_discount_code }}</strong> is still active!
+  </p>
+  <a href="{{ person.cc_landing_page_url }}">See What's New</a>
+{% endif %}
+```
+
+---
+
+## Custom Email Platform Integration
+
+### Webhook to Email Platform
+
+```javascript
+// Express webhook handler
+router.post('/webhooks/cc-to-email', async (req, res) => {
+  const { event, data } = req.body;
+  
+  switch (event) {
+    case 'collab.created':
+      // Sync new partner to email platform
+      await emailPlatform.upsertContact({
+        email: data.creator.email,
+        tags: ['cc-partner'],
+        customFields: {
+          cc_creator_handle: data.creator.handle,
+          cc_tier: data.collab.tier
+        }
+      });
+      break;
+      
+    case 'order.attributed':
+      // Update customer profile with creator context
+      await emailPlatform.upsertContact({
+        email: data.customerEmail,
+        customFields: {
+          cc_last_creator_handle: data.creatorHandle,
+          cc_last_creator_name: data.creatorName,
+          cc_total_orders: data.totalOrders
+        }
+      });
+      break;
+  }
+  
+  res.status(200).send('OK');
+});
+```
+
+### Mailchimp Merge Tags
+
+```javascript
+async function syncToMailchimp(customer, creator) {
+  const mailchimp = require('@mailchimp/mailchimp_marketing');
+  
+  mailchimp.setConfig({
+    apiKey: process.env.MAILCHIMP_API_KEY,
+    server: process.env.MAILCHIMP_SERVER_PREFIX
+  });
+  
+  await mailchimp.lists.setListMember(
+    process.env.MAILCHIMP_LIST_ID,
+    crypto.createHash('md5').update(customer.email.toLowerCase()).digest('hex'),
+    {
+      email_address: customer.email,
+      merge_fields: {
+        FNAME: customer.firstName,
+        CC_CREATOR: creator.firstName,
+        CC_HANDLE: creator.handle,
+        CC_DISCOUNT: creator.discountCode,
+        CC_AMOUNT: creator.discountAmount.toString()
+      },
+      tags: ['cc-customer', `cc-${creator.tier}`]
+    }
+  );
+}
+```
+
+---
+
+## Email Template Snippets
+
+### Creator Header Block
+
+```html
+<!-- Reusable creator header for any email -->
+<table class="creator-header" style="width: 100%; margin-bottom: 24px;">
+  <tr>
+    <td style="width: 60px; vertical-align: top;">
+      <img 
+        src="{{ person.cc_creator_image }}" 
+        alt="{{ person.cc_creator_name }}"
+        style="width: 60px; height: 60px; border-radius: 50%;"
+      />
+    </td>
+    <td style="padding-left: 16px; vertical-align: middle;">
+      <p style="margin: 0; font-weight: bold; font-size: 16px;">
+        Recommended by {{ person.cc_creator_name }}
+      </p>
+      <p style="margin: 4px 0 0; color: #666; font-size: 14px;">
+        Use code <strong>{{ person.cc_discount_code }}</strong> for {{ person.cc_discount_amount }}% off
+      </p>
+    </td>
+  </tr>
+</table>
+```
+
+### Creator CTA Button
+
+```html
+<a href="{{ person.cc_landing_page_url }}" 
+   style="display: inline-block; background: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px;">
+  Shop {{ person.cc_creator_name }}'s Picks
+</a>
+```
+
+---
+
+## Testing & Debugging
+
+### Verify Sync is Working
+
+```javascript
+// In browser console on creator page
+console.log('Klaviyo queue:', window._learnq);
+
+// Check if identify was called
+fetch('https://a.klaviyo.com/api/v2/list/LIST_ID/members?api_key=YOUR_KEY')
+  .then(r => r.json())
+  .then(data => console.log('Members:', data));
+```
+
+### Preview Dynamic Content
+
+In Klaviyo:
+1. Go to Templates → Edit template
+2. Click "Preview" 
+3. Select a profile with `cc_creator_handle` populated
+4. Verify dynamic content renders correctly
+
+---
+
+## Quick Start Checklist
+
+<Checklist>
+  - [ ] Add CC tracking snippet to creator landing pages
+  - [ ] Configure Klaviyo identify calls with CC properties
+  - [ ] Create custom Klaviyo events for CC actions
+  - [ ] Build cart abandonment flow with creator context
+  - [ ] Build post-purchase flow with creator thanks
+  - [ ] Create win-back flow using creator re-engagement
+  - [ ] Test dynamic content with real profile data
+  - [ ] Monitor attribution back to creators
+</Checklist>
+
+---
+
+## Related Resources
+
+- [Klaviyo Events Reference](/references/klaviyo-events) — All CC Klaviyo events
+- [Testing & Retention Strategies](/guides/collab-strategy/optimize) — Email optimization
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API integration

@@ -1,0 +1,43 @@
+---
+title: 'Co-branded Landing Pages'
+description: 'Personalized landing pages for each creator—featuring their photo, bio, product picks, and exclusive discount.'
+---
+
+## What It Is
+
+Every creator gets a unique landing page on your Shopify store that showcases their personal brand alongside yours. These pages are the entry point for co-branded shopping experiences.
+
+## Key Capabilities
+
+- **Dynamic creator content** — Name, photo, bio, social links
+- **Curated product displays** — Creator's handpicked "drops"
+- **Discount callouts** — Prominent code and savings display
+- **Brand-matched theming** — Creator colors within your design system
+- **Full Liquid control** — Build any layout with standard Shopify templating
+
+## How It Works
+
+```liquid
+{% assign cc_creator = metaobject %}
+
+<section class="creator-hero">
+  <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 400 }}" />
+  <h1>{{ cc_creator.cc-creator-first-name }}'s Picks</h1>
+  <p>{{ cc_creator.cc-creator-shop-description }}</p>
+  <span class="discount">{{ cc_creator.cc-collab-discount-amount }}% OFF with {{ cc_creator.cc-collab-discount-code }}</span>
+</section>
+```
+
+## Use Cases
+
+| Scenario | Implementation |
+|----------|----------------|
+| Influencer storefronts | Full hero + product grid + testimonial |
+| Affiliate link destinations | Focused product cards + discount CTA |
+| Professional endorsements | Credential-forward with featured products |
+| Ambassador programs | Community showcase with social proof |
+
+## Related
+
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme)
+- [Designing Storefronts by Persona](/guides/collab-strategy/co-branded-storefronts)
