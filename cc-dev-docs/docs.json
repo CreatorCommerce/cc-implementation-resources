@@ -672,5 +672,11 @@
       ]
   },
   "description": "Access technical docs and AI resources for implementing co-branded commerce accross your brand. Build for Shopify storefronts.",
-  "favicon": "/images/67c504a629e1808cd4f400d0_favicon-feb.png"
+  "favicon": "/images/67c504a629e1808cd4f400d0_favicon-feb.png",
+  "footer": {
+    "socials": {
+      "github": "https://github.com/CreatorCommerce/cc-implementation-resources",
+      "youtube": "https://www.youtube.com/@creator_shops"
+    }
+  }
 }
