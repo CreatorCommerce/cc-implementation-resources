@@ -1,0 +1,226 @@
+---
+title: 'Build with AI'
+description: 'Platforms + AI = superpowers. Design for the new era of development.'
+---
+
+AI is changing how we build software. But AI alone isn't the answer—AI combined with good platforms is.
+
+When you build on CreatorCommerce, you're not just using a platform. You're positioning yourself to leverage AI maximally.
+
+## Why Platform + AI > Just AI
+
+AI can write code. But AI writing code against a messy, custom infrastructure is like a brilliant architect working with unstable materials.
+
+**AI struggles with:**
+- Custom authentication schemes
+- Unique database schemas
+- Proprietary API patterns
+- Undocumented conventions
+
+**AI excels with:**
+- Standardized data models
+- Well-documented APIs
+- Consistent patterns
+- Clear conventions
+
+CreatorCommerce provides exactly what AI needs to help you effectively.
+
+## Practical AI Workflows
+
+### 1. Generate Templates from Requirements
+
+With a standardized platform, AI can generate working code:
+
+**You:** "Create a partner landing page with their photo, bio, top 4 products, and discount code"
+
+**AI generates:**
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign products = cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products | slice: 0, 4
+%}
+
+<section class="cc-partner-landing">
+  <div class="cc-hero">
+    {% if cc_creator.cc-creator-profile-picture %}
+      <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 300 }}" 
+           alt="{{ cc_creator.cc-creator-first-name }}" />
+    {% endif %}
+    
+    <h1>{{ cc_creator.cc-creator-first-name }}'s Shop</h1>
+    
+    {% if cc_creator.cc-creator-bio %}
+      <p class="cc-bio">{{ cc_creator.cc-creator-bio }}</p>
+    {% endif %}
+    
+    {% if cc_creator.cc-collab-discount-code %}
+      <div class="cc-discount">
+        Use <strong>{{ cc_creator.cc-collab-discount-code }}</strong> 
+        for {{ cc_creator.cc-collab-discount-amount }} off
+      </div>
+    {% endif %}
+  </div>
+  
+  <div class="cc-products">
+    <h2>{{ cc_creator.cc-creator-first-name }}'s Picks</h2>
+    <div class="cc-grid">
+      {% for product_data in products %}
+        {% assign product = all_products[product_data.handle] %}
+        {% render 'product-card', product: product %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+```
+
+This works because AI knows the CreatorCommerce data model.
+
+### 2. Iterate on Designs
+
+AI can rapidly iterate visual approaches:
+
+**You:** "Make this section feel more premium and professional"
+
+**AI adjusts:**
+- Typography scale
+- Spacing rhythm
+- Color relationships
+- Animation timing
+
+Each iteration takes seconds, not hours.
+
+### 3. Debug and Optimize
+
+AI understands platform conventions, so it can spot issues:
+
+**You:** "Why isn't the discount showing?"
+
+**AI:** "Check if `cc-collab-discount-code` is populated in the metaobject. The conditional on line 15 requires a non-blank value."
+
+### 4. Generate Variations
+
+Need to test different approaches?
+
+**You:** "Create 5 variations of this hero section for A/B testing"
+
+AI generates variants with different:
+- Layouts
+- Copy approaches
+- Visual hierarchies
+- Call-to-action placements
+
+### 5. Document Your Work
+
+AI can document as you build:
+
+**You:** "Document how this template works"
+
+**AI generates:** Clear comments, README updates, and usage guides.
+
+## Designing for AI Collaboration
+
+### Use Consistent Patterns
+
+AI learns patterns. Use them consistently:
+
+```liquid
+{% comment %} 
+  Always structure creator access the same way
+  AI will recognize and replicate this pattern
+{% endcomment %}
+
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+```
+
+### Name Things Clearly
+
+AI works better with descriptive names:
+
+```liquid
+{% comment %} Good: AI understands intent {% endcomment %}
+{% assign partner_discount_display = cc_creator.cc-collab-discount-amount %}
+
+{% comment %} Bad: AI has to guess {% endcomment %}
+{% assign d = cc_creator.cc-collab-discount-amount %}
+```
+
+### Keep Components Focused
+
+Single-purpose components are easier for AI to work with:
+
+```liquid
+{% comment %} 
+  Good: Clear, focused component
+  AI can understand and modify easily
+{% endcomment %}
+{% render 'cc-partner-avatar', creator: cc_creator, size: 'large' %}
+
+{% comment %} 
+  Bad: Complex, multi-purpose component
+  AI struggles to understand all behaviors
+{% endcomment %}
+{% render 'super-component', mode: 'avatar', options: complex_options %}
+```
+
+### Document Your Intentions
+
+Comments help AI understand context:
+
+```liquid
+{% comment %} 
+  This section displays partner's curated products.
+  Products come from the first drop in their collection.
+  We show max 8 products, with lazy loading after 4.
+  
+  Note: Products should have images min 400x400px.
+{% endcomment %}
+```
+
+## The AI-Augmented Developer
+
+Building with AI doesn't replace your skills—it amplifies them:
+
+| Your Expertise | AI Amplification |
+|----------------|------------------|
+| UX intuition | Rapid implementation of ideas |
+| Brand understanding | Consistent code generation |
+| User empathy | More time for research |
+| Quality standards | Faster iteration to meet them |
+
+You still make the important decisions. AI handles the implementation details.
+
+## The MCP Connection
+
+CreatorCommerce documentation is available via MCP (Model Context Protocol). AI assistants can:
+
+- Query our documentation
+- Understand our data models
+- Generate correct code patterns
+- Answer implementation questions
+
+```json
+{
+  "mcpServers": {
+    "creatorcommerce": {
+      "url": "https://creatorcommerce.dev/mcp"
+    }
+  }
+}
+```
+
+This means your AI assistant already knows how to build on CreatorCommerce.
+
+## Future-Proofing Your Work
+
+The developers who thrive with AI are those who:
+
+1. **Use standardized platforms** — AI can help effectively
+2. **Write clean, documented code** — AI can understand and extend
+3. **Focus on high-level decisions** — Let AI handle implementation
+4. **Iterate rapidly** — Leverage AI speed for more experiments
+
+**Platforms + AI is the new stack. CreatorCommerce is designed for it.**

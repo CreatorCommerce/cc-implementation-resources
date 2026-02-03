@@ -1,0 +1,59 @@
+---
+title: 'Co-branded Email Data Flow'
+description: 'Understand how creator data flows from your store to email platforms for personalized messaging.'
+---
+
+## The Data Flow
+
+```
+Customer lands on creator page
+         ↓
+CC captures creator context
+         ↓
+Context synced to email platform
+         ↓
+Profile enriched with creator data
+         ↓
+Flows triggered with personalization
+         ↓
+Co-branded emails sent
+```
+
+## What Gets Synced
+
+| Data Point | Source | Destination |
+|------------|--------|-------------|
+| Creator handle | Cart attributes | Profile property |
+| Creator name | CC metaobject | Profile property |
+| Discount code | Collab data | Profile property |
+| Discount amount | Collab data | Profile property |
+| Profile photo URL | Creator data | Profile property |
+| Landing page URL | Session | Profile property |
+
+## Sync Triggers
+
+| Event | What Happens |
+|-------|--------------|
+| **Page view** | Creator context captured |
+| **Identify** | Profile created/updated with CC data |
+| **Add to cart** | Event includes creator context |
+| **Checkout** | Full attribution passed |
+| **Purchase** | Order linked to creator |
+
+## Profile Properties Set
+
+```json
+{
+  "cc_creator_handle": "sarah-jones",
+  "cc_creator_name": "Sarah Jones",
+  "cc_discount_code": "SARAH15",
+  "cc_discount_amount": "15",
+  "cc_creator_image": "https://cdn.../profile.jpg",
+  "cc_landing_url": "https://store.com/pages/creators/sarah-jones",
+  "cc_landing_time": "2024-01-15T10:30:00Z"
+}
+```
+
+## Using in Emails
+
+Access these properties in your email templates for personalization. Each platform has its own syntax—see platform-specific guides.

@@ -1,0 +1,44 @@
+---
+title: 'Destinations Explained'
+description: 'Understand CC Destinations—the feature that routes traffic to personalized co-branded funnels.'
+---
+
+## What is a Destination?
+
+A **Destination** is where you send traffic for a co-branded experience. When a creator shares their link, customers land on their personalized destination.
+
+## Destination Types
+
+| Type | URL Pattern | Use Case |
+|------|-------------|----------|
+| **Creator Page** | `/pages/creators/sarah-jones` | Dedicated landing page |
+| **Collection** | `/collections/sarahs-picks` | Product collection |
+| **Product** | `/products/serum?ref=sarah` | Direct product link |
+| **Custom** | `/shop/sarah` | Custom routing |
+
+## How Destinations Work
+
+```
+Creator shares link → Customer clicks → CC resolves creator
+       ↓                    ↓                   ↓
+  Unique URL          Landing page         Personalized UI
+```
+
+## Creating Destinations
+
+Destinations are automatically created when you:
+
+1. Create a collab in CreatorCommerce
+2. The creator's metaobject generates a page
+3. Their unique handle becomes the URL
+
+## Linking to Destinations
+
+Creators can link to any page and append their handle:
+
+```
+yourbrand.com/collections/all?ref=sarah-jones
+yourbrand.com/products/best-seller?ref=sarah-jones
+```
+
+CC tracks the referral and personalizes the experience.

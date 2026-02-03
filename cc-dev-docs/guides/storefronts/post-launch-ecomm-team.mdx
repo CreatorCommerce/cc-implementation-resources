@@ -1,0 +1,57 @@
+---
+title: 'Post-Launch: What Your eComm Team Should Know'
+description: 'Key information for your eCommerce team after launching co-branded experiences.'
+---
+
+## What Changed
+
+Your store now has:
+- Creator landing pages at `/pages/creators/[handle]`
+- Personalized UI when customers shop via creator links
+- Automatic discount application
+- Order attribution to creators
+
+## Managing Creators
+
+| Task | Where |
+|------|-------|
+| Add new creator | CreatorCommerce app |
+| Edit creator info | CC app or metaobjects |
+| Disable a creator | Set status to inactive in CC |
+| View performance | CC dashboard |
+
+## Order Attribution
+
+Orders from creator traffic are tagged:
+- `cc-attributed`
+- `cc-creator:[handle]`
+- `cc-discount:[code]`
+
+Filter orders in Shopify Admin using these tags.
+
+## Discount Codes
+
+Creator discount codes are managed in CC and synced to Shopify. Don't manually edit or delete CC-created discount codes.
+
+## Theme Considerations
+
+- CC sections may appear on landing pages
+- Some sections conditionally show creator content
+- Test theme updates on a creator page before publishing
+
+## Reporting
+
+- Use CC dashboard for creator-level metrics
+- Use Shopify Analytics for overall store performance
+- Export attributed orders for commission calculations
+
+## Common Questions
+
+**"A creator's page isn't showing their photo"**
+→ Check their profile in CC, ensure image is uploaded
+
+**"Discount isn't applying at checkout"**
+→ Verify code exists in Shopify discounts, check for conflicts
+
+**"Orders aren't being attributed"**
+→ Check cart attributes are being set on landing pages

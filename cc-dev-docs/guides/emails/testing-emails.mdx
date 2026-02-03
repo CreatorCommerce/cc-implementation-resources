@@ -1,0 +1,66 @@
+---
+title: 'Test Co-branded Emails'
+description: 'Verify your co-branded email flows work correctly before going live.'
+---
+
+## Testing Checklist
+
+- [ ] Creator data syncs to profiles
+- [ ] Dynamic content renders correctly
+- [ ] Fallbacks work when no creator context
+- [ ] Images load properly
+- [ ] Links include correct attribution
+- [ ] Flows trigger at right moments
+
+## Step 1: Seed a Test Profile
+
+Visit a creator landing page while identified:
+
+```javascript
+// In browser console on creator page
+_learnq.push(['identify', { '$email': 'test@yourdomain.com' }]);
+```
+
+## Step 2: Verify Profile Properties
+
+In Klaviyo:
+1. Go to Profiles
+2. Search for your test email
+3. Check Custom Properties section
+4. Confirm `cc_creator_*` properties exist
+
+## Step 3: Preview Emails
+
+In your email platform:
+1. Open the email template
+2. Select your test profile for preview
+3. Verify dynamic content renders
+4. Check both creator and non-creator states
+
+## Step 4: Test Flow Triggers
+
+Trigger the flow manually or via test events:
+
+| Flow | How to Trigger |
+|------|----------------|
+| Cart abandonment | Add to cart, wait |
+| Post-purchase | Place test order |
+| Welcome | Subscribe via form |
+| Browse abandonment | View products, leave |
+
+## Step 5: Send Test Email
+
+Use your platform's "Send Test" feature to yourself. Check:
+- Subject line personalization
+- Creator content blocks
+- Image loading
+- Link tracking
+
+## Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Properties missing | Check tracking snippet is firing |
+| Images broken | Verify image URLs are absolute |
+| Wrong creator showing | Clear profile, re-test |
+| Fallback showing when shouldn't | Check property names match |

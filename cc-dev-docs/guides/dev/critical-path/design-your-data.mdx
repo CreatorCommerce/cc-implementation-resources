@@ -1,0 +1,217 @@
+---
+title: 'Design Your Data'
+description: 'Think deeply about what you want to store—without dreading the backend work to support it.'
+---
+
+Data design is creative work. Deciding what to capture, how to structure it, and how it flows through your system—these are design decisions as important as any visual choice.
+
+But traditionally, every data decision carries implementation burden: schemas, migrations, APIs, validation, security. The dread of backend work suppresses data creativity.
+
+CreatorCommerce removes that dread.
+
+## The Traditional Burden
+
+When you think "I want to store X," your brain immediately calculates:
+
+1. **Schema design** — What's the right data type? Relationships?
+2. **Migration** — How do I add this to production?
+3. **API endpoints** — How will the frontend access this?
+4. **Validation** — How do I ensure data integrity?
+5. **Security** — Who can read/write this?
+6. **Performance** — Will this query be fast enough?
+
+By the time you're done calculating, you've often decided "not worth it" and moved on.
+
+## The CreatorCommerce Approach
+
+With CreatorCommerce, you think about data without backend burden:
+
+### Shopify Metaobjects: Your Database
+
+All CC data lives in Shopify's native metaobject system:
+
+- **No separate database** — Data lives where your store lives
+- **No sync logic** — It's already in Shopify
+- **No backup concerns** — Shopify handles durability
+- **No access control setup** — Uses Shopify's permission model
+- **Automatic API access** — Query via Storefront or Admin API
+
+### Structured Data (Metaobjects)
+
+The platform provides rich data structures:
+
+- **Creator data** — Profile, bio, images, social links
+- **Collab data** — Discount codes, commission rates, tiers
+- **Drop data** — Curated products, collections, featured items
+- **Custom fields** — Whatever you need, added via dashboard
+
+No schema migrations. No API development. Just use it.
+
+### Integrations Auto-Sync
+
+When you update data in CC, it automatically flows to connected platforms:
+
+- **Klaviyo** — Creator profiles sync as contact properties
+- **Attentive** — Customer attribution updates in real-time
+- **Shopify Flow** — Triggers fire on data changes
+- **Your theme** — Liquid templates render the latest data
+
+No webhooks to build. No sync jobs to maintain. No data consistency bugs to debug.
+
+### Accessing Your Data
+
+```liquid
+{% comment %} This just works. No backend required. {% endcomment %}
+
+{% assign creator = metaobjects.creator[cc_handle] %}
+{% assign bio = creator.cc-creator-bio %}
+{% assign drops = creator.data.value.cc-creator-drops %}
+{% assign custom_field = creator.data.value.my-custom-field %}
+```
+
+### Extending With Custom Fields
+
+Need to track something new? Add a custom field:
+
+- Shoe size for fashion influencers
+- Specialty for medical professionals
+- Audience size tier
+- Content format preference
+
+No deployment. No database work. Just add it and use it.
+
+## Think Deeply About Data
+
+With the burden removed, you can think creatively about data:
+
+### What Stories Can You Tell?
+
+Think about data as narrative building blocks:
+
+- **Origin story** — How did this partner discover you?
+- **Journey data** — What's their progression been?
+- **Impact metrics** — How much value have they created?
+- **Relationship depth** — What makes this partnership special?
+
+### What Personalization Can You Enable?
+
+Data enables personalization:
+
+- **Aesthetic preferences** — Color, style, tone
+- **Audience characteristics** — Who follows this partner?
+- **Content strengths** — What type of content do they create?
+- **Product affinities** — What categories resonate with their audience?
+
+### What Automation Can You Power?
+
+The right data enables intelligent automation:
+
+- **Smart defaults** — Pre-populate based on partner type
+- **Dynamic content** — Generate copy from data
+- **Conditional flows** — Different journeys for different segments
+- **AI enhancement** — Let AI work with rich context
+
+## Data Design Principles
+
+### 1. Capture Intent, Not Just Facts
+
+Don't just store what happened. Store why:
+
+| Fact | Intent |
+|------|--------|
+| "Product A selected" | "Partner's top recommendation" |
+| "Created January 2024" | "Early adopter, founding partner" |
+| "Commission rate 15%" | "Premium tier, proven performer" |
+
+### 2. Design for Querying
+
+Think about how you'll use data, not just store it:
+
+```liquid
+{% comment %} 
+  Bad: Partner type stored as free text
+  Hard to query, inconsistent values
+{% endcomment %}
+
+{% comment %} 
+  Good: Partner type as structured field
+  Easy to filter, consistent values
+{% endcomment %}
+
+{% if creator.partner-type == 'professional' %}
+  {% render 'professional-layout' %}
+{% endif %}
+```
+
+### 3. Plan for Evolution
+
+Your data needs will change. Design for extensibility:
+
+- Use custom fields for experimental data
+- Keep core schema stable
+- Version your data structure mentally
+
+### 4. Consider Privacy
+
+Not all data should be stored. Ask:
+
+- Do we need this?
+- How long do we need it?
+- Who should access it?
+- What would partners expect?
+
+## Practical Examples
+
+### Partner Segmentation
+
+```liquid
+{% comment %} Rich segmentation data enables personalized experiences {% endcomment %}
+
+{% assign segment = creator.data.value.partner-segment %}
+{% assign tier = creator.data.value.partner-tier %}
+{% assign persona = creator.data.value.audience-persona %}
+
+{% case segment %}
+  {% when 'health-professional' %}
+    {% render 'health-pro-hero', 
+      credentials: creator.data.value.credentials,
+      specialty: creator.data.value.specialty %}
+  {% when 'lifestyle-influencer' %}
+    {% render 'influencer-hero',
+      aesthetic: creator.data.value.aesthetic-preference %}
+{% endcase %}
+```
+
+### Dynamic Content Generation
+
+```liquid
+{% comment %} Data powers intelligent defaults {% endcomment %}
+
+{% assign products = creator.data.value.cc-creator-drops[0].cc-creator-drop-products %}
+{% assign first_product = products[0] %}
+{% assign partner_style = creator.data.value.content-style %}
+
+<section class="cc-featured" data-style="{{ partner_style }}">
+  <h2>
+    {% if partner_style == 'casual' %}
+      My absolute favorite 🙌
+    {% elsif partner_style == 'professional' %}
+      My top recommendation for patients
+    {% else %}
+      {{ creator.cc-creator-first-name }}'s Pick
+    {% endif %}
+  </h2>
+</section>
+```
+
+## The Freedom to Experiment
+
+When data design is free, you experiment more:
+
+- "What if we tracked aesthetic preferences?"
+- "What if we captured audience demographics?"
+- "What if we stored partner content preferences?"
+
+Each experiment is a checkbox in a dashboard, not a sprint of engineering work.
+
+**That's how you build data-rich experiences: by removing the cost of data decisions.**

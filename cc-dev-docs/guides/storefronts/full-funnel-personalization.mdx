@@ -1,0 +1,66 @@
+---
+title: 'Full-Funnel Theme Personalization'
+description: 'Extend co-branding beyond landing pages—across your entire shopping experience.'
+---
+
+## The Full Funnel
+
+```
+Landing Page → Collection → Product → Cart → Checkout → Post-Purchase
+     ↓              ↓           ↓        ↓        ↓            ↓
+  Creator      Creator      Creator  Creator  Discount    Thank You
+   Hero        Context       Quote    Banner   Applied     Message
+```
+
+## Touchpoints to Personalize
+
+| Page | Personalization |
+|------|-----------------|
+| **Landing page** | Full creator showcase |
+| **Collection** | "Shopping with [Creator]" banner |
+| **Product page** | Creator quote, discounted price |
+| **Cart drawer** | Discount reminder, savings display |
+| **Checkout** | Auto-applied code |
+| **Thank you** | Creator thank-you message |
+| **Email** | Co-branded content |
+
+## Implementation Strategy
+
+### 1. Resolve Creator Everywhere
+
+Add to `theme.liquid` or a shared snippet:
+
+```liquid
+{% liquid
+  unless cc_creator
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endunless
+%}
+```
+
+### 2. Create Conditional Blocks
+
+In each section, wrap creator content:
+
+```liquid
+{% if cc_creator %}
+  <!-- Co-branded version -->
+{% else %}
+  <!-- Standard version -->
+{% endif %}
+```
+
+### 3. Maintain Context
+
+Ensure cart attributes persist through the entire flow. Set on landing, maintain through checkout.
+
+## Priority Order
+
+Start with highest-impact touchpoints:
+
+1. Landing page (entry point)
+2. Cart drawer (conversion moment)
+3. Product pages (browsing)
+4. Collection pages (discovery)
+5. Header/nav (persistent reminder)

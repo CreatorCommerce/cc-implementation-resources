@@ -1,0 +1,109 @@
+---
+title: 'Creator Experience Email Variables'
+description: 'Reference for all variables available when emailing partners and creators.'
+---
+
+When sending emails to your creators, influencers, and affiliates through Klaviyo, CreatorCommerce provides a rich set of profile properties and event data to personalize your communications.
+
+## Profile Properties
+
+These properties are synced to each creator's Klaviyo profile:
+
+### Identity
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `cc_creator_first_name` | Partner's first name | "Sarah" |
+| `cc_creator_last_name` | Partner's last name | "Johnson" |
+| `cc_creator_email` | Partner's email address | "sarah@example.com" |
+| `cc_creator_handle` | Unique partner handle | "sarah-johnson" |
+| `cc_creator_profile_picture` | Profile image URL | "https://..." |
+
+### Performance
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `cc_total_sales` | Lifetime attributed sales | 15420.00 |
+| `cc_total_orders` | Lifetime attributed orders | 127 |
+| `cc_total_commissions` | Lifetime commissions earned | 1542.00 |
+| `cc_conversion_rate` | Click-to-purchase rate | 0.034 |
+| `cc_avg_order_value` | Average order value | 121.42 |
+
+### Status
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `cc_partner_tier` | Partner tier/segment | "Gold" |
+| `cc_activation_status` | Current activation state | "active" |
+| `cc_last_sale_date` | Date of most recent sale | "2024-01-15" |
+| `cc_days_since_last_sale` | Days since last attributed sale | 12 |
+
+### Collab Details
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `cc_discount_code` | Partner's discount code | "SARAH20" |
+| `cc_discount_amount` | Discount percentage or amount | "20%" |
+| `cc_commission_rate` | Commission percentage | "10%" |
+| `cc_shop_url` | Partner's co-branded shop URL | "https://store.com/p/sarah" |
+
+## Event Data
+
+These events trigger flows and carry additional data:
+
+### Partner Created
+Fires when a new partner is added to CreatorCommerce.
+
+### Partner Activated
+Fires when a partner completes activation requirements.
+
+### Sale Attributed
+Fires when an order is attributed to a partner.
+
+| Property | Description |
+|----------|-------------|
+| `order_id` | Shopify order ID |
+| `order_total` | Order total amount |
+| `commission_amount` | Commission for this order |
+| `products` | Array of purchased products |
+
+### Milestone Reached
+Fires when a partner hits a performance milestone.
+
+| Property | Description |
+|----------|-------------|
+| `milestone_type` | Type of milestone (sales, orders, etc.) |
+| `milestone_value` | Value reached |
+| `previous_value` | Previous milestone value |
+
+## Usage Examples
+
+### Welcome Email
+```
+Hey {{ cc_creator_first_name }},
+
+Welcome to our partner program! Your unique discount code is {{ cc_discount_code }} and your personalized shop is live at:
+
+{{ cc_shop_url }}
+
+Share this with your audience to start earning {{ cc_commission_rate }} on every sale!
+```
+
+### Performance Update
+```
+Hi {{ cc_creator_first_name }},
+
+Here's your weekly performance update:
+
+Sales this week: ${{ cc_weekly_sales }}
+Orders: {{ cc_weekly_orders }}
+Commissions earned: ${{ cc_weekly_commissions }}
+
+Keep up the great work!
+```
+
+## Related
+
+- [Enable Klaviyo Connection](/guides/emails/enable-connections)
+- [Consumer Email Variables](/guides/emails/variables-reference)
+- [The 2 Sides of Klaviyo](/references/klaviyo/two-sides-overview)

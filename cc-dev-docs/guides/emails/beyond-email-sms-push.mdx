@@ -1,0 +1,80 @@
+---
+title: 'Beyond Email: SMS & Push'
+description: 'Apply co-branding principles to SMS, push notifications, and other messaging channels.'
+---
+
+## It's All the Same
+
+The co-branding pattern works across channels:
+
+1. Capture creator context
+2. Store on customer profile
+3. Personalize outbound messages
+
+## SMS Co-branding
+
+### Attentive / Postscript
+
+Same profile properties, different template syntax:
+
+```
+Hey {{ first_name }}! {{ cc_creator_name }} wanted you to know: 
+your code {{ cc_discount_code }} expires tonight. 
+Shop now: {{ cc_landing_url }}
+```
+
+### Key Considerations
+
+- **Character limits** — Keep creator name short
+- **Link tracking** — Ensure attribution persists
+- **Frequency** — Don't over-message creator segments
+
+## Push Notifications
+
+### Web Push
+
+```javascript
+// Personalized push
+const payload = {
+  title: `${ccCreatorName} has new picks!`,
+  body: `Use ${ccDiscountCode} for ${ccDiscountAmount}% off`,
+  icon: ccCreatorImage,
+  url: ccLandingUrl
+};
+```
+
+### Mobile Push
+
+Same profile properties synced to your mobile app's user record.
+
+## Channel Strategy
+
+| Channel | Best For | Creator Element |
+|---------|----------|-----------------|
+| **Email** | Rich content, visuals | Full co-branded blocks |
+| **SMS** | Urgency, reminders | Name + code |
+| **Push** | Re-engagement | Name + offer |
+| **In-app** | Active users | Full personalization |
+
+## Unified Profile
+
+The key is a unified customer profile with creator context. Once set, use across all channels:
+
+```
+Customer Profile
+├── Email: sarah@example.com
+├── Phone: +1234567890
+├── Push token: abc123
+└── CC Context:
+    ├── cc_creator_handle: sarah-jones
+    ├── cc_creator_name: Sarah
+    ├── cc_discount_code: SARAH15
+    └── cc_discount_amount: 15
+```
+
+## Same Principles
+
+- Always include fallbacks
+- Test both states
+- Track performance by channel
+- Respect frequency caps

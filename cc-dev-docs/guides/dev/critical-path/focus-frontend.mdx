@@ -1,0 +1,131 @@
+---
+title: 'Focus on Frontend'
+description: 'Leave infrastructure to the trees. Your job is to craft experiences that move people.'
+---
+
+The frontend is where your brand lives. It's what users see, touch, and remember. Everything else—databases, APIs, authentication, scaling—is plumbing.
+
+Good plumbing is essential. But nobody raves about plumbing.
+
+## The Traditional Trap
+
+Most developer time gets absorbed by infrastructure:
+
+| Activity | Typical Time | Value Created |
+|----------|--------------|---------------|
+| Database schema design | 2-4 weeks | None (prerequisite) |
+| API development | 4-8 weeks | None (prerequisite) |
+| Authentication | 1-2 weeks | None (prerequisite) |
+| Deployment pipeline | 1-2 weeks | None (prerequisite) |
+| Frontend development | 2-4 weeks | **All of it** |
+
+You spend months on prerequisites, then rush the only part users actually experience.
+
+## The CreatorCommerce Approach
+
+When you build on CreatorCommerce:
+
+- **Data models exist** — Creator, collab, drop, product relationships are ready
+- **APIs are built** — Query and mutate data without building endpoints
+- **Attribution works** — Tracking happens automatically
+- **Shopify integration is native** — No middleware to maintain
+- **Email platforms connect** — Klaviyo, Attentive sync automatically
+- **Analytics flow through** — Triple Whale, Northbeam, GA4 just work
+- **Automation is ready** — Shopify Flow triggers and actions built in
+
+**Your job becomes pure frontend.** Liquid templates. CSS. JavaScript interactions. The things that actually create brand moments.
+
+### The Shopify-Native Advantage
+
+Because CC lives inside Shopify, you inherit the entire ecosystem:
+
+```liquid
+{% comment %} 
+  This isn't a custom API call—it's native Shopify Liquid
+  All your existing Shopify skills apply directly
+{% endcomment %}
+
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% assign products = cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products %}
+
+{% for product_data in products %}
+  {% assign product = all_products[product_data.handle] %}
+  {% render 'product-card', product: product %}
+{% endfor %}
+```
+
+No new languages. No new deployment pipelines. No new monitoring. Just Shopify.
+
+## What "Focus on Frontend" Really Means
+
+### 1. Obsess Over Micro-Interactions
+
+When you're not debugging API timeouts, you can spend an hour perfecting how a button feels when clicked. That hour matters.
+
+```liquid
+{% comment %} When you have time, you do things like this {% endcomment %}
+<button class="cc-cta" 
+  style="--hover-scale: 1.02; --press-scale: 0.98; --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);">
+  {{ cc_creator.cc-creator-first-name }}'s Picks
+</button>
+```
+
+### 2. Test Real User Journeys
+
+Instead of testing if your database handles concurrent writes, test if users understand your value proposition in 3 seconds.
+
+### 3. Iterate Based on Feedback
+
+Ship Monday. Get feedback Tuesday. Iterate Wednesday. Ship again Thursday.
+
+No deployment freezes. No database migrations. No infrastructure approvals.
+
+### 4. Express Brand Through Code
+
+Your code becomes a direct expression of brand values:
+- Typography choices that feel right
+- Animation timing that matches brand personality  
+- Color relationships that create emotion
+- Layout decisions that guide attention
+
+## Practical Application
+
+### Before: Infrastructure-First Thinking
+
+```
+Week 1-2: Design database schema for creators
+Week 3-4: Build CRUD APIs for creator data
+Week 5-6: Implement authentication and permissions
+Week 7-8: Set up webhooks for Shopify events
+Week 9-10: Build admin panel for managing data
+Week 11-12: Finally start on the actual landing page
+```
+
+### After: Frontend-First Thinking
+
+```
+Day 1-2: Study your personas deeply
+Day 3-4: Sketch the ideal user journey
+Day 5-7: Build the landing page in Liquid
+Day 8-10: Polish every interaction
+Day 11-14: Test with real users and iterate
+```
+
+## The Compound Effect
+
+When you focus on frontend for a year instead of infrastructure:
+
+- **12+ major iterations** instead of 2-3
+- **Deep UX expertise** instead of broad infrastructure knowledge
+- **Portfolio of beautiful work** instead of invisible backend code
+- **Happy users** instead of stable servers
+
+Both matter. But one is handled for you.
+
+## Your Challenge
+
+Next time you're tempted to build infrastructure, ask:
+
+> "Does this directly improve what users see and feel?"
+
+If not, find a platform that handles it. Protect your creative energy for work that matters.

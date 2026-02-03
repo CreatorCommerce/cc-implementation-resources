@@ -1,0 +1,39 @@
+---
+title: 'SDK Getting Started'
+description: 'Install and initialize the CreatorCommerce Liquid SDK for accessing creator data in your Shopify theme.'
+---
+
+## What is the CC SDK?
+
+The CreatorCommerce SDK is a collection of Liquid snippets that handle creator data resolution, fallback logic, and common co-branding patterns. It eliminates boilerplate and ensures consistency across your theme.
+
+## Installation
+
+The SDK is automatically available when you install CreatorCommerce. Core snippets are injected into your theme's `snippets/` directory.
+
+## Core Snippets
+
+| Snippet | Purpose |
+|---------|---------|
+| `cc-resolve-creator` | Resolves creator from metaobject or cart attributes |
+| `cc-calculate-contrast` | Calculates text color based on background |
+| `cc-dynamic-text` | Token replacement for personalized copy |
+| `cc-product-price` | Displays discounted pricing |
+
+## Basic Usage
+
+```liquid
+{% comment %} At the top of any section {% endcomment %}
+{% render 'cc-resolve-creator' %}
+
+{% comment %} Now cc_creator is available {% endcomment %}
+{% if cc_creator %}
+  <h1>{{ cc_creator.cc-creator-first-name }}'s Picks</h1>
+{% endif %}
+```
+
+## Next Steps
+
+<Card title="Referencing Creator Content" icon="arrow-right" href="/references/sdk/referencing-creator-content">
+  Learn how to access all creator fields on any page
+</Card>

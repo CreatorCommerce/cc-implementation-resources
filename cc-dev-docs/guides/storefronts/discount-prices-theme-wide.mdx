@@ -1,0 +1,63 @@
+---
+title: 'Discount Prices Across Your Theme'
+description: 'Show creator-discounted prices everywhere—product cards, collections, cart, and more.'
+---
+
+## The Goal
+
+When a customer is shopping through a creator's link, they should see their discounted price everywhere—not just at checkout.
+
+## Create a Price Snippet
+
+Create `snippets/cc-price.liquid`:
+
+```liquid
+{% comment %}
+  Usage: {% render 'cc-price', price: product.price %}
+{% endcomment %}
+
+{% if cc_creator and cc_creator.cc-collab-discount-amount %}
+  {% assign multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0 %}
+  {% assign discounted = price | times: multiplier %}
+  
+  <span class="cc-price cc-price--discounted">
+    <span class="cc-price__original">{{ price | money }}</span>
+    <span class="cc-price__sale">{{ discounted | money }}</span>
+  </span>
+{% else %}
+  <span class="cc-price">{{ price | money }}</span>
+{% endif %}
+```
+
+## Use Everywhere
+
+Replace price displays throughout your theme:
+
+```liquid
+{% comment %} Before {% endcomment %}
+{{ product.price | money }}
+
+{% comment %} After {% endcomment %}
+{% render 'cc-price', price: product.price %}
+```
+
+## Key Locations
+
+- Product cards (collection pages)
+- Product page
+- Quick view modals
+- Cart line items
+- Cart total area
+- Recently viewed
+- Search results
+
+## Cart Total with Savings
+
+```liquid
+{% if cc_creator %}
+  <div class="cart-savings">
+    Your {{ cc_creator.cc-creator-first-name }} discount saves you 
+    {{ cart.total_price | times: cc_creator.cc-collab-discount-amount | divided_by: 100 | money }}
+  </div>
+{% endif %}
+```

@@ -1,0 +1,65 @@
+---
+title: 'Co-branded Pop-ups'
+description: 'Create pop-ups that recognize creator context and display personalized offers.'
+---
+
+## Pop-up Types
+
+| Type | Trigger | Use Case |
+|------|---------|----------|
+| Welcome | Page load | Greet creator's audience |
+| Exit intent | Mouse leaves | Remind of discount |
+| Email capture | Scroll/time | Grow list with attribution |
+| Cart reminder | Idle on cart | Nudge to checkout |
+
+## Suppress Generic Pop-ups
+
+When a customer arrives via creator link, suppress your standard pop-ups:
+
+```javascript
+// Check for creator context
+if (localStorage.getItem('cc_creator_handle') || 
+    document.cookie.includes('cc_creator')) {
+  window.SUPPRESS_GENERIC_POPUP = true;
+}
+```
+
+## Creator-Aware Pop-up
+
+```liquid
+{% if cc_creator %}
+<div class="cc-popup" id="cc-welcome">
+  <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 80 }}" />
+  <h3>Welcome! {{ cc_creator.cc-creator-first-name }} sent you.</h3>
+  <p>Use code <strong>{{ cc_creator.cc-collab-discount-code }}</strong> for {{ cc_creator.cc-collab-discount-amount }}% off</p>
+  <button onclick="copyCode('{{ cc_creator.cc-collab-discount-code }}')">Copy Code</button>
+  <button onclick="closePopup()">Shop Now</button>
+</div>
+{% endif %}
+```
+
+## Exit Intent with Creator Context
+
+```javascript
+document.addEventListener('mouseleave', (e) => {
+  if (e.clientY < 0 && ccCreator && !sessionStorage.getItem('exit_shown')) {
+    showExitPopup({
+      title: `Wait! Don't forget your ${ccCreator.discountAmount}% off`,
+      code: ccCreator.discountCode
+    });
+    sessionStorage.setItem('exit_shown', 'true');
+  }
+});
+```
+
+## Email Capture with Attribution
+
+Ensure email signups include creator attribution:
+
+```html
+<form action="/contact" method="post">
+  <input type="email" name="contact[email]" required />
+  <input type="hidden" name="contact[tags]" value="cc-signup,cc-{{ cc_creator.handle }}" />
+  <button type="submit">Get {{ cc_creator.cc-collab-discount-amount }}% Off</button>
+</form>
+```

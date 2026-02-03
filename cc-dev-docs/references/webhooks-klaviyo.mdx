@@ -1,0 +1,110 @@
+---
+title: 'Klaviyo Events'
+description: 'CreatorCommerce events sent to Klaviyo for segmentation and flow triggers.'
+---
+
+## Available Events
+
+| Event | Trigger | Use Case |
+|-------|---------|----------|
+| **CC Creator Page View** | Landing page visit | Welcome flow, retargeting |
+| **CC Add to Cart** | Product added with creator context | Abandoned cart flows |
+| **CC Checkout Started** | Checkout with attribution | Cart abandonment |
+| **CC Order Placed** | Completed order | Post-purchase flows |
+
+## Event Properties
+
+### CC Creator Page View
+
+```json
+{
+  "event": "CC Creator Page View",
+  "properties": {
+    "creator_handle": "sarah-jones",
+    "creator_name": "Sarah",
+    "page_url": "https://store.com/pages/creators/sarah-jones",
+    "referrer": "https://instagram.com"
+  }
+}
+```
+
+### CC Add to Cart
+
+```json
+{
+  "event": "CC Add to Cart",
+  "properties": {
+    "ProductName": "Hydrating Serum",
+    "ProductID": "gid://shopify/Product/123",
+    "Price": 49.00,
+    "CreatorHandle": "sarah-jones",
+    "CreatorName": "Sarah",
+    "DiscountCode": "SARAH15"
+  }
+}
+```
+
+### CC Order Placed
+
+```json
+{
+  "event": "CC Order Placed",
+  "properties": {
+    "OrderID": "12345",
+    "TotalPrice": 150.00,
+    "CreatorHandle": "sarah-jones",
+    "CreatorName": "Sarah",
+    "DiscountCode": "SARAH15",
+    "DiscountAmount": 15,
+    "Items": [...]
+  }
+}
+```
+
+## Profile Properties Set
+
+When events fire, these properties are set on the customer profile:
+
+| Property | Description |
+|----------|-------------|
+| `cc_creator_handle` | Creator's handle |
+| `cc_creator_name` | Creator's first name |
+| `cc_discount_code` | Discount code used |
+| `cc_discount_amount` | Discount percentage |
+| `cc_creator_image` | Creator profile photo URL |
+| `cc_landing_url` | Original landing page |
+
+## Flow Triggers
+
+### Cart Abandonment with Creator Context
+
+```
+Trigger: CC Checkout Started
+Wait: 4 hours
+Filter: Has not placed order
+Action: Send email with creator personalization
+```
+
+### Post-Purchase Thank You
+
+```
+Trigger: CC Order Placed
+Action: Send co-branded thank you email
+```
+
+### Creator Page Retargeting
+
+```
+Trigger: CC Creator Page View
+Wait: 1 day
+Filter: Has not purchased
+Action: Send "Still thinking about it?" email
+```
+
+## Segmentation
+
+Create segments based on CC properties:
+
+- **CC Referred Customers**: `cc_creator_handle is set`
+- **High-Value Creator Traffic**: `cc_creator_handle is set AND Total CLV > 200`
+- **Specific Creator Audience**: `cc_creator_handle equals sarah-jones`

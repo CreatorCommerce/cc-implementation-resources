@@ -1,0 +1,90 @@
+---
+title: 'Shopify Flow Triggers'
+description: 'CreatorCommerce triggers available in Shopify Flow for automating partner workflows.'
+---
+
+## Available Triggers
+
+| Trigger | Fires When | Key Data |
+|---------|------------|----------|
+| **CC Order Attributed** | Order attributed to a partner | Order, partner, commission |
+| **CC Partner Created** | New collab created | Partner details, tier |
+| **CC Partner Activated** | Partner activates their page | Partner, activation time |
+| **CC Tier Changed** | Partner tier changes | Partner, old tier, new tier |
+| **CC Drop Created** | Partner creates a new drop | Partner, drop details |
+| **CC Milestone Reached** | Partner hits a milestone | Partner, milestone type, value |
+
+## Trigger Data
+
+### CC Order Attributed
+
+```json
+{
+  "order": {
+    "id": "gid://shopify/Order/123",
+    "total_price": "150.00",
+    "discount_codes": ["SARAH15"]
+  },
+  "partner": {
+    "handle": "sarah-jones",
+    "firstName": "Sarah",
+    "tier": "gold"
+  },
+  "attribution": {
+    "discountCode": "SARAH15",
+    "commissionAmount": 15.00
+  }
+}
+```
+
+### CC Partner Created
+
+```json
+{
+  "partner": {
+    "id": "creator_123",
+    "handle": "sarah-jones",
+    "firstName": "Sarah",
+    "lastName": "Jones",
+    "email": "sarah@example.com",
+    "tier": "starter"
+  }
+}
+```
+
+## Common Workflows
+
+### Auto-Upgrade Tier
+
+```
+Trigger: CC Order Attributed
+Condition: Partner total revenue >= $5,000
+Action: Update partner tier → Gold
+Action: Send notification email
+```
+
+### Welcome New Partners
+
+```
+Trigger: CC Partner Created
+Action: Send welcome email
+Action: Create task in project management
+Action: Post to Slack
+```
+
+### High-Value Order Alert
+
+```
+Trigger: CC Order Attributed
+Condition: Order value >= $500
+Action: Send Slack notification
+Action: Tag partner as "high-value-driver"
+```
+
+## Using in Flow
+
+1. Go to Shopify Admin → Apps → Flow
+2. Create new workflow
+3. Search "CreatorCommerce" in triggers
+4. Select your trigger
+5. Add conditions and actions

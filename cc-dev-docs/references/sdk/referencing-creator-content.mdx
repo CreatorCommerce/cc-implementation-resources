@@ -1,0 +1,67 @@
+---
+title: 'Referencing Creator Content'
+description: 'Access creator data—name, bio, photo, discounts, drops—on any page of your Shopify theme.'
+---
+
+## Creator Resolution Pattern
+
+Use this pattern at the top of any section or template:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+## Available Fields
+
+### Basic Info
+
+| Field | Access | Example |
+|-------|--------|---------|
+| First name | `cc_creator.cc-creator-first-name` | "Sarah" |
+| Last name | `cc_creator.cc-creator-last-name` | "Jones" |
+| Handle | `cc_creator.handle` | "sarah-jones" |
+| Bio | `cc_creator.cc-creator-shop-description` | "Skincare enthusiast..." |
+
+### Discount Info
+
+| Field | Access | Example |
+|-------|--------|---------|
+| Code | `cc_creator.cc-collab-discount-code` | "SARAH15" |
+| Amount | `cc_creator.cc-collab-discount-amount` | 15 |
+
+### Media
+
+| Field | Access |
+|-------|--------|
+| Profile photo | `cc_creator.data.value.cc-creator-profile-picture` |
+| Cover image | `cc_creator.data.value.cc-creator-cover-image` |
+
+### Nested Data (Drops)
+
+```liquid
+{% assign drops = cc_creator.data.value.cc-creator-drops %}
+{% for drop in drops %}
+  {{ drop['cc-creator-drop-name'] }}
+{% endfor %}
+```
+
+## Fallback Handling
+
+Always provide fallbacks for missing data:
+
+```liquid
+{{ cc_creator.cc-creator-first-name | default: 'Our Expert' }}
+```
+
+## Full Reference
+
+See [Creator Collab Data Model](/references/creator-collab-data-model) for complete field documentation.

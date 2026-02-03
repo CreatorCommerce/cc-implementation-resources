@@ -1,0 +1,65 @@
+---
+title: 'Showcase Product Lists & Collections'
+description: 'Display creator-curated drops, bundles, and collections on landing pages.'
+---
+
+## Drops vs Collections
+
+| Concept | What It Is | Source |
+|---------|------------|--------|
+| **Drop** | Creator's curated picks | CC metaobject data |
+| **Collection** | Shopify collection | Linked via drop |
+| **Bundle** | Grouped products | Drop with multiple items |
+
+## Displaying Drops
+
+```liquid
+{% assign drops = cc_creator.data.value.cc-creator-drops %}
+
+{% for drop in drops %}
+  <section class="cc-drop">
+    <h2>{{ drop['cc-creator-drop-name'] }}</h2>
+    
+    {% assign collection_id = drop['cc-creator-drop-collection-id'] %}
+    {% for collection in collections %}
+      {% if collection.id | append: '' == collection_id %}
+        {% for product in collection.products limit: 8 %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </section>
+{% endfor %}
+```
+
+## Single Collection Display
+
+```liquid
+{% if cc_creator.cc-creator-collection %}
+  {% assign creator_collection = cc_creator.cc-creator-collection %}
+  
+  <div class="creator-picks">
+    {% for product in creator_collection.products %}
+      {% render 'product-card', product: product %}
+    {% endfor %}
+  </div>
+{% endif %}
+```
+
+## Bundle Display
+
+For drops with multiple products, show as a bundle:
+
+```liquid
+{% assign drop = drops[0] %}
+{% assign products = drop['cc-creator-drop-products'] %}
+
+<div class="bundle">
+  <h2>{{ cc_creator.cc-creator-first-name }}'s Bundle</h2>
+  <p>{{ products.size }} items • Save {{ cc_creator.cc-collab-discount-amount }}%</p>
+  
+  <button data-add-bundle="{{ drop.id }}">
+    Add All to Cart
+  </button>
+</div>
+```

@@ -1,0 +1,158 @@
+---
+title: 'Build for Your Personas'
+description: 'Stop building for edge cases. Know exactly who you serve and build precisely for them.'
+---
+
+Most software is over-engineered for users who don't exist. Features for edge cases. Flexibility for scenarios that never happen. Abstractions for extensibility no one needs.
+
+When you build on the critical path, you build for real people—your specific personas—and nothing else.
+
+## The Edge Case Trap
+
+Every "what if" carries a cost:
+
+- **"What if someone wants to..."** — Feature complexity
+- **"What if we need to support..."** — Technical debt
+- **"What if they have edge case X..."** — Testing burden
+- **"What if in the future..."** — Over-abstraction
+
+These add up. Soon you're maintaining a complex system that serves everyone poorly instead of a focused system that serves your personas perfectly.
+
+## Know Your Personas
+
+Before writing code, know exactly who you're building for:
+
+### Partner Personas
+
+Who are your partners?
+
+| Persona | Characteristics | What They Need |
+|---------|-----------------|----------------|
+| **Micro-influencer** | 5K-50K followers, authentic, time-poor | One-click setup, automatic content |
+| **Professional** | Doctor, trainer, expert—credibility matters | Polished presence, deep customization |
+| **Content creator** | Full-time, sophisticated, high expectations | Advanced tools, detailed analytics |
+| **Casual ambassador** | Customer turned fan, low maintenance | Simple sharing, automatic updates |
+
+### Consumer Personas
+
+Who visits partner pages?
+
+| Persona | Journey | What They Need |
+|---------|---------|----------------|
+| **Warm lead** | Clicked partner's link, already interested | Fast loading, clear value prop, easy purchase |
+| **Researcher** | Comparing options, needs convincing | Social proof, product details, partner credibility |
+| **Repeat buyer** | Knows the brand, here for the deal | Quick checkout, remembered preferences |
+
+## Build Precisely for Them
+
+### 1. Feature Decisions
+
+Instead of "what features should we build?" ask "what do our personas need?"
+
+**For micro-influencers:**
+- ✅ Auto-generated landing pages
+- ✅ One-click product selection
+- ✅ Mobile-first dashboard
+- ❌ Complex customization tools
+- ❌ Detailed analytics dashboards
+
+**For professionals:**
+- ✅ Credibility-focused layouts
+- ✅ Bio and credentials display
+- ✅ Professional imagery
+- ❌ "Influencer" language
+- ❌ Playful, casual tone
+
+### 2. UX Decisions
+
+Every interaction should feel natural for your personas:
+
+```liquid
+{% comment %} 
+  For busy micro-influencers, auto-populate everything 
+  Don't ask questions you can answer yourself
+{% endcomment %}
+
+{% assign first_name = cc_creator.cc-creator-first-name %}
+{% assign top_products = cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products | slice: 0, 4 %}
+
+<section class="cc-auto-curated">
+  <h2>{{ first_name }}'s Top Picks</h2>
+  {% for product in top_products %}
+    {% render 'product-card', product: product %}
+  {% endfor %}
+</section>
+```
+
+### 3. Copy Decisions
+
+Words matter. Match your personas' vocabulary:
+
+| Generic | Micro-influencer | Professional |
+|---------|------------------|--------------|
+| "Your affiliate page" | "Your shop" | "Your practice storefront" |
+| "Earn commission" | "Get rewarded" | "Professional partnership" |
+| "Share your link" | "Share with your community" | "Recommend to patients" |
+
+### 4. Design Decisions
+
+Visual design should resonate with your personas:
+
+- **Micro-influencers:** Fun, social, mobile-native
+- **Professionals:** Clean, credible, trustworthy
+- **Content creators:** Sophisticated, customizable, on-brand
+
+## The Benefits of Constraint
+
+Building for specific personas isn't limiting—it's liberating:
+
+### 1. Faster Decisions
+
+"Should we build X?" becomes "Do our personas need X?"
+
+### 2. Clearer Priorities
+
+When you know who you serve, priority debates resolve themselves.
+
+### 3. Better Quality
+
+Energy focused on fewer features = higher quality per feature.
+
+### 4. Stronger Positioning
+
+"We're perfect for X" is more compelling than "We work for everyone."
+
+## Practical Exercise
+
+For your next feature:
+
+1. **Name the persona** — Who specifically is this for?
+2. **Describe their context** — What are they doing when they use this?
+3. **Define success** — How do they know it worked?
+4. **Identify what they don't need** — What can we leave out?
+
+If you can't answer these questions, you're not ready to build.
+
+## The CreatorCommerce Advantage
+
+CreatorCommerce's data model already knows about personas:
+
+- **Partner segments** — Different tiers and types
+- **Collab tiers** — Different partnership levels
+- **Custom fields** — Persona-specific data
+- **Conditional rendering** — Show different content to different personas
+
+Use these to build precisely, not generically.
+
+```liquid
+{% case cc_creator.cc-partner-type %}
+  {% when 'professional' %}
+    {% render 'professional-hero', creator: cc_creator %}
+  {% when 'influencer' %}
+    {% render 'influencer-hero', creator: cc_creator %}
+  {% else %}
+    {% render 'default-hero', creator: cc_creator %}
+{% endcase %}
+```
+
+**Build for who you serve. Ignore everyone else.**

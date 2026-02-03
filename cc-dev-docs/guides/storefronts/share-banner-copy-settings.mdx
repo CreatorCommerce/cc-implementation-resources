@@ -1,0 +1,73 @@
+---
+title: 'Share Banner & Copy Settings'
+description: 'Reuse banner messaging and copy between your homepage and creator landing pages.'
+---
+
+## The Challenge
+
+You want consistent messaging across:
+- Homepage announcement bar
+- Creator landing page banners
+- Collection page headers
+
+But you also want creator personalization where appropriate.
+
+## Solution: Shared Settings with Overrides
+
+### 1. Create Shared Settings
+
+In `config/settings_schema.json`, add shared copy settings:
+
+```json
+{
+  "name": "Promotional Messaging",
+  "settings": [
+    {
+      "type": "text",
+      "id": "promo_headline",
+      "label": "Promo Headline",
+      "default": "Free shipping on orders $50+"
+    },
+    {
+      "type": "text",
+      "id": "promo_subline",
+      "label": "Promo Subline"
+    }
+  ]
+}
+```
+
+### 2. Use with Creator Override
+
+```liquid
+{% if cc_creator %}
+  {% assign headline = cc_creator.cc-creator-first-name | append: "'s exclusive: " | append: settings.promo_headline %}
+{% else %}
+  {% assign headline = settings.promo_headline %}
+{% endif %}
+
+<div class="promo-banner">
+  {{ headline }}
+</div>
+```
+
+### 3. Dynamic Text Tokens
+
+Use tokens in your settings that get replaced:
+
+Setting value: `[CREATOR_NAME]'s fans get free shipping!`
+
+```liquid
+{% assign banner_text = settings.promo_headline %}
+{% if cc_creator %}
+  {% assign banner_text = banner_text | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name %}
+{% else %}
+  {% assign banner_text = banner_text | replace: "[CREATOR_NAME]'s fans get", "You get" %}
+{% endif %}
+```
+
+## Keep It Manageable
+
+- Define core messages in theme settings
+- Let creator context enhance, not replace
+- Test both states (with and without creator)

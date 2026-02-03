@@ -1,0 +1,193 @@
+---
+title: 'Ship Fast, Stay Quality'
+description: 'Speed and quality aren't tradeoffs when you're building on the critical path.'
+---
+
+The industry teaches a lie: you can have it fast, or you can have it good, but not both.
+
+This is only true when you're building everything from scratch. When infrastructure is handled, speed and quality become allies, not enemies.
+
+## Why Speed Usually Kills Quality
+
+In traditional development, speed creates technical debt:
+
+- **Rushed architecture** — "We'll refactor later"
+- **Skipped tests** — "We'll add them when we have time"
+- **Copy-paste code** — "We need to ship now"
+- **Ignored edge cases** — "Nobody will hit that"
+
+Each shortcut compounds. Soon you're spending more time on bugs than features.
+
+## Why Speed and Quality Can Coexist
+
+On the critical path, you're not building infrastructure. You're building experiences.
+
+**Speed comes from:**
+- Pre-built data models
+- Ready APIs
+- Existing integrations
+- Template-based development
+
+**Quality comes from:**
+- Time saved on infrastructure → invested in polish
+- No technical debt from shortcuts → clean codebase
+- Focused scope → deeper expertise
+- More iterations → better outcomes
+
+## The Fast Quality Loop
+
+### Week 1: Understand
+
+- Day 1-2: Research users and personas
+- Day 3-4: Map the ideal journey
+- Day 5: Define success metrics
+
+**No code yet. Just thinking.**
+
+### Week 2: Build
+
+- Day 1-2: Scaffold the experience
+- Day 3-4: Implement core interactions
+- Day 5: Polish and refine
+
+**Fast because infrastructure is handled.**
+
+### Week 3: Ship & Learn
+
+- Day 1: Deploy to production
+- Day 2-3: Gather feedback
+- Day 4-5: Plan iteration
+
+**Quality because you have time to iterate.**
+
+### Repeat
+
+Each cycle makes the experience better. Fast iterations compound into exceptional quality.
+
+## Practical Speed Techniques
+
+### 1. Use What Exists
+
+Don't rebuild what CreatorCommerce provides:
+
+```liquid
+{% comment %} 
+  Don't: Build custom discount code handling
+  Do: Use the platform's discount code field
+{% endcomment %}
+
+{% if cc_creator.cc-collab-discount-code %}
+  <div class="discount-banner">
+    Save {{ cc_creator.cc-collab-discount-amount }} with code 
+    <strong>{{ cc_creator.cc-collab-discount-code }}</strong>
+  </div>
+{% endif %}
+```
+
+### 2. Start with Templates
+
+Begin with existing patterns, then customize:
+
+```liquid
+{% comment %} 
+  Start with a working template
+  Customize from functional, not from zero
+{% endcomment %}
+
+{% render 'cc-hero-section', creator: cc_creator %}
+{% render 'cc-product-grid', products: creator_products %}
+{% render 'cc-testimonial', quote: cc_creator.featured-quote %}
+```
+
+### 3. Progressive Enhancement
+
+Ship the core, enhance over time:
+
+**Version 1:** Partner name + product grid + discount code
+**Version 2:** + Partner photo + bio
+**Version 3:** + Custom colors + animation
+**Version 4:** + Dynamic content + personalization
+
+Each version is shippable. Each version is better.
+
+### 4. Scope Ruthlessly
+
+Every feature not built is time saved for quality:
+
+| Feature | Ship Now? | Why |
+|---------|-----------|-----|
+| Partner landing page | ✅ Yes | Core value |
+| Product recommendations | ✅ Yes | Drives conversion |
+| Analytics dashboard | ❌ Later | Platform provides basics |
+| Custom animations | ❌ Later | Polish after validation |
+| Multi-language | ❌ Later | Optimize for primary market first |
+
+## Quality Without Slowdown
+
+### Code Quality
+
+Simple code is quality code:
+
+```liquid
+{% comment %} 
+  Quality = readable, maintainable, debuggable
+  Not complex, not over-engineered
+{% endcomment %}
+
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+  assign has_discount = cc_creator.cc-collab-discount-code != blank
+%}
+```
+
+### Visual Quality
+
+Use design systems and components:
+
+```css
+/* Quality through consistency */
+:root {
+  --cc-spacing-sm: 0.5rem;
+  --cc-spacing-md: 1rem;
+  --cc-spacing-lg: 2rem;
+  
+  --cc-transition-fast: 150ms ease-out;
+  --cc-transition-normal: 300ms ease-out;
+}
+```
+
+### User Experience Quality
+
+Test with real users early:
+
+- Ship after Week 2
+- Get 5 users to try it
+- Watch them (don't help)
+- List the friction points
+- Fix them in Week 3
+
+## The Compound Effect
+
+Fast quality cycles compound:
+
+| Month | Shipping Pace | Quality Level |
+|-------|--------------|---------------|
+| Month 1 | Weekly ships | Good |
+| Month 2 | Weekly ships + iterations | Better |
+| Month 3 | Weekly ships + refinements | Great |
+| Month 6 | Weekly ships + optimization | Excellent |
+| Month 12 | Weekly ships + polish | World-class |
+
+**Speed enables iteration. Iteration enables quality.**
+
+## Your Advantage
+
+When competitors are spending 6 months building infrastructure, you're:
+
+- On your 12th iteration
+- Deeply understanding your users
+- Refining every interaction
+- Shipping confidently
+
+**That's how you ship fast and stay quality: by focusing on what matters and iterating relentlessly.**

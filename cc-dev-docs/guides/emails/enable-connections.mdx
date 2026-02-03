@@ -1,0 +1,88 @@
+---
+title: 'Enable Email Connections'
+description: 'Connect CreatorCommerce to Klaviyo, Attentive, or other email platforms.'
+---
+
+## Supported Platforms
+
+<CardGroup cols={2}>
+  <Card title="Klaviyo" icon="k">
+    Native integration with events and profile properties
+  </Card>
+  <Card title="Attentive" icon="message">
+    SMS and email with creator context
+  </Card>
+</CardGroup>
+
+---
+
+## Klaviyo Setup
+
+<Steps>
+  <Step title="Get Your Public API Key">
+    In Klaviyo, go to Settings → API Keys → Copy your public key (starts with `pk_`)
+  </Step>
+  <Step title="Add Tracking Snippet">
+    In your theme, add the CC-Klaviyo sync snippet to pages with creator context
+  </Step>
+  <Step title="Verify Connection">
+    Visit a creator page, then check Klaviyo for the profile update
+  </Step>
+</Steps>
+
+### Klaviyo Tracking Code
+
+```liquid
+{% if cc_creator %}
+<script>
+  var _learnq = _learnq || [];
+  _learnq.push(['identify', {
+    'cc_creator_handle': {{ cc_creator.handle | json }},
+    'cc_creator_name': {{ cc_creator.cc-creator-first-name | json }},
+    'cc_discount_code': {{ cc_creator.cc-collab-discount-code | json }},
+    'cc_discount_amount': {{ cc_creator.cc-collab-discount-amount | json }}
+  }]);
+</script>
+{% endif %}
+```
+
+---
+
+## Attentive Setup
+
+<Steps>
+  <Step title="Get Your Attentive Tag">
+    In Attentive, go to Settings → Installation → Copy your tag ID
+  </Step>
+  <Step title="Add Custom Attributes">
+    Configure custom subscriber attributes for CC data
+  </Step>
+  <Step title="Sync Creator Context">
+    Use Attentive's JavaScript API to pass creator data
+  </Step>
+</Steps>
+
+### Attentive Tracking Code
+
+```liquid
+{% if cc_creator %}
+<script>
+  window.attentive = window.attentive || [];
+  window.attentive.push(['setCustomAttributes', {
+    'cc_creator_handle': {{ cc_creator.handle | json }},
+    'cc_creator_name': {{ cc_creator.cc-creator-first-name | json }},
+    'cc_discount_code': {{ cc_creator.cc-collab-discount-code | json }}
+  }]);
+</script>
+{% endif %}
+```
+
+---
+
+## Other Platforms
+
+For platforms without native integration, use:
+
+1. **Webhooks** — Forward events via Shopify Flow
+2. **API sync** — Build custom sync with CC API
+3. **Zapier/Make** — Connect via automation tools

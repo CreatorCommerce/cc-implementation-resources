@@ -1,0 +1,67 @@
+---
+title: 'Personalize Product Pages'
+description: 'Show creator context, quotes, and discounted prices on product detail pages.'
+---
+
+## What to Personalize
+
+| Element | Standard | Co-branded |
+|---------|----------|------------|
+| **Header** | Product title | "Sarah's Pick: [Title]" |
+| **Price** | $99.00 | ~~$99.00~~ $84.15 |
+| **Badge** | None | Creator quote callout |
+| **Trust** | Reviews | Creator endorsement |
+
+## Creator Quote Badge
+
+Add a quote section to product pages:
+
+```liquid
+{% if cc_creator %}
+  {% assign product_quotes = cc_creator.data.value.product-quotes %}
+  {% assign quote = product_quotes[product.id | append: ''] %}
+  
+  {% if quote %}
+    <div class="cc-product-quote">
+      <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 50 }}" />
+      <blockquote>
+        "{{ quote }}"
+        <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
+      </blockquote>
+    </div>
+  {% endif %}
+{% endif %}
+```
+
+## Discounted Price Display
+
+```liquid
+{% if cc_creator and cc_creator.cc-collab-discount-amount %}
+  {% assign discount = cc_creator.cc-collab-discount-amount | divided_by: 100.0 %}
+  {% assign discounted = product.price | times: 1 | minus: product.price | times: discount %}
+  
+  <div class="cc-price">
+    <span class="original">{{ product.price | money }}</span>
+    <span class="sale">{{ discounted | money }}</span>
+    <span class="badge">{{ cc_creator.cc-collab-discount-amount }}% OFF</span>
+  </div>
+{% else %}
+  <div class="price">{{ product.price | money }}</div>
+{% endif %}
+```
+
+## Add Context to Buy Button
+
+```liquid
+<button type="submit">
+  {% if cc_creator %}
+    Add to Cart • {{ cc_creator.cc-collab-discount-amount }}% Off
+  {% else %}
+    Add to Cart
+  {% endif %}
+</button>
+```
+
+## Fallback to Standard
+
+Always ensure the page works without creator context—show regular pricing and hide creator-specific elements.

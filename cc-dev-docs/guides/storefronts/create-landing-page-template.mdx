@@ -1,0 +1,61 @@
+---
+title: 'Create a Landing Page Template'
+description: 'Build a custom metaobject template for co-branded creator landing pages.'
+---
+
+## Template Options
+
+| Approach | File | Best For |
+|----------|------|----------|
+| JSON Template | `templates/metaobject/creator.json` | Section-based, theme editor friendly |
+| Liquid Template | `templates/metaobject/creator.liquid` | Full custom control |
+
+## JSON Template (Recommended)
+
+Create `templates/metaobject/creator.json`:
+
+```json
+{
+  "sections": {
+    "cc-hero": {
+      "type": "cc-hero",
+      "settings": {}
+    },
+    "cc-products": {
+      "type": "cc-product-grid",
+      "settings": {
+        "products_per_row": 4
+      }
+    },
+    "cc-banner": {
+      "type": "cc-banner",
+      "settings": {}
+    }
+  },
+  "order": ["cc-hero", "cc-products", "cc-banner"]
+}
+```
+
+## Liquid Template
+
+Create `templates/metaobject/creator.liquid`:
+
+```liquid
+{% assign cc_creator = metaobject %}
+
+<div class="creator-landing">
+  {% section 'cc-hero' %}
+  {% section 'cc-product-grid' %}
+  {% section 'cc-banner' %}
+</div>
+```
+
+## Testing Your Template
+
+1. Go to Content → Metaobjects → Creator
+2. Select any creator entry
+3. Click "View on storefront"
+
+## Customization
+
+Modify section settings in the theme editor or directly in code. Each CC section accepts customization options.

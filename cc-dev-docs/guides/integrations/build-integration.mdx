@@ -1,0 +1,143 @@
+---
+title: 'Build an Integration'
+description: 'Connect CreatorCommerce with custom platforms and tools using our APIs and webhooks.'
+---
+
+CreatorCommerce provides multiple integration points for connecting with your existing tools and building custom solutions.
+
+## Integration Methods
+
+<CardGroup cols={2}>
+  <Card title="Unified API" icon="code" href="/references/api-overview">
+    RESTful API for reading and writing creator, collab, and drop data.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/references/webhooks-overview">
+    Real-time event notifications via Shopify Flow and Klaviyo.
+  </Card>
+  <Card title="Shopify Flow" icon="workflow" href="/guides/dev/implement-shopify-flow">
+    Native Shopify automation with CC triggers and actions.
+  </Card>
+  <Card title="Metaobjects" icon="database" href="/references/data-model-overview">
+    Direct access to creator data via Shopify's Storefront and Admin APIs.
+  </Card>
+</CardGroup>
+
+## Common Integration Patterns
+
+### Sync Partner Data to External CRM
+
+Push creator data to your CRM or partner management platform:
+
+```javascript
+// Example: Sync new creator to external CRM
+const creator = await cc.getCreator(creatorId);
+
+await fetch('https://your-crm.com/api/contacts', {
+  method: 'POST',
+  headers: { 'Authorization': `Bearer ${CRM_TOKEN}` },
+  body: JSON.stringify({
+    email: creator.email,
+    firstName: creator.firstName,
+    lastName: creator.lastName,
+    customFields: {
+      cc_handle: creator.handle,
+      cc_discount_code: creator.discountCode,
+      cc_shop_url: creator.shopUrl
+    }
+  })
+});
+```
+
+### Enrich Analytics with Partner Context
+
+Send partner attribution to your analytics platform:
+
+```javascript
+// Example: Send to analytics when order attributed
+shopifyFlow.on('cc_order_attributed', (event) => {
+  analytics.track('Purchase', {
+    orderId: event.orderId,
+    orderValue: event.orderTotal,
+    partnerId: event.creatorId,
+    partnerHandle: event.creatorHandle,
+    discountCode: event.discountCode
+  });
+});
+```
+
+### Automate Partner Onboarding
+
+Trigger external workflows when partners join:
+
+```javascript
+// Example: Trigger onboarding sequence
+shopifyFlow.on('cc_creator_activated', (event) => {
+  // Send welcome email via external ESP
+  await emailService.sendTemplate('partner-welcome', {
+    to: event.creatorEmail,
+    data: {
+      firstName: event.creatorFirstName,
+      shopUrl: event.creatorShopUrl,
+      discountCode: event.discountCode
+    }
+  });
+  
+  // Add to Slack channel
+  await slack.inviteToChannel('partners', event.creatorEmail);
+  
+  // Create task in project management
+  await asana.createTask({
+    name: `Onboard ${event.creatorFirstName}`,
+    assignee: 'partner-manager@company.com'
+  });
+});
+```
+
+## Authentication
+
+### API Authentication
+
+Use your CC API key for server-to-server integrations:
+
+```bash
+curl -X GET "https://api.creatorcommerce.com/v1/creators" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Shopify Authentication
+
+For Shopify-native integrations, use your Shopify Admin API credentials with CC metaobject access.
+
+## Rate Limits
+
+| Endpoint | Rate Limit |
+|----------|------------|
+| Read operations | 100/minute |
+| Write operations | 50/minute |
+| Bulk operations | 10/minute |
+
+## Testing Integrations
+
+### Sandbox Environment
+
+Use test mode to develop integrations without affecting production data:
+
+```javascript
+const cc = new CreatorCommerce({
+  apiKey: process.env.CC_API_KEY,
+  testMode: true  // Use sandbox environment
+});
+```
+
+### Webhook Testing
+
+Use webhook.site or similar tools to inspect webhook payloads during development.
+
+## Support
+
+Need help building an integration?
+
+- **API Reference** — [Full API documentation](/references/api-overview)
+- **Webhooks** — [Event reference](/references/webhooks-overview)
+- **Community** — Join our developer Discord
+- **Enterprise** — Contact us for dedicated integration support

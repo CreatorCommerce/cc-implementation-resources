@@ -1,0 +1,56 @@
+---
+title: 'Webhooks Overview'
+description: 'CreatorCommerce event notifications are currently available through Shopify Flow and Klaviyo integrations.'
+---
+
+## Current Availability
+
+CreatorCommerce webhooks are delivered through two native integrations:
+
+<CardGroup cols={2}>
+  <Card title="Shopify Flow" icon="shopify">
+    Triggers for order attribution, partner creation, tier changes, and more.
+  </Card>
+  <Card title="Klaviyo" icon="envelope">
+    Events for profile enrichment, co-branded email flows, and segmentation.
+  </Card>
+</CardGroup>
+
+<Info>
+**Direct webhook endpoints coming soon.** We're building a standalone webhook system for custom integrations. Contact us if you need early access.
+</Info>
+
+## Shopify Flow Triggers
+
+| Trigger | Fires When |
+|---------|------------|
+| CC Order Attributed | Order is attributed to a partner |
+| CC Partner Created | New collab is created |
+| CC Partner Activated | Partner activates their page |
+| CC Tier Changed | Partner tier changes |
+| CC Drop Created | Partner creates a new drop |
+
+[Learn more about Shopify Flow →](/guides/dev/implement-shopify-flow)
+
+## Klaviyo Events
+
+| Event | Purpose |
+|-------|---------|
+| CC Creator Page View | Track landing page visits |
+| CC Add to Cart | Track cart additions with creator context |
+| CC Checkout Started | Track checkout with attribution |
+| CC Order Placed | Track completed orders |
+
+[Learn more about Klaviyo integration →](/guides/emails/enable-connections)
+
+## Custom Integrations
+
+Until direct webhooks are available, you can:
+
+1. **Use Shopify Flow HTTP actions** — Trigger external endpoints from Flow
+2. **Poll the API** — Periodically fetch updated data
+3. **Use Klaviyo webhooks** — Forward Klaviyo events to your systems
+
+<Card title="Need Direct Webhooks?" icon="webhook" href="mailto:help@creatorcommerce.shop">
+  Contact us for early access to our webhook API
+</Card>

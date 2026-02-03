@@ -1,0 +1,60 @@
+---
+title: 'Enable Tracking on Liquid Themes'
+description: 'Set up attribution tracking so orders are credited to the right creators.'
+---
+
+## What Gets Tracked
+
+- Landing page visits
+- Product views
+- Add to cart events
+- Checkout starts
+- Completed orders
+
+## Implementation
+
+### 1. Set Cart Attributes
+
+On creator pages, set cart attributes to persist creator context:
+
+```liquid
+{% if cc_creator %}
+<script>
+  fetch('/cart/update.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      attributes: {
+        'cc-creator-handle': {{ cc_creator.handle | json }},
+        'cc-discount-code': {{ cc_creator.cc-collab-discount-code | json }}
+      }
+    })
+  });
+</script>
+{% endif %}
+```
+
+### 2. Add Checkout Discount
+
+Ensure discount auto-applies at checkout:
+
+```liquid
+{% assign checkout_url = '/checkout' %}
+{% if cart.attributes['cc-discount-code'] %}
+  {% assign checkout_url = checkout_url | append: '?discount=' | append: cart.attributes['cc-discount-code'] %}
+{% endif %}
+```
+
+### 3. Enable CC Web Pixel (Optional)
+
+For enhanced tracking, enable the CC Web Pixel in Settings → Customer Events.
+
+## Verification
+
+1. Visit a creator page
+2. Add product to cart
+3. Check cart attributes in browser console:
+   ```javascript
+   fetch('/cart.js').then(r => r.json()).then(c => console.log(c.attributes))
+   ```
+4. Complete checkout and verify order is tagged

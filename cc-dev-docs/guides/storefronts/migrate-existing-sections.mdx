@@ -1,0 +1,77 @@
+---
+title: 'Migrate Existing Sections'
+description: 'Convert your current theme sections to support creator co-branding.'
+---
+
+## Migration Approach
+
+Don't rebuild from scratch. Add creator awareness to existing sections.
+
+## Step-by-Step Process
+
+### 1. Add Creator Resolution
+
+At the top of any section:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
+```
+
+### 2. Identify Personalizable Elements
+
+| Element | Personalization |
+|---------|-----------------|
+| Headings | Add creator name |
+| Images | Swap for creator photo |
+| Copy | Include discount info |
+| CTAs | Reference exclusive offer |
+
+### 3. Wrap with Conditionals
+
+```liquid
+{% if cc_creator %}
+  <h2>{{ cc_creator.cc-creator-first-name }}'s Favorites</h2>
+{% else %}
+  <h2>{{ section.settings.heading }}</h2>
+{% endif %}
+```
+
+### 4. Add Preview Setting
+
+For theme editor testing:
+
+```json
+{
+  "type": "text",
+  "id": "preview_creator_handle",
+  "label": "Preview Creator (editor only)"
+}
+```
+
+```liquid
+{% if request.design_mode and section.settings.preview_creator_handle != blank %}
+  {% assign cc_creator = metaobjects.creator[section.settings.preview_creator_handle] %}
+{% endif %}
+```
+
+## Priority Sections
+
+1. Hero/banner sections
+2. Featured collection
+3. Product grid
+4. Testimonial/quote blocks
+5. Email signup
+
+## Testing Checklist
+
+- [ ] Section works without creator context
+- [ ] Section personalizes with creator context
+- [ ] Fallbacks are neutral (not broken)
+- [ ] Preview setting works in editor

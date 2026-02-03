@@ -1,0 +1,56 @@
+---
+title: 'Hide CC Collections in Admin'
+description: 'Keep creator collections organized without cluttering your Shopify admin.'
+---
+
+## The Problem
+
+CreatorCommerce may create collections for creator drops. These can clutter your Shopify Admin collections list.
+
+## Solution 1: Use a Naming Convention
+
+Prefix creator collections with a pattern:
+
+```
+_cc_sarah-jones-picks
+_cc_mike-smith-favorites
+```
+
+Collections starting with `_` are often filtered in admin views.
+
+## Solution 2: Use Collection Metafields
+
+Tag CC collections with a metafield:
+
+```json
+{
+  "namespace": "creatorcommerce",
+  "key": "is_creator_collection",
+  "value": "true"
+}
+```
+
+Then filter in your catalog views.
+
+## Solution 3: Hide from Storefront Navigation
+
+In your collection list templates, exclude CC collections:
+
+```liquid
+{% for collection in collections %}
+  {% unless collection.handle contains '_cc_' %}
+    <a href="{{ collection.url }}">{{ collection.title }}</a>
+  {% endunless %}
+{% endfor %}
+```
+
+## Solution 4: Use Smart Collections
+
+Instead of creating separate collections, use smart collections that automatically include products based on tags or metafields.
+
+## Best Practice
+
+- Use a consistent naming pattern
+- Document the pattern for your team
+- Exclude from navigation programmatically
+- Keep creator collections for attribution tracking

@@ -117,6 +117,21 @@
                                     "pages":[
                                        "guides/dev/base-funnels/overview"
                                     ]
+                                 },
+                                 {
+                                    "group":"Critical Path Building",
+                                    "expanded":false,
+                                    "pages":[
+                                       "guides/dev/critical-path/overview",
+                                       "guides/dev/critical-path/focus-frontend",
+                                       "guides/dev/critical-path/cap-costs",
+                                       "guides/dev/critical-path/take-vacations",
+                                       "guides/dev/critical-path/build-for-personas",
+                                       "guides/dev/critical-path/world-class-ux",
+                                       "guides/dev/critical-path/design-your-data",
+                                       "guides/dev/critical-path/ship-fast",
+                                       "guides/dev/critical-path/build-with-ai"
+                                    ]
                                  }
                               ]
                            },
@@ -262,14 +277,14 @@
                            "references/creator-collab-data-model",
                            "references/drops-products-data-model",
                            "references/custom-fields-reference",
-                           "guides/glossary"
+                           "guides/glossary",
+                           "references/shopify-integration-data-model"
                         ]
                      },
                      {
-                        "group":"SHOPIFY OBJECTS",
+                        "group":"SHOPIFY",
                         "expanded":false,
                         "pages":[
-                           "references/shopify-integration-data-model",
                            {
                               "group":"Shopify objects",
                               "expanded":false,
@@ -310,8 +325,8 @@
                         "group":"SDKS",
                         "expanded":false,
                         "pages":[
-                           "temp2",
-                           "temp3"
+                           "references/sdk/getting-started",
+                           "references/sdk/referencing-creator-content"
                         ]
                      },
                      {
@@ -354,21 +369,137 @@
                         "group":"WEBHOOKS",
                         "expanded":false,
                         "pages":[
-                           "temp2",
-                           {
-                              "group":"Shopify Flow triggers",
-                              "pages":[
-                                 "temp1",
-                                 "temp2"
-                              ]
-                           },
-                           {
-                              "group":"Klaviyo events",
-                              "pages":[
-                                 "temp1",
-                                 "temp2"
-                              ]
-                           }
+                           "references/webhooks-overview",
+                           "references/webhooks-shopify-flow",
+                           "references/webhooks-klaviyo"
+                        ]
+                     },
+                     {
+                        "group":"KLAVIYO",
+                        "expanded":false,
+                        "pages":[
+                           "references/klaviyo-two-sides",
+                           "guides/emails/variables-reference",
+                           "guides/creator-emails/variables-reference"
+                        ]
+                     }
+                  ]
+               }
+            ]
+         },
+         {
+            "tab":"Consumer Experiences",
+            "anchors":[
+               {
+                  "anchor":"Co-branded Storefronts",
+                  "icon":"layout",
+                  "groups":[
+                     {
+                        "group":"Getting Started",
+                        "expanded":false,
+                        "pages":[
+                           "guides/co-branded-storefronts",
+                           "guides/storefronts/destinations-explained",
+                           "references/sdk/getting-started",
+                           "guides/storefronts/full-funnel-personalization",
+                           "guides/storefronts/enable-tracking",
+                           "guides/storefronts/app-blocks-101"
+                        ]
+                     },
+                     {
+                        "group":"Landing Pages",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/landing-pages-overview",
+                           "guides/storefronts/getting-started-landing-pages",
+                           "guides/storefronts/create-landing-page-template"
+                        ]
+                     },
+                     {
+                        "group":"Product Lists",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/showcase-product-lists"
+                        ]
+                     },
+                     {
+                        "group":"Product Pages",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/personalize-product-pages"
+                        ]
+                     },
+                     {
+                        "group":"Pop-ups",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/co-branded-popups"
+                        ]
+                     },
+                     {
+                        "group":"Cart & Checkout",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/cart-checkout-overview"
+                        ]
+                     },
+                     {
+                        "group":"Theme-wide Components",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/discount-prices-theme-wide",
+                           "guides/storefronts/share-banner-copy-settings",
+                           "guides/storefronts/dynamic-content-snippet"
+                        ]
+                     },
+                     {
+                        "group":"Operations & Migration",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/post-launch-ecomm-team",
+                           "guides/storefronts/migrate-existing-sections",
+                           "guides/storefronts/hide-cc-collections"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "anchor":"Content Enrichment",
+                  "icon":"workflow",
+                  "pages":[
+                     "guides/enrichment-flows"
+                  ]
+               },
+               {
+                  "anchor":"Co-branded Emails",
+                  "icon":"envelope",
+                  "groups":[
+                     {
+                        "group":"Getting Started",
+                        "expanded":false,
+                        "pages":[
+                           "guides/co-branded-messaging",
+                           "guides/emails/data-flow-explained",
+                           "guides/emails/enable-connections",
+                           "guides/emails/testing-emails"
+                        ]
+                     },
+                     {
+                        "group":"Message Flows",
+                        "expanded":false,
+                        "pages":[
+                           "guides/emails/variables-reference",
+                           "guides/emails/cart-abandonment",
+                           "guides/emails/post-purchase",
+                           "guides/emails/lead-magnets",
+                           "guides/emails/beyond-email-sms-push"
+                        ]
+                     },
+                     {
+                        "group":"Operations & Migration",
+                        "expanded":false,
+                        "pages":[
+                           "guides/emails/structure-existing-flows"
                         ]
                      }
                   ]
@@ -436,77 +567,27 @@
                   "pages":[
                      "guides/creator-messaging"
                   ]
-               },
-               {
-                  "anchor":"Content Enrichment",
-                  "icon":"workflow",
-                  "pages":[
-                     "guides/enrichment-flows"
-                  ]
-               }
-            ]
-         },
-         {
-            "tab":"Consumer Experiences",
-            "anchors":[
-               {
-                  "anchor":"Co-branded Storefronts",
-                  "icon":"layout",
-                  "groups":[
-                     {
-                        "group":"Learning the basics",
-                        "expanded":false,
-                        "pages":[
-                           "guides/co-branded-storefronts",
-                           {
-                              "title":"Shopify Objects",
-                              "href":"/references/shopify-reference"
-                           },
-                           {
-                              "title":"Liquid SDK",
-                              "href":"/references/sdks"
-                           }
-                        ]
-                     },
-                     {
-                        "group":"Landing pages",
-                        "expanded":false,
-                        "pages":[]
-                     },
-                     {
-                        "group":"Full funnel",
-                        "expanded":false,
-                        "pages":[]
-                     },
-                     {
-                        "group":"Pop-ups",
-                        "expanded":false,
-                        "pages":[]
-                     },
-                     {
-                        "group":"Checkout blocks",
-                        "expanded":false,
-                        "pages":[]
-                     },
-                     {
-                        "group":"Headless",
-                        "expanded":false,
-                        "pages":[]
-                     }
-                  ]
-               },
-               {
-                  "anchor":"Co-branded Emails",
-                  "icon":"mail",
-                  "pages":[
-                     "guides/co-branded-messaging"
-                  ]
                }
             ]
          },
          {
             "tab":"Partner Integrations",
-            "href":"https://external-link.com/blog"
+            "anchors":[
+               {
+                  "anchor":"Integrations",
+                  "icon":"plug",
+                  "pages":[
+                     "guides/integrations/overview"
+                  ]
+               },
+               {
+                  "anchor":"Build an Integration",
+                  "icon":"hammer",
+                  "pages":[
+                     "guides/integrations/build-integration"
+                  ]
+               }
+            ]
          },
          {
             "tab":"MCP",
@@ -668,6 +749,11 @@
                         ]
                      }
                   ]
+               },
+               {
+                  "item":"Klaviyo",
+                  "icon":"envelope",
+                  "href":"/references/klaviyo-two-sides"
                }
             ]
          },

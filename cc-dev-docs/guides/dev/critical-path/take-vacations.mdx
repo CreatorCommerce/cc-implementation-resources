@@ -1,0 +1,124 @@
+---
+title: 'Take Real Vacations'
+description: 'Build systems that don't page you at 2am. Disconnect completely. Come back refreshed.'
+---
+
+You know the feeling. You're on vacation, supposedly relaxing, but your laptop is in your bag "just in case." Your phone buzzes and your heart rate spikes. Even when nothing breaks, you're never fully present.
+
+This is the hidden cost of building and maintaining infrastructure.
+
+## The On-Call Reality
+
+When you own infrastructure:
+
+- **Databases need monitoring** — Disk space, connections, slow queries
+- **APIs need uptime** — Timeouts, rate limits, error rates
+- **Integrations break** — Third-party API changes, webhook failures
+- **Traffic spikes happen** — Often at the worst possible time
+
+Even with good monitoring and runbooks, **you are the last line of defense.**
+
+## The CreatorCommerce Difference
+
+When you build on CreatorCommerce:
+
+- **We handle infrastructure** — Our team monitors, responds, fixes
+- **Shopify handles commerce** — Their 99.99% uptime, not yours
+- **Your code is just templates** — Liquid files don't have runtime errors
+- **Data sync happens automatically** — No cron jobs to babysit
+- **Integrations stay connected** — Klaviyo, Attentive, Flow—we maintain them
+- **API versioning is managed** — We handle Shopify API updates
+
+**You are genuinely off the hook.**
+
+## What Real Vacations Enable
+
+### 1. Actual Rest
+
+Rest isn't just not working. It's not *thinking* about work. When you know systems are truly handled, your brain actually relaxes.
+
+### 2. Creative Renewal
+
+The best ideas come when you're not trying to have them. Hiking, swimming, reading, playing with your kids—these activities feed your creative reservoir.
+
+### 3. Sustainable Pace
+
+Teams that take real vacations:
+- Have lower burnout rates
+- Stay longer at companies
+- Do better work when they're working
+- Are more creative and innovative
+
+### 4. Better Judgment
+
+Rested developers make better architectural decisions. They see patterns instead of just problems. They build for the long term.
+
+## Designing for Disconnection
+
+### Principle 1: No Runtime Dependencies You Own
+
+Every service you run is a service that can break:
+- ❌ Custom API servers
+- ❌ Background job processors  
+- ❌ Database connections
+- ❌ Cache layers
+
+With CreatorCommerce:
+- ✅ Static Liquid templates
+- ✅ Shopify-hosted assets
+- ✅ Platform-managed data sync
+- ✅ Nothing to monitor
+
+### Principle 2: Graceful Degradation Built In
+
+Your templates should handle missing data gracefully:
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+
+{% if cc_creator %}
+  <h1>{{ cc_creator.cc-creator-first-name }}'s Shop</h1>
+{% else %}
+  <h1>Shop Our Collection</h1>
+{% endif %}
+```
+
+No creator context? Show a sensible default. No errors. No pages.
+
+### Principle 3: No Secrets in Your Code
+
+When your templates are just presentation logic:
+- No API keys to rotate
+- No database credentials to protect
+- No security incidents to respond to
+
+### Principle 4: Version Control as Backup
+
+Your entire implementation is in Git:
+- Rollback with a single command
+- No database restores needed
+- Colleagues can help if truly needed
+- But they probably won't need to
+
+## The Permission You Need
+
+Here's the truth: **you're allowed to disconnect.**
+
+The work will be there when you get back. The systems will keep running. Your partners will keep selling. Your customers will keep buying.
+
+And when you return, refreshed and renewed, you'll do your best work.
+
+## A Practical Test
+
+Before your next vacation, ask:
+
+1. What could break while I'm gone?
+2. Who would fix it?
+3. Would they page me?
+
+If the answers aren't "nothing," "someone else," and "no"—reconsider your architecture.
+
+**The best systems are the ones you can walk away from.**

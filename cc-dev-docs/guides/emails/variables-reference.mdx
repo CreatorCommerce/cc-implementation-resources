@@ -1,0 +1,103 @@
+---
+title: 'Email Variables Reference'
+description: 'All available co-branded variables for images, text, and other personalization in emails.'
+---
+
+## Profile Properties
+
+These properties are set on customer profiles when they interact with creator pages.
+
+### Klaviyo Syntax
+
+| Variable | Klaviyo Access | Example Value |
+|----------|----------------|---------------|
+| Creator handle | `{{ person.cc_creator_handle }}` | sarah-jones |
+| Creator name | `{{ person.cc_creator_name }}` | Sarah |
+| Full name | `{{ person.cc_creator_full_name }}` | Sarah Jones |
+| Discount code | `{{ person.cc_discount_code }}` | SARAH15 |
+| Discount amount | `{{ person.cc_discount_amount }}` | 15 |
+| Profile image | `{{ person.cc_creator_image }}` | https://... |
+| Landing URL | `{{ person.cc_landing_url }}` | https://... |
+
+### Using in Templates
+
+```html
+{% if person.cc_creator_name %}
+  <p>Thanks for shopping with {{ person.cc_creator_name }}!</p>
+{% endif %}
+```
+
+## Images
+
+### Profile Photo
+
+```html
+<img src="{{ person.cc_creator_image }}" 
+     alt="{{ person.cc_creator_name }}"
+     width="60" 
+     height="60" 
+     style="border-radius: 50%;" />
+```
+
+### Fallback Image
+
+```html
+{% if person.cc_creator_image %}
+  <img src="{{ person.cc_creator_image }}" alt="" />
+{% else %}
+  <img src="https://yourstore.com/default-avatar.png" alt="" />
+{% endif %}
+```
+
+## Text Personalization
+
+### Greeting
+
+```html
+{% if person.cc_creator_name %}
+  <h1>{{ person.cc_creator_name }} sent you something special</h1>
+{% else %}
+  <h1>Check out our latest picks</h1>
+{% endif %}
+```
+
+### Discount Callout
+
+```html
+{% if person.cc_discount_code %}
+  <div class="discount-banner">
+    Use code <strong>{{ person.cc_discount_code }}</strong> 
+    for {{ person.cc_discount_amount }}% off
+  </div>
+{% endif %}
+```
+
+## Links
+
+### Back to Creator Page
+
+```html
+<a href="{{ person.cc_landing_url }}">
+  Shop {{ person.cc_creator_name }}'s picks
+</a>
+```
+
+### Checkout with Discount
+
+```html
+<a href="https://yourstore.com/checkout?discount={{ person.cc_discount_code }}">
+  Checkout Now
+</a>
+```
+
+## Conditional Blocks
+
+Show/hide entire sections based on creator context:
+
+```html
+{% if person.cc_creator_handle %}
+  <!-- Full co-branded block -->
+{% else %}
+  <!-- Generic content -->
+{% endif %}
+```
