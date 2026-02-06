@@ -1,0 +1,107 @@
+---
+title: 'Prototype in Shopify Flow'
+description: 'Test integration logic in Shopify Flow before building custom code.'
+---
+
+Shopify Flow is the fastest way to prototype and validate integration logic before investing in custom development.
+
+## Why Prototype in Flow?
+
+- **No code required** — Visual builder, instant deployment
+- **Real data** — Test with actual CC events and data
+- **Quick iteration** — Modify and re-test in minutes
+- **Production-ready** — Many prototypes become permanent solutions
+
+## Common Prototypes
+
+### Prototype: CRM Sync
+
+Before building a full CRM integration, test with Flow:
+
+```
+Trigger: CC Partner Created
+Action: Send HTTP Request to CRM API
+Payload: Partner name, email, source
+```
+
+**What you learn:**
+- Does your CRM accept the data format?
+- What fields do you actually need?
+- How fast does the sync need to be?
+
+### Prototype: Custom Notifications
+
+Before building a notification service:
+
+```
+Trigger: CC Order Attributed
+Condition: Order value > $500
+Action: Send HTTP Request to Slack webhook
+Payload: Partner name, order value, customer
+```
+
+**What you learn:**
+- What events matter for notifications?
+- What data do recipients need?
+- What's the right frequency?
+
+### Prototype: External Analytics
+
+Before building analytics integration:
+
+```
+Trigger: CC Order Attributed
+Action: Send HTTP Request to analytics endpoint
+Payload: Partner ID, order ID, value, products
+```
+
+**What you learn:**
+- What data points matter for analysis?
+- How should attribution be structured?
+- What aggregations do you need?
+
+## Flow Prototyping Pattern
+
+<Steps>
+  <Step title="Define the trigger">
+    What CC event starts the process?
+  </Step>
+  <Step title="Add conditions">
+    When should it actually run?
+  </Step>
+  <Step title="Use HTTP Request action">
+    Send data to a test endpoint (Webhook.site, RequestBin).
+  </Step>
+  <Step title="Inspect payloads">
+    See exactly what data is available.
+  </Step>
+  <Step title="Iterate">
+    Adjust conditions and payloads until it's right.
+  </Step>
+  <Step title="Decide">
+    Keep in Flow, or build custom integration.
+  </Step>
+</Steps>
+
+## Testing Tools
+
+Use these to capture and inspect webhook payloads:
+
+| Tool | Use Case |
+|------|----------|
+| [Webhook.site](https://webhook.site) | Quick payload inspection |
+| [RequestBin](https://requestbin.com) | Persistent webhook capture |
+| [Pipedream](https://pipedream.com) | Webhook + processing |
+
+## When to Graduate from Flow
+
+Move to custom integration when:
+- You need complex data transformation
+- You require guaranteed delivery
+- Volume exceeds Flow limits
+- You need sub-second latency
+
+## Related
+
+- [Shopify Flow Integration](/guides/integrations/content-automation/shopify-flow)
+- [Shopify Flow Webhooks Reference](/references/webhooks-shopify-flow)

@@ -1,0 +1,188 @@
+---
+title: 'Merchant Auth Flow'
+description: 'How to handle API key generation and secure storage for merchant integrations.'
+---
+
+When building integrations that connect to CreatorCommerce on behalf of merchants, you need to handle API key generation and storage securely.
+
+## Where API Keys Come From
+
+### CreatorCommerce API Keys
+
+Merchants generate CC API keys in their CreatorCommerce dashboard:
+
+```
+CC Admin → Settings → API → Generate Key
+```
+
+Your integration receives this key during setup and uses it to authenticate API requests on the merchant's behalf.
+
+### Shopify Admin API
+
+For direct Shopify access to CC metaobjects, use Shopify's standard OAuth flow or custom app credentials.
+
+## Integration Auth Patterns
+
+### Pattern 1: Merchant Provides Key
+
+Merchant copies API key from CC and pastes into your integration settings.
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   CC Admin   │────▶│   Merchant   │────▶│ Your System  │
+│ Generate Key │     │  Copies Key  │     │  Stores Key  │
+└──────────────┘     └──────────────┘     └──────────────┘
+```
+
+**Pros:** Simple, no OAuth required
+**Cons:** Manual step, key visible to merchant
+
+### Pattern 2: OAuth Flow
+
+Your integration redirects to CC for authorization, receives token automatically.
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│ Your System  │────▶│      CC      │────▶│ Your System  │
+│  Redirect    │     │   Authorize  │     │ Store Token  │
+└──────────────┘     └──────────────┘     └──────────────┘
+```
+
+**Pros:** No manual key copying, revokable access
+**Cons:** More complex to implement
+
+### Pattern 3: Shopify App Installation
+
+For Shopify apps, use Shopify's OAuth and access CC data via metaobjects.
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│ Shopify App  │────▶│   Shopify    │────▶│ Your System  │
+│  Install     │     │    OAuth     │     │ Store Token  │
+└──────────────┘     └──────────────┘     └──────────────┘
+                            │
+                            ▼
+                   ┌──────────────┐
+                   │ CC Metaobjects│
+                   │   via Admin   │
+                   │     API       │
+                   └──────────────┘
+```
+
+**Pros:** Native Shopify experience, access to all Shopify data
+**Cons:** Requires Shopify app approval for public apps
+
+## Secure Key Storage
+
+### Requirements
+
+- **Encrypt at rest** — Never store API keys in plaintext
+- **Encrypt in transit** — Always use HTTPS
+- **Limit access** — Only services that need keys should access them
+- **Audit access** — Log when keys are used
+- **Support rotation** — Allow merchants to rotate keys without breaking integration
+
+### Storage Options
+
+| Option | Use Case | Security |
+|--------|----------|----------|
+| Environment variables | Single-tenant, self-hosted | Good |
+| Secrets manager (AWS, GCP, Vault) | Multi-tenant SaaS | Best |
+| Encrypted database column | Multi-tenant with simpler infra | Good |
+| Shopify app storage | Shopify apps | Good (Shopify manages) |
+
+### Example: Encrypted Storage
+
+```javascript
+const crypto = require('crypto');
+
+// Encrypt before storing
+function encryptKey(apiKey, encryptionKey) {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
+  const encrypted = Buffer.concat([cipher.update(apiKey), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return { encrypted, iv, tag };
+}
+
+// Decrypt when needed
+function decryptKey(encrypted, iv, tag, encryptionKey) {
+  const decipher = crypto.createDecipheriv('aes-256-gcm', encryptionKey, iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString();
+}
+```
+
+## Key Rotation
+
+Support merchants rotating their API keys:
+
+1. **Accept new key** — Provide UI for merchant to enter new key
+2. **Validate new key** — Test it works before saving
+3. **Replace old key** — Atomic swap to prevent downtime
+4. **Log the change** — Record when rotation occurred
+
+```javascript
+async function rotateApiKey(merchantId, newApiKey) {
+  // Validate new key works
+  const valid = await testApiKey(newApiKey);
+  if (!valid) throw new Error('Invalid API key');
+  
+  // Atomically update
+  await db.transaction(async (tx) => {
+    await tx.update('merchants', merchantId, {
+      apiKey: encrypt(newApiKey),
+      keyRotatedAt: new Date()
+    });
+  });
+  
+  // Log for audit
+  await auditLog.record('api_key_rotated', { merchantId });
+}
+```
+
+## Scopes and Permissions
+
+When requesting access, only request what you need:
+
+| Scope | Access |
+|-------|--------|
+| `creators:read` | Read partner profiles |
+| `creators:write` | Create/update partners |
+| `drops:read` | Read drops and products |
+| `drops:write` | Update drops |
+| `orders:read` | Read attributed orders |
+| `analytics:read` | Read performance data |
+
+## Error Handling
+
+Handle auth errors gracefully:
+
+| Error | Cause | Action |
+|-------|-------|--------|
+| `401 Unauthorized` | Invalid or expired key | Prompt merchant to reconnect |
+| `403 Forbidden` | Insufficient scopes | Request additional permissions |
+| `429 Too Many Requests` | Rate limited | Backoff and retry |
+
+```javascript
+async function callCCApi(merchantId, endpoint) {
+  try {
+    const apiKey = await getDecryptedKey(merchantId);
+    return await fetch(`https://api.creatorcommerce.com${endpoint}`, {
+      headers: { 'Authorization': `Bearer ${apiKey}` }
+    });
+  } catch (error) {
+    if (error.status === 401) {
+      await notifyMerchant(merchantId, 'reconnect_required');
+      throw new ReconnectRequiredError();
+    }
+    throw error;
+  }
+}
+```
+
+## Related
+
+- [Build an Integration](/guides/integrations/build-integration)
+- [CC APIs](/references/unified-api-reference)
+- [Request Custom Webhook](/guides/integrations/build/custom-webhook)

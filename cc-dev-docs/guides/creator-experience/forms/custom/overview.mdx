@@ -1,0 +1,86 @@
+---
+title: 'Custom Forms'
+description: 'Build forms for any structured data collection.'
+---
+
+Custom forms let you collect any structured data from partners. Use when standard forms don't fit your needs.
+
+## When to Use Custom Forms
+
+- Collecting program-specific data (certifications, specialties)
+- Gathering information for custom experiences
+- Unique data requirements per partner segment
+- Integration with external systems
+
+## Building Custom Forms
+
+### Field Types
+
+| Type | Example Use |
+|------|-------------|
+| Text | Certification number, specialty |
+| Number | Years of experience, follower count |
+| Select | Primary platform, content style |
+| Multi-select | Areas of expertise |
+| Date | Certification date, anniversary |
+| File | License upload, portfolio |
+| URL | Portfolio link, other social |
+| Checkbox | Terms acceptance, opt-ins |
+| Radio | Single choice from options |
+
+### Conditional Logic
+
+Show/hide fields based on answers:
+
+```
+If "Are you a licensed professional?" = Yes
+  Show: License number, State, Expiration date
+Else
+  Hide those fields
+```
+
+### Validation Rules
+
+- Required fields
+- Format validation (email, URL, phone)
+- Custom regex patterns
+- Cross-field validation
+
+## Mapping to Custom Fields
+
+Form submissions map to CC custom fields:
+
+```
+Form field: "Years of Experience"
+Maps to: cc-creator-years-experience
+
+Form field: "Primary Platform"
+Maps to: cc-creator-primary-platform
+```
+
+## API Integration
+
+Submit custom form data via API:
+
+```javascript
+await cc.creators.update(partnerId, {
+  customFields: {
+    "cc-certification-number": "RD12345",
+    "cc-specialty-areas": ["nutrition", "sports"],
+    "cc-years-experience": 10
+  }
+});
+```
+
+## HTML Reference
+
+For fully custom form HTML:
+
+<Card title="Form HTML Reference" icon="code" href="/references/form-html-reference">
+  HTML structure and field specifications for custom forms.
+</Card>
+
+## Related
+
+- [Custom Fields Reference](/references/custom-fields-reference)
+- [CC APIs](/references/unified-api-reference)

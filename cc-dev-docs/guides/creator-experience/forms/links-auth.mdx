@@ -1,0 +1,127 @@
+---
+title: 'Links + Auth Explained'
+description: 'How CC-hosted creator UX handles authentication and access.'
+---
+
+Understanding how partners access CC forms and dashboard.
+
+## Link Types
+
+### Public Form Links
+
+Anyone with the link can submit:
+
+```
+https://partners.yourbrand.com/form/apply
+```
+
+**Use for:** Application forms, public signups
+
+### Authenticated Links
+
+Requires partner to be logged in:
+
+```
+https://partners.yourbrand.com/dashboard
+https://partners.yourbrand.com/form/products
+```
+
+**Use for:** Partner-only forms, dashboard access
+
+### Magic Links
+
+One-time use, auto-authenticates:
+
+```
+https://partners.yourbrand.com/dashboard?token=abc123xyz
+```
+
+**Use for:** Email invites, frictionless access
+
+### SSO Links
+
+Passes identity from your system:
+
+```
+https://partners.yourbrand.com/dashboard?sso_token={your_token}
+```
+
+**Use for:** Embedded access, partner portals
+
+## Authentication Methods
+
+### Magic Links (Recommended)
+
+1. Partner requests access or you send invite
+2. CC emails magic link
+3. Partner clicks, automatically logged in
+4. Session persists for configured duration
+
+**Pros:** Frictionless, no password to remember
+**Cons:** Requires email access
+
+### Password
+
+1. Partner sets password during signup
+2. Logs in with email + password
+3. Password reset via email
+
+**Pros:** Traditional, familiar
+**Cons:** Password fatigue, reset requests
+
+### SSO (SAML/OAuth)
+
+1. Partner logs into your system
+2. Your system generates SSO token
+3. CC validates and creates session
+
+**Pros:** Single sign-on, enterprise-ready
+**Cons:** Setup required
+
+### Shopify Customer Identity
+
+1. Partner logs into Shopify customer account
+2. CC app block accesses identity
+3. Seamless in-account experience
+
+**Pros:** No separate login
+**Cons:** Only for customer-partners
+
+## Session Management
+
+| Setting | Default | Options |
+|---------|---------|---------|
+| Session duration | 7 days | 1 hour - 30 days |
+| Remember me | Enabled | Enable/disable |
+| Multi-device | Allowed | Allow/restrict |
+
+## Security
+
+- All links are HTTPS
+- Magic links expire after use
+- Sessions can be revoked
+- Audit logs available
+
+## Generating Links
+
+### In CC Admin
+
+1. Go to Partners → [Partner Name]
+2. Click "Generate Access Link"
+3. Choose type (magic link, direct, SSO)
+4. Copy and share
+
+### Via API
+
+```javascript
+const link = await cc.auth.generateMagicLink({
+  partnerId: "abc123",
+  redirectTo: "/form/products",
+  expiresIn: "24h"
+});
+```
+
+## Related
+
+- [Entry Points to Content Collection](/guides/creator-experience/getting-started/entry-points)
+- [Build Your Own Dashboard - Auth](/guides/creator-experience/build-your-own/auth)

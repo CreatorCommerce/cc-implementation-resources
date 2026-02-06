@@ -1,0 +1,78 @@
+---
+title: 'Using OpenAI & Claude'
+description: 'Custom content generation with OpenAI, Claude, and other LLMs.'
+---
+
+For custom generation needs or if you have existing LLM infrastructure.
+
+## OpenAI Example
+
+```javascript
+const prompt = `
+Write a short, authentic bio for an affiliate partner.
+
+Partner: ${creator.firstName} ${creator.lastName}
+Niche: ${creator.niche}
+Brand: ${shop.name}
+Brand voice: ${brandVoice}
+Their audience: ${creator.audienceDescription}
+
+Requirements:
+- Under 50 words
+- Sound human, not salesy
+- Mention why they chose this brand
+- Match the brand voice
+`;
+
+const response = await openai.chat.completions.create({
+  model: "gpt-4",
+  messages: [{ role: "user", content: prompt }]
+});
+```
+
+## Claude Example
+
+```javascript
+const response = await anthropic.messages.create({
+  model: "claude-3-sonnet",
+  max_tokens: 150,
+  messages: [{
+    role: "user",
+    content: `Generate a product testimonial for ${product.name} 
+              from the perspective of ${creator.firstName}, 
+              a ${creator.niche} with a ${creator.contentStyle} style.
+              Keep it under 30 words and first-person.`
+  }]
+});
+```
+
+## Prompt Templates
+
+### Bio Template
+```
+You are writing a short bio for {partnerName}, a {niche} 
+who has partnered with {brandName}.
+
+Write 2-3 sentences that:
+1. Establish who they are and their expertise
+2. Explain why they partnered with this brand
+3. Sound authentic, not marketing-speak
+```
+
+### Testimonial Template
+```
+Write a first-person testimonial from {partnerName} about {productName}.
+
+Requirements:
+- First person ("I", "my")
+- Mention specific benefit they'd care about
+- Under 30 words
+- Sound like something they'd actually say
+```
+
+## Cost Management
+
+- **Generate once** — Don't regenerate unnecessarily
+- **Batch processing** — Cheaper for high volume
+- **Tiered investment** — More generation for premium partners
+- **Cache results** — Store and reuse

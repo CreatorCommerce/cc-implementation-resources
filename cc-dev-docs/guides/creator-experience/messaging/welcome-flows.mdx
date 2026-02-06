@@ -1,0 +1,81 @@
+---
+title: 'Welcome Flows'
+description: 'Onboarding email sequences for new partners.'
+---
+
+Welcome flows set the tone for your partnership. Get partners excited and activated quickly.
+
+## Welcome Sequence Structure
+
+### Day 0: Immediate Welcome
+
+**Trigger:** Partner created
+
+**Content:**
+- Welcome to the program
+- What to expect
+- First action CTA (complete profile)
+
+```
+Subject: Welcome to [Brand] Partners! 🎉
+
+Hi {firstName},
+
+You're officially a [Brand] partner! Here's what happens next:
+
+1. Complete your profile
+2. Pick your products
+3. Get your custom link
+
+[Complete My Profile →]
+```
+
+### Day 1: Profile Nudge
+
+**Trigger:** 24 hours, profile incomplete
+
+**Content:**
+- Reminder to complete profile
+- Why it matters
+- How long it takes
+
+### Day 3: Product Selection
+
+**Trigger:** 72 hours, no products selected
+
+**Content:**
+- Encourage product picks
+- Show popular choices
+- Link to product picker
+
+### Day 7: Share Prompt
+
+**Trigger:** 7 days, no shares/clicks
+
+**Content:**
+- Encourage first share
+- Provide share assets
+- Show what others are doing
+
+## Personalization
+
+Use CC data for personalization:
+
+| Variable | Source | Example |
+|----------|--------|---------|
+| `firstName` | Partner profile | "Hi Sarah" |
+| `shopUrl` | CC-generated | "yourbrand.com/p/sarah" |
+| `discountCode` | Partner assignment | "SARAH20" |
+| `discountAmount` | Partner tier | "20%" |
+
+## Best Practices
+
+- **Short and focused** — One CTA per email
+- **Mobile-friendly** — Most partners read on mobile
+- **Value-first** — What's in it for them
+- **Clear next step** — What should they do now
+
+## Related
+
+- [Activation Flows](/guides/creator-experience/messaging/activation-flows)
+- [Creator Email Variables](/guides/creator-emails/variables-reference)

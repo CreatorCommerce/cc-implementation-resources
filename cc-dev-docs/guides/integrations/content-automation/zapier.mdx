@@ -1,0 +1,78 @@
+---
+title: 'Zapier'
+description: 'Connect CreatorCommerce to 5,000+ apps with Zapier.'
+---
+
+Use Zapier to connect CreatorCommerce with apps not natively supported.
+
+## What This Integration Does
+
+| CC → Zapier | Zapier → CC |
+|-------------|-------------|
+| Partner events | Create/update partners |
+| Order attribution | Update partner fields |
+| Performance data | Trigger CC actions |
+
+## Common Zaps
+
+### Sync to Google Sheets
+```
+Trigger: CC Partner Created
+Action: Add row to Google Sheet
+```
+
+### Notify in Slack
+```
+Trigger: CC Order Attributed
+Condition: Order > $500
+Action: Post to Slack channel
+```
+
+### Create Notion Entry
+```
+Trigger: CC Partner Activated
+Action: Create Notion page with partner details
+```
+
+### Sync to CRM
+```
+Trigger: CC Partner Created
+Action: Create HubSpot contact
+Action: Add to partner pipeline
+```
+
+## Setup
+
+<Steps>
+  <Step title="Create Zap">
+    In Zapier, search for CreatorCommerce triggers.
+  </Step>
+  <Step title="Connect account">
+    Authenticate with your CC API key.
+  </Step>
+  <Step title="Map fields">
+    Map CC data to your destination app.
+  </Step>
+  <Step title="Test and enable">
+    Run a test and turn on your Zap.
+  </Step>
+</Steps>
+
+## Available Triggers
+
+- Partner Created
+- Partner Updated
+- Partner Activated
+- Order Attributed
+- Drop Updated
+
+## Available Actions
+
+- Create Partner
+- Update Partner
+- Update Partner Field
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [CC APIs](/references/unified-api-reference)

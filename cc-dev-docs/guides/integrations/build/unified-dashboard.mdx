@@ -1,0 +1,115 @@
+---
+title: 'Build a Unified Dashboard'
+description: 'Create a single dashboard for affiliates and influencers across platforms.'
+---
+
+Build a unified partner dashboard that combines CC with your other affiliate and influencer tools.
+
+## The Problem
+
+Partners juggle multiple platforms:
+- Affiliate network for commissions
+- CC for co-branded content
+- Your portal for assets and communication
+- Analytics for performance
+
+## The Solution
+
+One dashboard that pulls from all sources using CC as the co-branding layer.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│           Your Unified Dashboard            │
+├─────────────────────────────────────────────┤
+│                                             │
+│  ┌─────────┐  ┌─────────┐  ┌─────────────┐ │
+│  │ CC API  │  │Affiliate│  │  Your APIs  │ │
+│  │         │  │   API   │  │             │ │
+│  └────┬────┘  └────┬────┘  └──────┬──────┘ │
+│       │            │              │        │
+│       └────────────┼──────────────┘        │
+│                    │                        │
+│            Combined Data Layer              │
+│                    │                        │
+│       ┌────────────┼──────────────┐        │
+│       ▼            ▼              ▼        │
+│  ┌─────────┐  ┌─────────┐  ┌───────────┐  │
+│  │ Profile │  │Earnings │  │ Content   │  │
+│  │  View   │  │  View   │  │  Manager  │  │
+│  └─────────┘  └─────────┘  └───────────┘  │
+└─────────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Profile View
+Combines:
+- CC partner profile
+- Affiliate platform data
+- Your CRM data
+
+```javascript
+async function getUnifiedProfile(partnerId) {
+  const [ccProfile, affiliateData, crmData] = await Promise.all([
+    cc.creators.get(partnerId),
+    affiliatePlatform.getPartner(partnerId),
+    crm.getContact(partnerEmail)
+  ]);
+  
+  return {
+    ...ccProfile,
+    commissions: affiliateData.commissions,
+    tier: affiliateData.tier,
+    salesRep: crmData.owner
+  };
+}
+```
+
+### Earnings View
+Combines:
+- CC attributed sales
+- Affiliate network commissions
+- Bonus/incentive data
+
+### Content Manager
+Powered by CC:
+- Product picker
+- Bio editor
+- Landing page preview
+
+### Performance Analytics
+Combines:
+- CC co-branded funnel data
+- Affiliate click/conversion data
+- Your analytics
+
+## Authentication
+
+Use CC SSO to authenticate partners, then fetch from other systems server-side:
+
+```javascript
+// Partner logs in via CC SSO
+const ccToken = await cc.auth.exchangeSSO(ssoToken);
+const partnerId = await cc.auth.getPartnerId(ccToken);
+
+// Fetch unified data server-side
+const dashboard = await buildUnifiedDashboard(partnerId, {
+  ccToken,
+  affiliateApiKey: process.env.AFFILIATE_KEY,
+  crmApiKey: process.env.CRM_KEY
+});
+```
+
+## Hosting Options
+
+- **Embed in existing portal** — Add CC components to your current system
+- **Standalone app** — Build dedicated partner portal
+- **Shopify customer accounts** — For customer-partners
+
+## Related
+
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
+- [CC APIs](/references/unified-api-reference)
+- [Authentication](/guides/creator-experience/build-your-own/auth)

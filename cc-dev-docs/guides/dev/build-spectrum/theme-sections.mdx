@@ -1,0 +1,145 @@
+---
+title: 'Theme Sections (Low Code)'
+description: 'Install CC Liquid sections for deeper theme integration and brand consistency.'
+---
+
+Theme Sections give you the structure and logic of CC components with full control over the HTML and styling. Install once, customize forever.
+
+## What You Get
+
+CC provides Liquid section templates for:
+
+| Section | Purpose |
+|---------|---------|
+| `cc-hero-banner` | Full-width partner intro |
+| `cc-product-grid` | Partner's drop with filtering |
+| `cc-creator-bio` | Detailed partner profile |
+| `cc-testimonial-carousel` | Partner content slider |
+| `cc-discount-banner` | Promotional strip |
+| `cc-trust-badges` | Partner social proof |
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────┐
+│              Your Theme                      │
+├─────────────────────────────────────────────┤
+│                                             │
+│  sections/                                  │
+│  ├── cc-hero-banner.liquid    ← CC Section  │
+│  ├── cc-product-grid.liquid   ← CC Section  │
+│  ├── header.liquid            ← Your Theme  │
+│  └── footer.liquid            ← Your Theme  │
+│                                             │
+│  templates/                                 │
+│  └── page.cc-creator.json     ← Uses CC     │
+│                                             │
+└─────────────────────────────────────────────┘
+```
+
+## Installation
+
+<Steps>
+  <Step title="Copy Section Files">
+    Download CC section templates from the implementation repo.
+  </Step>
+  <Step title="Add to Theme">
+    Place in your theme's `sections/` directory.
+  </Step>
+  <Step title="Include Snippets">
+    Add required CC snippets to `snippets/` directory.
+  </Step>
+  <Step title="Create Template">
+    Build page templates that use CC sections.
+  </Step>
+  <Step title="Customize">
+    Modify HTML, CSS, and settings as needed.
+  </Step>
+</Steps>
+
+## Customization
+
+Unlike App Blocks, you own the code:
+
+```liquid
+{% comment %} cc-hero-banner.liquid {% endcomment %}
+
+<section class="cc-hero {{ section.settings.style }}">
+  {% if cc_creator %}
+    <div class="cc-hero__content">
+      {% comment %} Customize this structure however you want {% endcomment %}
+      <h1>{{ cc_creator.cc-creator-first-name }}'s Shop</h1>
+      <p>{{ cc_creator.cc-creator-shop-description }}</p>
+      
+      {% if cc_creator.cc-creator-profile-picture %}
+        <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 400 }}" 
+             alt="{{ cc_creator.cc-creator-first-name }}">
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "CC Hero Banner",
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Style",
+      "options": [
+        { "value": "minimal", "label": "Minimal" },
+        { "value": "bold", "label": "Bold" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+```
+
+## Section Settings
+
+Each section includes configurable schema settings:
+
+| Setting Type | Examples |
+|--------------|----------|
+| Layout | Columns, alignment, spacing |
+| Content | Which fields to display |
+| Style | Color overrides, typography |
+| Behavior | Animations, interactions |
+
+## Maintenance
+
+**What CC maintains:**
+- Data fetching snippets
+- Core Liquid logic updates
+- New field support
+
+**What you maintain:**
+- HTML structure
+- CSS styling
+- Section schema
+- Template assignments
+
+## When to Use
+
+**Use Theme Sections when:**
+- You need brand-consistent designs
+- You want to modify HTML structure
+- You're comfortable with Liquid
+- You need section-level customization
+
+**Move beyond Theme Sections when:**
+- You need partner dashboard customization
+- You want to build outside Shopify themes
+- You need real-time dynamic features
+- You're building a platform product
+
+## Next Step
+
+Want to customize the look without changing structure? Try [Custom Styling](/guides/dev/build-spectrum/custom-styling).
+
+## Related
+
+- [The Build Spectrum](/guides/dev/build-spectrum/overview)
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme)

@@ -1,0 +1,46 @@
+---
+title: 'Shopify Flow Overview'
+description: 'How CreatorCommerce uses Shopify Flow as the orchestration layer for all content workflows.'
+---
+
+All CC content workflows run through Shopify Flow—Shopify's native automation platform. This keeps everything inside Shopify's ecosystem with no external dependencies.
+
+## Why Shopify Flow?
+
+- **No external services** — No Zapier, Make.com, or third-party orchestration
+- **Native data access** — Read/write CC metaobjects, orders, customers directly
+- **Visual builder** — Your ops team can modify workflows without code
+- **Built-in reliability** — Shopify handles retries, failures, execution guarantees
+
+## How It Works
+
+```
+Partner Event (created, updated, order)
+         │
+         ▼
+    Shopify Flow
+         │
+         ├── Condition checks
+         ├── CC Actions (update fields, generate content)
+         ├── Shopify Actions (tags, metafields)
+         └── External Actions (HTTP, Klaviyo)
+         │
+         ▼
+    CC Custom Fields updated
+         │
+         ▼
+    Templates render enriched data
+```
+
+## Getting Started
+
+1. Open Shopify Admin → Apps → Flow
+2. Create new workflow
+3. Select a CC trigger (Partner Created, Order Attributed, etc.)
+4. Add conditions and actions
+5. Activate
+
+## Related
+
+- [Flow Triggers & Actions](/guides/enrichment/getting-started/triggers-actions) — Full reference
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — What to store

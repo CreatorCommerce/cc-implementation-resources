@@ -1,0 +1,85 @@
+---
+title: 'Apps with a Unified Creator Experience'
+description: 'Partner apps and platforms that integrate with CC for seamless creator experiences.'
+---
+
+Some partner platforms integrate directly with CreatorCommerce, providing a unified experience where partners manage everything in one place.
+
+## What "Unified" Means
+
+Instead of:
+- Log into affiliate platform → manage commissions
+- Log into CC dashboard → customize shop
+- Log into brand portal → access assets
+
+With unified apps:
+- Log into one platform → manage everything
+
+## Integrated Platforms
+
+### Affiliate Networks
+
+| Platform | Integration Type |
+|----------|------------------|
+| Impact | Deep link + SSO |
+| ShareASale | Embedded CC UI |
+| Refersion | API sync + SSO |
+
+### CRM & Partner Management
+
+| Platform | Integration Type |
+|----------|------------------|
+| HubSpot | Embedded dashboard |
+| Salesforce | Connected app |
+| PartnerStack | Native integration |
+
+### Custom Portals
+
+Build CC into your own partner portal:
+- Embed CC forms/dashboard via iframe
+- Use CC APIs for custom UI
+- Pass authentication via SSO
+
+## Building Unified Experiences
+
+### Option 1: Embed CC Dashboard
+
+Embed the full CC dashboard in your app:
+
+```html
+<iframe 
+  src="https://partners.yourbrand.com/dashboard?sso_token={token}" 
+  width="100%" 
+  height="800"
+></iframe>
+```
+
+### Option 2: API-Powered Custom UI
+
+Build your own UI, use CC APIs for data:
+
+```javascript
+// Fetch partner data
+const partner = await cc.creators.get(partnerId);
+
+// Submit updates
+await cc.creators.update(partnerId, {
+  bio: newBio,
+  products: selectedProducts
+});
+```
+
+### Option 3: Deep Links with SSO
+
+Link to CC with automatic authentication:
+
+```
+https://partners.yourbrand.com/form/products?
+  sso_token={token}&
+  redirect_after=/dashboard
+```
+
+## Related
+
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
+- [CC APIs](/references/unified-api-reference)

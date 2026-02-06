@@ -1,0 +1,53 @@
+---
+title: 'Refersion'
+description: 'Connect Refersion affiliate data with CreatorCommerce co-branded experiences.'
+---
+
+Integrate Refersion with CreatorCommerce to give your affiliates personalized shopping experiences.
+
+## What This Integration Does
+
+| CC → Refersion | Refersion → CC |
+|----------------|----------------|
+| Enhanced conversion tracking | Affiliate profiles |
+| Co-branded page visits | Commission data |
+| Attribution data | Partner tiers |
+
+## Setup
+
+<Steps>
+  <Step title="Get API key">
+    In Refersion, go to Settings → API to get your credentials.
+  </Step>
+  <Step title="Connect in CC">
+    In CC Admin → Integrations → Refersion, enter your API key.
+  </Step>
+  <Step title="Sync partners">
+    Import existing Refersion affiliates or map by email.
+  </Step>
+  <Step title="Test">
+    Verify data flows correctly with a test partner.
+  </Step>
+</Steps>
+
+## Use Cases
+
+### Upgrade Affiliate Links
+Replace standard Refersion links with co-branded landing pages—same tracking, better conversion.
+
+### Automatic Partner Creation
+When affiliates join in Refersion, automatically create CC profiles.
+
+### Performance Sync
+Refersion commissions update CC partner tiers automatically.
+
+## Webhook Events
+
+Refersion sends webhooks for:
+- `affiliate.created` → Create CC partner
+- `affiliate.updated` → Update CC partner
+- `conversion.created` → Log in CC analytics
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)

@@ -1,0 +1,194 @@
+---
+title: 'Custom Styling (Medium)'
+description: 'Apply brand CSS to CC components and dashboards without changing functionality.'
+---
+
+Custom Styling lets you make CC look like your brand without modifying underlying structure. Apply CSS to theme components and partner dashboards.
+
+## What You Can Style
+
+| Surface | Customization |
+|---------|---------------|
+| Theme sections | Full CSS control |
+| App blocks | CSS overrides via theme |
+| Partner dashboard | Custom CSS injection |
+| Partner forms | CSS customization |
+| Emails | Template styling |
+
+## Theme Component Styling
+
+### CSS Variables
+
+CC components use CSS variables for easy theming:
+
+```css
+/* Override CC defaults in your theme CSS */
+:root {
+  --cc-primary-color: #your-brand-color;
+  --cc-secondary-color: #your-accent-color;
+  --cc-font-family: 'Your Brand Font', sans-serif;
+  --cc-border-radius: 8px;
+  --cc-spacing-unit: 1rem;
+}
+```
+
+### Component Classes
+
+Target specific CC components:
+
+```css
+/* Hero section */
+.cc-hero {
+  background: linear-gradient(135deg, var(--cc-primary-color), #000);
+}
+
+/* Product grid */
+.cc-product-grid__item {
+  border: 1px solid #eee;
+  transition: transform 0.2s ease;
+}
+
+.cc-product-grid__item:hover {
+  transform: translateY(-4px);
+}
+
+/* Discount banner */
+.cc-discount-banner {
+  background: var(--cc-primary-color);
+  font-weight: 700;
+}
+```
+
+## Dashboard Styling
+
+Apply custom CSS to the CC partner dashboard:
+
+### Setup
+
+<Steps>
+  <Step title="Navigate to Dashboard Settings">
+    CC Admin → Settings → Dashboard Appearance
+  </Step>
+  <Step title="Add Custom CSS">
+    Paste your CSS in the custom styles field.
+  </Step>
+  <Step title="Preview">
+    Test with a sample partner account.
+  </Step>
+  <Step title="Publish">
+    Apply to all partners.
+  </Step>
+</Steps>
+
+### Example Dashboard CSS
+
+```css
+/* Brand the header */
+.cc-dashboard-header {
+  background: #your-brand-color;
+}
+
+.cc-dashboard-logo {
+  max-height: 40px;
+}
+
+/* Style form elements */
+.cc-form-input {
+  border-radius: 4px;
+  border: 2px solid #e0e0e0;
+}
+
+.cc-form-input:focus {
+  border-color: #your-brand-color;
+  box-shadow: 0 0 0 3px rgba(your-rgb, 0.1);
+}
+
+/* Button styling */
+.cc-btn-primary {
+  background: #your-brand-color;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+```
+
+## Form Styling
+
+Customize partner-facing forms:
+
+```css
+/* Form container */
+.cc-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Form sections */
+.cc-form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* Field labels */
+.cc-form-label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Help text */
+.cc-form-help {
+  font-size: 0.875rem;
+  color: #666;
+}
+```
+
+## Advanced: Dynamic Brand Colors
+
+Use creator brand colors dynamically:
+
+```liquid
+{% if cc_creator.cc-creator-shop-theme-primary-color %}
+<style>
+  .cc-creator-page {
+    --creator-primary: {{ cc_creator.cc-creator-shop-theme-primary-color }};
+    --creator-text: {{ cc_creator.cc-creator-shop-theme-text-color | default: '#000' }};
+  }
+</style>
+{% endif %}
+```
+
+## Limitations
+
+| ✅ Can Do | ❌ Can't Do |
+|-----------|-------------|
+| Change colors, fonts, spacing | Modify HTML structure |
+| Add animations | Change functionality |
+| Responsive adjustments | Add new features |
+| Brand consistency | Remove core elements |
+
+## When to Use
+
+**Use Custom Styling when:**
+- You want brand consistency
+- Structure is fine, just need visual changes
+- You have CSS expertise
+- You need quick brand alignment
+
+**Move beyond Custom Styling when:**
+- You need structural HTML changes
+- You want custom functionality
+- You need features beyond styling
+- You're building a platform product
+
+## Next Step
+
+Need complete control? Move to [Headless API](/guides/dev/build-spectrum/headless-api).
+
+## Related
+
+- [The Build Spectrum](/guides/dev/build-spectrum/overview)
+- [Dashboard CSS Reference](/references/css-reference)

@@ -1,0 +1,93 @@
+---
+title: 'Product Forms'
+description: 'Product and collection selection forms for partner drops.'
+---
+
+Product forms let partners select products for their drops—their curated recommendations that appear on landing pages.
+
+## Product Picker Types
+
+### Simple Product Picker
+
+Partners select from your full catalog:
+- Grid view with images
+- Search and filter
+- Select up to N products
+
+### Collection Picker
+
+Partners choose entire collections:
+- Pre-curated collection options
+- Category-based selection
+- Bundle selection
+
+### Guided Selection
+
+Walk partners through selection:
+- "Pick your top 3 skincare products"
+- "Select your favorite from each category"
+- "Build your starter kit"
+
+## Configuration Options
+
+### Limits
+
+| Setting | Options |
+|---------|---------|
+| Min products | 1-10 |
+| Max products | 3-50 |
+| Required categories | Must pick from X |
+
+### Display
+
+| Setting | Options |
+|---------|---------|
+| View | Grid, list |
+| Sort | Popular, newest, alphabetical |
+| Filter | By collection, tag, type |
+
+### Selection Behavior
+
+| Setting | Options |
+|---------|---------|
+| Ordering | Allow reorder, fixed order |
+| Annotations | Per-product notes, testimonials |
+| Variants | Select specific variants |
+
+## Product Annotations
+
+Partners can add context to selections:
+
+```
+Product: Vitamin C Serum
+Annotation fields:
+- Why I love it (text)
+- Best for (multi-select: dry skin, oily skin, etc.)
+- My rating (1-5)
+```
+
+## Using Selections
+
+Selected products populate:
+- Partner landing pages
+- Co-branded emails
+- Drops API for custom use
+
+```liquid
+{% for drop in cc_creator.cc-creator-drops %}
+  {% for product_data in drop.cc-creator-drop-products %}
+    {% assign product_id = product_data.cc-creator-drop-product-shopify-id %}
+    {% assign product = all_products[product_id] %}
+    
+    <div class="product-card">
+      {{ product.title }}
+      <p>{{ product_data.cc-why-i-love-it }}</p>
+    </div>
+  {% endfor %}
+{% endfor %}
+```
+
+## Related
+
+- [Custom Forms](/guides/creator-experience/forms/custom/overview)
+- [Drops Data Model](/references/drops-products-data-model)

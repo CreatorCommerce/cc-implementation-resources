@@ -1,0 +1,57 @@
+---
+title: 'Creator Order History'
+description: 'Pull data from orders attributed to partners to enrich their profiles.'
+---
+
+Every order attributed to a partner contains valuable signals. Aggregate them to build rich profiles.
+
+## What Order History Reveals
+
+| Data Point | How to Extract | What It Enables |
+|------------|----------------|-----------------|
+| Top products | Count line items by product | Auto-curate drops |
+| Category affinity | Group by collection | Match to campaigns |
+| AOV pattern | Average order totals | Predict partner quality |
+| Geographic spread | Shipping addresses | Local event targeting |
+| Repeat rate | Customer order frequency | Identify sticky partners |
+
+## Example: Auto-Curate Top Products
+
+When a partner hits 10 orders, set their featured products based on what actually sells:
+
+**Trigger:** CC Order Attributed
+
+**Condition:** Partner order count = 10 (or 25, 50, 100)
+
+**Actions:**
+1. Aggregate order data by product
+2. Sort by quantity, take top 8
+3. Update `cc-auto-top-products` field
+
+**Result:** Partner drops show their proven best-sellers.
+
+## Using in Templates
+
+```liquid
+{% assign auto_products = cc_creator.data.value.cc-auto-top-products %}
+{% assign manual_products = cc_creator.data.value.cc-creator-drops[0].cc-creator-drop-products %}
+{% assign products = manual_products | default: auto_products %}
+
+<section class="cc-products">
+  <h2>{{ cc_creator.cc-creator-first-name }}'s Top Picks</h2>
+  {% for product_handle in products %}
+    {% render 'product-card', product: all_products[product_handle] %}
+  {% endfor %}
+</section>
+```
+
+## Performance Tier Assignment
+
+Automatically tier partners based on proven performance:
+
+| Tier | Criteria |
+|------|----------|
+| Platinum | $50k+ lifetime OR 500+ orders |
+| Gold | $10k+ lifetime OR 100+ orders |
+| Silver | $1k+ lifetime OR 20+ orders |
+| Bronze | Everyone else |

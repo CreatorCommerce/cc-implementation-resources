@@ -1,0 +1,68 @@
+---
+title: 'Klaviyo'
+description: 'Sync partner data to Klaviyo for co-branded email and SMS flows.'
+---
+
+Klaviyo is the primary integration for co-branded messaging in CreatorCommerce.
+
+## What This Integration Does
+
+| CC → Klaviyo | Use Case |
+|--------------|----------|
+| Partner profiles | Segment partners for messaging |
+| Performance data | Trigger performance-based flows |
+| Co-branded variables | Personalize customer emails with partner content |
+| Events | Trigger flows on CC events |
+
+## Two Sides of Klaviyo
+
+Klaviyo serves two purposes in CC:
+
+### 1. Partner Messaging
+Email/SMS to your partners:
+- Welcome sequences
+- Performance updates
+- Activation reminders
+
+### 2. Consumer Co-branding
+Email/SMS to customers with partner personalization:
+- Cart abandonment with partner discount
+- Post-purchase with partner message
+- Welcome series with partner intro
+
+<Card title="The 2 Sides of Klaviyo" icon="arrows-left-right" href="/references/klaviyo-two-sides">
+  Detailed guide on using Klaviyo for both partner and consumer messaging.
+</Card>
+
+## Setup
+
+<Steps>
+  <Step title="Connect Klaviyo">
+    In CC Admin → Integrations → Klaviyo, connect with OAuth.
+  </Step>
+  <Step title="Configure sync">
+    Choose partner properties to sync to Klaviyo profiles.
+  </Step>
+  <Step title="Set up events">
+    Enable CC events to trigger Klaviyo flows.
+  </Step>
+  <Step title="Build flows">
+    Create Klaviyo flows using CC data and triggers.
+  </Step>
+</Steps>
+
+## Synced Properties
+
+| CC Field | Klaviyo Property |
+|----------|------------------|
+| Partner name | cc_partner_name |
+| Shop URL | cc_shop_url |
+| Discount code | cc_discount_code |
+| Tier | cc_partner_tier |
+| Lifetime sales | cc_lifetime_sales |
+
+## Related
+
+- [Klaviyo Webhooks](/references/webhooks-klaviyo)
+- [Consumer Email Variables](/guides/emails/variables-reference)
+- [Creator Email Variables](/guides/creator-emails/variables-reference)

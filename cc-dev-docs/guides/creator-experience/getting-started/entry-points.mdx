@@ -1,0 +1,94 @@
+---
+title: 'Entry Points to Content Collection'
+description: 'How partners access forms and dashboards—URLs, emails, embedded buttons, customer accounts.'
+---
+
+Partners need to access your collection surfaces. Here are the entry points.
+
+## The Flow
+
+```
+Partner receives access
+        │
+        ▼
+   Entry Point
+   (URL, email, button, account UI)
+        │
+        ▼
+   Auth (SSO, magic link, password)
+        │
+        ▼
+   Collection Surface
+   (form, dashboard, picker)
+```
+
+## Entry Point Types
+
+### Direct URLs
+
+Simple links to CC-hosted forms and dashboards.
+
+**Use for:**
+- Sharing in DMs, Slack, partner portals
+- Linking from your website
+- QR codes at events
+
+**Example:** `https://partners.yourbrand.com/dashboard`
+
+### Emails with URLs + SSO
+
+Partner emails containing magic links that authenticate automatically.
+
+**Use for:**
+- Onboarding sequences
+- Update requests
+- Reminder campaigns
+
+**Flow:**
+1. Partner receives email
+2. Clicks magic link
+3. Automatically authenticated
+4. Lands on form/dashboard
+
+### Embedded Buttons in Partner Apps
+
+Buttons in your existing partner tools that deep-link with SSO.
+
+**Use for:**
+- Affiliate platforms (Impact, ShareASale)
+- CRMs (HubSpot, Salesforce)
+- Custom partner portals
+
+**Flow:**
+1. Partner is logged into your app
+2. Clicks "Customize My Shop" button
+3. SSO passes identity
+4. Opens CC dashboard authenticated
+
+### UI in Customer Accounts
+
+Shopify customer account extensions for partners who are also customers.
+
+**Use for:**
+- Ambassador programs where partners are customers
+- Loyalty → Affiliate upgrades
+- Self-service partner management
+
+**Flow:**
+1. Customer logs into account
+2. Sees "My Partnership" section
+3. Accesses forms/dashboard in-account
+
+## Authentication Options
+
+| Method | Best For | Setup |
+|--------|----------|-------|
+| Magic links | Email-based entry | Built into CC |
+| SSO (SAML/OAuth) | Enterprise, existing identity | Configuration required |
+| Password | Standalone access | Built into CC |
+| Customer account | Shopify-based identity | App block install |
+
+## Related
+
+- [Links + Auth Explained](/guides/creator-experience/forms/links-auth)
+- [Customer Accounts UI](/guides/creator-experience/customer-accounts/overview)

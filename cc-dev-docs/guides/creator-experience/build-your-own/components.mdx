@@ -1,0 +1,149 @@
+---
+title: 'Components & User Flows'
+description: 'Building blocks for custom partner dashboards—flows, components, and APIs to use.'
+---
+
+Common components and flows for custom partner dashboards, with the APIs to power them.
+
+## Core Flows
+
+### Profile Management
+
+**User flow:**
+1. Partner views current profile
+2. Edits fields (bio, photo, social)
+3. Saves changes
+4. Sees confirmation
+
+**APIs:**
+```javascript
+// Get current profile
+GET /creators/{creatorId}
+
+// Update profile
+POST /creators/collabs/{collabId}
+{
+  "bio": "Updated bio...",
+  "socialLinks": { "instagram": "@handle" }
+}
+```
+
+### Product Selection
+
+**User flow:**
+1. Partner browses products
+2. Selects items for drop
+3. Reorders selections
+4. Adds annotations (optional)
+5. Saves drop
+
+**APIs:**
+```javascript
+// Get available products
+GET /channels/{domain}/products
+
+// Get current drop
+GET /creators/{creatorId}/drops/{dropId}
+
+// Update drop
+POST /creators/collabs/{collabId}/drops/{dropId}
+{
+  "products": [
+    { "shopifyId": "123", "annotation": "My favorite!" }
+  ]
+}
+```
+
+### Performance Dashboard
+
+**User flow:**
+1. Partner views stats
+2. Filters by date range
+3. Sees orders, revenue, conversion
+
+**APIs:**
+```javascript
+// Get performance data
+GET /creators/{creatorId}/analytics?
+  from=2024-01-01&
+  to=2024-01-31
+```
+
+### Link Sharing
+
+**User flow:**
+1. Partner sees their link
+2. Copies link or downloads QR
+3. Shares on social
+
+**Components:**
+- Copy button with feedback
+- QR code generator
+- Social share buttons
+
+## UI Components
+
+### Profile Card
+
+```jsx
+function ProfileCard({ partner }) {
+  return (
+    <div className="profile-card">
+      <img src={partner.photo} alt={partner.name} />
+      <h2>{partner.name}</h2>
+      <p>{partner.bio}</p>
+      <a href={partner.shopUrl}>View My Shop</a>
+    </div>
+  );
+}
+```
+
+### Product Picker
+
+```jsx
+function ProductPicker({ products, selected, onSelect }) {
+  return (
+    <div className="product-grid">
+      {products.map(product => (
+        <ProductCard 
+          key={product.id}
+          product={product}
+          selected={selected.includes(product.id)}
+          onToggle={() => onSelect(product.id)}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+### Stats Display
+
+```jsx
+function StatsDisplay({ analytics }) {
+  return (
+    <div className="stats-grid">
+      <StatCard label="Orders" value={analytics.orders} />
+      <StatCard label="Revenue" value={formatCurrency(analytics.revenue)} />
+      <StatCard label="Conversion" value={formatPercent(analytics.conversion)} />
+    </div>
+  );
+}
+```
+
+## API Reference
+
+<CardGroup cols={2}>
+  <Card title="Unified API Reference" icon="code" href="/references/unified-api-reference">
+    Full API documentation
+  </Card>
+  <Card title="API Overview" icon="book" href="/references/api-overview">
+    Getting started with APIs
+  </Card>
+  <Card title="Authentication" icon="key" href="/guides/authentication">
+    API authentication guide
+  </Card>
+  <Card title="Endpoints" icon="route" href="/references/unified-api-reference">
+    All available endpoints
+  </Card>
+</CardGroup>

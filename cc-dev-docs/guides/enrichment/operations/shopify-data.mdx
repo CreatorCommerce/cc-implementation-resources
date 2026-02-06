@@ -1,0 +1,60 @@
+---
+title: 'Changing Shopify Data'
+description: 'Tagging orders, customers, and products based on partner activity.'
+---
+
+Keep Shopify objects organized with automatic tagging and metafield updates.
+
+## Order Tagging
+
+When an order is attributed:
+
+**Trigger:** CC Order Attributed
+
+**Actions:**
+- Add tag `cc-attributed`
+- Add tag `cc-partner:{handle}`
+- Add tag `cc-tier:{partner-tier}`
+- Add tag `cc-campaign:{campaign-id}` (if applicable)
+- Add order note: "Attributed to {partner name} via CreatorCommerce"
+
+**Use:** Filter orders in admin, create reports by partner.
+
+## Customer Tagging
+
+On first partner-referred purchase:
+
+**Trigger:** CC Order Attributed
+
+**Condition:** Customer doesn't have tag "cc-referred"
+
+**Actions:**
+- Add tag `cc-referred`
+- Add tag `cc-first-referrer:{handle}`
+
+**Use:** Build Klaviyo segments of partner-referred customers.
+
+## Product Tagging
+
+When products are featured by partners:
+
+**Trigger:** CC Drop Updated (products added)
+
+**Actions:**
+- Add product tag `cc-featured`
+- Update metafield `cc.featured_by_count`
+
+**Use:** Show "Featured by X partners" badges.
+
+## Metafield Updates
+
+Sync CC data to Shopify metafields for theme use:
+
+```liquid
+{% comment %} Access CC data via metafields {% endcomment %}
+{% assign featured_count = product.metafields.cc.featured_by_count %}
+
+{% if featured_count > 5 %}
+  <span class="badge">Featured by {{ featured_count }}+ creators</span>
+{% endif %}
+```

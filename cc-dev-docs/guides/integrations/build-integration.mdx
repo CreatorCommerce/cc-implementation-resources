@@ -22,7 +22,73 @@ CreatorCommerce provides multiple integration points for connecting with your ex
   </Card>
 </CardGroup>
 
-## Common Integration Patterns
+---
+
+## Data Inputs & Outputs
+
+Before building, understand what data can flow into and out of CreatorCommerce.
+
+### Data Inputs (Into CC)
+
+What you can send to CreatorCommerce:
+
+**Partner Data**
+| Data | Source Examples | Use Case |
+|------|-----------------|----------|
+| Partner profiles | CRM, affiliate platform | Create/update partners |
+| Social stats | Social APIs | Enrich partner profiles |
+| Performance data | Analytics platforms | Update partner tiers |
+| Content | DAM, content platforms | Populate partner pages |
+
+**Order/Attribution Data**
+| Data | Source Examples | Use Case |
+|------|-----------------|----------|
+| External orders | Headless commerce, POS | Attribute to partners |
+| Click data | Link shorteners, analytics | Track partner traffic |
+| Conversion events | Ad platforms | Multi-touch attribution |
+
+**Product Data**
+| Data | Source Examples | Use Case |
+|------|-----------------|----------|
+| Product metadata | PIM systems | Enrich drops |
+| Inventory | ERP, WMS | Real-time availability |
+| Pricing | Dynamic pricing tools | Partner-specific pricing |
+
+### Data Outputs (From CC)
+
+What CreatorCommerce can send to your systems:
+
+**Partner Events**
+| Event | Trigger | Common Destinations |
+|-------|---------|---------------------|
+| Partner created | New signup | CRM, email platform |
+| Partner activated | Setup complete | Affiliate platform |
+| Partner updated | Profile change | Sync systems |
+
+**Order Events**
+| Event | Trigger | Common Destinations |
+|-------|---------|---------------------|
+| Order attributed | Purchase with partner | Analytics, affiliate platform |
+| Milestone reached | Performance threshold | Rewards, notifications |
+
+**Content Events**
+| Event | Trigger | Common Destinations |
+|-------|---------|---------------------|
+| Drop updated | Partner changes products | Sync systems |
+| Content generated | AI creates content | Review systems |
+
+### Integration Patterns
+
+| Pattern | Flow | Example |
+|---------|------|---------|
+| One-Way In | Your System → CC | CRM pushes partner data to CC |
+| One-Way Out | CC → Your System | CC sends order events to analytics |
+| Two-Way Sync | Your System ↔ CC | Affiliate platform keeps partners in sync |
+| Event-Driven | CC Event → Webhook → Your System | Order attributed → notify partner |
+
+---
+
+## Common Integration Examples
 
 ### Sync Partner Data to External CRM
 
@@ -84,14 +150,10 @@ shopifyFlow.on('cc_creator_activated', (event) => {
   
   // Add to Slack channel
   await slack.inviteToChannel('partners', event.creatorEmail);
-  
-  // Create task in project management
-  await asana.createTask({
-    name: `Onboard ${event.creatorFirstName}`,
-    assignee: 'partner-manager@company.com'
-  });
 });
 ```
+
+---
 
 ## Authentication
 
@@ -107,6 +169,12 @@ curl -X GET "https://api.creatorcommerce.com/v1/creators" \
 ### Shopify Authentication
 
 For Shopify-native integrations, use your Shopify Admin API credentials with CC metaobject access.
+
+<Card title="Merchant Auth Flow" icon="key" href="/guides/integrations/build/merchant-auth">
+  Learn how to handle API key generation and storage for merchant integrations.
+</Card>
+
+---
 
 ## Rate Limits
 

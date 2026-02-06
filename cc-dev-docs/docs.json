@@ -132,6 +132,18 @@
                                        "guides/dev/critical-path/ship-fast",
                                        "guides/dev/critical-path/build-with-ai"
                                     ]
+                                 },
+                                 {
+                                    "group":"The Build Spectrum",
+                                    "expanded":false,
+                                    "pages":[
+                                       "guides/dev/build-spectrum/overview",
+                                       "guides/dev/build-spectrum/app-blocks",
+                                       "guides/dev/build-spectrum/theme-sections",
+                                       "guides/dev/build-spectrum/custom-styling",
+                                       "guides/dev/build-spectrum/headless-api",
+                                       "guides/dev/build-spectrum/white-label"
+                                    ]
                                  }
                               ]
                            },
@@ -217,6 +229,18 @@
                                     "expanded":false,
                                     "pages":[
                                        "guides/attribute-analyze"
+                                    ]
+                                 },
+                                 {
+                                    "group":"Campaign Ideas",
+                                    "expanded":false,
+                                    "pages":[
+                                       "guides/campaigns/overview",
+                                       "guides/campaigns/holiday-shopping-lists",
+                                       "guides/campaigns/back-to-school",
+                                       "guides/campaigns/cpg-product-launch",
+                                       "guides/campaigns/gifting-unboxing",
+                                       "guides/campaigns/olympics-hype"
                                     ]
                                  }
                               ]
@@ -392,7 +416,7 @@
             "anchors":[
                {
                   "anchor":"Co-branded Storefronts",
-                  "icon":"layout",
+                  "icon":"browser",
                   "groups":[
                      {
                         "group":"Getting Started",
@@ -464,10 +488,53 @@
                   ]
                },
                {
-                  "anchor":"Content Enrichment",
-                  "icon":"workflow",
-                  "pages":[
-                     "guides/enrichment-flows"
+                  "anchor":"Content Workflows",
+                  "icon":"diagram-project",
+                  "groups":[
+                     {
+                        "group":"Getting Started",
+                        "expanded":false,
+                        "pages":[
+                           "guides/enrichment-flows",
+                           "guides/enrichment/getting-started/shopify-flow-overview",
+                           "guides/enrichment/getting-started/triggers-actions",
+                           "guides/enrichment/getting-started/planning-fields"
+                        ]
+                     },
+                     {
+                        "group":"Fetching Existing Data",
+                        "expanded":false,
+                        "pages":[
+                           "guides/enrichment/fetching/order-history",
+                           "guides/enrichment/fetching/external-apis"
+                        ]
+                     },
+                     {
+                        "group":"Generating New Data",
+                        "expanded":false,
+                        "pages":[
+                           "guides/enrichment/generating/ai-content-overview",
+                           "guides/enrichment/generating/nano-banana",
+                           "guides/enrichment/generating/openai-claude"
+                        ]
+                     },
+                     {
+                        "group":"Operations",
+                        "expanded":false,
+                        "pages":[
+                           "guides/enrichment/operations/link-redirects",
+                           "guides/enrichment/operations/shopify-data",
+                           "guides/enrichment/operations/discount-codes"
+                        ]
+                     },
+                     {
+                        "group":"AI Discoverability",
+                        "expanded":false,
+                        "pages":[
+                           "guides/enrichment/ai-discovery/structuring-data",
+                           "guides/enrichment/ai-discovery/processing-data"
+                        ]
+                     }
                   ]
                },
                {
@@ -510,29 +577,64 @@
             "tab":"Creator Experiences",
             "anchors":[
                {
-                  "anchor":"Creator Dashboard",
-                  "icon":"monitor",
+                  "anchor":"Dashboards & Forms",
+                  "icon":"grid",
                   "groups":[
                      {
-                        "group":"Overview",
+                        "group":"Getting Started",
                         "expanded":false,
                         "pages":[
-                           "guides/creator-dashboard"
+                           "guides/creator-dashboard",
+                           "guides/creator-experience/getting-started/collecting-content",
+                           "guides/creator-experience/getting-started/entry-points",
+                           "guides/creator-experience/getting-started/unified-apps",
+                           "guides/creator-experience/getting-started/collection-decision"
                         ]
                      },
                      {
-                        "group":"CSS Customization",
+                        "group":"CC Forms & Dashboard",
                         "expanded":false,
                         "pages":[
-                           "references/dashboard-overview-css",
-                           "references/css-reference",
-                           "references/css-applied-examples"
+                           "guides/creator-experience/forms/overview",
+                           "guides/creator-experience/forms/links-auth",
+                           {
+                              "group":"Forms",
+                              "expanded":false,
+                              "pages":[
+                                 "guides/creator-experience/forms/onboarding/overview",
+                                 "guides/creator-experience/forms/collection/overview",
+                                 "guides/creator-experience/forms/product/overview",
+                                 "guides/creator-experience/forms/custom/overview"
+                              ]
+                           },
+                           {
+                              "group":"Custom CSS",
+                              "expanded":false,
+                              "pages":[
+                                 "references/dashboard-overview-css",
+                                 "references/css-reference",
+                                 "references/css-applied-examples"
+                              ]
+                           }
                         ]
                      },
                      {
-                        "group":"UNIFIED API",
+                        "group":"Customer Accounts UI",
                         "expanded":false,
                         "pages":[
+                           "guides/creator-experience/customer-accounts/overview",
+                           "guides/creator-experience/customer-accounts/legacy",
+                           "guides/creator-experience/customer-accounts/new"
+                        ]
+                     },
+                     {
+                        "group":"Build Your Own Dashboard",
+                        "expanded":false,
+                        "pages":[
+                           "guides/creator-experience/build-your-own/overview",
+                           "guides/creator-experience/build-your-own/hosting",
+                           "guides/creator-experience/build-your-own/auth",
+                           "guides/creator-experience/build-your-own/components",
                            "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication",
@@ -549,13 +651,6 @@
                                    "POST /creators/collabs/{collabId}/drops",
                                    "POST /creators/collabs/{collabId}/drops/{dropId}"
                                  ]
-                           },
-                           {
-                              "group":"Shopify Flow actions",
-                              "pages":[
-                                 "temp3",
-                                 "temp2"
-                              ]
                            }
                         ]
                      }
@@ -563,9 +658,33 @@
                },
                {
                   "anchor":"Creator Message Flows",
-                  "icon":"message-circle",
-                  "pages":[
-                     "guides/creator-messaging"
+                  "icon":"comments",
+                  "groups":[
+                     {
+                        "group":"Getting Started",
+                        "expanded":false,
+                        "pages":[
+                           "guides/creator-messaging",
+                           "guides/creator-experience/messaging/overview"
+                        ]
+                     },
+                     {
+                        "group":"Message Flows",
+                        "expanded":false,
+                        "pages":[
+                           "guides/creator-experience/messaging/welcome-flows",
+                           "guides/creator-experience/messaging/activation-flows",
+                           "guides/creator-experience/messaging/performance-updates"
+                        ]
+                     },
+                     {
+                        "group":"Klaviyo",
+                        "expanded":false,
+                        "pages":[
+                           "references/klaviyo-two-sides",
+                           "guides/creator-emails/variables-reference"
+                        ]
+                     }
                   ]
                }
             ]
@@ -576,15 +695,58 @@
                {
                   "anchor":"Integrations",
                   "icon":"plug",
-                  "pages":[
-                     "guides/integrations/overview"
+                  "groups":[
+                     {
+                        "group":"Overview",
+                        "expanded":false,
+                        "pages":[
+                           "guides/integrations/overview"
+                        ]
+                     },
+                     {
+                        "group":"Affiliate Platforms",
+                        "expanded":false,
+                        "pages":[
+                           "guides/integrations/affiliate/impact",
+                           "guides/integrations/affiliate/refersion"
+                        ]
+                     },
+                     {
+                        "group":"Email & SMS",
+                        "expanded":false,
+                        "pages":[
+                           "guides/integrations/email-sms/klaviyo",
+                           "guides/integrations/email-sms/attentive"
+                        ]
+                     },
+                     {
+                        "group":"Content & Automation",
+                        "expanded":false,
+                        "pages":[
+                           "guides/integrations/content-automation/shopify-flow",
+                           "guides/integrations/content-automation/zapier"
+                        ]
+                     },
+                     {
+                        "group":"Analytics",
+                        "expanded":false,
+                        "pages":[
+                           "guides/integrations/analytics/triple-whale",
+                           "guides/integrations/analytics/northbeam"
+                        ]
+                     }
                   ]
                },
                {
                   "anchor":"Build an Integration",
                   "icon":"hammer",
                   "pages":[
-                     "guides/integrations/build-integration"
+                     "guides/integrations/build-integration",
+                     "guides/integrations/build/merchant-auth",
+                     "guides/integrations/build/custom-webhook",
+                     "guides/integrations/build/unified-dashboard",
+                     "guides/integrations/build/shopify-flow-prototype",
+                     "guides/integrations/build/submit-integration"
                   ]
                }
             ]

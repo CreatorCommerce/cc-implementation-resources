@@ -1,0 +1,212 @@
+---
+title: 'Headless API (High Code)'
+description: 'Build custom frontends powered by CC data, attribution, and infrastructure.'
+---
+
+The Headless API approach lets you build completely custom frontends while CC handles data, attribution, integrations, and infrastructure.
+
+## What You Build vs. What CC Provides
+
+| You Build | CC Provides |
+|-----------|-------------|
+| Custom React/Vue/etc. frontend | Creator data API |
+| Your own design system | Attribution engine |
+| Custom user flows | Order tracking |
+| Unique animations | Integration sync |
+| Platform-specific features | Webhook infrastructure |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     YOUR CUSTOM FRONTEND                         │
+│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐       │
+│  │  React App    │  │  Next.js SSR  │  │  Hydrogen     │       │
+│  └───────┬───────┘  └───────┬───────┘  └───────┬───────┘       │
+│          │                  │                  │                │
+│          └──────────────────┼──────────────────┘                │
+│                             │                                    │
+├─────────────────────────────┼────────────────────────────────────┤
+│                             ▼                                    │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │                    CC INFRASTRUCTURE                      │   │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐         │   │
+│  │  │  REST API  │  │  Webhooks  │  │  Metaobjects│         │   │
+│  │  └────────────┘  └────────────┘  └────────────┘         │   │
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐         │   │
+│  │  │ Attribution│  │ Integrations│  │   SDK      │         │   │
+│  │  └────────────┘  └────────────┘  └────────────┘         │   │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+## API Endpoints
+
+### Read Creator Data
+
+```javascript
+// Get creator by handle
+const creator = await fetch(
+  `https://api.creatorcommerce.com/v1/creators/${handle}`,
+  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+).then(r => r.json());
+
+// Get creator's drops
+const drops = await fetch(
+  `https://api.creatorcommerce.com/v1/creators/${creatorId}/drops`,
+  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+).then(r => r.json());
+```
+
+### Write Attribution
+
+```javascript
+// Track page view with creator context
+await fetch('https://api.creatorcommerce.com/v1/events/pageview', {
+  method: 'POST',
+  headers: { 
+    'Authorization': `Bearer ${API_KEY}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    creatorHandle: 'partner-handle',
+    sessionId: getSessionId(),
+    pageType: 'landing',
+    url: window.location.href
+  })
+});
+```
+
+### SDK Alternative
+
+For client-side, use the CC SDK:
+
+```javascript
+import { CreatorCommerce } from '@creatorcommerce/sdk';
+
+const cc = new CreatorCommerce({ shopDomain: 'your-store.myshopify.com' });
+
+// Get creator context
+const creator = await cc.getCreator('partner-handle');
+
+// Track attribution
+cc.trackPageView({ creatorHandle: 'partner-handle' });
+
+// Get cart with creator discount
+const cart = await cc.getCreatorCart(creatorId, dropId);
+```
+
+## Common Patterns
+
+### Custom Landing Pages
+
+Build React/Vue landing pages that fetch CC data:
+
+```jsx
+function CreatorLanding({ handle }) {
+  const [creator, setCreator] = useState(null);
+  
+  useEffect(() => {
+    cc.getCreator(handle).then(setCreator);
+    cc.trackPageView({ creatorHandle: handle });
+  }, [handle]);
+  
+  if (!creator) return <Loading />;
+  
+  return (
+    <YourCustomLayout>
+      <YourHeroComponent creator={creator} />
+      <YourProductGrid products={creator.drops[0].products} />
+      <YourDiscountBanner code={creator.discountCode} />
+    </YourCustomLayout>
+  );
+}
+```
+
+### Hydrogen Storefront
+
+Integrate CC into Shopify Hydrogen:
+
+```jsx
+// app/routes/creator.$handle.jsx
+import { cc } from '~/lib/creatorcommerce';
+
+export async function loader({ params }) {
+  const creator = await cc.getCreator(params.handle);
+  return json({ creator });
+}
+
+export default function CreatorPage() {
+  const { creator } = useLoaderData();
+  
+  return (
+    <Layout>
+      <CreatorHero creator={creator} />
+      <ProductGrid drops={creator.drops} />
+    </Layout>
+  );
+}
+```
+
+### Custom Partner Portal
+
+Build your own partner dashboard:
+
+```jsx
+function PartnerDashboard() {
+  const [stats, setStats] = useState(null);
+  
+  useEffect(() => {
+    // Fetch from CC API
+    Promise.all([
+      cc.getCreatorStats(creatorId),
+      cc.getCreatorDrops(creatorId),
+      cc.getCreatorOrders(creatorId)
+    ]).then(([stats, drops, orders]) => {
+      setStats({ stats, drops, orders });
+    });
+  }, []);
+  
+  return (
+    <YourDashboardLayout>
+      <YourStatsCards data={stats.stats} />
+      <YourDropsManager drops={stats.drops} />
+      <YourOrdersTable orders={stats.orders} />
+    </YourDashboardLayout>
+  );
+}
+```
+
+## What You Still Get
+
+Even building headless, CC handles:
+
+- **Attribution** — Order tracking, partner credit
+- **Integrations** — Klaviyo, Flow, analytics sync
+- **Data Storage** — Shopify metaobjects
+- **Webhooks** — Event notifications
+- **Rate Limiting** — Managed API access
+
+## When to Use
+
+**Use Headless API when:**
+- You need complete UI control
+- You're building custom storefronts (Hydrogen, etc.)
+- You have frontend development resources
+- You want unique interactive experiences
+
+**Move to Full White-Label when:**
+- You're building a platform for others
+- You need complete infrastructure control
+- You want to resell/license the solution
+- You need multi-tenant architecture
+
+## Next Step
+
+Building a platform product? Move to [White-Label Platform](/guides/dev/build-spectrum/white-label).
+
+## Related
+
+- [The Build Spectrum](/guides/dev/build-spectrum/overview)
+- [CC APIs](/references/unified-api-reference)
+- [SDK Getting Started](/references/sdk/getting-started)

@@ -1,0 +1,58 @@
+---
+title: 'Customer Accounts UI'
+description: 'Partner experiences embedded in Shopify customer accounts.'
+---
+
+For ambassador programs where partners are also customers, you can embed CC experiences directly in Shopify customer accounts.
+
+## Why Customer Accounts?
+
+- **No separate login** — Partners use their existing customer account
+- **Familiar UX** — Shopify's account interface they already know
+- **Lower friction** — One less system to remember
+
+## Account Types
+
+Shopify has two customer account systems:
+
+<CardGroup cols={2}>
+  <Card title="Legacy Customer Accounts" icon="clock" href="/guides/creator-experience/customer-accounts/legacy">
+    Classic Liquid-based accounts. Full customization via theme code.
+  </Card>
+  <Card title="New Customer Accounts" icon="sparkles" href="/guides/creator-experience/customer-accounts/new">
+    Modern extensible accounts. Customize via app extensions.
+  </Card>
+</CardGroup>
+
+## What You Can Add
+
+| Feature | Implementation |
+|---------|----------------|
+| Partner dashboard link | Button/link to CC dashboard |
+| Quick stats | Orders, earnings, performance |
+| Product picker | In-account drop management |
+| Profile editor | Bio, photo, social links |
+| Share tools | Copy link, QR code |
+
+## Partner Detection
+
+Determine if the logged-in customer is a partner:
+
+```liquid
+{% assign customer_email = customer.email %}
+{% comment %} Check if customer email matches a CC partner {% endcomment %}
+{% assign is_partner = false %}
+
+{% for creator in metaobjects.creator %}
+  {% if creator.cc-creator-email == customer_email %}
+    {% assign is_partner = true %}
+    {% assign cc_creator = creator %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+```
+
+## Related
+
+- [Legacy Customer Accounts](/guides/creator-experience/customer-accounts/legacy)
+- [New Customer Accounts](/guides/creator-experience/customer-accounts/new)

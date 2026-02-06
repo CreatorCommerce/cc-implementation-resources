@@ -1,0 +1,89 @@
+---
+title: 'New Customer Accounts'
+description: 'Adding partner experiences to Shopify's new extensible customer accounts.'
+---
+
+New Customer Accounts are Shopify's modern, extensible account system. You add functionality via app extensions, not theme code.
+
+## App Extensions
+
+CC provides customer account extensions:
+
+| Extension | Location | Purpose |
+|-----------|----------|---------|
+| Partner Dashboard | Account home | Quick stats and actions |
+| Shop Editor | New page | In-account drop management |
+| Link Manager | New page | Share links and QR codes |
+
+## Installing Extensions
+
+1. Go to Shopify Admin → Settings → Customer accounts
+2. Ensure "New customer accounts" is enabled
+3. Click "Customize" to open the editor
+4. Add CC app blocks from the app section
+
+## Extension: Partner Dashboard Block
+
+Shows in the main account view:
+
+**Displays:**
+- Partner status badge
+- Quick performance stats
+- "Customize Shop" button
+- "Copy Link" button
+
+**Configuration:**
+- Show/hide stats
+- Custom CTA text
+- Link to full dashboard
+
+## Extension: Shop Editor Page
+
+Full product picker in customer accounts:
+
+**Features:**
+- Browse products
+- Select for drop
+- Reorder selections
+- Add annotations
+
+**Configuration:**
+- Max products
+- Categories to show
+- Annotation fields
+
+## Detecting Partners
+
+New customer accounts provide customer data via extension APIs:
+
+```javascript
+// In your customer account extension
+import { useCustomer } from '@shopify/customer-account-ui-extensions';
+
+function PartnerDashboard() {
+  const customer = useCustomer();
+  
+  // Check if customer is a partner via CC API
+  const { data: partner } = usePartnerStatus(customer.email);
+  
+  if (!partner) return null;
+  
+  return (
+    <PartnerCard partner={partner} />
+  );
+}
+```
+
+## Advantages Over Legacy
+
+| Feature | Legacy | New |
+|---------|--------|-----|
+| Implementation | Theme code | App extension |
+| Updates | Manual | Automatic via app |
+| Performance | Theme loops | API-optimized |
+| Consistency | Per-theme | Universal |
+
+## Related
+
+- [Polaris Customer Account Extensions](/references/polaris-customer-account)
+- [Legacy Customer Accounts](/guides/creator-experience/customer-accounts/legacy)

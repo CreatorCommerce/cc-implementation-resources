@@ -1,0 +1,55 @@
+---
+title: 'Impact'
+description: 'Sync partner data between CreatorCommerce and Impact Radius.'
+---
+
+Integrate Impact with CreatorCommerce to enhance your affiliate program with co-branded experiences.
+
+## What This Integration Does
+
+| CC → Impact | Impact → CC |
+|-------------|-------------|
+| Co-branded page performance | Partner profile data |
+| Enhanced conversion data | Commission tiers |
+| Attribution signals | Partner status |
+
+## Setup
+
+<Steps>
+  <Step title="Connect accounts">
+    In CC Admin → Integrations → Impact, enter your API credentials.
+  </Step>
+  <Step title="Map partners">
+    Match Impact partners to CC creators by email or ID.
+  </Step>
+  <Step title="Configure sync">
+    Choose what data flows in each direction.
+  </Step>
+  <Step title="Enable">
+    Activate the integration and monitor first sync.
+  </Step>
+</Steps>
+
+## Use Cases
+
+### Enhance Existing Affiliates
+Your Impact affiliates get co-branded landing pages without leaving your existing program structure.
+
+### Unified Reporting
+See co-branded performance alongside standard affiliate metrics in Impact.
+
+### Deep Links with SSO
+Partners access CC dashboard directly from Impact with single sign-on.
+
+## Data Mapping
+
+| Impact Field | CC Field |
+|--------------|----------|
+| Partner ID | cc-external-partner-id |
+| Partner Name | cc-creator-first-name, cc-creator-last-name |
+| Commission Rate | cc-collab-discount-amount |
+| Status | cc-partner-status |
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)

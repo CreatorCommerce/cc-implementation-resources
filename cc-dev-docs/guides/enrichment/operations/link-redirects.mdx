@@ -1,0 +1,53 @@
+---
+title: 'Link Redirects'
+description: 'Managing partner URLs, vanity links, and redirects.'
+---
+
+Partners share links. Those links need to work forever.
+
+## Vanity URL Creation
+
+When a partner is activated, create their clean URL:
+
+**Trigger:** CC Partner Activated
+
+**Actions:**
+1. Generate handle from name ("Sarah Johnson" → "sarah-johnson")
+2. Handle conflicts ("sarah-johnson-2")
+3. Create redirect: `/p/sarah-johnson` → `/pages/creator?handle=sarah-johnson`
+4. Store in `cc-vanity-url` and `cc-full-url`
+
+**Result:** Partners get clean, shareable URLs immediately.
+
+## Handle Changes
+
+When a partner updates their name or requests a new URL:
+
+**Trigger:** CC Creator Field Updated (cc-creator-shop-handle)
+
+**Actions:**
+1. Get old handle from previous value
+2. Create 301 redirect: `/p/{old}` → `/p/{new}`
+3. Notify partner of new URL
+
+**Why:** Old links in social bios, bookmarks, and Google still work.
+
+## Link Expiration
+
+For time-limited campaigns:
+
+**Trigger:** Campaign end date reached
+
+**Actions:**
+1. Update redirect: `/c/{campaign}/{partner}` → `/p/{partner}`
+2. Archive campaign data
+3. Preserve for reporting
+
+## Common Patterns
+
+| Scenario | Redirect |
+|----------|----------|
+| New partner | `/p/{handle}` → creator page |
+| Name change | `/p/{old}` → `/p/{new}` |
+| Campaign end | `/c/{campaign}/{partner}` → `/p/{partner}` |
+| Partner exit | `/p/{handle}` → `/` (homepage) |

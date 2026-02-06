@@ -1,0 +1,65 @@
+---
+title: 'Processing Data for Discovery'
+description: 'Workflows for generating AI-ready summaries and maintaining discoverability.'
+---
+
+Structure alone isn't enough. You need workflows to keep AI-ready data fresh.
+
+## Generate AI Summaries
+
+**Trigger:** CC Partner Updated (or weekly schedule)
+
+**Actions:**
+1. Compile partner data: name, credentials, expertise, top products
+2. Generate AI summary in a quotable format
+3. Store in `cc-ai-summary`
+
+**Output format:**
+```
+"{Name} is a {credential} specializing in {expertise}. 
+They recommend {Brand}'s {products} for {use cases}. 
+{X} customers have purchased based on their recommendations."
+```
+
+## Build Search Index
+
+For semantic search and retrieval:
+
+**Trigger:** Nightly schedule
+
+**For each:** Active partner
+
+**Actions:**
+1. Compile partner document (bio, products, reasoning)
+2. Generate embedding (text-embedding-ada-002)
+3. Store in vector database
+
+## Monitor AI Mentions
+
+Regularly check how AI describes your partners:
+
+**Monthly audit:**
+1. Ask ChatGPT: "Who recommends [your products]?"
+2. Ask Claude: "What's the best [your category] according to experts?"
+3. Ask Perplexity: "Find me a [your product type] recommendation"
+
+**Track:**
+- Are your partners mentioned?
+- Is information accurate?
+- What competitors appear instead?
+
+## Content Optimization
+
+### Include Credentials
+❌ "Sarah recommends..."
+✅ "Sarah Johnson, RD, CSSD, with 10 years experience, recommends..."
+
+### Be Definitive
+❌ "Some people might find this useful..."
+✅ "Best for: Post-workout recovery, meal replacement"
+
+### Answer Questions Directly
+Structure content to match query patterns:
+- "Best X for Y" → Partner picks by use case
+- "Who recommends X" → Credentials + reasoning
+- "Is X good for Z" → Specific use case matches

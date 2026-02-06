@@ -1,0 +1,221 @@
+---
+title: 'White-Label Platform (Full Build)'
+description: 'Create your own branded platform running on CC rails for agencies, networks, and platform businesses.'
+---
+
+White-Label is the furthest end of the spectrum—you build and own a complete platform that runs on CC infrastructure. Your branding, your product, your customers.
+
+## Who This Is For
+
+| Business Type | Use Case |
+|---------------|----------|
+| Agencies | Offer co-branding as a service |
+| Affiliate Networks | Add storefront features |
+| Creator Platforms | Embedded commerce |
+| SaaS Products | Collaboration features |
+| Media Companies | Monetization layer |
+
+## What You Build vs. What CC Provides
+
+| Your Platform | CC Rails |
+|---------------|----------|
+| Brand & identity | Data model & storage |
+| User interface | Attribution engine |
+| Customer relationships | Integration infrastructure |
+| Pricing & billing | Webhook layer |
+| Support & success | API access |
+| Go-to-market | Shopify connectivity |
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        YOUR WHITE-LABEL PLATFORM                         │
+│                                                                          │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                      YOUR PRODUCT LAYER                            │ │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐          │ │
+│  │  │  Your    │  │  Your    │  │  Your    │  │  Your    │          │ │
+│  │  │  Admin   │  │ Partner  │  │ Billing  │  │ Analytics │          │ │
+│  │  │  Portal  │  │  Portal  │  │ System   │  │ Dashboard │          │ │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘          │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                      CC INFRASTRUCTURE LAYER                        │ │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐          │ │
+│  │  │  Multi-  │  │   API    │  │  Webhook │  │  Shopify │          │ │
+│  │  │  Tenant  │  │  Access  │  │  Layer   │  │  Connect │          │ │
+│  │  │   Data   │  │          │  │          │  │          │          │ │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘          │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+│                                    │                                     │
+│                                    ▼                                     │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                    MERCHANT SHOPIFY STORES                          │ │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐          │ │
+│  │  │ Store A  │  │ Store B  │  │ Store C  │  │ Store N  │          │ │
+│  │  └──────────┘  └──────────┘  └──────────┘  └──────────┘          │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Multi-Tenant Management
+
+Manage multiple merchants from your platform:
+
+```javascript
+// Your platform onboards a new merchant
+async function onboardMerchant(merchantData) {
+  // Create merchant in your system
+  const merchant = await yourDB.merchants.create(merchantData);
+  
+  // Connect to CC
+  const ccConnection = await cc.admin.connectMerchant({
+    shopifyDomain: merchantData.shopifyDomain,
+    apiKey: merchantData.ccApiKey
+  });
+  
+  // Initialize CC for this merchant
+  await cc.admin.initializeMerchant(ccConnection.id, {
+    settings: yourDefaultSettings,
+    templates: yourTemplates
+  });
+  
+  return { merchant, ccConnection };
+}
+```
+
+### Branded Partner Portal
+
+Your partners see your brand, not CC:
+
+```jsx
+// Your custom partner dashboard
+function YourBrandedDashboard({ partner }) {
+  // Fetch data from CC via your backend
+  const stats = usePartnerStats(partner.id);
+  const drops = usePartnerDrops(partner.id);
+  
+  return (
+    <YourBrandLayout>
+      <YourBrandHeader logo={yourLogo} />
+      
+      <YourStatsDisplay stats={stats} />
+      <YourDropManager drops={drops} onUpdate={handleUpdate} />
+      <YourPayoutSection partner={partner} />
+      
+      <YourBrandFooter />
+    </YourBrandLayout>
+  );
+}
+```
+
+### White-Label Webhooks
+
+Receive CC events, process in your platform:
+
+```javascript
+// Your webhook endpoint
+app.post('/webhooks/cc', async (req, res) => {
+  const event = req.body;
+  
+  switch (event.type) {
+    case 'creator.activated':
+      // Your logic for new partner activation
+      await yourNotificationService.send(event.merchantId, {
+        type: 'partner_activated',
+        partner: event.creator
+      });
+      break;
+      
+    case 'order.attributed':
+      // Your commission calculation
+      const commission = calculateCommission(event.order);
+      await yourPayoutService.queue(commission);
+      break;
+  }
+  
+  res.json({ received: true });
+});
+```
+
+## Implementation Approach
+
+<Steps>
+  <Step title="Define Your Product">
+    What features differentiate your platform? What's your value prop?
+  </Step>
+  <Step title="Design Multi-Tenant Architecture">
+    How do you manage multiple merchants? Isolated or shared resources?
+  </Step>
+  <Step title="Build Admin Layer">
+    Your merchant management, onboarding, billing.
+  </Step>
+  <Step title="Build Partner Layer">
+    Your branded partner portal and experience.
+  </Step>
+  <Step title="Integrate CC APIs">
+    Connect all data and events through CC infrastructure.
+  </Step>
+  <Step title="Deploy and Scale">
+    Your hosting, your ops, CC data layer.
+  </Step>
+</Steps>
+
+## What You Own
+
+| Responsibility | Details |
+|----------------|---------|
+| Product | Features, roadmap, differentiation |
+| Brand | All customer-facing identity |
+| Customers | Sales, support, success |
+| Billing | Your pricing, your revenue |
+| Frontend | All UI and UX |
+| Backend | Your business logic |
+
+## What CC Handles
+
+| Infrastructure | Details |
+|----------------|---------|
+| Shopify Integration | OAuth, metaobjects, orders |
+| Attribution | Click tracking, order credit |
+| Data Model | Creator, collab, drop structure |
+| Integrations | Klaviyo, Flow, analytics |
+| Webhooks | Event delivery |
+| API | Data access layer |
+
+## Pricing Models
+
+Your platform can price however you want:
+
+| Model | Example |
+|-------|---------|
+| Per-merchant SaaS | $X/month per connected store |
+| Transaction fee | X% of attributed revenue |
+| Tiered pricing | Based on partner count or volume |
+| Enterprise | Custom pricing for large merchants |
+
+## When to Choose White-Label
+
+**Choose White-Label when:**
+- You're building a business, not just using a tool
+- You want to resell/license the capability
+- You need complete brand control
+- You're serving multiple merchants
+- You have product/engineering resources
+
+**Stay with simpler approaches when:**
+- You're a single merchant
+- You don't need multi-tenant
+- You want faster time to value
+- You don't want platform responsibilities
+
+## Related
+
+- [The Build Spectrum](/guides/dev/build-spectrum/overview)
+- [Build an Integration](/guides/integrations/build-integration)
+- [Merchant Auth Flow](/guides/integrations/build/merchant-auth)

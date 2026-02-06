@@ -1,0 +1,63 @@
+---
+title: 'Build Your Own Dashboard'
+description: 'Create custom partner experiences using CC APIs and your own infrastructure.'
+---
+
+When CC's hosted dashboard doesn't fit your needs, build your own using CC APIs.
+
+## When to Build Custom
+
+- Unique UX requirements
+- Deep integration with existing tools
+- Complete brand control
+- Custom workflows not supported by CC
+
+## What You'll Build
+
+| Component | CC Provides | You Build |
+|-----------|-------------|-----------|
+| Data storage | ✓ Metaobjects, API | — |
+| Authentication | Tokens, SSO | Login UI, session |
+| Partner data | Read/write APIs | Forms, displays |
+| Products | Catalog access | Picker UI |
+| Hosting | — | Your infrastructure |
+
+## Architecture
+
+```
+Your Frontend
+     │
+     ├── Auth (your system or SSO)
+     │
+     ├── CC APIs
+     │   ├── Get partner data
+     │   ├── Update partner data
+     │   ├── Get products
+     │   └── Manage drops
+     │
+     └── Your Backend (optional)
+         └── Custom logic, storage
+```
+
+## Getting Started
+
+<Steps>
+  <Step title="Choose hosting">
+    Where will your dashboard live? [Where to Host](/guides/creator-experience/build-your-own/hosting)
+  </Step>
+  <Step title="Set up auth">
+    How will partners log in? [Auth Guide](/guides/creator-experience/build-your-own/auth)
+  </Step>
+  <Step title="Build components">
+    What UX do you need? [Components Guide](/guides/creator-experience/build-your-own/components)
+  </Step>
+  <Step title="Integrate APIs">
+    Connect to CC data. [API Reference](/references/unified-api-reference)
+  </Step>
+</Steps>
+
+## In This Section
+
+- [Where to Host](/guides/creator-experience/build-your-own/hosting)
+- [Authentication](/guides/creator-experience/build-your-own/auth)
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)

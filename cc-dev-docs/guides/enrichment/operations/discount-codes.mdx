@@ -1,0 +1,55 @@
+---
+title: 'Discount Code Management'
+description: 'Auto-create and manage partner discount codes.'
+---
+
+Every partner needs a discount code. Manage them automatically.
+
+## Auto-Create on Activation
+
+**Trigger:** CC Partner Activated
+
+**Condition:** No discount code exists
+
+**Actions:**
+1. Generate code: `{FIRSTNAME}{DISCOUNT}` (e.g., SARAH20)
+2. Handle conflicts: SARAH20A, SARAH20B
+3. Create Shopify discount (percentage, unlimited use)
+4. Store in `cc-collab-discount-code` and `cc-collab-discount-amount`
+
+## Tier-Based Updates
+
+When tier changes, update discount amount:
+
+| Tier | Discount |
+|------|----------|
+| Bronze | 15% |
+| Silver | 20% |
+| Gold | 25% |
+| Platinum | 30% |
+
+**Trigger:** CC Creator Field Updated (cc-partner-tier)
+
+**Actions:**
+1. Lookup tier discount amount
+2. Update Shopify discount
+3. Update `cc-collab-discount-amount`
+4. Notify partner: "Your discount increased to {amount}%!"
+
+## Deactivate on Exit
+
+**Trigger:** CC Partner Deactivated
+
+**Actions:**
+1. Disable Shopify discount (not delete)
+2. Update `cc-discount-status: disabled`
+3. Preserve for potential reactivation
+
+## Reactivate on Return
+
+**Trigger:** CC Partner Reactivated
+
+**Actions:**
+1. Re-enable existing discount
+2. Update status
+3. Send welcome-back email

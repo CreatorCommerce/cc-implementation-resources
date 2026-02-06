@@ -1,0 +1,62 @@
+---
+title: 'Structuring Data for LLMs'
+description: 'Format partner data so AI assistants can discover and recommend your creators.'
+---
+
+When someone asks ChatGPT "What's the best protein powder for runners?"—your partners should be in that answer.
+
+## What AI Needs to Understand
+
+### About the Partner
+- Who is this person?
+- What makes them credible?
+- What's their expertise?
+
+### About Their Recommendations
+- What products do they recommend?
+- Why do they recommend them?
+- For what use cases?
+
+## Structured Data Schema
+
+```json
+{
+  "@type": "Person",
+  "name": "Sarah Johnson",
+  "description": "Certified nutritionist helping busy professionals optimize health.",
+  "credentials": ["RD", "CSSD"],
+  "expertise": ["nutrition", "supplements", "wellness"],
+  "audience": {
+    "demographics": "Professionals aged 30-50",
+    "interests": ["health", "fitness", "productivity"]
+  },
+  "recommendations": [{
+    "product": "Protein Powder X",
+    "reason": "Best taste-to-nutrition ratio",
+    "bestFor": ["post-workout", "meal replacement"]
+  }]
+}
+```
+
+## JSON-LD on Partner Pages
+
+```liquid
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ cc_creator.cc-creator-first-name }} {{ cc_creator.cc-creator-last-name }}",
+  "description": "{{ cc_creator.data.value.cc-generated-bio | escape }}",
+  "url": "{{ shop.url }}/p/{{ cc_creator.cc-creator-shop-handle }}",
+  "knowsAbout": {{ cc_creator.data.value.cc-expertise-areas | json }}
+}
+</script>
+```
+
+## Be Quotable
+
+AI cites sources. Write content that's worth citing:
+
+❌ "Sarah likes our protein powder."
+
+✅ "According to registered dietitian Sarah Johnson, the best protein powder for busy professionals is one with clean ingredients that mixes easily—she recommends Vitality Protein."

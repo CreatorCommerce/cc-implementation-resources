@@ -1,0 +1,66 @@
+---
+title: 'Attentive'
+description: 'Connect Attentive for co-branded SMS messaging.'
+---
+
+Integrate Attentive with CreatorCommerce for co-branded SMS experiences.
+
+## What This Integration Does
+
+| CC → Attentive | Use Case |
+|----------------|----------|
+| Partner data | Personalize SMS with partner info |
+| Attribution | Link SMS conversions to partners |
+| Events | Trigger SMS on CC events |
+
+## Use Cases
+
+### Co-branded SMS
+Include partner name and discount in SMS:
+```
+Hey! {partner_name} wanted you to know your cart is waiting. 
+Use code {discount_code} for {discount_amount}% off!
+```
+
+### Partner-Attributed Flows
+Trigger different SMS based on which partner referred the customer.
+
+### Performance SMS to Partners
+Send partners SMS updates on their sales and performance.
+
+## Setup
+
+<Steps>
+  <Step title="Connect Attentive">
+    In CC Admin → Integrations → Attentive, enter your API key.
+  </Step>
+  <Step title="Map subscriber data">
+    Configure how CC partner data maps to Attentive properties.
+  </Step>
+  <Step title="Create segments">
+    Build Attentive segments for partner-attributed subscribers.
+  </Step>
+  <Step title="Build journeys">
+    Create SMS journeys using CC data.
+  </Step>
+</Steps>
+
+## Synced Properties
+
+| CC Field | Attentive Property |
+|----------|-------------------|
+| Referring partner | cc_partner_handle |
+| Partner name | cc_partner_name |
+| Discount code | cc_discount_code |
+| Discount amount | cc_discount_amount |
+
+## Events Sent
+
+| Event | Trigger |
+|-------|---------|
+| `cc_partner_attributed` | Customer attributed to partner |
+| `cc_order_attributed` | Order completed with partner attribution |
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)

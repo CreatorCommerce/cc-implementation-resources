@@ -1,0 +1,56 @@
+---
+title: 'Planning Custom Fields'
+description: 'Decide what data to store before building workflows.'
+---
+
+Before building workflows, plan your custom fields. This prevents rebuilding later.
+
+## Field Categories
+
+### Identity Fields
+```
+cc-creator-bio                → Their story
+cc-creator-headshot           → Profile image
+cc-creator-credentials        → "RD, CSSD"
+cc-creator-content-style      → casual | professional | expert
+```
+
+### Social Proof Fields
+```
+cc-social-followers           → Audience size
+cc-social-platform            → Primary platform
+cc-community-purchases        → Orders from referrals
+cc-repeat-purchase-rate       → % who reorder
+```
+
+### Content Fields
+```
+cc-landing-headline           → Page headline
+cc-landing-subhead            → Supporting copy
+cc-product-testimonial        → Quote about product
+cc-why-i-recommend            → Personal story
+```
+
+### Performance Fields
+```
+cc-lifetime-sales             → Total GMV
+cc-conversion-rate            → Click → Purchase
+cc-partner-tier               → bronze | silver | gold
+cc-top-products               → Best-sellers array
+```
+
+## Naming Convention
+
+```
+cc-                           → All CC fields
+cc-creator-                   → Partner identity
+cc-landing-                   → Landing page content
+cc-social-                    → Social media data
+cc-perf-                      → Performance metrics
+cc-ai-                        → AI-generated content
+```
+
+## Related
+
+- [Custom Fields Reference](/references/custom-fields-reference) — Full field documentation
+- [Data Model Overview](/references/data-model-overview) — How CC data is structured

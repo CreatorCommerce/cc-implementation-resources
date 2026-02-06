@@ -1,0 +1,56 @@
+---
+title: 'Shopify Flow'
+description: 'Automate partner workflows with Shopify Flow triggers and actions.'
+---
+
+Shopify Flow is the core automation layer for CreatorCommerce—trigger workflows on partner events and take actions across your Shopify store.
+
+## What This Integration Does
+
+| CC Triggers | CC Actions |
+|-------------|------------|
+| Partner created | Update partner fields |
+| Partner activated | Generate content |
+| Order attributed | Sync to external systems |
+| Drop updated | Create Shopify objects |
+| Milestone reached | Send notifications |
+
+## Native Integration
+
+Shopify Flow is built into CC—no setup required. Just create flows using CC triggers and actions.
+
+## Common Flows
+
+### Auto-Create Discount on Activation
+```
+Trigger: CC Partner Activated
+Action: Create Shopify Discount
+Action: Update CC partner with code
+```
+
+### Tag Attributed Orders
+```
+Trigger: CC Order Attributed
+Action: Add order tag "cc-partner:{handle}"
+Action: Add customer tag "cc-referred"
+```
+
+### Performance Tier Updates
+```
+Trigger: CC Order Attributed
+Condition: Partner lifetime sales > $10,000
+Action: Update CC partner tier to "gold"
+```
+
+### Content Generation
+```
+Trigger: CC Partner Created
+Condition: Bio is blank
+Action: Generate bio with AI
+Action: Store in CC partner fields
+```
+
+## Related
+
+- [Shopify Flow Webhooks Reference](/references/webhooks-shopify-flow)
+- [Content Workflows](/guides/enrichment-flows)

@@ -1,0 +1,86 @@
+---
+title: 'Request a Custom Webhook'
+description: 'Need unique data or custom event handling? We build custom webhook endpoints.'
+---
+
+Standard webhooks not enough? We create custom webhook endpoints for unique integration needs.
+
+## When to Request Custom Webhooks
+
+### Unique Data Requirements
+- You need data in a specific format your system expects
+- You require aggregated or computed fields
+- Your system needs data transformed before receipt
+
+### Custom Events
+- You need to trigger on events we don't currently expose
+- You want combined events (multiple triggers → one webhook)
+- You need conditional webhooks (only fire when X and Y)
+
+### Special Delivery
+- Your system requires specific authentication headers
+- You need retry logic customized for your infrastructure
+- You require guaranteed delivery with acknowledgment
+
+## What We Can Build
+
+| Custom Capability | Example |
+|-------------------|---------|
+| Custom payloads | Include computed fields like lifetime value |
+| Filtered events | Only send when order > $100 |
+| Batched delivery | Send hourly summary instead of per-event |
+| Custom auth | HMAC signatures, OAuth tokens, API keys |
+| Retry policies | Custom backoff, max attempts, dead letter |
+| Data transformation | Map CC fields to your schema |
+
+## Request Process
+
+<Steps>
+  <Step title="Describe your need">
+    Tell us what data you need and when you need it.
+  </Step>
+  <Step title="We scope it">
+    We'll propose a solution and timeline.
+  </Step>
+  <Step title="We build it">
+    Custom webhook endpoint created for your account.
+  </Step>
+  <Step title="You test">
+    Verify the integration works with your system.
+  </Step>
+  <Step title="Go live">
+    Enable in production with monitoring.
+  </Step>
+</Steps>
+
+## Request Template
+
+When requesting a custom webhook, include:
+
+```
+## Event Trigger
+What should trigger this webhook?
+
+## Payload Requirements
+What data do you need in the payload?
+
+## Destination
+Where should we send it? (URL, auth requirements)
+
+## Frequency/Batching
+Real-time, batched, or scheduled?
+
+## Special Requirements
+Any specific formatting, auth, or delivery needs?
+```
+
+## Contact
+
+<Card title="Request Custom Webhook" icon="webhook" href="mailto:integrations@creatorcommerce.com">
+  Email our integrations team with your requirements.
+</Card>
+
+## Related
+
+- [Shopify Flow Webhooks](/references/webhooks-shopify-flow)
+- [Klaviyo Webhooks](/references/webhooks-klaviyo)

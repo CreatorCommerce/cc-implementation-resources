@@ -1,0 +1,57 @@
+---
+title: 'Using Nano Banana'
+description: 'E-commerce optimized AI content generation with Nano Banana.'
+---
+
+Nano Banana is optimized for commerce content—it understands product categories, conversion language, and brand voice preservation.
+
+## Why Nano Banana?
+
+- **E-commerce native** — Trained on commerce content patterns
+- **Brand voice preservation** — Maintains consistent tone
+- **Conversion-focused** — Understands what drives purchases
+- **Structured outputs** — Consistent format for templates
+
+## Example: Generate Partner Bio
+
+```javascript
+const bio = await nanobanana.generate({
+  template: "partner-bio",
+  inputs: {
+    partnerName: "Sarah Johnson",
+    niche: "wellness coaching",
+    brandName: "Vitality Labs",
+    brandVoice: "approachable, science-backed, empowering",
+    productCategories: ["supplements", "protein", "vitamins"]
+  },
+  constraints: {
+    length: "2-3 sentences",
+    tone: "authentic, not salesy",
+    mustInclude: ["why they chose this brand"]
+  }
+});
+
+// Result:
+// "Sarah is a certified wellness coach who helps busy professionals 
+// build sustainable health habits. She partnered with Vitality Labs 
+// because she believes quality supplements shouldn't require a 
+// chemistry degree to understand."
+```
+
+## Templates Available
+
+| Template | Use Case |
+|----------|----------|
+| `partner-bio` | Short partner introduction |
+| `landing-headline` | Page headlines |
+| `product-testimonial` | Product-specific quotes |
+| `why-i-love` | Personal recommendation stories |
+| `email-subject` | Subject line variants |
+
+## In Shopify Flow
+
+Use the `Generate Content` action with Nano Banana:
+
+1. Select template
+2. Map partner fields to inputs
+3. Store output in custom field

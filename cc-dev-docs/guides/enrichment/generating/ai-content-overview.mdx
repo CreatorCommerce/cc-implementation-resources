@@ -1,0 +1,53 @@
+---
+title: 'AI Content Generation'
+description: 'Overview of using AI to create bios, headlines, and personalized content.'
+---
+
+Fetching data gets you what already exists. Generating data creates what doesn't—bios, headlines, testimonials, product recommendations.
+
+## What You Can Generate
+
+| Content Type | Inputs Needed | Output Example |
+|--------------|---------------|----------------|
+| Partner bio | Name, niche, brand | "Sarah is a wellness coach helping busy professionals..." |
+| Landing headline | Name, discount, season | "Shop Sarah's Spring Favorites" |
+| Product testimonial | Product, partner persona | "I've tried dozens—this is the only one I use daily." |
+| Why I recommend | Product details, style | "As a mom of three, I don't have time for complicated routines..." |
+| Email subject lines | Campaign type, partner | ["Sarah's pick just restocked", "Your exclusive 20%"] |
+
+## Generation Patterns
+
+### On Create
+Generate content the moment a partner joins:
+- Trigger: CC Partner Created
+- Action: Generate bio, headline
+- Result: Landing page ready in seconds
+
+### On Data Change
+Regenerate when source data changes:
+- Trigger: CC Creator Field Updated (niche, content-style)
+- Condition: Content was auto-generated (not manually edited)
+- Action: Regenerate dependent content
+
+### Product-Triggered
+Generate testimonials when products are added:
+- Trigger: CC Drop Updated
+- For each: Newly added product
+- Action: Generate testimonial for that product
+
+## Quality Control
+
+- **Automated validation** — Check length, prohibited phrases, required elements
+- **Human review** — Queue premium partners for approval
+- **A/B testing** — Generate multiple variants, track performance
+
+## Tools
+
+<CardGroup cols={2}>
+  <Card title="Nano Banana" href="/guides/enrichment/generating/nano-banana">
+    Optimized for e-commerce content generation.
+  </Card>
+  <Card title="OpenAI & Claude" href="/guides/enrichment/generating/openai-claude">
+    For custom generation needs.
+  </Card>
+</CardGroup>
