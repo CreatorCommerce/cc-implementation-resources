@@ -1,57 +1,121 @@
 ---
 title: 'Post-Launch: What Your eComm Team Should Know'
-description: 'Key information for your eCommerce team after launching co-branded experiences.'
+description: 'Key information for your eCommerce team after launching CreatorCommerce co-branded experiences.'
 ---
+
+After launching CreatorCommerce, your eComm team needs to understand what changed and how to manage the new co-branded layer. Share this page with your team.
 
 ## What Changed
 
 Your store now has:
 - Creator landing pages at `/pages/creators/[handle]`
 - Personalized UI when customers shop via creator links
-- Automatic discount application
-- Order attribution to creators
+- Automatic discount application via the SDK
+- Order and customer attribution to creators
+- Auto-generated Shopify collections for each creator's drops
+
+## Side Effects to Be Aware Of
+
+### Auto-Created Collections
+
+CreatorCommerce creates a Shopify collection for each creator's drop. These collections may clutter your Shopify Admin collections list.
+
+**Solution:** CreatorCommerce prefixes these collections with `CC //`. Use Shopify Admin filtered views to hide or isolate them:
+1. Go to **Products → Collections** in Shopify Admin
+2. Create a saved filter: **Title does not contain** `CC //` for your daily view
+3. Create a separate saved filter: **Title contains** `CC //` to manage CC collections when needed
+
+See [Hide CC Collections](/guides/storefronts/hide-cc-collections) for details.
+
+### Shared Theme Sections
+
+CC sections added to your theme are shared with your main theme. Be aware that:
+- Theme updates should be tested on a creator page before publishing
+- CC sections may appear in the section picker in the theme editor
+- Some sections conditionally render creator content
+
+### Discount Codes
+
+Creator discount codes are managed in CreatorCommerce and synced to Shopify. **Do not manually edit or delete CC-created discount codes** — they will be re-created on the next sync.
+
+## SEO Considerations for Co-branded Pages
+
+Co-branded creator pages are personalized shopping experiences, not original content pages. To avoid SEO issues:
+
+### Add noindex Meta Tags
+
+In `theme.liquid`, add a conditional meta tag to prevent search engines from indexing creator pages:
+
+```liquid
+{% if request.path contains '/creators/' %}
+  <meta name="robots" content="noindex, nofollow">
+{% endif %}
+```
+
+### Update robots.txt
+
+In `templates/robots.txt.liquid`, block crawler access to creator pages:
+
+```liquid
+{% for group in robots.default_groups %}
+  {{- group.user_agent -}}
+
+  {%- if group.user_agent.value == '*' -%}
+    {{ 'Disallow: /pages/creator' }}
+    {{ 'Disallow: /pages/creator/*' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+{% endfor %}
+```
+
+<Warning>
+Without these SEO controls, search engines may index hundreds of similar creator pages, potentially causing duplicate content issues or diluting your site's SEO authority.
+</Warning>
+
+## Order Attribution
+
+Orders from creator traffic are tagged automatically:
+- `cc-creator-id-xxxxxx` — The creator's ID
+- `cc-campaign-id-xxxxxx` — The campaign ID
+- `CreatorCommerce` — General tag for all CC-attributed orders
+
+Filter orders in Shopify Admin using these tags. See [Order & Customer Tags](/references/order-customer-tags) for the full reference.
+
+## Managing Pop-ups on Creator Pages
+
+If your store uses marketing pop-ups (email capture, promotions), consider **disabling them on creator landing pages**. The landing page itself serves as the entry experience — a pop-up on top of a co-branded page can hurt conversion rates.
+
+Check your pop-up tool's settings for URL-based targeting rules and exclude `/pages/creators/*`.
 
 ## Managing Creators
 
 | Task | Where |
 |------|-------|
-| Add new creator | CreatorCommerce app |
-| Edit creator info | CC app or metaobjects |
+| Add new creator | CreatorCommerce dashboard |
+| Edit creator info | CC dashboard or Shopify metaobjects |
 | Disable a creator | Set status to inactive in CC |
-| View performance | CC dashboard |
-
-## Order Attribution
-
-Orders from creator traffic are tagged:
-- `cc-attributed`
-- `cc-creator:[handle]`
-- `cc-discount:[code]`
-
-Filter orders in Shopify Admin using these tags.
-
-## Discount Codes
-
-Creator discount codes are managed in CC and synced to Shopify. Don't manually edit or delete CC-created discount codes.
-
-## Theme Considerations
-
-- CC sections may appear on landing pages
-- Some sections conditionally show creator content
-- Test theme updates on a creator page before publishing
-
-## Reporting
-
-- Use CC dashboard for creator-level metrics
-- Use Shopify Analytics for overall store performance
-- Export attributed orders for commission calculations
+| View performance | CC dashboard → Analytics |
+| Manage drops | CC dashboard or Creator's own dashboard |
 
 ## Common Questions
 
 **"A creator's page isn't showing their photo"**
-→ Check their profile in CC, ensure image is uploaded
+→ Check their profile in CC — ensure the profile picture is uploaded and the metaobject has synced.
 
 **"Discount isn't applying at checkout"**
-→ Verify code exists in Shopify discounts, check for conflicts
+→ Verify the discount code exists in Shopify Discounts. Check for conflicts with other active discounts. Ensure the SDK is enabled.
 
 **"Orders aren't being attributed"**
-→ Check cart attributes are being set on landing pages
+→ Verify cart attributes are being set on landing pages (check browser console). Ensure the SDK theme app embed is enabled.
+
+**"CC collections are cluttering our admin"**
+→ See [Hide CC Collections](/guides/storefronts/hide-cc-collections) for filtered view setup.
+
+## Related
+
+- [Hide CC Collections](/guides/storefronts/hide-cc-collections)
+- [Enable Tracking](/guides/storefronts/enable-tracking)
+- [Order & Customer Tags Reference](/references/order-customer-tags)

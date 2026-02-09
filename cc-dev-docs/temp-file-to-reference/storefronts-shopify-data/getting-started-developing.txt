@@ -1,0 +1,64 @@
+This overview will help you understand what you can achieve as you begin developing on CreatorCommerce, why the Creator Primitive is so fundamental, and how it empowers deeper collaboration—both within Shopify and in downstream tools like Klaviyo.
+
+‍
+
+The Creator Primitive: Your data foundation
+The Creator Primitive is a unified & enriched data object that contains an entry for each creator a brand works with. This primitive has fields that are shared accross all brands who leverage CreatorCommerce (such as name, profile picture, bio, etc) meaning that all brands benefit as the primitive grows denser. However, while some fields are global/shared, most fields are private your your collaboration with the creator (Product UGC, recommendations, reviews, etc). While the Creator Primitive is a schema & data store maintained by the CreatorCommerce platform, it's practically accessed through Shopify Metaobjects, where CreatorCommerce syncs data in real-time.
+
+Characteristics of the primitive in practice:
+
+Structured yet flexible: The Creator metaobject contains fields for discount types, UGC, recommended products (a.k.a. “drops”), and more. Allowing you to build UI/UX around predicable fields & data.
+Ecosystem-wide compatibility: Because everything is stored in Shopify’s native format, it can cascade throughout your storefront, to external email providers, or even offline marketing channels.
+Modular expansion: Over time, you’ll learn to add custom fields to the Creator metaobject—without disrupting the core fields managed by CreatorCommerce. This modularity keeps your store stable while letting you innovate & enrich experiences.
+‍
+
+While the Creator Primitive represents a unified schema & data store for your collabs, you'll often here it referred to as the Creator Metaobject. As the Creator Primitive is stored on your Shopify store in the Creator Metaobject. With any CreatorCommerce experience, data will be fetched from the Creator Metaobject in order to interface with the Creator Pirmitive.
+‍
+
+What you’ll learn while building on the platform
+How to access the Creator primitive in Shopify (it's stored in metaobjects)
+You’ll see why the Creator metaobject is the “building block” for all affiliate/collaboration data. You’ll learn how it simplifies storing everything from creator bios to discount logic, and discover how that data can be natively referenced in your Liquid templates and metaobject pages.
+Shopify-native Co-Branding
+Rather than forcing a separate platform, CreatorCommerce embraces Shopify’s “native-first” approach. You’ll learn to create co-branded funnels—like personalized landing pages or entire “takeover” themes—without reinventing how your store is structured.
+Full-funnel personalization strategies
+As you progress, you’ll see how the CreatorCommerce SDK updates Shopify cart attributes to track the shopper’s affiliate context. You’ll learn ways to use these attributes (e.g., cc-creator-handle, discount data) to dynamically adjust pricing, product recommendations, UGC, or even the store’s header and footer.
+Leveraging data across platforms
+Beyond Shopify, the Creator Primitive extends to marketing automation systems like Klaviyo, letting you trigger segmented email flows based on a shopper’s associated creator, discount code, or campaign. You’ll discover how these attributes can flow into advanced analytics, CRM, or other third-party tools.
+Future-proofing collaboration
+As you get comfortable with the CreatorCommerce architecture, you’ll learn how to quickly scale up new partnerships (influencers, brand ambassadors, B2B clients) by replicating or expanding the same metaobject schema. This ensures each partnership has a consistent yet flexible approach to personalization.
+‍
+
+Lessons in Practice
+While CreatorCommerce doesn’t force a strict “curriculum,” you’ll typically explore these areas as you grow more advanced:
+
+Creator metaobject basics
+Understanding how to store and retrieve essential data: first/last name, discount details, recommended products.
+Building and referencing metaobject pages to quickly spin up new creator landing pages.
+Theme personalization
+Basic branding swaps: showing a creator’s logo in the header, linking to their curated shop in the footer.
+Advanced transformations: site-wide discounting, dynamic product recommendations, or a complete re-skin for influencer “takeovers.”
+Multi-channel integration
+Feeding CreatorCommerce data (e.g., campaign ID, affiliate handle) to Klaviyo or other CRMs for targeted marketing flows, retargeting, or in-depth analytics.
+Setting up triggered emails that greet visitors with a personal note from their favorite influencer or highlight special deals.
+Scalability & automation
+Using the same metaobject structure to onboard dozens—or even hundreds—of creators, each with their own unique style but following the same pattern.
+Exploring repeatable templates for product page enhancements, partial site customizations, and more.
+‍
+
+The Shopify philosophy: Native, modular, and collaborative
+CreatorCommerce aligns with Shopify’s core development ethos:
+
+Native building blocks: Lean on Liquid, metaobjects, sections, and cart attributes—no drastic overrides or custom frameworks required.
+Modular approach: Keep your custom code or “hacks” minimal by storing all essential collaboration data in the Creator metaobject. This ensures consistency and easier updates.
+Co-creation with partners: The “creator” concept extends beyond just influencers—think brand ambassadors, affiliates, or B2B collaborations. Each partner can have a dedicated data record that shapes the experience end-to-end.
+‍
+
+Next steps
+Explore the Creator Metaobject: Familiarize yourself with its fields (e.g., discount rules, UGC structures, drop recommendations).
+Enable the SDK: If you haven’t already, install the CreatorCommerce SDK so affiliate link clicks update your cart attributes.
+Test Basic Personalization: Start small by conditionally showing a creator name or discount code on your site.
+Plan multi-channel strategy: Consider how you’ll use the captured data in Klaviyo or other marketing channels to create cohesive, cross-platform experiences.
+Iterate & scale: As you learn each aspect, from landing pages to full-funnel customizations, you’ll see how easily you can extend the same pattern for new or existing collaborators.
+‍
+
+With CreatorCommerce, you’re not just adding another affiliate tool—you’re unlocking a native extension of Shopify that’s built around the Creator Primitive. This opens the door to infinite co-branded possibilities, from simple landing pages to storewide influencer takeovers, all with robust data sync to marketing platforms like Klaviyo. As you dive deeper, you’ll gain confidence in creating dynamic, seamless experiences that delight both your collaborators and your customers.

@@ -1,0 +1,161 @@
+Creator Curated Bundles: The creator commerce strategy most brands miss
+
+Most brands approach influencer traffic with a simple playbook: get the click, show the discount, push to checkout. It works for conversion rates, but it's a revenue leak disguised as a win.
+
+Here's the reality: Creator traffic isn't just ready to buy—it's ready to buy more. These shoppers already trust the creator's judgment. They want the complete recommendation, not just a single product.
+
+That's where custom bundles change everything.
+
+‍
+
+What makes bundles different
+A custom bundle isn't just products grouped together. It's a creator's complete recommendation presented as one cohesive purchase decision:
+
+The full kit price is visible upfront (with discount applied)
+Shoppers can scan the entire selection quickly
+One click adds everything to cart
+Individual items can still be swapped or removed
+‍
+
+Think "Nathalie's Complete Morning Routine" instead of "20% off this cleanser."
+
+‍
+
+
+‍
+
+Why creator traffic responds to bundles
+Traditional affiliate flows optimize for speed: click → discount → checkout. But creator audiences behave differently. They trust the creator's curation and want to replicate their exact setup.
+
+‍
+
+When you show them a single product, you're asking them to reverse-engineer the creator's full routine. When you show them a bundle, you're selling them the complete solution they actually want.
+
+‍
+
+The numbers back this up. Brands using bundles with creator traffic consistently see 60-70% higher average order values compared to standard affiliate flows.
+
+‍
+
+The shopper experience
+Creator page landing: The bundle appears prominently with a clear title and total price including discount
+Quick evaluation: Each item is listed with the creator's notes on why it made the cut
+Decision point: Add the entire bundle to cart, or dive deeper into individual products
+Checkout: Everything flows naturally with proper attribution and discount applied
+‍
+
+No hunting for codes. No guesswork about what else to add.
+
+‍
+
+Direct checkout links unlock new opportunities
+Not every purchase needs a landing page. Sometimes shoppers are already sold and just want to buy exactly what the creator uses.
+
+‍
+
+
+‍
+
+Creators can generate direct checkout links for any bundle and share them anywhere—Instagram Stories, TikTok bios, email newsletters, or DMs. One tap takes the buyer straight to checkout with the full bundle and discount preloaded.
+
+‍
+
+This is particularly powerful for "already convinced" traffic or referrals between friends.
+
+‍
+
+
+Creator dashboard, access to checkout links
+‍
+
+What high-performing bundles look like
+The best bundle experiences share common elements:
+
+Clear positioning: Above the fold on creator pages, not buried in the footer
+
+‍Transparent pricing: Bundle total with discount prominently displayedCreator context: Short notes explaining why each item was chosen
+
+‍Flexible interaction: One-click "Add All" with easy individual product access
+
+‍Mobile optimization: Sticky add buttons and thumb-friendly design
+
+‍
+
+
+Perfect bundle UX
+‍
+
+Technical implementation (Shopify-friendly)
+Bundles don't require complex infrastructure:
+
+Bundle data is accessible as 'cc-creator-drops' in Shopify metaobject linking product IDs
+Apply existing creator discount logic to show real bundle pricing
+Add all items to cart in a single call on the frontend that loops through all products & variants in the CreatorCommerce drops object
+Discount will be applied automatically
+The UI component can be styled to match your brand and dropped into any theme.
+
+‍
+
+The creator workflow
+Creators need zero technical skills:
+
+Curate: Select products from your catalog or choose brand-approved presets
+Annotate: Add bundle name and brief item descriptions
+Publish: Bundle appears on their co-branded page instantly
+Share: Copy direct checkout links for use anywhere
+‍
+
+No spreadsheets. No approval workflows. No technical barriers.
+
+‍
+
+Metrics that matter
+Track bundle performance like a retailer:
+
+Average order value: Bundle pages vs. standard creator pages
+Bundle adoption rate: Percentage of visitors using "Add All"
+Item attach rate: How often bundle items are purchased together
+Link performance: Co-branded pages vs. direct checkout flows
+Customer satisfaction: Return rates and feedback on bundled orders
+‍
+
+Focus on the metrics that drive revenue, not just vanity engagement numbers.
+
+‍
+
+Common objections (and responses)
+"We only have a few products": Perfect. Fewer SKUs make curation clearer and more valuable.
+
+‍
+
+"Won't this hurt conversion rates?": Clean bundle UI actually reduces decision paralysis and increases conversions.
+
+‍
+
+"What about inventory issues?": Handle stockouts gracefully by removing unavailable items and messaging the change.
+
+‍
+
+"Do bundles need extra discounts?": Usually not. The curation itself provides value. Your existing creator discount typically suffices.
+
+‍
+
+Implementation roadmap
+Priority order for rolling out bundles:
+
+Build the theme component for displaying bundles
+Implement one-click "Add All" functionality
+Message creators with their links to make drops
+Launch with your top-performing creators
+‍
+
+The bottom line
+If you're treating creator traffic like cheap top-of-funnel clicks, you're optimizing for the wrong metric. These shoppers trust the creator's judgment and want complete solutions, not individual products.
+
+‍
+
+Custom bundles let you monetize that trust properly. Instead of celebrating a 7% conversion on a $45 order, you can drive a 6.5% conversion on a $165 order.
+
+‍
+
+That's not just better performance—it's a fundamentally different business model.

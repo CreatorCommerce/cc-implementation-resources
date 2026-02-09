@@ -1,0 +1,57 @@
+What is the actually ‘implementable’ value from using the CC platform
+
+ENROLLMENT
+Connect to your current recruitment platforms to enroll automatically based on whatever is happening in them.
+Launch in-bound application page that elevate the brand, that create a premium & exclusive feeling, and that inspire immediate action:
+Waitlists
+Campaign countdowns
+Filter by persona to see perks based on who you are
+Motion & aura
+
+ACTIVATION
+Add entry points to existing partner portals & tools
+Enable in your customer account page
+Auto-email new participants with next steps & follow-ups
+Collect content direct via forms
+Enrich content via scraping, AI and additional APIs and tools
+Distribute assets to help them share on social & IRL
+
+CO-BRANDED STOREFRONTS
+Get landing pages or homepage/PDP alterations
+Pull in content into any component across the funnel
+Focus on co-branded UI VS pure-play creator white-labelled UI
+Lean on discounts, curations, content, interactivity, efficiency, bundling, and more
+Support from landing to checkout
+
+CO-BRANDED POP-UPS
+Use namesake to drive willingness to subscribe to marketing
+Gate discounts or content behind the lead magnet
+
+CO-BRANDED EMAILS
+Drive more opens & clicks with namesake, products & discounts in emails that follow first session
+Target via opt-ins, cart abandonments, and post-purchase welcome series
+
+SIGNATURE CAMPAIGNS
+On-going forms & dashboard experiences to participate in new campaigns
+Email integrations to coordinate action
+Signature/ad-hoc storefront templates via destinations
+
+EMBEDDED COMMERCE COMPONENTS
+Copy & paste embeds to sell on another site
+Paired with all products, a single collection, or all collections
+
+TRACKING / ATTRIBUTION
+Cart-based tracking (Most superior form of affiliate tracking in the Shopify ecosystem, leads to 2.5% more tracked orders VS just cookies & codes)
+Step funnel tracking
+
+GEO/SEO
+Dominate searches + chats about product recommendations related to collabs
+
+TRAINING + SUPPORT
+Done for you build out
+Training sessions for the merchant
+Training sessions for the affiliates
+Training videos for affiliates
+Weekly or monthly stand-ups & workshops
+Quarterly business reviews
+Annual planning

@@ -1,0 +1,55 @@
+How to create a new landing page template (Online Store Builder)
+How to expand your campaigns and rollout a second template for your CreatorCommerce landing experiences.
+
+If you already have a Creator metaobject set up (and perhaps even a template for it), you can still create another template for the same metaobject resource. This allows you to have multiple layout variations—helpful if you want to showcase creators in different styles or for different campaigns. This is not necessary if you just want field level data to vary page to page, this is a step to take for larger (more fundamental) design changes applied to an entire campaign.
+
+Below is a streamlined guide to adding a new template and previewing it for an existing “Creator” metaobject entry without repeating all the basics.
+
+‍
+
+1. Create a New Template
+Open the Theme Editor
+In Shopify Admin, go to Online Store > Themes and click Customize on your active theme.
+Select the Existing Metaobject
+At the top of the Theme Editor, click the template dropdown.
+Look for Creator (your existing metaobject resource).
+Select one of the existing Creator entries if prompted, so Shopify loads its data.
+Add a New Template
+Within that same dropdown (usually top-center of the screen), find and click Create template (or New template).
+Give your new template a descriptive name (e.g., creator-alternate-layout).
+Configure Sections
+Add or remove sections to create your desired layout.
+Use the Dynamic source option (often shown as a database icon) to bind Creator metaobject fields (metaobject.field_name).
+Note: Since you’re working with the same metaobject resource (“Creator”), fields like metaobject['cc-creator-drops'] remain the same. You’re simply creating a different layout.
+
+
+Adding a new template
+‍
+
+2. Assign the new template to a campaign
+Go to CreatorCommerce > Campaigns
+In a new or existing campaign, add the new theme to the landing destination
+Do this by adding ?view=[new-page-template-handle]
+i.e. creator-alternate-layout
+Save the campaign, and all creators in it will then send traffic to the new landing page template without needing a new link
+‍
+
+Tips & Considerations
+Keep Template Names Meaningful‍
+With multiple layouts for the same metaobject, use clear naming conventions (e.g., “creator-hero-focused”, “creator-minimal”, etc.) so you know which layout is which.
+Reuse Sections Smartly‍
+If some sections are common across all Creator layouts (e.g., a brand header or disclaimers), keep them consistent. Only customize the areas you need to differ.
+Avoid Redundant Fields‍
+You don’t need to add new fields to the Creator metaobject if the existing fields suffice. Both templates can reference the same metaobject data in different ways.
+Perform a Final Live Check‍
+After assigning the new template to a Creator entry, visit the actual URL (e.g., yourstore.com/pages/creator/<handle>?view=<template-handle>) to confirm everything looks correct outside of the Theme Editor.
+‍
+
+Summary
+By creating an additional page template for your existing Creator metaobject, you gain the flexibility to:
+
+Present the same creator data with different layouts or styles.
+Test or compare multiple designs without affecting your primary template.
+Easily switch or preview each layout in the Theme Editor using Shopify’s built-in template management features.
+This approach is ideal for running alternate campaigns, customizing seasonal designs, or experimenting with new layout ideas—all while keeping your core Creator metaobject data intact.
+

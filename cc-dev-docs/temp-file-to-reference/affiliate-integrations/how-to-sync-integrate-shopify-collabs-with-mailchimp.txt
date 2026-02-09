@@ -1,0 +1,60 @@
+How to Integrate Shopify Collabs with MailChimp through Shopify Flow
+To use Mailchimp to invite and communicate with your affiliates, you'll need to make sure that Shopify Collabs is keeping Mailchimp profiles updated along the way. This is where this guide comes in handy. It will take you through a quick process to add Shopify Flows that sync Shopify Collabs affiliates with Mailchimp.
+
+Download Shopify Flow, if you haven't already
+Shopify flow is a free tool in the Shopify App Store, that makes it easy to setup ad hoc integrations. Shopify Collabs requires the use of Shopify Flow to perform integrations, so it is a requirement to complete this guide.
+
+Click here to install Shopify flow.
+
+‍
+
+Upload the CreatorCommerce flow templates for Mailchimp x Shopify Collabs
+Click here to receive and download the flow templates for updating Mailchimp with newly approved affiliates and for updating Mailchimp with new tier assignments
+Once downloaded, go to Shopify Flow, and click to "Import", and "Add files"
+Upload & import both "CC__Add Creator to MailChimp.flow" and "CC_Update Creator in MailChimp.flow" from your downloads folder
+‍
+
+
+Flow files to upload
+‍
+
+Obtain your Mailchimp Audience ID and API key
+Audience ID
+Go to "Audience"
+Go to "Manage Audience"
+Go to "Audience name and campaign defaults"
+Copy the "Audience ID" shown on the screen
+API Key
+Go to "Account & billing" from the profile area
+Go to the "Extras" tab
+Go to "API keys"
+Create an API key and give it the name of "Shopify Collabs // CreatorCommerce"
+Save and copy the key
+(Technical Step) Then base64 encode this API key so that it can be pasted as a basic auth access token later
+‍
+
+Setup the flows
+Go to back to Shopify Flow
+Go to click into "CC // Add Creator to MailChimp"
+Click "Edit"
+Click "Send HTTP request"
+Replace "<<AUDIENCE-ID>>" with your Mailchimp Audience ID
+Replace "<<ENCRYPTED-BASIC-AUTH-TOKEN>>" with your base64 encoded API key
+Click "Turn on workflow", click "Turn on"
+Repeat for the "CC // Update Creator in Mailchimp" flow
+‍
+
+
+When both are enabled
+‍
+
+Expected result
+When both flows are enabled, whenever an affiliate is approved or has a tier updated, a tag for "CreatorCommerce Creator" will be posted to Mailchimp. This will be included in the profile.
+
+‍
+
+
+Example of the tag in Mailchimp
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.

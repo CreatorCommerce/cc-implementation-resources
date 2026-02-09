@@ -1,0 +1,264 @@
+Setting Your Affiliate Integration Live in Creator Commerce
+
+Connecting your affiliate platform is the first step to launching co-branded shopping experiences. This guide walks you through the core steps so your creators’ links start routing into Creator Commerce pages.
+
+⸻
+
+Step 1: Choose Your Affiliate Platform
+
+Before anything else, decide which affiliate or creator platform you’ll be connecting. Common options include:
+	•	Social Snowball
+	•	Refersion
+	•	GoAffPro
+	•	GRIN
+	•	UpPromote
+	•	Shopify Collabs
+	•	Other supported providers
+
+This platform acts as your core payout and tracking system. It remains the source of truth for commissions and reporting, while Creator Commerce builds the shopping experiences behind the links.
+
+⸻
+
+Step 2: Connect the Integration
+
+From your Creator Commerce dashboard:
+	1.	Go to Integrations.
+	2.	Select your affiliate provider.
+	3.	Follow the required setup steps.
+
+Depending on the platform, this may involve:
+	•	Adding an API key
+	•	Enabling webhooks
+	•	Turning on the Creator Commerce integration inside the affiliate tool
+
+Once connected, Creator Commerce will begin syncing your creators and affiliate data.
+At this stage, nothing changes on your storefront yet—data is simply being imported.
+
+⸻
+
+Step 3: Enable a Destination for a Tier
+
+Next, decide which group of affiliates should receive co-branded pages.
+
+In Creator Commerce:
+	1.	Go to the Destinations tool.
+	2.	Create or enable a destination.
+	3.	Map it to a specific tier from your affiliate platform.
+
+Different platforms use different terminology:
+	•	Tiers
+	•	Programs
+	•	Groups
+	•	Segments
+
+They all represent the same concept: a subset of your affiliates.
+
+Once a destination is enabled, Creator Commerce will generate co-branded pages for any creators enrolled in that tier.
+
+⸻
+
+Step 4: Point Affiliate Links to the Redirect
+
+This is the final step that activates the experience.
+
+Inside your affiliate platform, update the destination of your affiliate links to:
+
+/apps/cc-storefront/redirect
+
+You can do this:
+	•	One creator at a time, or
+	•	Across an entire tier, or
+	•	Across your full affiliate program
+
+This redirect acts as a safe landing zone. When someone clicks an affiliate link:
+	1.	Creator Commerce detects the click in real time.
+	2.	It checks whether that creator is enrolled in a destination.
+	3.	The shopper is sent to:
+	•	A co-branded landing page, or
+	•	Your homepage if no destination applies.
+
+Because of this fallback logic, it’s safe to apply the redirect broadly.
+
+⸻
+
+What Happens After Setup
+
+Once everything is live:
+	•	Existing affiliate links keep working.
+	•	UTMs are preserved from the original link to the final page.
+	•	Discount codes continue to apply as usual.
+	•	Tracking and payouts remain in your affiliate platform.
+
+Creator Commerce simply powers the co-branded storefront experience behind the click.
+
+⸻
+
+Summary Checklist
+
+To go live:
+	1.	Choose your affiliate platform.
+	2.	Connect it in Integrations.
+	3.	Enable a Destination for a tier.
+	4.	Update affiliate links to
+/apps/cc-storefront/redirect.
+
+After that, your integration is fully live.
+
+
+
+
+
+
+EXTRA CONTTEXT
+
+
+
+
+Creator Commerce lets you connect directly to the affiliate, ambassador, and creator platforms you already use—so every partner can automatically become a personalized storefront, drop, or funnel.
+
+‍
+
+This guide walks you through how to connect your first Enrollment & Recruitment Integration, what to expect, and how to activate your collaborations.
+
+‍
+
+What is an Enrollment & Recruitment Integration?
+Enrollment & recruitment tools are platforms that help you:
+
+Recruit creators, affiliates, ambassadors, or B2B partners
+Track their referrals, codes, links, and tiers
+Manage payouts and performance
+‍
+
+When you connect one of these tools to Creator Commerce, we sync your partners in real time as Collaborations—which you can then turn into:
+
+Co-branded landing pages
+Shoppable creator storefronts
+Drops, bundles, and campaigns
+Personalized discounts & content
+‍
+
+Supported Providers
+Creator Commerce currently supports (and continues to expand):
+
+Social Snowball
+Shopify Collabs
+Refersion
+GRIN
+GoAffPro
+UpPromote
+Each provider has a slightly different connection method. The flow is always the same:
+
+Creator Commerce → Integrations → Choose Provider → Complete Provider Setup → Sync Collaborations
+‍
+
+Step 1 — Open the Integrations Page
+Log into your Creator Commerce Dashboard
+In the left sidebar, click Integrations
+Select Enrollment & Recruitment
+Choose your provider (e.g., Social Snowball, GoAffPro, GRIN)
+You’ll now see setup instructions that are specific to that platform.
+
+‍
+
+Step 2 — Complete the Provider Setup
+Each provider requires a different activation method. Below are the most common patterns.
+
+‍
+
+🔹 Social Snowball
+How it connects:
+
+You enable Creator Commerce from inside Social Snowball.
+
+Steps:
+
+Log into Social Snowball
+Go to Settings → Integrations
+Find Creator Commerce and enable it
+Approve the connection
+Once enabled, your creators will begin syncing automatically into Creator Commerce.
+
+‍
+
+🔹 Shopify Collabs
+How it connects:
+
+This integration runs through Shopify Flow.
+
+Steps:
+
+Open Shopify Admin
+Install Shopify Flow (if not already installed)
+Import the Creator Commerce Flow template
+Activate the workflow
+This allows Collabs partners to sync into Creator Commerce whenever they are approved, updated, or enrolled.
+
+‍
+
+🔹 GoAffPro
+How it connects:
+
+Using your API Key.
+
+Steps:
+
+Open your GoAffPro dashboard
+Copy your API Key
+Return to Creator Commerce → Integrations → GoAffPro
+Paste the API key and click Connect
+‍
+
+🔹 Refersion, GRIN, UpPromote
+These follow one of two models:
+
+API key authentication
+OAuth-style authorization
+Each integration page in Creator Commerce will show the exact steps required for that platform.
+
+⚠️ Important: Always follow the provider-specific instructions shown in Creator Commerce, even if you’ve connected other tools before.
+‍
+
+Step 3 — Confirm the Sync
+Once your integration is connected:
+
+Creator Commerce will pull in your creators, affiliates, or ambassadors
+They will appear as Collaborations inside your dashboard
+You’ll now see:
+
+Names
+Referral links or codes
+Platform metadata
+Status and tiers (if supported by the provider)
+This happens automatically—no CSV uploads or manual mapping.
+
+‍
+
+Step 4 — Activate Your Collaborations
+Now the real magic starts.
+
+From the Collaborations table, you can:
+
+Enroll partners into Destinations
+Assign them to Drops, Collections, or Bundles
+Generate co-branded landing pages
+Apply creator-specific discounts, copy, and products
+Each collaboration becomes its own shoppable funnel.
+
+‍
+
+Why This Matters
+Most affiliate platforms stop at the link.
+
+Creator Commerce goes further—turning every enrolled partner into a fully merchandised storefront powered by:
+
+Your products
+Their content
+Your brand logic
+You’re no longer tracking referrals.
+
+You’re building creator-powered commerce channels.
+
+If you need help setting up a specific provider, visit the integration’s detail page inside Creator Commerce or contact support.
+
+‍

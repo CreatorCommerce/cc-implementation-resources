@@ -1,0 +1,44 @@
+How to enable the Shopify Collabs integration
+Shopify Collabs is an all-in-one platform for recruiting, managing, and paying affiliates/influencers. This guide will take you through how to invite affiliates to CreatorCommerce when they are assigned to a tier in Shopify Collabs. Any orders made on Creator Shops for Shopify Collabs affiliates will be attributed back to Shopify Collabs. This allows the affiliate to withdraw their commissions in the Collabs payout tool.
+
+Note: This guide assumes that you've already setup Shopify Collabs, and have at least one tier and/or affiliates. A guide on setting up Shopify Collabs from scratch is coming soon.
+
+‍
+
+Download Shopify Flow, if you haven't already
+Shopify flow is a free tool in the Shopify App Store, that makes it easy to setup ad hoc integrations. Shopify Collabs requires the use of Shopify Flow to perform integrations, so it is a requirement to complete this guide.
+
+Click here to install Shopify Flow.
+
+‍
+
+Upload the CreatorCommerce flow templates for CreatorCommerce x Shopify Collabs
+Click here to download the flow templates for updating CreatorCommerce with 1) newly approved affiliates, 2) new tier assignments, and 3) for showing appreciation to affiliates.
+Once downloaded, go to Shopify Flow, and click to "Import", and "Add files"
+Upload & import both "CC__Creator Approved Sync.flow", "CC_Tier Assigned Sync.flow" , and "CC_Affiliate Appreciation.flow" from your downloads folder
+
+Flows to upload
+‍
+
+Enable the flows
+Click into one of the three flows
+Click "Turn on workflow", click "Turn on"
+Repeat for the two other flows, until all three appear enabled
+
+All three flows enabled
+‍
+
+Expected result
+Whenever an affiliate is approved or has a tier updated, the occurrence of this event will be synced with CreatorCommerce. This ensures that CreatorCommerce has the latest discount code and affiliate details on hand at all times. Additionally, the Affiliate Appreciation Flow will congratulate affiliates on their first sales, and will remind them to launch a shop to increase performance if they haven't done so already.
+
+‍
+
+Order attribution & commission payouts
+Keep in mind that Shopify Collabs will continue to receive its standard attribution, just like with a typical affiliate link purchase. This ensures that affiliates and brands can continue to see sales in Shopify Collabs, and it allows creators to cash out on their commissions using the payout tool in the Collabs dashboard. The only difference moving forward will be that orders from CreatorCommerce Creator Shops will additionally have an order tag that indicates that the order came from a Creator Shop. This order tag can be filtered on using Shopify reports, and is visible on the orders page as well.
+
+
+Each and every order from CreatorCommerce will have complete customer information attached, allowing new customers to be added to your downstream retention marketing systems (per usual).
+
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.

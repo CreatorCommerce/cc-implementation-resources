@@ -1,0 +1,46 @@
+How to integrate Shopify Collabs with Klaviyo through Shopify Flow
+To use Klaviyo to invite and communicate with your affiliates, you'll need to make sure that Shopify Collabs is keeping Klaviyo profiles updated along the way. This is where this guide comes in handy. It will take you through a quick process to add Shopify Flows that sync Shopify Collabs affiliates with Klaviyo.
+
+
+Download Shopify Flow, if you haven't already
+Shopify flow is a free tool in the Shopify App Store, that makes it easy to setup ad hoc integrations. Shopify Collabs requires the use of Shopify Flow to perform integrations, so it is a requirement to complete this guide.
+
+Click here to install Shopify flow.
+
+‍
+
+Upload the CreatorCommerce flow templates for Klaviyo x Shopify Collabs
+Click here to download the flow templates for updating Klaviyo with newly approved affiliates and for updating Klaviyo with new tier assignments
+Once downloaded, go to Shopify Flow, and click to "Import", and "Add files"
+Upload & import both "CC__Export approved applicants to Klaviyo.flow" and "CC_Export tier assignments to Klaviyo.flow" from your downloads folder
+
+Flow files to upload
+‍
+
+Obtain your Klaviyo API key
+Go to Klaviyo
+Go to "Settings"
+Click "API keys"
+Copy your "Public API Key / site ID" which is a 6-digit alphanumeric code
+‍
+
+Setup the flows
+Go to back to Shopify Flow
+Go to click into "CC // Export approved applicants to Klaviyo"
+Click "Edit"
+Click "Track Event"
+Replace "XXXXXX" with your Klaviyo Public API Key
+Click "Turn on workflow", click "Turn on"
+Repeat for the "CC // Export tier assignments to Klaviyo" flow
+
+When both are enabled
+‍
+
+Expected result
+When both flows are enabled, whenever an affiliate is approved or has a tier updated, the latest discount code and tier name will be posted to Klaviyo. This will be included in the properties of a profile.
+
+
+Example properties in Klaviyo
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.

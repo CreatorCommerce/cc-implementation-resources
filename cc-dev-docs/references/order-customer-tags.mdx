@@ -1,0 +1,93 @@
+---
+title: 'Order & Customer Tags'
+description: 'Reference for all Shopify tags CreatorCommerce automatically applies to orders and customers for attribution and reporting.'
+---
+
+CreatorCommerce automatically tags orders and customers in Shopify when a sale is attributed to a creator. These tags enable native filtering, reporting, and workflow automation without leaving Shopify Admin.
+
+## Order Tags
+
+Every order attributed to a CreatorCommerce affiliate receives these tags:
+
+| Tag | Format | Example | Purpose |
+|-----|--------|---------|---------|
+| Creator ID | `cc-creator-id-{id}` | `cc-creator-id-66c35503bb33ccae069f43bb` | Identifies which creator drove the sale |
+| Campaign ID | `cc-campaign-id-{id}` | `cc-campaign-id-66c35503bb33ccae069f43bb` | Identifies which campaign the sale belongs to |
+| General | `CreatorCommerce` | `CreatorCommerce` | Quick filter for all CC-attributed orders |
+
+### Order Attributes (Backup)
+
+The same data is also stored as **order attributes** (via cart attributes at checkout). This provides a secondary lookup method:
+
+| Attribute | Value |
+|-----------|-------|
+| `cc-creator-id` | Creator's CreatorCommerce ID |
+| `cc-campaign-id` | Campaign ID |
+| `cc-creator-handle` | Creator's shop handle |
+| `cc-shop-id` | Shop identifier |
+
+## Customer Tags
+
+Customers who purchase through a creator link receive:
+
+| Tag | Format | Example | Purpose |
+|-----|--------|---------|---------|
+| Creator identity | `cc-creator-id-{id}` | `cc-creator-id-66c35503bb33ccae069f43bb` | Marks the customer record as a creator (if they are one) |
+| Referred by | `cc-referred-from-creator-id-{id}` | `cc-referred-from-creator-id-66c35503bb33ccae069f43bb` | Tracks which creator referred this customer |
+
+<Note>
+Customer tags **persist** even if the customer makes future purchases without using an affiliate link. This preserves lifetime attribution to the original creator.
+</Note>
+
+## Using Tags in Shopify Admin
+
+### Filter Orders by Creator
+
+1. Go to **Orders** in Shopify Admin
+2. In the search bar, type: `tag:cc-creator-id-{creator-id}`
+3. All orders from that creator appear
+
+### Filter All CC Orders
+
+Search for: `tag:CreatorCommerce`
+
+### Filter Orders by Campaign
+
+Search for: `tag:cc-campaign-id-{campaign-id}`
+
+### Find Customers Referred by a Creator
+
+1. Go to **Customers** in Shopify Admin
+2. Search: `tag:cc-referred-from-creator-id-{creator-id}`
+3. View all customers that creator has referred
+
+## Reporting Use Cases
+
+| Report | How to Build |
+|--------|-------------|
+| Revenue per creator | Filter orders by `cc-creator-id-{id}`, sum total sales |
+| Revenue per campaign | Filter orders by `cc-campaign-id-{id}`, sum total sales |
+| New customers per creator | Filter customers by `cc-referred-from-creator-id-{id}`, count records |
+| Customer LTV per creator | Filter customers by referral tag, analyze total spend |
+| Creator order volume | Filter orders by `CreatorCommerce` tag, count per period |
+
+## Automation with Shopify Flow
+
+These tags can trigger Shopify Flow workflows:
+
+- **Order tagged with `CreatorCommerce`** → Send internal Slack notification
+- **Customer tagged with `cc-referred-from-creator-id-*`** → Add to a Klaviyo segment
+- **Order tagged with specific campaign** → Apply fulfillment priority
+
+## Implementation Details
+
+- **Automatic** — Tags are applied by CreatorCommerce when the order is processed. No manual setup required beyond having the SDK enabled.
+- **Non-destructive** — CC tags are added alongside any existing tags. They don't overwrite other tags.
+- **Editable** — You can manually edit or remove tags in Shopify Admin, but removing CC tags will break reporting for that order/customer.
+- **Idempotent** — Repeat purchases through the same creator won't create duplicate tags.
+
+## Related
+
+- [Affiliate Link Tracking](/references/affiliate-link-tracking)
+- [Enable Tracking](/guides/storefronts/enable-tracking)
+- [SDK Getting Started](/references/sdk/getting-started)

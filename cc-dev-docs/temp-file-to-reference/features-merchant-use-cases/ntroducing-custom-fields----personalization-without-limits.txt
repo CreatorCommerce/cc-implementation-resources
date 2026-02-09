@@ -1,0 +1,59 @@
+Introducing custom fields — personalization without limits
+
+We’re super excited to announce the launch of Custom Fields, a new CreatorCommerce feature that lets brands collect and use unique, creator-driven data to craft richer, more authentic shopping experiences. The name says it all - Custom Fields gives you the power to define and gather exactly the data points that matter most to your brand, your products, and your creators’ audiences. Then, you can pull that data directly into your co-branded storefronts to make them more editorial, more informative, and more personal than ever before.
+
+Why Custom Fields?
+Consumers are changing the way they shop. More than ever, they trust product recommendations from affiliates, ambassadors, and small businesses like salons or boutiques - not just the brand itself. They want real, battle-tested insights:
+
+What size does this creator usually wear?
+What size did they order this time?
+What’s their honest take on fit, feel, or durability?
+How do they use the product in real life?
+What’s their before-and-after skincare journey?
+‍
+
+This is the kind of detail you can’t get from a generic product page. And with Custom Fields, you can model and capture all of it - at scale.
+
+‍
+
+Turning Creators into Your Best Salespeople
+In sales, there’s a concept called the Black Swan - the unexpected insight that changes the entire conversation.
+
+‍
+
+Custom Fields helps every creator you work with uncover their Black Swan. Maybe their audience cares deeply about sustainability, about ingredient sourcing, or about a certain type of fit. Now, you can give them the tools to surface those insights directly inside the shopping journey.
+
+‍
+
+Instead of just a profile photo, a few reviews, and a generic product list, your creator’s storefront can weave in unique, high-impact data points their audience actually cares about - all while staying on-brand and conversion-focused.
+
+‍
+
+Built for Scale and Flexibility
+We know not every creator will fill out every field you give them — and that’s okay. With our new dashboard table view, you can:
+
+Manage all custom fields in one place
+Change fields per creator
+Moderate and approve content before publishing
+Step in and fill out details on behalf of creators when needed
+‍
+
+This isn’t just a feature, it’s data administration at scale. Whether you have 10 creators or 10,000, you can standardize what’s collected, maintain quality, and ensure your program runs smoothly.
+
+
+‍
+
+From “Product Pages” to Personalized Experiences
+With Custom Fields, your co-branded storefronts stop being just product pages. They become curated, editorialized experiences — Q&A formats, magazine-style layouts, insider tips, care instructions, and before/after showcases — all driven by your collaborators.
+
+‍
+
+This is the heart of collaborations: giving your partners the space and tools to sell in their own voice while still meeting your brand standards.
+
+‍
+
+We can’t wait to see how brands use Custom Fields to push the limits of personalization and storytelling. This is a small feature with huge potential to change how products are presented, purchased, and loved.
+
+‍
+
+Custom Fields is live today — start building experiences your customers won’t forget.

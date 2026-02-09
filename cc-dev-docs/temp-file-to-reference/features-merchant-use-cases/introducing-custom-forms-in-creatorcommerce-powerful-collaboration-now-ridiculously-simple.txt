@@ -1,0 +1,121 @@
+Introducing Custom Forms in CreatorCommerce: Powerful collaboration, now ridiculously simple
+
+There’s a moment every brand hits with influencer marketing: you approve a creator… and then what? A recruitment form got you the top-of-funnel context — a name, a handle, maybe a paragraph about why they want to work with you — but it does absolutely nothing to help you run a real collaboration. No content brief. No product curation. No story. No funnel. Nothing.
+
+
+This gap has always been the bottleneck.
+
+‍
+
+And that’s exactly what we’ve eliminated.
+
+‍
+
+With the new CreatorCommerce Embedded Dashboard, building truly customized, collaboration-ready forms takes minutes — no ops person, no spreadsheet circus, no engineering ticket. It’s clean, intuitive, and built for how modern brands actually collaborate.
+
+‍
+
+Why forms matter more than anyone realizes
+Recruitment is just the start. The magic happens after approval — when creators shape the content, products, and onsite experience that ultimately drive conversions. That requires data. Structured data. Creative data. Merchandising data. Funnel-shaping data.
+
+‍
+
+So we built the simplest, fastest way to collect it.
+
+‍
+
+CreatorCommerce now supports four purpose-built form types, each tailored to a phase of the collaboration lifecycle:
+
+‍
+
+
+‍
+
+1. Onboarding Forms
+The instant welcome moment. Automatically fire off an activation form when someone’s approved. Gather what they need for their first personalized storefront — quickly, clearly, and with zero manual follow-up.
+
+‍
+
+2. Collection Forms
+Perfect for high-SKU or high-curation brands. Let creators build collections over time, request new product mixes, or update their storefront narrative on the fly.
+
+‍
+
+3. Product Forms
+Ideal for CPG and vertical brands with fewer SKUs but deeper storytelling needs. Capture product-level content, flavor notes, UGC ideas, comparisons, and more.
+
+‍
+
+4. Custom Forms
+The wildcard. B2B affiliate intake, recipe submissions, photoshoot preferences, brand-bio questions, wholesale details — whatever data your program needs, you can collect it.
+
+‍
+
+
+‍
+
+Build a form in seconds — No tech, no tickets
+The new builder removes every friction point. You simply:
+
+Give the form a title and description
+Choose which tiers or segments should receive it
+(In the demo: Shop by Collabs tiers — but this matches your real setup exactly.)
+Pick the fields you want
+Every option comes from your Custom Field Builder — the same flexible system that lets you create any data type you need, from logos and banners to copy blocks and business details.
+Add labels and descriptions for creators
+Save it, toggle it on, and you’re done
+‍
+
+The system automatically emails eligible creators, drops the form into their CreatorCommerce editor, and routes their submissions back into your personalization engine.
+
+‍
+
+What Creators See: A guided, zero-friction workflow
+When a creator logs into their store editor, the forms you’ve assigned appear instantly — no digging, no guessing, no mystery. They get a clean, step-by-step experience:
+
+Upload their logo
+Add a banner
+Write their hero header
+Submit collection details
+Provide product-specific content
+Share brand or business info
+‍
+
+And behind the scenes, that data flows straight into their personalized storefront, shaping a shopping experience that’s differentiated, conversion-oriented, and actually worth sharing.
+
+‍
+
+Creators love it because it feels empowering.
+
+‍
+
+Brands love it because it eliminates chaos.
+
+‍
+
+A better way to run creator programs
+This isn’t a plugin slapped onto the side of your workflow. It’s a foundational tool for:
+
+Scaling creator onboarding without manual ops
+Increasing conversion through deeper personalization
+Giving creators a real role in merchandising
+Building differentiated collab experiences at speed
+Keeping your entire program structured and repeatable
+In short: if you’re serious about running meaningful collaborations — not just recruiting creators — this is the simplest, smartest way to capture the data that fuels them.
+
+‍
+
+Forms 101: Now live in the CreatorCommerce dashboard
+Four form types. Drag-and-drop building. Automatic creator delivery. Full customization. Built-in segmentation. Clean guided workflows. And zero engineering required.
+
+‍
+
+The whole thing is designed to be picked up in seconds and powerful enough to scale a full-funnel creator strategy.
+
+‍
+
+This is how collaborations should work: simple for brands, intuitive for creators, and built to drive real outcomes.
+
+‍
+
+More tools are coming — but this one changes the game immediately. Let’s build.

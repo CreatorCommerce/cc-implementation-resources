@@ -1,0 +1,122 @@
+1 - Getting started with landing pages (Liquid)
+This guide explains how to build affiliate landing pages using Shopify’s metaobject page templates. By leveraging metaobjects, you gain direct access to CreatorCommerce data (like a creator’s drops, recommended products, etc.)—all without needing extensive additional lookups. Follow the steps below to set up a reusable landing page template that can be applied across numerous campaigns.
+
+
+Why use metaobject pages for landing pages?
+Convenient Data Access‍
+Metaobject pages automatically provide fields as metaobject.field. For instance, if your metaobject includes a title field, you can reference it in Liquid with {{ metaobject.title }}.
+Scalable Template‍
+Once you create a metaobject page template, you can reuse it for multiple creators, affiliates, or campaigns simply by changing the relevant metaobject data.
+Flexibility‍
+You can integrate standard Shopify sections (with drag-and-drop editing) or add custom Liquid/HTML sections for deeper customization—ideal for showcasing multiple product drops or building tailored “tabs” for each product category.
+‍
+
+Prerequisites
+Enable "Sync data with Shopify"
+Go to the CreatorCommerce dashboard > Settings > Switch "Sync data with Shopify" to enabled
+Be aware that with this setting enabled, CreatorCommerce will create a collection in Shopify whenever a creator makes a drop (collection of products). these collections will contain the metafield seo.hidden with a value of 1 if you need to filter them out of any UI or search experiences.
+1+ CreatorCommerce Affiliate Storefronts‍
+Ensure you have at least one storefront, affiliate, and campaign set up in CreatorCommerce. If not, create a test affiliate and campaign to serve as a starting point.
+Metaobject Configured
+Confirm that your CreatorCommerce metaobject (e.g., “Creator”) is installed and configured in Shopify under Settings > Custom data. Note:
+You can add your own fields to the metaobject.
+Do not remove or modify CreatorCommerce-managed fields.
+‍
+
+Step-by-step: Setting up a metaobject page template
+Access Your Theme‍
+In Shopify, navigate to Online Store > Themes and select the theme you want to customize.
+Create a New Template
+Click Customize on your chosen theme.
+From the dropdown at the top center of the Theme Editor, locate and select Creator.
+Click Create template (or New template).
+Assign a name for your new template (e.g., vip-template).
+‍
+
+
+Selecting a template
+‍
+
+Add Sections & Blocks
+Use the drag-and-drop editor to add any existing sections you want (banner, image with text, etc.).
+For dynamic text or images, use Shopify’s dynamic source menu to bind fields like metaobject.field_name.
+Optional: Add or Edit Custom Code
+If you need more flexibility (e.g., a custom loop of products), you can create or edit your own Liquid sections.
+Place your custom sections in the template or reference them via render 'section-name' in your theme code.
+‍
+
+
+Selecting a dynamic source for no-code customizability
+‍
+
+Advanced example: Looping through creator drops & products
+A common use case is showcasing multiple “drops” (collections or product sets) that a creator recommends. Below is a simplified code snippet illustrating how you can loop through each drop and render a product grid:
+
+      <!-- Content shown within each tab -->
+      <div class="tabbed-content">
+        {% assign tabstyle = 'content active' %}
+        {% for drop in metaobject['cc-creator-drops'].value %}
+          <!-- Each tab's content is identified by its unique 'id' -->
+          <div id="{{ drop.handle }}" class="{{ tabstyle }}">
+            <!-- Drop Description -->
+            <div class="title-wrapper{% if drop.title == blank %} title-wrapper--no-heading{% endif %} {{ section.settings.heading_alignment }}">
+              <p class="drop-description">
+                {{ drop.description }}
+              </p>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="product-grid">
+              {% for product in drop.products %}
+                {% assign product = product %}
+                {%- render 'product-card', product: product -%}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% assign tabstyle = 'content' %}
+        {% endfor %}
+      </div>
+Key Points in This Example
+metaobject['cc-creator-drops'] fetches the array of drops from the metaobject.
+Each “drop” contains its own products collection, which is iterated over to render product-card.
+The tabstyle logic shows how you could alternate CSS classes for an active/inactive tab system.
+CreatorCommerce provides advanced section support to Pro subscribers and up. To get support, reach out to help@creatorcommerce.shop
+‍
+
+Testing & previewing your landing page
+Theme editor preview
+In the Shopify Theme Editor, you can preview your new template to check layout, text, and overall styling.
+Live preview
+Visit [yourbrand].com/pages/creator/[handle] to see how the page looks in a live environment.
+Replace [handle] with the actual creator handle you have set in CreatorCommerce.
+SEO & URL path settings
+Under Settings > Custom data > Creator, you can adjust the URL path (e.g., creator to something else), set custom SEO titles, and manage whether these pages are indexed by search engines.
+If you prefer to hide these pages from search engines, update your robots.txt to exclude the /creator/ path (or your chosen path).
+‍
+
+Tips & best practices
+Use dynamic fields liberally‍
+Instead of hardcoding text or images, bind them to your metaobject’s fields for easy, no-code updates in the future.
+Avoid editing CreatorCommerce-managed fields‍
+You can add fields to the metaobject but do not remove or modify the default fields (e.g., cc-creator-drops), as they’re crucial for CreatorCommerce functionality.
+Leverage reusability‍
+Once your template is created, you can spawn new landing pages simply by creating new metaobject entries—each with unique data (drops, product recommendations, etc.)—that reference the same page template.
+Customize with sections‍
+For advanced visuals or interactive elements, you can create custom Liquid sections or modify existing ones, then add them to your landing page template.
+Preview often‍
+Always preview or test your pages (especially if you added custom code) to ensure everything renders correctly and no Liquid errors appear.
+‍
+
+Summary
+By combining Shopify’s metaobject functionality with CreatorCommerce data fields, you can quickly spin up attractive, data-driven landing pages. The process involves:
+
+Creating a metaobject page template under your theme.
+Adding or editing sections (either through drag-and-drop or custom code).
+Looping through data (like drops and products) to create dynamic, personalized experiences.
+Testing & adjusting your URL path and SEO settings as needed.
+With these steps, you can build and manage an unlimited number of affiliate-focused landing pages—each connected to a different creator, campaign, or product set—while minimizing repetitive setup.
+
+‍
+
+Want to build experiences that go deeper than just a landing page? Learn how to build full-funnel experiences here, and update pricing, add UGC/reviews to PDP, and dynamically change the entire storefront based on a shopper who has clicked an affiliate link.

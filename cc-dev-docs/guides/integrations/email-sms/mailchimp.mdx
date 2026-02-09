@@ -1,0 +1,88 @@
+---
+title: 'Mailchimp'
+description: 'Sync CreatorCommerce creator data to Mailchimp for affiliate communications.'
+---
+
+Mailchimp can be connected to CreatorCommerce through Shopify Flow for affiliate email communication and segmentation.
+
+## What This Integration Does
+
+| CC → Mailchimp | Use Case |
+|-----------------|----------|
+| Creator profiles | Segment creators for email campaigns |
+| Tier assignments | Trigger tier-based messaging |
+| `CreatorCommerce Creator` tag | Filter and target affiliates |
+
+## Prerequisites
+
+- **Shopify Flow** installed on your store
+- **Mailchimp** account with an active audience
+- **CreatorCommerce** installed and configured
+
+## Setup
+
+<Steps>
+  <Step title="Install Shopify Flow">
+    If not already installed, add [Shopify Flow](https://apps.shopify.com/flow) from the Shopify App Store.
+  </Step>
+  <Step title="Upload CreatorCommerce Mailchimp flows">
+    Upload these pre-built flow templates to Shopify Flow:
+
+    - `CC__Add Creator to MailChimp.flow` — Adds newly approved creators to your Mailchimp audience
+    - `CC_Update Creator in MailChimp.flow` — Updates creator profiles in Mailchimp when data changes
+  </Step>
+  <Step title="Get your Mailchimp credentials">
+    You'll need two pieces of information from Mailchimp:
+
+    **Audience ID:**
+    In Mailchimp → Audience → Settings → Audience name and defaults → find your **Audience ID**.
+
+    **API Key (base64 encoded):**
+    In Mailchimp → Account → Extras → API Keys → create or copy your API key. Then base64 encode it:
+
+    ```
+    Base64("anystring:your-api-key-here")
+    ```
+
+    The format is `anystring:` followed by your API key, then base64 encoded. This is used in the HTTP request headers within the Shopify Flow.
+  </Step>
+  <Step title="Configure the flows">
+    Open each imported flow in Shopify Flow and update the HTTP request actions with your Mailchimp credentials:
+
+    - Replace the **Audience ID** in the request URL
+    - Replace the **Authorization header** with your base64-encoded API key
+    - Verify the Mailchimp data center in the URL matches your account (e.g., `us1`, `us2`, etc.)
+  </Step>
+  <Step title="Enable the flows">
+    Toggle each flow from **Draft** to **Active**. Test by approving a creator in CreatorCommerce and verifying they appear in your Mailchimp audience.
+  </Step>
+</Steps>
+
+## How It Works
+
+The Shopify Flow templates make HTTP requests to Mailchimp's API to add or update audience members. Each creator added to Mailchimp receives a `CreatorCommerce Creator` tag, which you can use for segmentation.
+
+```
+Creator approved/updated in CC → Shopify Flow triggers
+       ↓
+HTTP request to Mailchimp API → Add/update audience member
+       ↓
+Creator tagged "CreatorCommerce Creator" → Available for segmentation
+```
+
+## Use Cases
+
+### Affiliate Welcome Sequences
+Use the `CreatorCommerce Creator` tag to trigger welcome email sequences for new affiliates.
+
+### Tier-Based Communication
+When a creator's tier changes, the update flow syncs the new tier to Mailchimp. Use merge fields to segment communications by tier level.
+
+### Campaign Announcements
+Segment your Mailchimp audience by the `CreatorCommerce Creator` tag to send campaign-specific announcements, new product launches, or seasonal promotions exclusively to affiliates.
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Klaviyo Integration](/guides/integrations/email-sms/klaviyo)
+- [Shopify Collabs Integration](/guides/integrations/affiliate/shopify-collabs)

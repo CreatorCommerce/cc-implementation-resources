@@ -1,82 +1,170 @@
 ---
-title: 'The 2 Sides of Klaviyo with CreatorCommerce'
-description: 'Use Klaviyo both for creator communications and co-branded customer emails.'
+title: 'The Two Sides of Klaviyo'
+description: 'Using Klaviyo for both affiliate lifecycle messaging (B2B) and co-branded consumer emails (B2C) through CreatorCommerce.'
 ---
 
-Klaviyo integration with CreatorCommerce serves two distinct but complementary purposes. Understanding both sides helps you maximize your email marketing across the entire partner ecosystem.
+CreatorCommerce uses Klaviyo in two fundamentally different ways. Understanding the distinction is critical to building effective email programs.
 
-## Side 1: Creator/Partner Communications
+## Side 1: Affiliate Messaging (B2B)
 
-Use Klaviyo to communicate directly with your creators, influencers, and affiliates:
+Communicate directly with your creators, influencers, and affiliates through automated Klaviyo flows.
 
-<CardGroup cols={2}>
-  <Card title="Onboarding Flows" icon="user-plus">
-    Welcome new partners and guide them through activation.
-  </Card>
-  <Card title="Performance Updates" icon="chart-line">
-    Send partners their sales stats and commission reports.
-  </Card>
-  <Card title="Campaign Briefs" icon="megaphone">
-    Notify partners about new products, promotions, or content opportunities.
-  </Card>
-  <Card title="Re-engagement" icon="arrows-rotate">
-    Win back inactive partners with incentives and updates.
-  </Card>
-</CardGroup>
+### What It Is
 
-### Key Data Available
+Emails and SMS sent **to your creators** as part of their lifecycle with your brand. These messages onboard, activate, retain, and celebrate your partners.
 
-CreatorCommerce syncs partner data to Klaviyo profiles, enabling segmentation by:
-- Partner tier or segment
-- Sales performance
-- Activation status
-- Product categories promoted
-- Geographic location
+### Events That Power It
 
-## Side 2: Co-branded Customer Emails
+| Klaviyo Event | Fires When | Flow It Triggers |
+|---------------|-----------|-----------------|
+| `Creator Collaboration Started` | CC syncs a new affiliate from your platform | Collab Invitation |
+| `Creator Drop Created` | Creator adds products to their shop | Welcome Series, New Drop |
+| `Creator Invitation Accepted` | Creator starts onboarding | Onboarding Abandonment (if no drop within 4h) |
+| `Creator Order Attributed` | A sale is tracked to the creator | Sales Milestones |
+| `Shop Updated` | Creator updates their shop settings | Shop Updated confirmation |
+| `Creator Added To Campaign` | Campaign is launched or creator is added | New Campaign |
 
-Use Klaviyo to send personalized emails to customers that reference their referring partner:
+### The 8 Core Flows
 
-<CardGroup cols={2}>
-  <Card title="Cart Abandonment" icon="cart-shopping">
-    Recovery emails featuring the partner who referred them.
-  </Card>
-  <Card title="Post-Purchase" icon="box">
-    Thank you flows that maintain partner context.
-  </Card>
-  <Card title="Welcome Series" icon="envelope-open">
-    Onboard new customers with partner-personalized content.
-  </Card>
-  <Card title="Win-back Campaigns" icon="heart">
-    Re-engage lapsed customers using partner relationships.
-  </Card>
-</CardGroup>
+<AccordionGroup>
+  <Accordion title="1. Collab Invitation">
+    **Trigger:** `Creator Collaboration Started`
+    **Exit:** `Creator Drop Created` or flow completes
+    **Purpose:** Inform the affiliate about the co-branded program and guide them to set up their shop
+  </Accordion>
 
-### Key Data Available
+  <Accordion title="2. Welcome Series">
+    **Trigger:** `Creator Drop Created` (first time)
+    **Exit:** `Creator Order Attributed` or flow completes
+    **Purpose:** Welcome the affiliate and get them excited about co-selling
+  </Accordion>
 
-When customers are attributed to partners, their Klaviyo profiles include:
-- Partner name and handle
-- Partner discount code
-- Partner profile image URL
-- Partner bio/description
-- Custom partner fields
+  <Accordion title="3. New Drop">
+    **Trigger:** `Creator Drop Created`
+    **Exit:** Single email sent
+    **Purpose:** Remind the affiliate to share their new product recommendation
+  </Accordion>
 
-## Connecting Both Sides
+  <Accordion title="4. Onboarding Abandonment">
+    **Trigger:** `Creator Invitation Accepted` with no `Creator Drop Created` in 4 hours
+    **Exit:** `Creator Drop Created` or flow completes
+    **Purpose:** Re-engage affiliates who started setup but didn't finish
+  </Accordion>
 
-The magic happens when you connect both sides:
+  <Accordion title="5. Sales Milestones">
+    **Trigger:** `Creator Order Attributed`
+    **Exit:** Single email sent
+    **Purpose:** Gamify the program -- celebrate first sale, 10th sale, and beyond
+  </Accordion>
 
-1. **Partner promotes** → Customer purchases → **Customer receives co-branded emails**
-2. **Partner receives** performance update → Partner promotes more → **Cycle continues**
+  <Accordion title="6. Shop Abandoned">
+    **Trigger:** Added to "Abandoned Creator Shop" segment (no sale or drop in 60 days)
+    **Exit:** `Creator Drop Created` or `Creator Order Attributed` or flow completes
+    **Purpose:** Re-engage affiliates who set up their shop but went inactive
+  </Accordion>
 
-This creates a flywheel where both partner engagement and customer experience reinforce each other.
+  <Accordion title="7. Shop Updated">
+    **Trigger:** `Shop Updated`
+    **Exit:** Single email sent
+    **Purpose:** Confirm changes and reaffirm their new handle if changed
+  </Accordion>
 
-## Next Steps
+  <Accordion title="8. New Campaign">
+    **Trigger:** `Creator Added To Campaign`
+    **Exit:** `Creator Removed From Campaign` or `Creator Added To Campaign` (different campaign) or flow completes
+    **Purpose:** Notify affiliates about campaigns they should participate in
+  </Accordion>
+</AccordionGroup>
 
-<CardGroup cols={2}>
-  <Card title="Consumer Email Variables" icon="user" href="/guides/emails/variables-reference">
-    Full reference for customer-facing email personalization.
-  </Card>
-  <Card title="Creator Email Variables" icon="users" href="/guides/creator-emails/variables-reference">
-    Full reference for partner-facing email personalization.
-  </Card>
-</CardGroup>
+### Getting Templates
+
+CreatorCommerce provides production-ready email templates for all 8 flows. To get them:
+
+1. Submit a request through the CC dashboard
+2. Import the provided templates into Klaviyo
+3. Customize branding (logo, colors, copy)
+4. Review the `\{\{ variables \}\}` carefully before editing
+5. Set flows to "Live" when ready
+
+<Warning>
+Before going live with flows, ensure your affiliate platform integration is connected to both CC and Klaviyo. Affiliates entering the Collab Invitation flow need a co-branded page already built so they have something to share.
+</Warning>
+
+---
+
+## Side 2: Consumer Co-branding (B2C)
+
+Personalize customer-facing emails with creator context so the trust that drove the initial click carries through every touchpoint.
+
+### What It Is
+
+Emails sent **to your customers** that reference the creator who referred them. These are your existing Klaviyo flows (cart abandonment, post-purchase, etc.) enhanced with creator personalization.
+
+### How Creator Data Reaches Klaviyo
+
+```
+Customer clicks creator link
+       |
+CC SDK writes cart attributes (cc-creator-handle, cc-discount-code)
+       |
+Cart attributes persist through checkout to order
+       |
+Order data syncs to Klaviyo with CC custom properties
+       |
+Flows branch: creator-attributed vs. standard
+```
+
+### Klaviyo Profile Properties
+
+When a customer is attributed to a creator, these properties are set on their Klaviyo profile:
+
+| Property | Example | Use In Templates |
+|----------|---------|-----------------|
+| `cc_creator_handle` | `sarah-jones` | Link back to creator page |
+| `cc_creator_name` | `Sarah` | Subject lines, body copy |
+| `cc_discount_code` | `SARAH15` | Discount reminder blocks |
+| `cc_discount_amount` | `15` | Savings callouts |
+| `cc_creator_photo_url` | URL | Header image personalization |
+
+### Flows to Co-brand
+
+| Flow | Personalization | Example Subject |
+|------|----------------|-----------------|
+| **Cart abandonment** | Creator discount reminder | "Sarah saved 15% for you" |
+| **Post-purchase** | Creator thank-you | "Thanks for shopping with Sarah!" |
+| **Welcome** | Creator intro | "Sarah thought you would love us" |
+| **Browse abandonment** | Creator product picks | "Still looking? Sarah recommends these" |
+| **Win-back** | Creator re-engagement | "Sarah has new picks for you" |
+| **Review request** | Creator endorsement | "How did you like Sarah's recommendations?" |
+
+### Template Pattern
+
+In Klaviyo templates, use conditional blocks to show creator content when available:
+
+```
+{% if person|lookup:'cc_creator_name' %}
+  <!-- Co-branded version -->
+  Shopping with {{ person|lookup:'cc_creator_name' }}
+{% else %}
+  <!-- Standard version -->
+  Welcome back!
+{% endif %}
+```
+
+---
+
+## Key Difference
+
+| | Affiliate Messaging (B2B) | Consumer Co-branding (B2C) |
+|---|---|---|
+| **Audience** | Your creators/affiliates | Your customers |
+| **Triggered by** | CC lifecycle events | Standard ecommerce events |
+| **Goal** | Activate and retain partners | Convert and retain customers |
+| **Templates** | Provided by CC | Your existing templates, enhanced |
+| **Data source** | CC events in Klaviyo | CC cart attributes on orders |
+
+## Related
+
+- [Klaviyo Integration Guide](/guides/integrations/email-sms/klaviyo) -- Full setup walkthrough
+- [Co-branded Email Data Flow](/guides/emails/data-flow-explained) -- How data moves from store to email
+- [Enable Connections](/guides/emails/enable-connections) -- Connect CC to Klaviyo

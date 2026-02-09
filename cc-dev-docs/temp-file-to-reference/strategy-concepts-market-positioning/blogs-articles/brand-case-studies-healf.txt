@@ -1,0 +1,86 @@
+How Healf turned their product catalog into 1,700+ shoppable wellness journeys with CreatorCommerce
+🧬 Healf is a premium health and wellness marketplace built for modern consumers in the UK. With thousands of rigorously vetted products across categories like sleep, movement, mental health, skincare, and nutrition, Healf aims to be the go-to destination for everything wellness — all in one place. But with scale came a challenge.
+
+🎯 The Challenge
+When your catalog spans thousands of products across every aspect of well-being, how do you help customers actually find their entry point? Healf wasn’t just selling health products — they were selling transformation. But with so much choice, the shopper’s first interaction often creating decision fatigue, making it harder to convert casual browsers into confident buyers.
+
+‍
+
+Healf needed a way to personalize product discovery without compromising the credibility & massive catalog of their marketplace.
+
+‍
+
+💡 The Solution
+Healf partnered with CreatorCommerce, in tandem with Social Snowball, to supercharge their affiliate and creator program. The solution? A system that allowed every health advocate — from elite athletes to nutritionists to wellness micro-influencers — to spin up their own co-branded Healf storefront, pre-filled with:
+
+Their favorite Healf products
+Personal product stories and content
+Curated categories that matched their voice
+Visual storytelling around how they live and breathe wellness
+‍
+
+Each storefront effectively became a personal wellness lens through which customers could explore Healf’s vast product universe — making discovery radically more human and intentional.
+
+MagicPrompts Demo GIF
+‍
+
+🧩 Why It Worked
+Instead of trying to shoehorn every visitor into a one-size-fits-all path, Healf offered thousands of mini-onramps to their marketplace — each built around the authentic authority of a creator.
+
+‍
+
+With CreatorCommerce, creators could:
+
+Curate collections from Healf’s catalog with drag-and-drop ease
+Upload videos, photos, and testimonials that personalized the path to purchase
+Organize products in ways that felt intuitive — e.g., “My Sleep Stack,” “Supplements That Work,” “What I Take Daily”
+Update their shops in real time as their routines or product preferences evolved
+‍
+
+And for Healf, every creator became a high-converting merchandising layer — a dynamic salesforce with a story-first approach to wellness.
+
+‍
+
+“Launching our co-selling program was a massive step forward for Healf. It opened the door to attracting more affiliates, more ambassadors, and even more practitioners who resonate with our mission. The community has absolutely loved it, and it’s sparked a lot of internal conversations about what’s next for Healf and how we keep deepening these relationships.”
+— Julia Etman, Partnership Executive at Healf
+‍
+
+
+Creator onboarding & curation flow
+‍
+
+🧱 Built for a Headless Experience
+Healf didn’t just slap an app on their stack — they fully integrated it into their headless commerce architecture. By hosting the CreatorCommerce SDK directly within their frontend, Healf maintained complete control over the customer experience while layering in dynamic, data-driven personalization for each creator storefront.
+
+‍
+
+This headless implementation meant:
+
+Faster load times and better SEO across creator shops
+Seamless styling and native UX, without iframe hacks or clunky embeds
+Full access to CreatorCommerce’s personalization primitives via API — letting Healf engineer their own custom logic for routing, overrides, and affiliate attribution
+The flexibility to scale to thousands of creator shops, without adding page bloat or complexity
+‍
+
+This wasn’t just an integration — it was an extension of Healf’s frontend.
+
+
+Creator data metaobject sync
+‍
+
+📈 Results
+Higher click-to-conversion rates from creator storefronts (40.8% higher than traditional homepage affiliate traffic)
+Stronger affiliate engagement and retention
+Increased product discovery in long-tail catalog items
+Reduced friction in first-purchase behavior
+A boatload of content (1,700+ collections and 1,200 reviews, images, and videos)
+‍
+
+Want to be the next big success story like Healf? Get in touch on a commerce strategy you're mulling for your creators.
+
+2,000+
+Collections curated by the creator community
+1,200+
+Reviews, images & videos submitted along the way
+40.8%
+Increase in CVR compared to homepage traffic

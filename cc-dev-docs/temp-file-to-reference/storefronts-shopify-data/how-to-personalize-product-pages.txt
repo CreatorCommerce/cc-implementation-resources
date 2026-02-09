@@ -1,0 +1,251 @@
+How to personalize product pages (Liquid)
+This guide focuses on how to personalize product pages using data from the CreatorCommerce metaobject. By tapping into the metaobject.creator.data.value fields—especially cc-creator-drops—you can dynamically show user-generated content (UGC), enhancement notes, and more when a shopper is viewing a product tied to a particular creator drop.
+
+
+Below, we’ll walk through step-by-step examples of how to conditionally render extra content on your Shopify product pages based on which product a user is currently viewing.
+
+‍
+
+Prerequisites
+CreatorCommerce SDK (Optional): If you want to track shopper context (e.g., cc-creator-handle) storewide, ensure the SDK is installed. This guide still applies if you simply have a Creator metaobject tied to each product or want to show influencer/UGC content on product pages without advanced funneling.
+Creator Metaobject: You need a metaobject named “Creator” (or similar) that stores the fields outlined in the JSON structure above.
+Liquid/Theme File Access: Have access to Shopify’s product page template (e.g., product.liquid, main-product.liquid, or a custom section in your Online Store 2.0 theme).
+‍
+
+1. Understanding the data structure
+The snippet below is the relevant portion of your metaobject data you’ll use for product pages:
+
+{
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-id": "67167a7aa2a4d7291b4ff1ff",
+      "cc-creator-drop-products": [
+        {
+          "title": "...",
+          "id": "8792375853295",
+          "enhancement": {
+            "note": "This is an essential piece of deo for me.",
+            "media": []
+          }
+        }
+      ]
+    },
+    {
+      "cc-creator-drop-id": "6717f1221c348a6e2c4d8994",
+      "cc-creator-drop-products": [
+        {
+          "title": "...",
+          "id": "8793020956911",
+          "enhancement": {
+            "note": "For someone with IBS, this has been perfect.",
+            "media": [
+              {
+                "mimeType": "video/mp4",
+                "url": "https://assets.drops.shop/..."
+              },
+              {
+                "mimeType": "image/webp",
+                "url": "https://assets.drops.shop/..."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+Each “drop” can contain multiple products, and each product has:
+
+An id (Shopify Product ID)
+An enhancement object with:
+A note (UGC text or recommendation)
+A media array (images, videos, etc.)
+‍
+
+2. Referencing the creator metaobject on the product page
+If you’re using the CreatorCommerce SDK and have the cc-creator-handle in cart.attributes, you can do something like:
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+This ensures you’re pulling in the correct creator’s metaobject based on the active affiliate handle.
+
+‍
+
+3. Checking if the current product is in a creator drop
+To show UGC or notes on a specific product page, you need to compare the current product’s ID with the product IDs listed in each drop.
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{% if cc_creator != null and cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% for cc_product in drop['cc-creator-drop-products'] %}
+      {%- comment -%}
+        Convert the current product's ID (which might be in a numeric-only format like "8792375853295")
+        into a string for comparison.
+      {%- endcomment -%}
+      {% assign shopify_product_id = product.id | append: '' %}
+
+      {% if cc_product.id == shopify_product_id %}
+        <!-- We found a match! Let's display UGC/enhancements. -->
+        <div class="creator-enhancement">
+          {% if cc_product.enhancement.note != null and cc_product.enhancement.note != '' %}
+            <div class="enhancement-note">
+              <strong>Creator’s Note:</strong> 
+              {{ cc_product.enhancement.note }}
+            </div>
+          {% endif %}
+
+          {% if cc_product.enhancement.media and cc_product.enhancement.media.size > 0 %}
+            <div class="enhancement-media">
+              {% for media_item in cc_product.enhancement.media %}
+                {% if media_item.mimeType == 'video/mp4' %}
+                  <video controls>
+                    <source src="{{ media_item.url }}" type="video/mp4">
+                  </video>
+                {% elsif media_item.mimeType contains 'image' %}
+                  <img src="{{ media_item.url }}" alt="Creator Media" />
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+How It Works:
+
+We loop through cc-creator-drops.
+Within each drop, we loop through cc-creator-drop-products.
+We compare the product’s ID (cc_product.id) with the current Shopify product’s ID (product.id).
+If they match, we display that product’s enhancement note and any attached media (images or videos).
+This snippet lets you highlight special creator commentary or UGC right on the product page, boosting credibility and conversion.
+
+‍
+
+4. Advanced Display Tactics
+4.1. Using Tabs or Accordions for Enhancements
+You might want to keep your product page uncluttered by placing UGC in a tab or collapsible section:
+
+<!-- Example: Adding an UGC tab next to "Description", "Reviews", etc. -->
+{% if cc_product.enhancement.note %}
+  <div class="tab-wrapper">
+    <input type="radio" id="tab_ugc" name="tabs" />
+    <label for="tab_ugc">Creator's Note</label>
+    <div class="tab-content">
+      {{ cc_product.enhancement.note }}
+      {% if cc_product.enhancement.media and cc_product.enhancement.media.size > 0 %}
+        {% for media_item in cc_product.enhancement.media %}
+          <!-- Same media rendering logic as before -->
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+‍
+
+4.2. Inline Creator Bio or Photo
+You can also display the creator’s first name, last name, or profile picture from the metaobject for added personalization:
+
+{% assign cc_first_name = cc_creator.data.value['cc-creator-first-name'] %}
+{% assign cc_last_name = cc_creator.data.value['cc-creator-last-name'] %}
+{% assign cc_profile_pic = cc_creator.data.value['cc-creator-profile-picture'] %}
+
+<div class="creator-bio">
+  <img src="{{ cc_profile_pic }}" alt="Creator Profile Picture">
+  <p>Recommended by: {{ cc_first_name }} {{ cc_last_name }}</p>
+</div>
+‍
+
+4.3. Link Back to Creator’s Full Shop
+Add a link under the UGC note to invite shoppers to view the full curated shop by the creator:
+
+{% assign cc_shop_handle = cc_creator.data.value['cc-creator-shop-handle'] %}
+<a href="/pages/creator/{{ cc_shop_handle }}" class="btn btn-secondary">
+  Visit {{ cc_first_name }}'s Shop
+</a>
+‍
+
+5. Handling Edge Cases
+No Matching Product‍
+If the product doesn’t appear in any drop, the for-loop simply doesn’t render anything—good for fallback experiences.
+No Enhancement Note‍
+Your code should check cc_product.enhancement.note != '' or null before rendering.
+Multiple Drops‍
+If the same product appears in multiple drops, you might see multiple notes. If you only want one note, consider breaking the loop once you find the first match.
+Shopify ID Mismatch‍
+Ensure cc_product.id matches the format of {{ product.id }}. Sometimes these IDs differ if you’re referencing GraphQL vs. REST vs. the numeric ID. You might need to transform one or the other.
+‍
+
+6. Example: Putting It All Together
+Below is a more complete snippet for your product.liquid (or product section). It checks if the product is in a drop, adds a creator note tab, and includes a link to the creator’s entire shop:
+
+{% comment %}
+  1. Fetch the creator metaobject. 
+     - For funnel usage, you might do: 
+       {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+       {% assign cc_creator = metaobjects.creator[cc_handle] %}
+     - If you’re manually assigning, do something like:
+       {% assign cc_creator = metaobject.creator %}
+{% endcomment %}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+
+{% if cc_creator and cc_creator.data.value['cc-creator-drops'] %}
+  {% assign cc_first_name = cc_creator.data.value['cc-creator-first-name'] %}
+  {% assign cc_last_name = cc_creator.data.value['cc-creator-last-name'] %}
+  {% assign cc_profile_pic = cc_creator.data.value['cc-creator-profile-picture'] %}
+  {% assign cc_shop_handle = cc_creator.data.value['cc-creator-shop-handle'] %}
+  
+  <!-- Display optional short bio or photo above the product details -->
+  <div class="creator-intro">
+    <img src="{{ cc_profile_pic }}" alt="{{ cc_first_name }} {{ cc_last_name }}">
+    <p>Recommended by {{ cc_first_name }} {{ cc_last_name }}</p>
+  </div>
+
+  <!-- Enhancement Notes / UGC Logic -->
+  {% assign shopify_product_id = product.id | append: '' %}
+  
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% for cc_product in drop['cc-creator-drop-products'] %}
+      {% if cc_product.id == shopify_product_id %}
+        <!-- Found matching product -->
+        {% if cc_product.enhancement.note %}
+          <div class="creator-ugc">
+            <h3>Creator’s Note</h3>
+            <p>{{ cc_product.enhancement.note }}</p>
+            
+            {% if cc_product.enhancement.media and cc_product.enhancement.media.size > 0 %}
+              <div class="ugc-media-gallery">
+                {% for media_item in cc_product.enhancement.media %}
+                  {% if media_item.mimeType == 'video/mp4' %}
+                    <video controls>
+                      <source src="{{ media_item.url }}" type="video/mp4">
+                    </video>
+                  {% elsif media_item.mimeType contains 'image' %}
+                    <img src="{{ media_item.url }}" alt="Creator Media">
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  <!-- Button to Creator's Full Shop -->
+  <a href="/pages/creator/{{ cc_shop_handle }}" class="btn">
+    View {{ cc_first_name }}'s Full Shop
+  </a>
+{% endif %}
+‍
+
+7. Final Thoughts
+Maintain Consistency: If you’re adding advanced styling or scripts (for tabs, accordions, carousels), keep it consistent with your overall site branding.
+Test Thoroughly: Check for products that aren’t in any drop, or creators who have empty notes, to ensure your page gracefully hides or shows relevant info.
+Performance: If you have hundreds of drops, consider a more optimized approach (like storing a pre-mapped data structure or using the CreatorCommerce SDK’s direct references).
+Expand Further: You could integrate star ratings, external review services, or more advanced UGC integrations that tie back to your metaobject data.
+By leveraging the cc-creator-drops information, you can transform your product pages into engaging, influencer-driven experiences. Shoppers see authentic endorsements and media, increasing credibility and the likelihood they’ll complete a purchase.

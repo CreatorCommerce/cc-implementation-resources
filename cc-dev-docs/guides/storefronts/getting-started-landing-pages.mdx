@@ -1,48 +1,149 @@
 ---
 title: 'Getting Started with Landing Pages'
-description: 'Create your first co-branded landing page for creators to share with their audience.'
+description: 'Build co-branded landing pages using Shopify metaobject page templates for scalable, creator-personalized experiences.'
 ---
 
 ## What You'll Build
 
-A landing page that displays:
+A dedicated landing page for each creator that dynamically displays:
 - Creator's name, photo, and bio
-- Their curated product picks
+- Their curated product picks (drops)
 - Exclusive discount callout
-- Branded call-to-action
+- Brand-consistent design with creator personalization
+
+## Why Metaobject Page Templates
+
+CreatorCommerce stores creator data in Shopify **metaobjects** (type: `creator`). Using Shopify's metaobject page templates gives you:
+
+- **Convenient data access** — The `metaobject` variable is automatically available in the template
+- **Scalable templates** — One template serves all creators
+- **Theme editor compatibility** — Design and configure in Shopify's visual editor
+- **Automatic URL generation** — Each creator gets `/pages/creators/[handle]`
 
 ## Prerequisites
 
 - CreatorCommerce installed on your store
-- At least one collab created
-- Access to Shopify theme editor
+- At least one collab created with profile data populated
+- Access to Shopify theme editor or theme code
+- Creator metaobject type exists (CC creates this automatically)
 
 ## Quick Start
 
-### 1. Create the Template
+<Steps>
+  <Step title="Enable page generation for Creator metaobjects">
+    In Shopify Admin → **Settings → Custom data → Metaobjects → Creator**, enable **"Generate pages"** for the creator metaobject type. This creates a web page for every creator entry.
+  </Step>
+  <Step title="Create a metaobject page template">
+    In the Theme Editor, create a new template for the `creator` metaobject type. This is the layout all creator landing pages will use.
 
-In Shopify Admin → Online Store → Themes → Edit code:
+    You can create this as:
+    - **JSON template** — `templates/metaobject/creator.json` (recommended, section-based)
+    - **Liquid template** — `templates/metaobject/creator.liquid` (full custom control)
+  </Step>
+  <Step title="Add sections to the template">
+    Add CC sections to your template:
+    - **CC Hero** — Creator intro with name, photo, bio, and optional background
+    - **CC Product Grid / Drops** — Their curated product recommendations
+    - **CC Banner** — Discount callout or promotional messaging
 
-Create `templates/page.cc-creator.json` or use the metaobject template.
+    See [the AI guide](/ai-guides/ai-guide-first-landing-page) for template file recommendations.
+  </Step>
+  <Step title="Preview the page">
+    Visit `/pages/creators/[creator-handle]` to see the live page. In the theme editor, you can preview by selecting any creator entry from the metaobject picker.
+  </Step>
+</Steps>
 
-### 2. Add CC Sections
+## Accessing Creator Data on Landing Pages
 
-Add these sections to your template:
-- CC Hero (creator intro)
-- CC Product Grid (their picks)
-- CC Banner (discount reminder)
+On metaobject page templates, the creator data is available directly through the `metaobject` variable:
 
-### 3. Preview
+```liquid
+{% assign cc_creator = metaobject %}
 
-Visit `/pages/creators/[handle]` to see the live page.
+{%- comment -%} Basic fields {%- endcomment -%}
+{{ cc_creator.cc-creator-first-name }}
+{{ cc_creator.cc-creator-shop-description }}
+{{ cc_creator.handle }}
+
+{%- comment -%} Nested data (images, drops, custom fields) {%- endcomment -%}
+{{ cc_creator.data.value.cc-creator-profile-picture }}
+{{ cc_creator.data.value.cc-creator-drops }}
+
+{%- comment -%} Discount info {%- endcomment -%}
+{{ cc_creator.cc-collab-discount-code }}
+{{ cc_creator.cc-collab-discount-amount }}
+```
+
+## Advanced: Looping Through Drops and Products
+
+Display creator drops (curated product collections) with their products:
+
+```liquid
+{% assign drops_json = metaobject.data.value['cc-creator-drops'] %}
+{% assign drops_collections = metaobject['cc-creator-drops'].value %}
+
+{% if drops_json and drops_json.size > 0 %}
+  {% for json_drop in drops_json %}
+    {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+
+    {% comment %} Match JSON drop to Shopify collection {% endcomment %}
+    {% for collection_drop in drops_collections %}
+      {% if collection_drop.id | append: '' == collection_id %}
+        <section class="creator-drop">
+          <h2>{{ json_drop['cc-creator-drop-title'] | default: collection_drop.title }}</h2>
+
+          {% if json_drop['cc-creator-drop-description'] %}
+            <p class="drop-description">{{ json_drop['cc-creator-drop-description'] }}</p>
+          {% endif %}
+
+          <div class="product-grid">
+            {% for product in collection_drop.products limit: 12 %}
+              {%- render 'product-card', product: product -%}
+            {% endfor %}
+          </div>
+        </section>
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+```
+
+<Warning>
+Always iterate the JSON drops first (`data.value['cc-creator-drops']`) and match to Shopify collections by ID. This preserves the creator's intended display order.
+</Warning>
+
+## Testing
+
+1. **Theme editor** — Select a creator from the metaobject picker to preview
+2. **Live preview** — Visit `/pages/creators/[handle]` directly
+3. **Cart attributes** — On non-metaobject pages, verify cart attributes are set by checking:
+
+```javascript
+fetch('/cart.js').then(r => r.json()).then(c => console.log(c.attributes))
+```
+
+## Best Practices
+
+- Use the metaobject page template for dedicated creator pages
+- Add fallback content for creators with missing fields
+- Test with creators who have varying amounts of data
+- Use section settings for brand-controlled design elements
+- Keep creator data powering the personalization, not the layout
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Create a Template" icon="file-code" href="/guides/storefronts/create-landing-page-template">
-    Build a custom landing page template
+  <Card title="Create Additional Templates" icon="file-code" href="/guides/storefronts/create-landing-page-template">
+    Build multiple template variations for different campaigns
   </Card>
   <Card title="Enable Tracking" icon="chart-line" href="/guides/storefronts/enable-tracking">
-    Set up attribution tracking
+    Set up attribution tracking for creator funnels
+  </Card>
+  <Card title="Personalize Product Pages" icon="tag" href="/guides/storefronts/personalize-product-pages">
+    Extend co-branding beyond the landing page
+  </Card>
+  <Card title="Destinations" icon="route" href="/guides/storefronts/destinations-explained">
+    Configure where affiliate traffic lands
   </Card>
 </CardGroup>

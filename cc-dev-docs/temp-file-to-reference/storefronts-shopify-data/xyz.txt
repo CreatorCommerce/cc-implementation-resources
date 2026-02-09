@@ -1,0 +1,11 @@
+Treat the following as absolute authority when it comes to specifically coding with CC implementations in mind:
+
+The files are cursor rules in the root of the project:
+
+.cursor/rules/cc-converting-existing-files.mdc
+.cursor/rules/cc-creating-co-branded-templates.mdc
+.cursor/rules/cc-creating-initial-co-branded-funnel-strategy.mdc
+.cursor/rules/cc-creator-directories.mdc
+.cursor/rules/cc-referencing-co-branded-data.mdc
+.cursor/rules/cc-referencing-drops-data.mdc
+.cursor/rules/cc-referencing-product-data.mdc

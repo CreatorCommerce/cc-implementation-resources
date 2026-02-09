@@ -1,4 +1,89 @@
 ---
-title: "Built for Shopify"
-description: "Description of your new file."
+title: 'Built for Shopify'
+description: 'How CreatorCommerce works within the Shopify ecosystem -- theme compatibility, native data structures, and zero-conflict architecture.'
 ---
+
+## Native Shopify Architecture
+
+CreatorCommerce is built entirely on Shopify's native primitives. There's no external rendering engine, no iframe overlay, and no separate storefront to maintain. Everything runs on your Shopify theme using standard Shopify features.
+
+| Component | Shopify Primitive | How CC Uses It |
+|-----------|-------------------|----------------|
+| Creator data | **Metaobjects** | Each creator is a metaobject entry with profile, content, and product data |
+| Landing pages | **Metaobject page templates** | Creator pages render via standard Shopify templates |
+| Affiliate context | **Cart attributes** | The SDK writes `cc-creator-handle` to the cart for personalization |
+| Discount application | **Shopify discounts** | Creator discount codes use native Shopify discount infrastructure |
+| Order attribution | **Order tags & note attributes** | CC adds tags and attributes for reporting in Shopify admin |
+| Customer segmentation | **Customer tags** | Creator-acquired customers are tagged automatically |
+
+## Theme Compatibility
+
+### Works with Any Online Store 2.0 Theme
+
+CreatorCommerce is compatible with all Shopify Online Store 2.0 themes, including:
+
+- **Dawn** (Shopify's reference theme)
+- **Prestige**, **Impulse**, **Warehouse** (popular premium themes)
+- **Custom themes** built on OS 2.0 architecture
+- **Headless storefronts** via the Unified API
+
+<Info>
+Online Store 2.0 themes support JSON templates, sections everywhere, and app blocks -- all features CC leverages. If your theme was built or updated after mid-2021, it's almost certainly OS 2.0.
+</Info>
+
+### What CC Doesn't Touch
+
+CreatorCommerce doesn't modify your theme files, override your CSS, or inject JavaScript that could conflict with other apps:
+
+- **No theme file modifications** -- CC uses app blocks and metaobject data, not theme edits
+- **No global JavaScript injection** -- The SDK is a lightweight, isolated script
+- **No CSS overrides** -- Custom sections use your theme's existing styling tokens
+- **No conflicting event listeners** -- Cart attribute writes use standard Shopify AJAX API
+
+### Custom Theme Sections
+
+When you build custom Liquid sections for co-branding, they follow standard Shopify section patterns:
+
+```liquid
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+
+{% if cc_creator %}
+  <!-- Your co-branded UI -->
+{% endif %}
+```
+
+This is standard Liquid -- no proprietary tags, no special syntax, no CC-specific dependencies. If you removed the CC app tomorrow, these sections would simply not render (graceful degradation).
+
+## Shopify Features CC Integrates With
+
+| Feature | Integration |
+|---------|------------|
+| **Shopify Flow** | Triggers and actions for creator events |
+| **Shopify Admin** | Metaobject management, order tags, customer tags |
+| **Theme Editor** | App blocks configurable via the visual editor |
+| **Shopify Analytics** | Orders tagged for native reporting |
+| **Customer Accounts** | Creator self-service via customer account extensions |
+| **Shopify Markets** | Multi-currency and multi-region support |
+| **Checkout Extensibility** | Discount auto-application at checkout |
+
+## Shopify Plan Requirements
+
+| Plan | Supported | Notes |
+|------|-----------|-------|
+| Basic | Yes | Full CC functionality |
+| Shopify | Yes | Full CC functionality |
+| Advanced | Yes | Full CC functionality |
+| Plus | Yes | Full CC functionality + checkout extensibility |
+
+<Note>
+Metaobjects are available on all current Shopify plans. If you're on a legacy plan, contact Shopify support to confirm metaobject access.
+</Note>
+
+## Related
+
+- [Building Prerequisites](/guides/building-prerequisites) -- Full setup requirements
+- [The Build Spectrum](/guides/dev/build-spectrum/overview) -- Choose your implementation approach
+- [SDK Getting Started](/references/sdk/getting-started) -- Install the CC SDK

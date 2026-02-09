@@ -3,51 +3,99 @@ title: 'Refersion'
 description: 'Connect Refersion affiliate data with CreatorCommerce co-branded experiences.'
 ---
 
-Integrate Refersion with CreatorCommerce to give your affiliates personalized shopping experiences.
+Refersion is a popular affiliate and influencer marketing platform. Integrating it with CreatorCommerce gives your Refersion affiliates personalized co-branded storefronts while maintaining Refersion's tracking and commission management.
 
 ## What This Integration Does
 
-| CC → Refersion | Refersion → CC |
-|----------------|----------------|
-| Enhanced conversion tracking | Affiliate profiles |
-| Co-branded page visits | Commission data |
-| Attribution data | Partner tiers |
+| Refersion → CC | CC → Refersion |
+|-----------------|----------------|
+| Affiliate profiles synced as creators | Co-branded page performance |
+| Commission & offer data | Enhanced conversion tracking |
+| Affiliate status changes | Attribution signals |
+| Offer tier assignments | Storefront visit data |
 
 ## Setup
 
 <Steps>
-  <Step title="Get API key">
-    In Refersion, go to Settings → API to get your credentials.
+  <Step title="Create webhooks in Refersion">
+    In Refersion, set up four webhooks to push data to CreatorCommerce. Navigate to **Refersion → Settings → Webhooks** and create:
+
+    | Webhook Event | Purpose |
+    |---------------|---------|
+    | `conversion.created` | Notifies CC when a sale is attributed to an affiliate |
+    | `conversion.updated` | Notifies CC when a conversion status changes |
+    | `affiliate.created` | Syncs new affiliates to CC as creators |
+    | `affiliate.updated` | Updates creator data when affiliate profiles change |
+
+    CreatorCommerce will provide the webhook endpoint URLs during integration setup.
   </Step>
-  <Step title="Connect in CC">
-    In CC Admin → Integrations → Refersion, enter your API key.
+  <Step title="Review and update email flows">
+    Since CreatorCommerce introduces new affiliate touchpoints (storefronts, onboarding forms, drop notifications), update your email flows accordingly:
+
+    - **Klaviyo** — See [Klaviyo Integration](/guides/integrations/email-sms/klaviyo) for CC-aware flows
+    - **Mailchimp** — See [Mailchimp Integration](/guides/integrations/email-sms/mailchimp) for Shopify Flow templates
+    - **Other providers** — Use CC webhook events to trigger communications
   </Step>
-  <Step title="Sync partners">
-    Import existing Refersion affiliates or map by email.
+  <Step title="Disable default Refersion system emails">
+    To prevent duplicate communications, disable Refersion's default system emails for programs synced with CreatorCommerce. Your updated email flows will handle all affiliate communication with co-branded context.
   </Step>
-  <Step title="Test">
-    Verify data flows correctly with a test partner.
+  <Step title="Prefix Refersion Offer titles with CC //">
+    Edit the Refersion **Offer** titles that should sync with CreatorCommerce to include the `CC //` prefix:
+
+    ```
+    CC // Ambassador Offer
+    CC // Influencer Offer
+    CC // VIP Partner Offer
+    ```
+
+    Only Offers with the `CC //` prefix will sync to CreatorCommerce. This lets you maintain separate Refersion Offers that don't flow into CC.
+  </Step>
+  <Step title="Test the integration">
+    - Verify affiliate data syncs from Refersion to CC
+    - Click a test affiliate link and confirm co-branded landing page loads
+    - Complete a test purchase and verify attribution in both Refersion and CC
   </Step>
 </Steps>
 
+## How It Works
+
+```
+Refersion affiliate shares link → Refersion tracks click
+       ↓
+CC redirect captures context → Sets cart attributes
+       ↓
+Shopper lands on co-branded page → Personalized experience
+       ↓
+Purchase → Webhook fires → Attributed in both Refersion and CC
+```
+
+## Webhook Event Details
+
+### conversion.created
+Fired when a sale is attributed to a Refersion affiliate. CreatorCommerce logs this event for funnel analytics and performance reporting.
+
+### conversion.updated
+Fired when a conversion status changes (e.g., pending → approved, or refunded). CC updates its analytics accordingly.
+
+### affiliate.created
+Fired when a new affiliate is created in Refersion. CC creates a corresponding creator profile with metaobject and collection.
+
+### affiliate.updated
+Fired when affiliate profile data changes. CC updates the creator metaobject to keep storefront data current.
+
 ## Use Cases
 
-### Upgrade Affiliate Links
-Replace standard Refersion links with co-branded landing pages—same tracking, better conversion.
+### Upgrade Affiliate Links to Co-branded Pages
+Your Refersion affiliates keep their existing commission structure and tracking. CreatorCommerce adds personalized landing pages, product recommendations, and UGC — same economics, dramatically better conversion.
 
-### Automatic Partner Creation
-When affiliates join in Refersion, automatically create CC profiles.
+### Offer-Based Campaign Mapping
+Map different Refersion Offers to different CC campaigns. Each offer can power a distinct co-branded experience with its own landing page template and product selection.
 
 ### Performance Sync
-Refersion commissions update CC partner tiers automatically.
-
-## Webhook Events
-
-Refersion sends webhooks for:
-- `affiliate.created` → Create CC partner
-- `affiliate.updated` → Update CC partner
-- `conversion.created` → Log in CC analytics
+Refersion commission data flowing into CC enables performance-based tier upgrades, bonus campaigns, and automated recognition.
 
 ## Related
 
 - [Partner Integrations Overview](/guides/integrations/overview)
+- [Destinations Explained](/guides/storefronts/destinations-explained)
+- [Affiliate Link Tracking Reference](/references/affiliate-link-tracking)

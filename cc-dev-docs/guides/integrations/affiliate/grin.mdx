@@ -1,0 +1,85 @@
+---
+title: 'GRIN'
+description: 'Connect GRIN influencer campaigns with CreatorCommerce co-branded storefronts.'
+---
+
+GRIN is a comprehensive influencer marketing platform. Integrating it with CreatorCommerce lets you give GRIN-managed influencers personalized co-branded storefronts — turning every campaign into a high-converting shopping experience.
+
+## What This Integration Does
+
+| GRIN → CC | CC → GRIN |
+|-----------|-----------|
+| Influencer profiles | Co-branded page performance |
+| Affiliate code & link groups | Enhanced conversion data |
+| Campaign assignments | Storefront visit metrics |
+| Tier/group data | Attribution signals |
+
+## Setup
+
+<Steps>
+  <Step title="Submit a form to CreatorCommerce">
+    Contact CreatorCommerce to initiate the GRIN integration. The team will provision the connection between your GRIN account and CreatorCommerce.
+
+    Email **help@creatorcommerce.shop** with your GRIN account details to get started.
+  </Step>
+  <Step title="Update Affiliate Code & Affiliate Link Groups in GRIN">
+    In GRIN, update or create **Affiliate Code Groups** and **Affiliate Link Groups** that you want to sync with CreatorCommerce. Prefix these groups with `CC //`:
+
+    ```
+    CC // Ambassador Codes
+    CC // Influencer Links
+    CC // VIP Campaign Links
+    ```
+
+    Only groups with the `CC //` prefix will sync to CreatorCommerce. This lets you maintain separate GRIN groups that don't flow into CC.
+  </Step>
+  <Step title="Set destination URLs for CC // groups">
+    For each `CC //` Affiliate Link Group, set the destination URL to your CreatorCommerce redirect:
+
+    ```
+    https://your-store.myshopify.com/apps/cc-storefront/redirect
+    ```
+
+    This routes affiliate traffic through CreatorCommerce for co-branded personalization before landing on the storefront.
+  </Step>
+  <Step title="Test the integration">
+    - Click a test affiliate link from a GRIN influencer
+    - Verify the co-branded landing page loads with the correct creator data
+    - Confirm cart attributes are set
+    - Complete a test purchase and verify attribution in both GRIN and CC
+  </Step>
+</Steps>
+
+## How It Works
+
+```
+GRIN influencer shares link → GRIN tracks click
+       ↓
+CC redirect captures context → Sets cart attributes
+       ↓
+Shopper lands on co-branded page → Personalized experience
+       ↓
+Purchase → Attributed in both GRIN and CC
+```
+
+The `CC //` prefix acts as the sync signal. CreatorCommerce watches for GRIN groups with this prefix and creates corresponding creator profiles and campaign mappings.
+
+## Use Cases
+
+### Campaign-Specific Storefronts
+Map different GRIN campaigns to different CC campaigns. Each campaign can have its own landing page template, product selection, and messaging — all powered by GRIN influencer data.
+
+### Tiered Influencer Experiences
+Use GRIN's group structure to offer different co-branding levels:
+- **Top-tier influencers** — Full custom storefronts with drops, UGC, and brand takeovers
+- **Mid-tier** — Standard landing pages with product recommendations
+- **Micro-influencers** — Simplified product grid pages
+
+### Content-to-Commerce Pipeline
+GRIN manages content creation workflows. CreatorCommerce turns that content into shoppable storefront experiences — surface creator photos, videos, and endorsements directly on product pages.
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Destinations Explained](/guides/storefronts/destinations-explained)
+- [Building Co-branded Landing Pages](/guides/storefronts/landing-pages-overview)

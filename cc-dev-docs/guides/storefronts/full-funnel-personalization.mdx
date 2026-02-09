@@ -1,6 +1,6 @@
 ---
 title: 'Full-Funnel Theme Personalization'
-description: 'Extend co-branding beyond landing pages—across your entire shopping experience.'
+description: 'Extend co-branding beyond landing pages — across your entire shopping experience from homepage to checkout.'
 ---
 
 ## The Full Funnel
@@ -14,53 +14,181 @@ Landing Page → Collection → Product → Cart → Checkout → Post-Purchase
 
 ## Touchpoints to Personalize
 
-| Page | Personalization |
-|------|-----------------|
-| **Landing page** | Full creator showcase |
-| **Collection** | "Shopping with [Creator]" banner |
-| **Product page** | Creator quote, discounted price |
-| **Cart drawer** | Discount reminder, savings display |
-| **Checkout** | Auto-applied code |
-| **Thank you** | Creator thank-you message |
-| **Email** | Co-branded content |
+| Page | Personalization | Impact |
+|------|-----------------|--------|
+| **Landing pages** | Full creator showcase | Entry point — highest impact |
+| **Navigation/Headers** | "Shopping with [Creator]" banner | Persistent reminder |
+| **Collections** | Creator's picks highlighted | Discovery |
+| **Pop-ups** | Co-branded content | Marketing Opt-in |
+| **Product pages** | Creator quote, UGC, discounted price | Consideration |
+| **Cart drawers** | Discount reminder, savings display | Conversion moment |
+| **Checkouts** | Auto-applied discount code | Purchase |
+| **Thank you pages** | Creator thank-you message | Post-purchase |
+| **Emails** | Co-branded content | Retention |
 
 ## Implementation Strategy
 
 ### 1. Resolve Creator Everywhere
 
-Add to `theme.liquid` or a shared snippet:
+Add to `theme.liquid` or a shared snippet rendered on every page:
 
 ```liquid
 {% liquid
-  unless cc_creator
+  if metaobject
+    assign cc_creator = metaobject
+  else
     assign cc_handle = cart.attributes['cc-creator-handle']
     assign cc_creator = metaobjects.creator[cc_handle]
   endunless
 %}
 ```
 
-### 2. Create Conditional Blocks
+This gives every section access to `cc_creator` when a shopper is in a creator's context.
 
-In each section, wrap creator content:
+### 2. Personalize the Header
+
+Show a persistent banner when shopping through a creator:
+
+```liquid
+{% if cc_creator %}
+  <div class="cc-shopping-banner">
+    {% if cc_creator.data.value['cc-creator-profile-picture'].url %}
+      <img 
+        src="{{ cc_creator.data.value['cc-creator-profile-picture'].url}}" 
+        alt="{{ cc_creator.cc-creator-first-name | escape }}"
+        loading="lazy"
+      >
+    {% endif %}
+    <span>
+      Shopping with {{ cc_creator.cc-creator-first-name | escape }}
+      {% if cc_creator['cc-collab-discount-amount'] %}
+        · {{ cc_creator['cc-collab-discount-amount'] }}% Off Everything
+      {% endif %}
+    </span>
+    <a href="{{ cc_creator.data.value['cc-collab-affiliate-link'] }}">View Shop →</a>
+  </div>
+{% endif %}
+```
+
+### 3. Personalize the Footer
+
+Replace or augment footer content with creator context:
+
+```liquid
+{% if cc_creator %}
+  <div class="cc-footer-cta">
+    <p>You're shopping {{ cc_creator.cc-creator-first-name | escape }}'s recommendations</p>
+    <a href="{{ cc_creator.data.value['cc-collab-affiliate-link'] }}" class="btn">
+      Back to {{ cc_creator.cc-creator-first-name | escape }}'s Shop
+    </a>
+  </div>
+{% endif %}
+```
+
+### 4. Show More Creator Products
+
+On any page, surface the creator's recommended products:
+
+```liquid
+{% if cc_creator and cc_creator['cc-creator-drops'].value %}
+  <section class="cc-creator-picks">
+    <h2>More from {{ cc_creator.cc-creator-first-name | escape }}</h2>
+    {% assign first_collection = cc_creator['cc-creator-drops'].value | first %}
+    {% if first_collection %}
+      <div class="product-grid">
+        {% for product in first_collection.products limit: 4 %}
+          {%- render 'product-card', product: product -%}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+{% endif %}
+```
+
+### 5. Creator-Aware Pop-ups
+
+Show a welcome pop-up or discount reminder only for creator traffic:
+
+```liquid
+{% if cc_creator %}
+  <div class="cc-popup" id="cc-creator-popup" style="display:none;">
+    <div class="cc-popup__content">
+      <h3>Welcome! {{ cc_creator.cc-creator-first-name | escape }} sent you</h3>
+      <p>Use code <strong>{{ cc_creator['cc-collab-discount-code'] }}</strong> for {{ cc_creator['cc-collab-discount-amount'] }}% off</p>
+      <button onclick="document.getElementById('cc-creator-popup').style.display='none'">Start Shopping</button>
+    </div>
+  </div>
+{% endif %}
+```
+
+<Note>
+Minimize pop-ups on creator pages. The landing page itself should convey the discount. Reserve pop-ups for when the shopper navigates away from the landing page to browse the rest of the site.
+</Note>
+
+### 6. Conditional Blocks in Any Section
+
+Wrap creator content in conditionals within existing sections:
 
 ```liquid
 {% if cc_creator %}
   <!-- Co-branded version -->
+  <div class="section-header">
+    <h2>{{ cc_creator.cc-creator-first-name | escape }}'s Picks</h2>
+  </div>
 {% else %}
   <!-- Standard version -->
+  <div class="section-header">
+    <h2>{{ section.settings.heading }}</h2>
+  </div>
 {% endif %}
 ```
 
-### 3. Maintain Context
+### 7. Brand Color Theming
 
-Ensure cart attributes persist through the entire flow. Set on landing, maintain through checkout.
+Apply creator or channel brand colors as CSS variables:
+
+```liquid
+{% if cc_creator and cc_creator['cc-creator-shop-theme-primary-color'] %}
+  <style>
+    :root {
+      --cc-creator-color: {{ cc_creator['cc-creator-shop-theme-primary-color'] | default: '#000000' }};
+      --cc-channel-color: {{ cc_creator['channel-brandkit-primary-color'] | default: '#000000' }};
+    }
+  </style>
+{% endif %}
+```
+
+## Maintain Context Across the Session
+
+Cart attributes set by the CC SDK persist through the entire shopping session — from landing page through checkout. The SDK sets these attributes when the shopper first arrives:
+- `cc-creator-handle`
+- `cc-creator-id`
+- `cc-campaign-id`
+
+As long as these attributes are in the cart, every page renders with creator context.
 
 ## Priority Order
 
 Start with highest-impact touchpoints:
 
-1. Landing page (entry point)
-2. Cart drawer (conversion moment)
-3. Product pages (browsing)
-4. Collection pages (discovery)
-5. Header/nav (persistent reminder)
+1. **Landing page** — Entry point, sets the tone
+2. **Cart drawer/page** — Conversion moment, show savings
+3. **Product pages** — Browse experience, creator endorsements
+4. **Pop-ups** — Disable or tether to affiliate discount
+5. **Header/nav** — Persistent reminder of creator context
+6. **Collection pages** — Discovery, highlight creator's picks
+7. **Footer** — Link back to creator's shop
+
+## Use Cases Beyond Basic Co-branding
+
+- **Influencer directory** — Build a page listing all active creators with storefronts
+- **Re-skinned homepage** — Swap homepage hero and content based on creator context
+- **Category-specific recommendations** — Show creator's picks for the current collection
+- **Post-purchase upsell** — Recommend more products from the creator's drops after checkout
+
+## Related
+
+- [Personalize Product Pages](/guides/storefronts/personalize-product-pages)
+- [Discount Prices Theme-wide](/guides/storefronts/discount-prices-theme-wide)
+- [SDK Getting Started](/references/sdk/getting-started)
+- [Destinations Explained](/guides/storefronts/destinations-explained)

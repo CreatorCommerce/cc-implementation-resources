@@ -1,0 +1,175 @@
+Getting started with custom fields
+Custom Fields are the quiet powerhouse of CreatorCommerce. They let you capture any extra information you wish you had about a collaborator, their collections, or the individual products they choose—and then use that data across your personalized storefronts, internal workflows, and integrations
+
+
+If the standard collaboration data (name, email, bio, collections, products) feels too limiting for how your brand wants to operate, Custom Fields open the doors wide.
+
+‍
+
+Why Custom Fields Exist
+Most brands have brand-specific questions they want creators, ambassadors, or partners to answer—questions Shopify or standard collaboration software will never think to include out-of-the-box.
+
+‍
+
+With Custom Fields, you can ask literally anything that helps your team run the program smarter:
+
+Want to store a creator’s height, waist size, or preferred fits for product seeding?
+Want them to submit a recipe, playlist, or content concept for a drop?
+Want info to personalize storytelling—like their dog’s name, favorite scent, or top 3 wellness rituals?
+Need pro-level metadata like shoot dates, UGC licensing terms, or discount rules?
+‍
+
+Custom Fields let your brand think beyond vanilla profile inputs and build the exact data model you need.
+
+‍
+
+Where Custom Fields Live (Scopes Explained)
+Each Custom Field is defined by a scope—basically, where the field sits and how often it needs to be filled out.
+
+‍
+
+1. Collaboration-Level Fields
+Set once per collaboration.
+
+Useful for any data about the person or the overall partnership.
+
+Examples:
+
+“Preferred hoodie size”
+“Bio for branded pages”
+“Instagram handle”
+“Name of your dog”
+“Any dietary restrictions?”
+“Favorite product categories”
+If it doesn’t change across collections or products, it belongs here.
+
+‍
+
+2. Collection-Level Fields
+Set once every time the creator builds a collection.
+
+Examples:
+
+“Theme of this collection”
+“Recipe description for this drop”
+“Collection story or hook”
+“Shoot location for the collection assets”
+“Hero headline copy”
+Any field you want per drop, per holiday campaign, or per seasonal collection fits perfectly here.
+
+‍
+
+3. Product-Level Fields
+Set once for each product added to a collection.
+
+Examples:
+
+“Why did you pick this product?”
+“Preferred variant or colorway”
+“Custom caption or selling angle”
+“Fit notes for apparel”
+“Creator’s testimonial”
+These fields are the secret weapon for ultra-personalized PDPs inside co-branded storefronts.
+
+‍
+
+What Merchants Can Build With Custom Fields
+Brands use Custom Fields to power:
+
+Richer creator profiles
+Personalized landing page copy
+Smarter product recommendations
+Creator-specific merchandising
+UGC workflows
+Gifting and seeding logistics
+Creator onboarding funnels
+Collecting long-form content (recipes, stories, tips)
+Because every field is structured and stored in your CreatorCommerce backend, it’s easy to reference in:
+
+Liquid templates
+Shopify metafields/metaobjects
+Automated emails
+Zapier/n8n flows
+Internal dashboards
+Exported reports
+Your data stops being chaotic, and becomes fuel.
+
+‍
+
+How to Create Your First Custom Field
+1. Go to Your Custom Fields Settings
+Inside your CreatorCommerce dashboard, navigate to Settings → Custom Fields.
+
+There you’ll see three tabs: Collaboration, Collections, Products.
+
+Choose the scope for the field you want to create.
+
+‍
+
+2. Add a New Field
+Hit “Add Field” and choose:
+
+Field Name
+Description (what the creator should know)
+Input Type (text, number, boolean, multi-select, file upload, etc.)
+Required or Optional
+Default Value (if any)
+Every field created here will appear wherever creators interact with your storefront or onboarding flow.
+
+‍
+
+3. Save & Publish
+Once saved, the field becomes instantly available:
+
+In the Creator Portal
+Inside collection/product creation flows
+In your API responses
+As structured data you can render in Liquid
+Creators won’t see fields that don’t apply to the scope they are working in.
+
+‍
+
+How Creators Fill Out the Fields
+Creators will see these fields in the natural flow of their workflow:
+
+Collaboration fields appear during profile setup or onboarding
+Collection fields appear when starting a new drop
+Product fields appear when adding or editing a product in a collection
+You control the required fields, making sure you always get the data you need, exactly when you need it.
+
+‍
+
+Best Practices
+A few tips from brands that use Custom Fields at scale:
+
+‍
+
+Keep fields tightly scoped
+If the same question appears across collections or products, it probably belongs to a different scope.
+
+‍
+
+Use clear labels
+Creators blow through forms fast. Make it crystal-clear what you need and why.
+
+‍
+
+Avoid over-collecting
+Aim for “just enough data” to improve personalization without overwhelming creators.
+
+‍
+
+Use fields to drive personalization, not clutter
+If you’re not using it in your frontend, don’t ask for it.
+
+‍
+
+Try structured inputs over free-text
+Whenever possible, use dropdowns, radios, numbers—things your team can query and automate.
+
+‍
+
+Wrapping Up
+Custom Fields unlock a level of flexibility you don’t get from any other creator platform. They let you shape CreatorCommerce to fit your brand’s workflow, not the other way around.
+
+By defining what matters—recipes, measurements, product insights, storytelling, metadata—you turn creators into richer partners and build co-branded experiences that feel genuinely personal.

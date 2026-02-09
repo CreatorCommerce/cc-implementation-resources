@@ -1,56 +1,69 @@
 ---
 title: 'Hide CC Collections in Admin'
-description: 'Keep creator collections organized without cluttering your Shopify admin.'
+description: 'Keep auto-generated CreatorCommerce collections organized in your Shopify admin using the CC // prefix and filtered views.'
 ---
 
 ## The Problem
 
-CreatorCommerce may create collections for creator drops. These can clutter your Shopify Admin collections list.
+CreatorCommerce auto-generates a Shopify collection for each creator's drop. When you have 50+ creators, this creates dozens of collections that clutter your Shopify Admin collections list.
 
-## Solution 1: Use a Naming Convention
+## The CC // Prefix Convention
 
-Prefix creator collections with a pattern:
+CreatorCommerce prefixes auto-generated collection titles with `CC //`:
 
 ```
-_cc_sarah-jones-picks
-_cc_mike-smith-favorites
+CC // Sarah's Summer Picks
+CC // Mike's Fitness Favorites
+CC // Elena's Beauty Essentials
 ```
 
-Collections starting with `_` are often filtered in admin views.
+This prefix serves two purposes:
+1. **Identification** — Instantly tells your team which collections are CC-managed
+2. **Filtering** — Enables Shopify Admin filtered views
 
-## Solution 2: Use Collection Metafields
+## Setting Up Filtered Views
 
-Tag CC collections with a metafield:
+### Create a "Hide CC" View
 
-```json
-{
-  "namespace": "creatorcommerce",
-  "key": "is_creator_collection",
-  "value": "true"
-}
+1. Go to **Products → Collections** in Shopify Admin
+2. Click the filter icon
+3. Add filter: **Title** → **does not contain** → `CC //`
+4. Save as a view: **"Store Collections"** (your daily working view)
+
+### Create a "CC Only" View
+
+1. Same location, add filter: **Title** → **contains** → `CC //`
+2. Save as a view: **"CC Collections"** (for when you need to manage CC-specific collections)
+
+## Customer-Facing Display
+
+When displaying CC collection titles on the storefront, strip the prefix:
+
+```liquid
+{{ collection.title | remove: "CC // " }}
 ```
 
-Then filter in your catalog views.
+This ensures shoppers see clean titles like "Sarah's Summer Picks" instead of "CC // Sarah's Summer Picks".
 
-## Solution 3: Hide from Storefront Navigation
+## Excluding CC Collections from Navigation
 
-In your collection list templates, exclude CC collections:
+If your theme lists all collections in navigation or sitemaps, exclude CC collections:
 
 ```liquid
 {% for collection in collections %}
-  {% unless collection.handle contains '_cc_' %}
+  {% unless collection.title contains 'CC //' %}
     <a href="{{ collection.url }}">{{ collection.title }}</a>
   {% endunless %}
 {% endfor %}
 ```
 
-## Solution 4: Use Smart Collections
+## Important Notes
 
-Instead of creating separate collections, use smart collections that automatically include products based on tags or metafields.
+- **Don't rename CC collections** — CreatorCommerce manages these titles. Manual changes will be overwritten on the next sync.
+- **Don't delete CC collections** — They will be re-created when the creator's data syncs. If you need to remove a collection, deactivate the creator's drop in CreatorCommerce.
+- **Collections are required** — Each drop needs a Shopify collection for product display on landing pages. The collections are functional, not decorative.
 
-## Best Practice
+## Related
 
-- Use a consistent naming pattern
-- Document the pattern for your team
-- Exclude from navigation programmatically
-- Keep creator collections for attribution tracking
+- [Post-Launch: What Your eComm Team Should Know](/guides/storefronts/post-launch-ecomm-team)
+- [Showcase Product Lists](/guides/storefronts/showcase-product-lists)

@@ -27,7 +27,7 @@ When a partner updates their name or requests a new URL:
 
 **Actions:**
 1. Get old handle from previous value
-2. Create 301 redirect: `/p/{old}` → `/p/{new}`
+2. Create 301 redirect: `/p/\{old\}` → `/p/\{new\}`
 3. Notify partner of new URL
 
 **Why:** Old links in social bios, bookmarks, and Google still work.
@@ -39,7 +39,7 @@ For time-limited campaigns:
 **Trigger:** Campaign end date reached
 
 **Actions:**
-1. Update redirect: `/c/{campaign}/{partner}` → `/p/{partner}`
+1. Update redirect: `/c/\{campaign\}/\{partner\}` → `/p/\{partner\}`
 2. Archive campaign data
 3. Preserve for reporting
 
@@ -47,7 +47,7 @@ For time-limited campaigns:
 
 | Scenario | Redirect |
 |----------|----------|
-| New partner | `/p/{handle}` → creator page |
-| Name change | `/p/{old}` → `/p/{new}` |
-| Campaign end | `/c/{campaign}/{partner}` → `/p/{partner}` |
-| Partner exit | `/p/{handle}` → `/` (homepage) |
+| New partner | `/p/\{handle\}` → creator page |
+| Name change | `/p/\{old\}` → `/p/\{new\}` |
+| Campaign end | `/c/\{campaign\}/\{partner\}` → `/p/\{partner\}` |
+| Partner exit | `/p/\{handle\}` → `/` (homepage) |

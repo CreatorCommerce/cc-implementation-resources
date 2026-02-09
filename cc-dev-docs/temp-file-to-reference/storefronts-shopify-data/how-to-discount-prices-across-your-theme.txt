@@ -1,0 +1,140 @@
+How to discount prices across your entire theme (Liquid)
+
+One powerful tactic for affiliate-driven commerce is offering dynamic discounts whenever a shopper enters via a creator’s link. This subchapter demonstrates how to leverage a universal price snippet (e.g., price.liquid) in your Shopify theme to visually display discounted prices across the entire site. We’ll also cover how CreatorCommerce automatically ensures these discounts are applied at checkout.
+
+
+1. Core idea
+Display Discounted Prices: If the shopper is in the context of a creator (determined by the cc-creator-handle cart attribute), show a discounted price on product listings and product pages.
+Maintain Checkout Consistency: CreatorCommerce’s SDK will ensure that any discount code or cart-based discount also applies when the shopper checks out. This prevents price mismatch or confusion.
+‍
+
+2. Referencing the metaobject for discounts
+From the provided JSON structure, the relevant discount fields for each creator are:
+
+cc-collab-discount-type
+Percentage or Fixed
+cc-collab-discount-amount
+e.g., 10 (for 10%), or 5 (for $5 off)
+To dynamically decide whether to display a percentage-based or fixed discount, we’ll tap into these fields within the price.liquid snippet.
+
+‍
+
+3. Example price snippet (price.liquid)
+Below is a code snippet you can place in snippets/price.liquid (or wherever your theme handles displaying prices). It checks whether the visitor is in a creator funnel and modifies the displayed price accordingly.
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{%- liquid
+  if cc_creator['cc-collab-discount-type'] == 'Percentage' and cc_creator != '' and cc_creator != null
+    assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100
+    assign discount_multiplier = 1 | minus: discount
+    assign price = product.price | times: discount_multiplier
+    assign compare_at_price = product.price
+  elsif cc_creator['cc-collab-discount-type'] == 'Fixed' and cc_creator != '' and cc_creator != null
+    assign discount = cc_creator['cc-collab-discount-amount'] | plus: 0
+    assign price = product.price | minus: discount
+    assign compare_at_price = product.price
+  else
+    assign price = product.price
+    assign compare_at_price = product.compare_at_price
+  endif
+-%}
+
+<!-- Example Display -->
+<span class="price">
+  {{ price | money }}
+</span>
+
+{% if compare_at_price > price %}
+  <span class="compare-at-price">
+    {{ compare_at_price | money }}
+  </span>
+{% endif %}
+‍
+
+How It works
+Check Creator Context
+We grab cc_handle from the cart, then retrieve the corresponding metaobject (cc_creator).
+If no creator context is found, we default to regular pricing.
+Calculate Discounted Price
+If cc-collab-discount-type is Percentage, we reduce the product price by the discount percentage (e.g., 10%).
+If it’s Fixed, we subtract a flat amount (e.g., $5).
+We store the result in price.
+Set compare_at_price
+We often want to show a “before” price next to the discounted price.
+In this snippet, we set compare_at_price to product.price if a discount is applied. Otherwise, we leave it as product.compare_at_price.
+Render
+Finally, we display {{ price | money }} and conditionally display {{ compare_at_price | money }} if it’s higher than the discounted price.
+‍
+
+4. Ensuring checkout consistency
+While the snippet above handles visual display of discounts, the CreatorCommerce SDK also ensures that the same discount is applied at checkout. This prevents a situation where a shopper sees a discounted price but is charged the full amount during checkout.
+
+Automatic Discounts: The SDK injects/applies the discount code (cc-collab-discount-code) when the shopper starts the checkout, ensuring the discount is honored.
+‍
+
+5. Additional considerations
+Edge Cases
+If a discount is so high that it would make the product price <= 0, you may want to add checks to avoid negative or zero prices.
+If the product has a built-in compare_at_price, ensure your snippet doesn’t conflict with existing sale logic.
+Multiple Discounts
+If you allow stacking discounts, you may need more complex logic.
+Often, it’s best to apply only one discount at a time to keep things clear.
+Display of Savings
+You can optionally show “You Save $X” or “X% Off!” by calculating the difference between compare_at_price and price.
+Example:
+{% assign savings = compare_at_price | minus: price %}
+{% if savings > 0 %}
+  <span class="savings">You save {{ savings | money }}!</span>
+{% endif %}
+‍
+
+6. Putting it all together
+By integrating this snippet into your theme’s global price display (or multiple snippets if you have distinct product and collection view files), all shoppers within a creator’s funnel will see updated prices site-wide. For example, if “Kenyon Brown” offers 10% off:
+
+Homepage: The discounted price for each product is rendered.
+Product Pages: Shoppers see the discounted price, plus the original compare-at price if desired.
+Cart: When the shopper initiates checkout, the CreatorCommerce SDK applies (or ensures) the matching discount code, so the final total aligns with what they saw on-site.
+This cohesive experience can dramatically boost conversions and build trust, as visitors see a consistent discount from browsing to purchase.
+
+‍
+
+7. Dealing with subscriptions
+Subscriptions can offer an array of complixity when it comes to user display of the discount, below are approaches:
+
+Discount all selling plan options: Every month is discounted the same on-going.
+Discount just first month of selling plan options: Display first month discount, and on-going discount.
+Keep in mind that in this situation the discount you show should be the creator discount (d2) applied to the already discounted product (d1). This leads to the equation of TOTAL = PRICE * (1-d1) * (1-d2).
+Or don't discount selling plan options: Depending on margins, you may just want to only show discount on 1-time purchases and leave other options as-is.
+This example below shows off the business logic on the most complicated situation: Discounting first month & 1-time, while applying a discount on an already discounted option:
+
+{% if product.selling_plan_groups != blank and available %}
+  {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+  {% assign cc_creator = metaobjects.creator[cc_handle] %}
+  {%- liquid
+    assign first_selling_plan_group = product.selling_plan_groups | first
+    assign first_selling_plan = first_selling_plan_group.selling_plans | first
+    if cc_creator['cc-collab-discount-amount']
+      assign subscription_discount_percentage_number = first_selling_plan.price_adjustments.first.value | times: 1.0 | divided_by: 100.00
+      assign creatorcommerce_discount_percentage_number = cc_creator['cc-collab-discount-amount'] | divided_by: 100.00
+
+      assign after_d1 = 1.0 | minus: subscription_discount_percentage_number
+      assign after_d2 = 1.0 | minus: creatorcommerce_discount_percentage_number
+
+      assign after_both_discounts = after_d1 | times: after_d2
+      assign percentage_to_pay = after_both_discounts | times: 100.0 | round
+
+      assign subscription_discount_percentage = 100 | minus: percentage_to_pay
+
+    else
+      assign subscription_discount_percentage = first_selling_plan.price_adjustments.first.value
+    endif
+    
+...
+
+Example
+‍
+
+Conclusion
+Site-wide affiliate discounting is a straightforward yet highly effective way to tailor pricing for shoppers coming from a specific creator or campaign. By modifying your price.liquid snippet and leveraging the CreatorCommerce SDK for checkout consistency, you create a seamless, personalized experience—one that aligns perfectly with your affiliate marketing strategy.

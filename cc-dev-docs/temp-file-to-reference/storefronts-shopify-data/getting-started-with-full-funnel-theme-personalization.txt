@@ -1,0 +1,193 @@
+Getting started with full-funnel theme personalization (Liquid)
+If you want to go beyond a single landing page and create a fully branded, immersive shopping experience for each affiliate (or “creator”), this guide walks you through how to leverage the CreatorCommerce SDK and Shopify cart attributes to dynamically transform your entire storefront—from pricing and navigation to the home page and product pages.
+
+
+
+By keying off the cc-creator-handle (and other cart attributes) automatically set by the CreatorCommerce SDK, you can conditionally swap out visuals, content, and prices anywhere Liquid is used in your Shopify theme. This approach enables you to deploy truly personalized “full-funnel” experiences that maximize conversion rates and provide a cohesive brand experience for each affiliate.
+
+‍
+
+While the Creator Primitive represents a unified schema & data store for your collabs, you'll often here it referred to as the Creator Metaobject. As the Creator Primitive is stored on your Shopify store in the Creator Metaobject. With any CreatorCommerce experience, data will be fetched from the Creator Metaobject in order to interface with the Creator Primitive. To accomplish full-funnel personalization, you will need to reference the metaobject across you theme by using the SDK to get the correct metaobject entry to reference.
+‍
+
+Prerequisites
+CreatorCommerce SDK Installed‍
+Make sure you’ve added the CreatorCommerce SDK to your Shopify theme, so the relevant cart attributes (cc-creator-handle, etc.) are automatically set when shoppers click an affiliate link.
+Familiarity with Cart Attributes‍
+Review the CreatorCommerce SDK & Cart Attributes guide to see how these attributes are referenced in Liquid.
+‍
+
+How Full-Funnel Personalization Works
+Shopper clicks affiliate link
+The CreatorCommerce SDK detects the affiliate context and updates the Shopify cart with attributes like:
+cc-creator-handle
+cc-campaign-id
+cc-creator-id
+Shopify theme logic‍
+Within your Shopify theme, you check if cc-creator-handle (or other attributes) is present. If so, you apply custom Liquid logic to swap out branding elements, update pricing, or load specialized content.
+Dynamic Rendering‍
+Pages (Home, Product, Collections, etc.) dynamically show or hide sections or entire templates based on the affiliate context, effectively presenting a “takeover” of your store that aligns with the affiliate’s brand or promotion.
+‍
+
+Common Full-Funnel Use Cases
+Below are examples of how to utilize these attributes in various theme sections. For each scenario, you’ll use a code pattern similar to:
+
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% if cc_handle != '' and cc_handle != null %}
+  <!-- Creator-specific logic goes here -->
+{% endif %}
+‍
+
+1. Updating Prices Across the Full Site
+Why: Offer special affiliate pricing, or visually highlight a “Creator Discount.”
+How:
+Edit your theme’s price snippet (commonly found in snippets/price.liquid or snippets/product-price.liquid).
+Wrap your conditional code around how you display price.
+CreatorCommerce will take care of the application of the discount when a user checks out, your changes are purely for visual purposes with this example.
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100 %}
+{% assign discount_multiplier = 1 | minus: discount %}
+
+<span class="product-price">
+  {% if cc_creator %}
+    <!-- Example: Show a special discount label or price -->
+    <span class="discounted-price">{{ product.price | times: discount_multiplier | round: 2 | money }}</span>
+    <span class="original-price">{{ product.compare_at_price | money }}</span>
+  {% else %}
+    <!-- Standard Price -->
+    {{ product.price | money }}
+  {% endif %}
+</span>
+Click here for a larger guide specifically on updating prices across your theme
+‍
+
+2. Customizing the Navigation Bar
+Why: Display the creator’s logo, link to their personalized landing page, or “profile picture.”
+How:
+In your theme’s header.liquid or sections/header.liquid, add a conditional check for cc-creator-handle.
+If it exists, replace your default nav logo with the creator’s avatar (fetched from a metaobject or image field).
+Insert a link (like “Back to [Creator Name]’s Page”) referencing the metaobject page you’ve set up:
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% if cc_handle %}
+  {% assign cc_creator = metaobjects.creator[cc_handle] %}
+  <!-- Example: Show creator logo -->
+  <a href="/pages/creator/{{ cc_handle }}">
+    <img src="{{ cc_creator.cc-creator-profile-picture | img_url: 'medium' }}" alt="{{ cc_creator.cc-creator-first-name }}" />
+  </a>
+{% else %}
+  <!-- Default logo/link -->
+  <a href="/">
+    <img src="{{ 'your_default_logo.png' | asset_url }}" alt="Brand" />
+  </a>
+{% endif %}
+‍
+
+3. Altering Footer Links
+Why: Provide quick navigation to the creator’s landing page from anywhere on the site.
+How:
+In footer.liquid, conditionally display a link labeled “See All [Creator] Products” or “Back to [Creator] Page.”
+{% if cc_creator %}
+  <li>
+    <a href="/pages/creator/{{ cc_creator['cc-creator-shop-handle'] }}">
+      {{ cc_creator.cc-creator-first-name }}'s Page
+    </a>
+  </li>
+{% endif %}
+‍
+
+4. Injecting Creator Recommendations & UGC on Product Pages
+Why: Show relevant notes, user-generated content, or product endorsements from the affiliate to boost conversions.
+How:
+In your product.liquid template (or a custom product section), loop through the cc-creator-drops or other fields from the metaobject.
+Filter for the specific product to see if it has any affiliate-specific notes or enhancements:
+{% if cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% for cc_product in drop['cc-creator-drop-products'] %}
+      {% assign product_id_string = product.id | append: '' %}
+      {% if cc_product.id == product_id_string
+        and cc_product.enhancement.note != ''
+        and cc_product.enhancement.note != null
+      %}
+        <!-- Display affiliate note, UGC, or extra images -->
+        <div class="ugc-section">
+          {{ cc_product.enhancement.note }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+‍
+
+5. Show more creator products on the homepage
+Why: Spotlight products from a specific affiliate or highlight a curated collection.
+How:
+Edit your index.liquid or a custom homepage section to check for cc-creator-handle.
+Loop through the cc-creator-drops or metaobject fields to show a curated grid of products for that creator.
+‍
+
+6. Display affiliate discounts in pop-ups/banners
+Why: Immediately notify the shopper about a special discount or promotion.
+How:
+Use a pop-up app or your theme’s built-in banner functionality.
+Check if the shopper is in an affiliate funnel. If yes, show a custom message (e.g., “Use code TIFFANY10 for 10% off!”).
+‍
+
+7. Re-skin the entire website
+Why: For B2B or influencer “takeovers,” you might want to make the entire store look like it’s part of the creator’s brand (new colors, fonts, images).
+How:
+In theme.liquid or a master layout file, conditionally load different stylesheets or settings.
+Alternatively, store color palettes and branding assets in the metaobject and dynamically apply them via inline CSS or theme settings.
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% if cc_handle %}
+  <link rel="stylesheet" href="{{ 'creator-tiffany.css' | asset_url }}">
+  <!-- or dynamically choose a stylesheet based on cc_creator -->
+{% else %}
+  <link rel="stylesheet" href="{{ 'default-theme.css' | asset_url }}">
+{% endif %}
+‍
+
+8. Building an Influencer “Search” or Directory Page
+Why: Let customers discover or filter through different affiliates by category, name, brand alignment, etc.
+How:
+Create a metaobject (or multiple) for each creator. Include fields like handle, name, category, or any tags.
+Build a search or directory page that loops through all “creator” metaobjects.
+Optionally add a search bar or filters (e.g., by category) and use JavaScript (or Liquid conditions) to filter the displayed creators.
+Link each card to its respective landing page or full-funnel experience.
+{% assign creators = all_metaobjects.creator %}
+<div class="creator-directory">
+  {% for creator in creators %}
+    <div class="creator-card">
+      <h3>{{ creator.cc-creator-first-name }}</h3>
+      <img src="{{ creator.cc-creator-profile-pitcure | img_url: 'medium' }}" alt="{{ creator.cc-creator-first-name }}">
+      <a href="/pages/creator/{{ creator.cc-creator-shop-handle }}">Visit Creator Page</a>
+    </div>
+  {% endfor %}
+</div>
+‍
+
+‍
+
+Implementation Tips
+Start Small, Expand‍
+Begin by customizing the header or footer, then branch out to more advanced transformations as you confirm everything works.
+Preview & Test‍
+Use Shopify’s Theme Preview to see how your changes appear when cc-creator-handle is set. Test multiple affiliate handles to ensure no conflicts.
+Mind Performance‍
+Extensive if/else logic can slow page rendering if done excessively. Keep your conditions well-organized and your code as efficient as possible.
+Handle Edge Cases‍
+What if the cart attribute is missing or the user comes from a non-affiliate link? Ensure your theme gracefully falls back to the default branding and pricing.
+Combine with Discounts‍
+For actual discounted pricing, set up an automatic discount or use a script (Shopify Plus) that triggers when cc-creator-handle is present. The visual cue in the snippet is only for display, so be sure the discount is also applied at checkout.
+‍
+
+Summary
+Full-funnel personalization using CreatorCommerce’s cart attributes and the Shopify Liquid environment allows you to:
+
+Dynamically adjust site-wide elements (navigation, footer, pricing).
+Tailor product pages with affiliate recommendations, UGC, and notes.
+Promote affiliate discounts via pop-ups, banners, or custom sections.
+Even fully “reskin” your store for B2B or influencer takeovers.
+All of this builds on the foundation provided by the CreatorCommerce SDK, which tags visitors based on affiliate links. With these methods, you can significantly enhance conversion rates by delivering a seamless, creator-specific experience across every stage of the shopper’s journey.
+
+‍

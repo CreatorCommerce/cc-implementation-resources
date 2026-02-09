@@ -1,6 +1,6 @@
 ---
 title: 'Share Banner & Copy Settings'
-description: 'Reuse banner messaging and copy between your homepage and creator landing pages.'
+description: 'Maintain consistent brand messaging across homepage and creator landing pages using Shopify Theme Settings.'
 ---
 
 ## The Challenge
@@ -12,62 +12,110 @@ You want consistent messaging across:
 
 But you also want creator personalization where appropriate.
 
-## Solution: Shared Settings with Overrides
+## Solution: Shared Theme Settings with Creator Overrides
 
-### 1. Create Shared Settings
+### 1. Define Shared Settings in Theme Settings
 
-In `config/settings_schema.json`, add shared copy settings:
+In `config/settings_schema.json`, create a settings group for shared promotional content:
 
 ```json
 {
-  "name": "Promotional Messaging",
+  "name": "Co-branded Messaging",
   "settings": [
     {
-      "type": "text",
-      "id": "promo_headline",
-      "label": "Promo Headline",
-      "default": "Free shipping on orders $50+"
+      "type": "image_picker",
+      "id": "home_creator_landing_pages_banner",
+      "label": "Shared Banner Image"
     },
     {
       "type": "text",
-      "id": "promo_subline",
-      "label": "Promo Subline"
+      "id": "home_creator_landing_pages_headline",
+      "label": "Shared Headline",
+      "default": "Welcome to Our Store"
+    },
+    {
+      "type": "text",
+      "id": "home_creator_landing_pages_cta_label",
+      "label": "CTA Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "home_creator_landing_pages_cta_link",
+      "label": "CTA Button Link"
     }
   ]
 }
 ```
 
-### 2. Use with Creator Override
+### 2. Reference in Both Homepage and Creator Pages
+
+Use these settings across templates for centralized control:
 
 ```liquid
-{% if cc_creator %}
-  {% assign headline = cc_creator.cc-creator-first-name | append: "'s exclusive: " | append: settings.promo_headline %}
-{% else %}
-  {% assign headline = settings.promo_headline %}
-{% endif %}
-
-<div class="promo-banner">
-  {{ headline }}
+<div class="shared-banner">
+  {% if settings.home_creator_landing_pages_banner %}
+    <img 
+      src="{{ settings.home_creator_landing_pages_banner | img_url: 'master' }}" 
+      alt="Promotional banner"
+      loading="lazy"
+    >
+  {% endif %}
+  <h1>{{ settings.home_creator_landing_pages_headline }}</h1>
+  <a href="{{ settings.home_creator_landing_pages_cta_link }}">
+    {{ settings.home_creator_landing_pages_cta_label }}
+  </a>
 </div>
 ```
 
-### 3. Dynamic Text Tokens
+### 3. Add Creator Overrides
 
-Use tokens in your settings that get replaced:
-
-Setting value: `[CREATOR_NAME]'s fans get free shipping!`
+Enhance the shared content with creator personalization:
 
 ```liquid
-{% assign banner_text = settings.promo_headline %}
+{% if cc_creator %}
+  {% assign headline = cc_creator.cc-creator-first-name | append: "'s exclusive: " | append: settings.home_creator_landing_pages_headline %}
+{% else %}
+  {% assign headline = settings.home_creator_landing_pages_headline %}
+{% endif %}
+
+<div class="promo-banner">
+  <h1>{{ headline }}</h1>
+</div>
+```
+
+### 4. Dynamic Text Tokens
+
+Use tokens in your settings that get replaced based on context.
+
+**Setting value:** `[CREATOR_NAME]'s fans get free shipping!`
+
+```liquid
+{% assign banner_text = settings.home_creator_landing_pages_headline %}
 {% if cc_creator %}
   {% assign banner_text = banner_text | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name %}
 {% else %}
   {% assign banner_text = banner_text | replace: "[CREATOR_NAME]'s fans get", "You get" %}
 {% endif %}
+
+<div class="promo-banner">{{ banner_text }}</div>
 ```
 
-## Keep It Manageable
+## Benefits
 
-- Define core messages in theme settings
-- Let creator context enhance, not replace
-- Test both states (with and without creator)
+- **Single source of truth** — Update once in Theme Settings, reflect everywhere
+- **No code duplication** — Same settings referenced across templates
+- **Creator enhancement** — Personalization layers on top, doesn't replace
+- **Team-friendly** — Non-technical team members can update messaging via Theme Settings
+
+## Best Practices
+
+- Define core messages in Theme Settings
+- Let creator context **enhance**, not **replace** brand messaging
+- Test both states: with and without creator context
+- Keep token names consistent (e.g., `[CREATOR_NAME]`, `[DISCOUNT]`)
+
+## Related
+
+- [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)
+- [Dynamic Content Snippet](/guides/storefronts/dynamic-content-snippet)

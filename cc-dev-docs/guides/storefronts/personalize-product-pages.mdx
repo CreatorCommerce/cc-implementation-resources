@@ -1,6 +1,6 @@
 ---
 title: 'Personalize Product Pages'
-description: 'Show creator context, quotes, and discounted prices on product detail pages.'
+description: 'Show creator context, UGC, enhancement notes, media, and discounted prices on product detail pages using drops data.'
 ---
 
 ## What to Personalize
@@ -10,40 +10,126 @@ description: 'Show creator context, quotes, and discounted prices on product det
 | **Header** | Product title | "Sarah's Pick: [Title]" |
 | **Price** | $99.00 | ~~$99.00~~ $84.15 |
 | **Badge** | None | Creator quote callout |
-| **Trust** | Reviews | Creator endorsement |
+| **Trust** | Reviews | Creator endorsement + UGC |
+| **Media** | Product photos | Product photos + creator media |
 
-## Creator Quote Badge
+## How Product Personalization Works
 
-Add a quote section to product pages:
+Creator product data lives in **drops** — curated product lists stored in the creator metaobject. Each product in a drop can have:
+- **Enhancement notes** — The creator's personal review or recommendation
+- **Enhancement media** — Creator photos/videos of the product
+- **Custom fields** — Brand-specific data at the product level
+
+The key pattern: **match the current product's Shopify ID against products in the creator's drops.**
+
+## Resolving Creator Context
+
+On product pages (not metaobject pages), resolve the creator from cart attributes:
 
 ```liquid
-{% if cc_creator %}
-  {% assign product_quotes = cc_creator.data.value.product-quotes %}
-  {% assign quote = product_quotes[product.id | append: ''] %}
-  
-  {% if quote %}
-    <div class="cc-product-quote">
-      <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 50 }}" />
-      <blockquote>
-        "{{ quote }}"
-        <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
-      </blockquote>
-    </div>
-  {% endif %}
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+```
+
+## Finding Product Enhancements in Drops
+
+Match the current product against the creator's drop products by ID:
+
+```liquid
+{% if cc_creator and cc_creator.data.value['cc-creator-drops'] %}
+  {% assign shopify_product_id = product.id | append: '' %}
+  {% assign product_enhancement = null %}
+  {% assign matched_drop = null %}
+
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% for cc_product in drop['cc-creator-drop-products'] %}
+      {% if cc_product['cc-creator-drop-product-shopify-id'] == shopify_product_id %}
+        {% assign product_enhancement = cc_product %}
+        {% assign matched_drop = drop %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% if product_enhancement %}{% break %}{% endif %}
+  {% endfor %}
 {% endif %}
 ```
+
+<Warning>
+Always convert Shopify IDs to strings with `| append: ''` before comparing to JSON-stored IDs. Shopify IDs are integers, JSON IDs are strings — direct comparison fails.
+</Warning>
+
+## Display Creator's Enhancement Note
+
+```liquid
+{% if product_enhancement and product_enhancement['cc-creator-drop-product-enhancement-note'] %}
+  <div class="creator-endorsement">
+    {% if cc_creator.data.value['cc-creator-profile-picture'] %}
+      <img 
+        src="{{ cc_creator.data.value['cc-creator-profile-picture'] | image_url: width: 60 }}" 
+        alt="{{ cc_creator.cc-creator-first-name | escape }}"
+        class="creator-avatar"
+        loading="lazy"
+      >
+    {% endif %}
+    <blockquote>
+      "{{ product_enhancement['cc-creator-drop-product-enhancement-note'] }}"
+      <cite>— {{ cc_creator.cc-creator-first-name }}</cite>
+    </blockquote>
+  </div>
+{% endif %}
+```
+
+## Display Creator's Enhancement Media (UGC)
+
+Creator media — photos and videos of the product in use — is powerful social proof.
+
+```liquid
+{% assign enhancement_media = product_enhancement['cc-creator-drop-product-enhancement-media'] %}
+{% if enhancement_media and enhancement_media.size > 0 %}
+  <div class="creator-ugc-gallery">
+    <h3>{{ cc_creator.cc-creator-first-name | escape }}'s Photos</h3>
+    {% for media_item in enhancement_media %}
+      {% if media_item.mimeType contains 'video' %}
+        <video controls playsinline class="ugc-video">
+          <source src="{{ media_item.url }}" type="{{ media_item.mimeType }}">
+        </video>
+      {% elsif media_item.url %}
+        <img src="{{ media_item.url }}" alt="Creator media" loading="lazy" class="ugc-image">
+      {% elsif media_item contains 'http' %}
+        <img src="{{ media_item }}" alt="Creator media" loading="lazy" class="ugc-image">
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+```
+
+<Note>
+Enhancement media can be either URL strings or media objects with `url` and `mimeType` properties. Always handle both formats.
+</Note>
 
 ## Discounted Price Display
 
 ```liquid
-{% if cc_creator and cc_creator.cc-collab-discount-amount %}
-  {% assign discount = cc_creator.cc-collab-discount-amount | divided_by: 100.0 %}
-  {% assign discounted = product.price | times: 1 | minus: product.price | times: discount %}
-  
+{% if cc_creator and cc_creator['cc-collab-discount-amount'] %}
+  {%- liquid
+    if cc_creator['cc-collab-discount-type'] == 'Percentage'
+      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
+      assign discount_multiplier = 1 | minus: discount
+      assign discounted_price = product.price | times: discount_multiplier
+    elsif cc_creator['cc-collab-discount-type'] == 'Fixed'
+      assign discount_amount = cc_creator['cc-collab-discount-amount'] | times: 100
+      assign discounted_price = product.price | minus: discount_amount
+    else
+      assign discounted_price = product.price
+    endif
+  -%}
+
   <div class="cc-price">
-    <span class="original">{{ product.price | money }}</span>
-    <span class="sale">{{ discounted | money }}</span>
-    <span class="badge">{{ cc_creator.cc-collab-discount-amount }}% OFF</span>
+    <span class="original-price">{{ product.price | money }}</span>
+    <span class="sale-price">{{ discounted_price | money }}</span>
+    <span class="discount-badge">{{ cc_creator.cc-creator-first-name }}'s {{ cc_creator['cc-collab-discount-amount'] }}% Off</span>
   </div>
 {% else %}
   <div class="price">{{ product.price | money }}</div>
@@ -55,13 +141,44 @@ Add a quote section to product pages:
 ```liquid
 <button type="submit">
   {% if cc_creator %}
-    Add to Cart • {{ cc_creator.cc-collab-discount-amount }}% Off
+    Add to Cart · {{ cc_creator['cc-collab-discount-amount'] }}% Off
   {% else %}
     Add to Cart
   {% endif %}
 </button>
 ```
 
+## Link Back to Creator's Shop
+
+When a shopper finds a product via search or browsing, show a link back to the creator's storefront:
+
+```liquid
+{% if cc_creator %}
+  <a href="/pages/creators/{{ cc_creator.handle }}" class="btn btn--secondary">
+    View {{ cc_creator.cc-creator-first-name | escape }}'s Full Shop
+  </a>
+{% endif %}
+```
+
+## Advanced: Custom Product Fields
+
+If the brand has defined custom product-level fields in CreatorCommerce, access them through the enhancement:
+
+```liquid
+{% if product_enhancement %}
+  {% assign custom = product_enhancement['cc-creator-drop-product-enhancement-custom'] %}
+  {% if custom and custom['cc-product-short-form-2'] %}
+    <p class="creator-product-tag">{{ custom['cc-product-short-form-2'] }}</p>
+  {% endif %}
+{% endif %}
+```
+
 ## Fallback to Standard
 
-Always ensure the page works without creator context—show regular pricing and hide creator-specific elements.
+Always ensure the page works without creator context. When `cc_creator` is blank, show regular pricing and hide all creator-specific elements. The page should never break for direct traffic.
+
+## Related
+
+- [Discount Prices Theme-wide](/guides/storefronts/discount-prices-theme-wide)
+- [Drops & Products Data Model](/references/drops-products-data-model)
+- [Custom Fields Reference](/references/custom-fields-reference)

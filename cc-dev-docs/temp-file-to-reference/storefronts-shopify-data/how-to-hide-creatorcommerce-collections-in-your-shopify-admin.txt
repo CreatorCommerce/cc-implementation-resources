@@ -1,0 +1,79 @@
+How to hide CreatorCommerce collections on the Shopify admin collections page
+When an affiliate makes a collection via CreatorCommerce, the platform will turn that into a new collection in your Shopify store. While this makes the affiliate's curation more portable across your storefront, it can lead to a clogged Shopify collections page in your admin dashboard. This guide covers cleaning that up.
+
+When your affiliates create collections through CreatorCommerce, they’re automatically turned into real Shopify collections—making their curation visible across your store. But if you’re managing a lot of collabs, your Shopify Collections page can start looking like a dumping ground.
+
+This guide shows you how to clean things up by tagging CreatorCommerce collections with a prefix and filtering them out (or into) separate views in your Shopify admin.
+
+‍
+
+✅ Step 1: Add a Prefix to CreatorCommerce Collections
+First, make sure CreatorCommerce collections are easy to identify.
+
+Log into your CreatorCommerce dashboard
+Go to the Settings tab
+Toggle on "Enable Collection Prefix"
+This will automatically add CC // to the title of any collection created by CreatorCommerce.
+
+‍
+
+
+Naming your view
+‍
+
+Example:
+Instead of Summer Picks by Ava, the collection will be titled CC // Summer Picks by Ava
+
+‍
+
+⚠️ Heads up: To keep your storefront clean, remove the prefix when displaying collection titles in your Liquid theme.
+Use this:
+
+{{ collection.title | remove: "CC // " }}
+‍
+
+🧹 Step 2: Hide CreatorCommerce Collections in Shopify Admin
+Now let’s create a view in your Shopify admin that hides these collections.
+
+Go to your Shopify Admin
+Click Products → Collections
+Click the "More filters" or "Create View" button (depending on your admin version)
+Click Create View
+Give the view a name like "Non-CreatorCommerce Collections"
+In the filter, enter:
+-"CC // "
+Save the view
+‍
+
+Boom—your view now shows only your manually created or product-driven collections.
+
+
+Example of correct setup
+‍
+
+🔍 Step 3: (Optional) Create a View to Only Show CreatorCommerce Collections
+If you want to review or manage affiliate collections separately:
+
+Go back to your Shopify Admin → Collections
+Click Create View
+Name it something like "Affiliate Collections"
+Set the filter:
+"CC // "
+Save the view
+‍
+
+You now have clean, segmented views in your Shopify admin for better workflow and less clutter.
+
+
+Example of correct setup
+‍
+
+🙌 Summary
+Turn on the "Enable Collection Prefix" setting in CreatorCommerce
+Use CC // to identify affiliate-generated collections
+Filter Shopify views to hide or isolate those collections
+Use | remove: "CC // " in Liquid to keep titles customer-friendly
+This simple setup gives you full control over what you and your team see in the admin, while still enabling scalable creator curation.
+
+
+End state

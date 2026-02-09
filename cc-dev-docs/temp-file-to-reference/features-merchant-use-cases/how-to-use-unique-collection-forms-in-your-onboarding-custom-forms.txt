@@ -1,0 +1,46 @@
+How to use unique collection forms in your onboarding + custom forms
+Create context-specific product collection forms that differ from your creators' default forms. Ideal for capturing collection context in unique forms such as campaigns, recipes, fits, etc.
+
+
+When you need to collect product information in a specific context—like recipe shopping lists or skincare treatments by concern—you can set up custom collection forms that use different copy & questions than your default forms. Here's how to do it:
+
+‍
+
+Step-by-step setup:
+‍
+
+1. Create your default forms
+
+Start by setting up the default collection form for all creators. This form will automatically appear whenever a creator goes to make a new collection through their standard workflow in the creator dashboard. Select the tiers this is available for, and do not leave the tier picker blank.
+
+‍
+
+2. Build your custom collection form
+
+Create a new collection form specifically for your custom use case. Don't select any specific tiers this form is available for. This ensures the now existing default collection form(s) (from step 1) will take precedence over this one you make when a creator generally goes to make a new collection. This results in this form effectively becoming private, only accessible after completing step 3.
+
+‍
+
+3. Link the custom collection form to a new custom form or onboarding form
+
+Build a custom form or onboarding form, and directly reference the specific collection form you created in step 2. Now when people use your custom form or onboarding form, it will bypass the tier's default collection form (from step 1) and use your specific version (from step 2) instead.
+
+‍
+
+General hierarchy rules - For advanced setups with many tiers & forms per tier
+If 2 collection forms exist for the same tier, but one collection form is scoped to just a given tier, and the other is scoped for all tiers, then the one for just the specific tier will be shown when a creator from the given tier makes a new collection.
+If 2 collection forms exist for the same tier, and there's no other differences, the most recently created collection form will be shown when the creator makes a new collection.
+If 2 collection forms exist for the same tier, but an onboarding or custom form directly reference one form vs the other, then the directly referenced form will be shown when a creator makes a collection via the onboarding or custom form.
+‍
+
+Use cases
+This setup is perfect for creating targeted collection creation flows in your dashboard, onboarding forms or custom forms. Examples:
+
+Recipe shopping lists
+Skincare treatments organized by concern
+Seasonal product roundups
+Gift guides by recipient type
+Any scenario where you need to collect product data in a structure that differs from generic collections
+‍
+
+Use this approach whenever you need to gather product list data in a context-specific manner while maintaining a default collection creation flow elsewhere for regular use.

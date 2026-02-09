@@ -1,31 +1,54 @@
 ---
 title: 'Discount Prices Across Your Theme'
-description: 'Show creator-discounted prices everywhere—product cards, collections, cart, and more.'
+description: 'Show creator-discounted prices everywhere — product cards, collections, cart, and more — handling both percentage and fixed discount types.'
 ---
 
 ## The Goal
 
-When a customer is shopping through a creator's link, they should see their discounted price everywhere—not just at checkout.
+When a customer is shopping through a creator's link, they should see their discounted price **everywhere** — not just at checkout. This builds trust and eliminates surprise at the payment step.
 
-## Create a Price Snippet
+## Create a Universal Price Snippet
 
-Create `snippets/cc-price.liquid`:
+Create `snippets/cc-price.liquid` to handle both **Percentage** and **Fixed** discount types:
 
 ```liquid
 {% comment %}
-  Usage: {% render 'cc-price', price: product.price %}
+  Usage: {% render 'cc-price', product: product %}
+  Handles both Percentage and Fixed discount types.
+  Falls back to standard pricing when no creator context.
 {% endcomment %}
 
-{% if cc_creator and cc_creator.cc-collab-discount-amount %}
-  {% assign multiplier = 100 | minus: cc_creator.cc-collab-discount-amount | divided_by: 100.0 %}
-  {% assign discounted = price | times: multiplier %}
-  
-  <span class="cc-price cc-price--discounted">
-    <span class="cc-price__original">{{ price | money }}</span>
-    <span class="cc-price__sale">{{ discounted | money }}</span>
-  </span>
-{% else %}
-  <span class="cc-price">{{ price | money }}</span>
+{% liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  assign cc_creator = metaobjects.creator[cc_handle]
+%}
+
+{%- liquid
+  if cc_creator != blank and cc_creator != null and cc_creator['cc-collab-discount-amount']
+    if cc_creator['cc-collab-discount-type'] == 'Percentage'
+      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
+      assign discount_multiplier = 1 | minus: discount
+      assign price = product.price | times: discount_multiplier
+      assign compare_at_price = product.price
+    elsif cc_creator['cc-collab-discount-type'] == 'Fixed'
+      assign discount_cents = cc_creator['cc-collab-discount-amount'] | times: 100
+      assign price = product.price | minus: discount_cents
+      assign compare_at_price = product.price
+    else
+      assign price = product.price
+      assign compare_at_price = product.compare_at_price
+    endif
+  else
+    assign price = product.price
+    assign compare_at_price = product.compare_at_price
+  endif
+-%}
+
+<span class="cc-price">
+  {{ price | money }}
+</span>
+{% if compare_at_price > price %}
+  <span class="cc-price--compare">{{ compare_at_price | money }}</span>
 {% endif %}
 ```
 
@@ -38,26 +61,62 @@ Replace price displays throughout your theme:
 {{ product.price | money }}
 
 {% comment %} After {% endcomment %}
-{% render 'cc-price', price: product.price %}
+{% render 'cc-price', product: product %}
 ```
 
-## Key Locations
+## Key Locations to Update
 
 - Product cards (collection pages)
-- Product page
+- Product detail page
 - Quick view modals
 - Cart line items
 - Cart total area
-- Recently viewed
+- Recently viewed products
 - Search results
+- Featured product sections
 
-## Cart Total with Savings
+## Cart Savings Display
+
+Show customers how much they're saving:
 
 ```liquid
 {% if cc_creator %}
+  {%- liquid
+    if cc_creator['cc-collab-discount-type'] == 'Percentage'
+      assign savings = cart.total_price | times: cc_creator['cc-collab-discount-amount'] | divided_by: 100
+    elsif cc_creator['cc-collab-discount-type'] == 'Fixed'
+      assign savings = cc_creator['cc-collab-discount-amount'] | times: cart.item_count | times: 100
+    endif
+  -%}
   <div class="cart-savings">
-    Your {{ cc_creator.cc-creator-first-name }} discount saves you 
-    {{ cart.total_price | times: cc_creator.cc-collab-discount-amount | divided_by: 100 | money }}
+    {{ cc_creator.cc-creator-first-name | escape }}'s discount saves you {{ savings | money }}
   </div>
 {% endif %}
 ```
+
+## Checkout Consistency
+
+The visual discount on product and collection pages is a **display-only** change. The actual discount is applied at checkout via the creator's discount code, handled by the CreatorCommerce SDK.
+
+Make sure:
+- The SDK is enabled (applies the discount code automatically)
+- The discount code exists in Shopify Discounts
+- The displayed discount matches the actual Shopify discount amount
+
+## Subscription Considerations
+
+If your store sells subscriptions, be mindful of how visual discounts interact with subscription pricing. The creator discount may apply to the first order only — ensure your price snippet accounts for this:
+
+```liquid
+{% if product.selling_plan_groups.size > 0 and cc_creator %}
+  <span class="cc-price-note">
+    {{ cc_creator['cc-collab-discount-amount'] }}% off first order
+  </span>
+{% endif %}
+```
+
+## Related
+
+- [Personalize Product Pages](/guides/storefronts/personalize-product-pages)
+- [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)
+- [SDK Getting Started](/references/sdk/getting-started)

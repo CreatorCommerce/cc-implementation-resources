@@ -1,0 +1,64 @@
+---
+title: 'Conditional Checkout Block for Affiliates'
+description: 'Create a customized Shopify checkout block that appears only for affiliate-attributed purchases.'
+---
+
+## What This Does
+
+Shopify's checkout extensibility lets you add custom blocks (banners, messages, upsells) to the checkout page. With CreatorCommerce, you can make these blocks **conditional** — they only appear when a shopper came through a creator's affiliate link.
+
+## Use Cases
+
+- Show a "Thanks for shopping with [Creator]!" message at checkout
+- Display the creator's discount confirmation
+- Add a co-branded banner with the creator's photo
+- Surface a loyalty or referral prompt specific to affiliate purchases
+
+## Setup
+
+<Steps>
+  <Step title="Go to Shopify Checkout Editor">
+    In Shopify Admin → **Settings → Checkout → Customize checkout**.
+  </Step>
+  <Step title="Add a new block">
+    In the checkout editor, add a new block where you want the affiliate content to appear (e.g., Order Summary section, Thank You page).
+
+    Choose a block type like **Banner**, **Text**, or **Image with text**.
+  </Step>
+  <Step title="Add your co-branded content">
+    Populate the block with your affiliate-specific messaging. For example:
+
+    - **Heading:** "You're getting an exclusive deal!"
+    - **Body:** "Your creator discount has been applied at checkout."
+    - **Image:** A co-branded banner or icon
+  </Step>
+  <Step title="Set display rules">
+    This is the key step. Add a **display condition** to the block:
+
+    - **Condition type:** Cart attribute
+    - **Attribute:** `cc-creator-id`
+    - **Rule:** `is not empty`
+
+    This ensures the block **only renders** when the shopper has a CreatorCommerce creator attribution in their cart — meaning they came through an affiliate link.
+  </Step>
+</Steps>
+
+## Display Condition Reference
+
+| Condition | Attribute | Rule | When It Shows |
+|-----------|-----------|------|---------------|
+| Any affiliate purchase | `cc-creator-id` | is not empty | Shopper came through any creator link |
+| Specific campaign | `cc-campaign-id` | equals `[campaign-id]` | Shopper from a specific campaign |
+
+## Best Practices
+
+- Keep checkout blocks simple — don't add friction to the checkout flow
+- Reinforce the discount or value proposition, don't introduce new decisions
+- Test with both affiliate and non-affiliate checkouts to verify conditional rendering
+- Use the Thank You page for richer co-branded content (less impact on conversion)
+
+## Related
+
+- [Co-branded Carts & Checkout](/guides/storefronts/cart-checkout-overview)
+- [Enable Tracking](/guides/storefronts/enable-tracking)
+- [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)

@@ -1,0 +1,59 @@
+---
+title: 'GoAffPro'
+description: 'Connect GoAffPro affiliate data with CreatorCommerce co-branded experiences.'
+---
+
+GoAffPro is a popular affiliate management app for Shopify stores. Integrating it with CreatorCommerce transforms your GoAffPro affiliates' basic referral links into personalized co-branded storefronts.
+
+## What This Integration Does
+
+| GoAffPro → CC | CC → GoAffPro |
+|----------------|----------------|
+| Affiliate profiles | Co-branded page performance |
+| Commission tiers | Enhanced conversion data |
+| Referral tracking data | Attribution signals |
+
+## Setup
+
+<Steps>
+  <Step title="Connect in CreatorCommerce">
+    In your CreatorCommerce dashboard, navigate to **Integrations → GoAffPro** and follow the connection flow to authorize access.
+  </Step>
+  <Step title="Map affiliate programs">
+    Select which GoAffPro programs should sync with CreatorCommerce. Use the `CC //` prefix convention on program names to control which programs sync:
+
+    ```
+    CC // Ambassador Program
+    CC // VIP Affiliates
+    ```
+  </Step>
+  <Step title="Set redirect destination">
+    Update the landing page URL for synced programs to route through CreatorCommerce:
+
+    ```
+    https://your-store.myshopify.com/apps/cc-storefront/redirect
+    ```
+  </Step>
+  <Step title="Test">
+    Click a test affiliate link and verify:
+    - Co-branded landing page renders correctly
+    - Cart attributes are set
+    - Orders are attributed in both GoAffPro and CC
+  </Step>
+</Steps>
+
+## Use Cases
+
+### Upgrade Existing Program
+Your GoAffPro affiliates keep their existing commission structure and tracking. CreatorCommerce layers co-branded storefronts on top — same economics, better conversion.
+
+### Tiered Co-branding
+Map different GoAffPro tiers to different CC campaign configurations for varying levels of storefront customization.
+
+### Bridge to Scale
+Use GoAffPro for affiliate management and payouts while CreatorCommerce handles the storefront personalization layer.
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Destinations Explained](/guides/storefronts/destinations-explained)

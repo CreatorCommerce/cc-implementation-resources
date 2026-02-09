@@ -1,0 +1,175 @@
+What Are Destinations in Creator Commerce?
+
+Destinations control where shoppers land after clicking a creator or affiliate link.
+They connect specific creator tiers from your affiliate platform to co-branded shopping experiences on your storefront.
+
+Think of a destination as the rule that says:
+
+“When someone clicks a link from this group of creators, send the shopper to this type of page.”
+
+⸻
+
+How Destinations Work
+
+A destination is made up of three core parts:
+	1.	Collaboration tiers
+These come from your affiliate platform (like GRIN, Social Snowball, Refersion, etc.).
+They might be called:
+	•	Tiers
+	•	Programs
+	•	Groups
+	•	Segments
+	2.	Landing page logic
+This determines the URL or type of co-branded experience the shopper sees.
+	3.	Optional query parameters
+These add tracking or personalization data to the final URL.
+
+When a shopper clicks a creator’s link:
+	1.	Creator Commerce detects the click.
+	2.	It identifies the creator and their tier.
+	3.	It checks which destination that tier is assigned to.
+	4.	The shopper is sent to the correct co-branded page.
+
+If no destination applies, the shopper is safely sent to the homepage.
+
+⸻
+
+What You Configure in a Destination
+
+Here’s what you’ll typically set up inside a destination.
+
+1) Destination Name
+
+This is just for internal reference.
+
+Example:
+	•	Paid CORE
+	•	Ambassador Program
+	•	VIP Creators
+
+It helps your team understand what group the destination applies to.
+
+⸻
+
+2) Collaboration Tiers
+
+You select which affiliate tiers should use this destination.
+
+From the screenshot, examples include:
+	•	CC // Paid Affiliates
+	•	CC // Q1 Paid (Jan–Mar) 2026
+	•	Affiliates
+	•	Paid gifting
+
+Important rules:
+	•	A tier can only belong to one destination at a time.
+	•	If you assign a tier to a new destination, it will be removed from the previous one.
+
+⸻
+
+3) Landing Page URL Template
+
+This determines where shoppers land.
+
+Example from the screenshot:
+
+https://cozyearth.com/pages/creator/{{shop.handle}}
+
+This creates a unique page per creator.
+
+So if a creator’s handle is:
+
+jane-doe
+
+The shopper lands on:
+
+https://cozyearth.com/pages/creator/jane-doe
+
+This is how Creator Commerce generates personalized, co-branded experiences at scale.
+
+If this field is left blank:
+	•	Creator Commerce still applies discounts and tracking.
+	•	But shoppers will land on your default storefront pages.
+
+⸻
+
+4) Query Parameters (Optional)
+
+These add tracking or personalization data to the final URL.
+
+Example from the screenshot:
+
+cc={{shop.handle}}&utm_source=grin
+
+This could produce a final URL like:
+
+https://cozyearth.com/pages/creator/jane-doe?cc=jane-doe&utm_source=grin
+
+This helps:
+	•	Track traffic sources
+	•	Trigger personalization
+	•	Power analytics and attribution
+
+⸻
+
+Example Flow
+
+Here’s a simple end-to-end example.
+
+Setup:
+	•	Destination: Paid CORE
+	•	Tier: CC // Paid Affiliates
+	•	Landing template:
+/pages/creator/{{shop.handle}}
+
+What happens:
+	1.	A shopper clicks an affiliate link from creator jane-doe.
+	2.	Creator Commerce identifies that:
+	•	Jane is in CC // Paid Affiliates.
+	•	That tier is mapped to Paid CORE.
+	3.	The shopper is redirected to:
+
+/pages/creator/jane-doe
+
+
+	4.	Discounts, UTMs, and tracking are preserved.
+
+⸻
+
+Why Destinations Matter
+
+Destinations let you:
+	•	Send different creator groups to different experiences
+	•	Run seasonal or campaign-based pages
+	•	Test different funnels by tier
+	•	Control landing behavior without changing links
+
+They are the core system that connects:
+affiliate tiers → co-branded storefront experiences.
+
+⸻
+
+Quick Setup Checklist
+
+To use destinations:
+	1.	Connect your affiliate integration.
+	2.	Go to Destinations in Creator Commerce.
+	3.	Create a new destination.
+	4.	Select the tiers that should use it.
+	5.	Set a landing page template (optional).
+	6.	Save.
+
+Once active, any creator in those tiers will automatically route shoppers to the correct co-branded experience.
+
+⸻
+
+If you’d like, I can also produce:
+	•	A shorter in-app tooltip version
+	•	A visual diagram of the destination flow
+	•	A “common setups” guide (paid, gifting, ambassador, etc.)
+
+
+
+
+
+    P.s. add in that adding view=[NAME] is how to set any destination to auto flip the page template on the landing page, product page, etc after the click

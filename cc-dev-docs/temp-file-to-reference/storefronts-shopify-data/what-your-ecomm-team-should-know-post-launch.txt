@@ -1,0 +1,92 @@
+What your eComm team should know post-launch
+Communication is key. To ensure a successful rollout of your self-hosted CreatorCommerce pages, make sure that your entire eCommerce team is filled in on the existence of CreatorCommerce on the theme.
+
+
+Launching a co-branded strategy on CreatorCommerce can be quite exhilarating, but before you consider the project complete, make sure that the rest of your eCommerce department has been adequately communicated with about the implementation. Hosting co-branded shopping experiences directly on your theme has its benefits, but also comes with its share of side-effects. Navigating these side effects can be quite easy, but it's essential that the entirety of your team is aware of them.
+
+CreatorCommerce will create on-going collections for your creators
+CreatorCommerce will creator two types of collections automatically:
+
+A collection for each drop
+A collection for each creator (containing all products they recommend)
+
+Auto-collections for creators
+‍
+
+These collections serve as vehicles for you to be able to deploy a creator's related curations anywhere across your storefront. This allows you to use any existing sections that work with collections, and to open your self up to SEO/GEO discovery for searches for your collabs.
+
+‍
+
+How to clean up & hide CreatorCommerce collections from your Shopify collection list
+A feature & modification exists to hide collections CreatorCommerce creates from your 'Collections' page in your Shopify admin. Follow this guide to accomplish this.
+
+‍
+
+⚠️ Heads up: Ensure these collections are not pulled into any automatic collection feeds
+Some Shopify themes contain pages that showcase latest collections. If this sounds like your theme, make sure to exclude any collections created by CreatorCommerce by filtering out collections that either:
+
+Have "CC //" in the title (Enable in the CreatorCommerce dashboard by going to > Settings > toggle on "Enable Collection Prefix")
+Have the metafield seo.hidden with a value of 1
+‍
+
+You only need to use one method, either will work.
+
+‍
+
+In general, it's a best practice to ensure that collection feeds on Shopify are an 'opt-in' filter as opposed to an 'opt-out' filter. Meaning that by default a collection should not be included in the feed unless it meets specific criteria.
+
+‍
+
+Co-branded pages may share sections & blocks with the rest of your theme
+If you update blocks, sections and CSS on your homepage, don't forget about your creator pages. Make sure to test any changes to your theme on your new pages, just as you would with your homepage.
+
+‍
+
+When making substantial copy or code adjustments to accommodate a new promotion, collection, seasonal change, just remember to consider the affiliate experience that comes to /pages/creator/. The same goes for updates to any Shopify Markets, make sure to account for the creator pages as well.
+
+‍
+
+
+How to access this page
+‍
+
+Consider if you want your co-branded pages to be searchable or not
+‍
+
+Include the following in the <head> of your theme.liquid file:
+
+{% if request.path contains '/creator/' %}
+  <meta name="robots" content="noindex, nofollow">
+{% endif %}
+Then, add/update the robots.txt.liquid file:
+
+Go to Shopify > your Online Store > select to Edit Code > search for' robots.txt.liquid' > select the file (or create this file if it does not exist yet)
+Include the below within your file, if you already have a well structured file, then make sure to update it to include {{ 'Disallow: /pages/creator' }} {{ 'Disallow: /pages/creator/*' }}
+{% for group in robots.default_groups %}
+  {{- group.user_agent -}}
+
+  {%- if group.user_agent.value == '*' -%}
+    {{ 'Disallow: /pages/creator' }}
+    {{ 'Disallow: /pages/creator/*' }}
+  {%- endif -%}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+{% endfor %}
+
+Example
+Save & publish when ready.
+
+‍
+
+Click here to learn more about robot.txt files for Shopify.
+
+‍
+
+Minimize pop-ups on your creator pages
+Users who reach co-branded pages are already shopping in the context of an offer. Therefore, projecting additional offers for the same gain (or less) only adds further distractions to the affiliate funnel. Make sure to disable your pop-ups for /pages/creator/.
+
+‍
+
+If you have questions on how to navigate these facets, or mitigate any operational risk, don't hesitate to reach out to support at help@creatorcommerce.shop

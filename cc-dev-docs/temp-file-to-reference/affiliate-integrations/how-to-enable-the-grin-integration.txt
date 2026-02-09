@@ -1,0 +1,59 @@
+How to enable the GRIN integration
+Enable the GRIN integration to sync your creators and their respective activations/discounts with CreatorCommerce. This needs to be completed in order for affiliates to get their co-branded pages.
+
+
+This article links out to additional help articles in order to assist in completing end-to-end integration enablement. Complete each linked article to ensure you've completed setup.
+
+‍
+
+Step 1: Enable the connection
+⚠️ Submit this form to enable the CreatorCommerce team to connect your GRIN account to your CreatorCommerce account.
+‍
+
+Step 2: Update/create Affiliate Code & Affiliate Link Groups for CreatorCommerce
+To correctly attribute CreatorCommerce sales to an expected link/code in GRIN, follow these steps:
+
+Go to the GRIN dashboard
+Go to 'Activations'
+Create a new Activation, or click into an existing one
+Go to conversion tracking
+Click to edit your affiliate code and affiliate link groups for the given Activation
+Add the prefix "CC //" to the beginning of each name, in order to sync the related link/code with the affiliate in CreatorCommerce
+‍
+
+Once complete, do this for as many Activations/affiliates that you plan to connect to CreatorCommerce. Any sales on co-branded shopping sessions will be attributed to the related code/link.
+
+‍
+
+NOTE: If you made a new group for this exercise and connected it to your activation, make sure to click into each affiliate to ensure they have a code/link with each new group.
+
+‍
+
+If an affiliate does not have an affiliate link from a "CC //" Affiliate Link Group, then they will not be synced. However, if an affiliate does not have affiliate code from a "CC //" Affiliate Code Group, they will still be synced (but without an attached code).
+‍
+
+
+Setting Group Name's that include "CC //"
+‍
+
+Step 3: Setup redirects for any Affiliate Link groups that contain "CC //"
+With CreatorCommerce you can issue creators any affiliate link structure you'd like, and they can even keep their current links they may already have. However, to ensure that consumers are redirected to the correct end result, you'll need to add the following URL to the 'DESTINATION URL' slot for the related Affiliate Link group:
+
+For Liquid Sites: https://yourbrand.com/apps/cc-storefront/redirect (Replace yourbrand.com)
+
+For Headless Sites: https://storefront-api.creatorcommerce.shop/storefront/redirect
+
+‍
+
+This redirect will push the shopper into the relevant shopping experience for the given creator in CreatorCommerce. If the creator is not in an activate campaign in CreatorCommerce, the shopper will be pushed to the homepage of your Shopify site. All GRIN tracking and UTMs will be preserved with this redirect.
+
+
+Example of setting the redirect for Headless
+
+Example of setting the URL for Liquid
+‍
+
+Step 4: Go-live
+With these steps complete, you should now be syncing your creators with CreatorCommerce and will see them in the CreatorCommerce dashboard. Make sure to publish a campaign in CreatorCommerce to go-live. Make sure to check your email setup with Klaviyo or CreatorCommerce for automated communication at scale from here.
+
+Want to receive a free go-to-market consultation? Book some time here. The team will take you through strategies and will provide you with additional collateral to support the rollout.

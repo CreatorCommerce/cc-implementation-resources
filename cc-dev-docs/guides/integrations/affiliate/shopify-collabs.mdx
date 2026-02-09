@@ -1,0 +1,124 @@
+---
+title: 'Shopify Collabs'
+description: 'Sync Shopify Collabs affiliates into CreatorCommerce using Shopify Flow.'
+---
+
+Shopify Collabs is Shopify's native platform for recruiting, managing, and paying affiliates. Integrating it with CreatorCommerce upgrades your Collabs affiliates from basic referral links to fully personalized co-branded shopping experiences.
+
+## What This Integration Does
+
+| Shopify Collabs → CC | CC → Shopify Collabs |
+|----------------------|----------------------|
+| Approved affiliate profiles | Co-branded page performance |
+| Tier assignments | Enhanced conversion tracking |
+| Affiliate status changes | Storefront visit data |
+
+The integration runs through **Shopify Flow**, using flow templates that listen for Collabs events and sync data to CreatorCommerce.
+
+## Prerequisites
+
+- **Shopify Flow** installed on your store (free Shopify app)
+- **Shopify Collabs** active with at least one affiliate program
+- **CreatorCommerce** installed and configured
+
+## Setup
+
+<Steps>
+  <Step title="Install Shopify Flow">
+    If you haven't already, install [Shopify Flow](https://apps.shopify.com/flow) from the Shopify App Store. It's free and required for this integration.
+  </Step>
+  <Step title="Upload CreatorCommerce flow templates">
+    CreatorCommerce provides pre-built Shopify Flow templates for the Collabs integration. Upload these to your Shopify Flow:
+
+    **Required flows:**
+    - `CC__Creator Approved Sync.flow` — Syncs newly approved Collabs affiliates to CC as creators
+    - `CC_Tier Assigned Sync.flow` — Updates CC when an affiliate's tier changes in Collabs
+    - `CC_Affiliate Appreciation.flow` — Triggers appreciation actions when milestones are hit
+
+    To upload: Go to **Shopify Admin → Apps → Shopify Flow → Import** and select each `.flow` template file.
+  </Step>
+  <Step title="Enable the flows">
+    After importing, each flow will be in **Draft** status. Review the flow logic, then toggle each one to **Active**.
+
+    <Warning>
+    Review each flow's trigger conditions before enabling to ensure they match your Collabs program structure.
+    </Warning>
+  </Step>
+  <Step title="Test with a new affiliate approval">
+    Approve a test affiliate in Shopify Collabs and verify:
+    - The Shopify Flow triggers and runs successfully
+    - A corresponding creator profile appears in CreatorCommerce
+    - The creator's metaobject is created in Shopify
+    - The co-branded landing page is accessible
+  </Step>
+</Steps>
+
+## Flow Details
+
+### Creator Approved Sync
+
+**Trigger:** Shopify Collabs affiliate is approved  
+**Action:** Creates a new creator in CreatorCommerce with profile data from Collabs
+
+This flow captures:
+- Affiliate name and email
+- Program/tier assignment
+- Discount code configuration
+- Profile data available in Collabs
+
+### Tier Assigned Sync
+
+**Trigger:** Affiliate tier is changed in Shopify Collabs  
+**Action:** Updates the creator's tier in CreatorCommerce
+
+When you move an affiliate between tiers in Collabs, CreatorCommerce automatically adjusts their co-branded experience — different landing page templates, product access, or discount levels based on tier configuration.
+
+### Affiliate Appreciation
+
+**Trigger:** Affiliate reaches a sales milestone  
+**Action:** Triggers appreciation actions in CC (tier upgrades, special campaigns, etc.)
+
+## Connecting Collabs with Email Providers
+
+Shopify Collabs doesn't natively integrate with email platforms. Use these Shopify Flow templates to bridge the gap:
+
+### Collabs → Klaviyo
+
+Upload these additional flows to sync Collabs data to Klaviyo:
+- `CC__Export approved applicants to Klaviyo.flow`
+- `CC_Export tier assignments to Klaviyo.flow`
+
+You'll need your **Klaviyo Public API Key** to configure these flows. The flows will track events in Klaviyo that you can use to trigger affiliate email sequences.
+
+See [Klaviyo Integration](/guides/integrations/email-sms/klaviyo) for the full Klaviyo setup.
+
+### Collabs → Mailchimp
+
+Upload these flows to sync Collabs data to Mailchimp:
+- `CC__Add Creator to MailChimp.flow`
+- `CC_Update Creator in MailChimp.flow`
+
+You'll need your **Mailchimp Audience ID** and **API Key** (base64 encoded) to configure the HTTP request actions in these flows. The flows will add approved affiliates to your Mailchimp audience with a `CreatorCommerce Creator` tag.
+
+See [Mailchimp Integration](/guides/integrations/email-sms/mailchimp) for the full Mailchimp setup.
+
+## Use Cases
+
+### Seamless Collabs-to-Storefront Pipeline
+Affiliates apply and get approved in Shopify Collabs. Within minutes, they have a personalized co-branded storefront in CreatorCommerce — no manual creator setup needed.
+
+### Tier-Driven Co-branding
+Use Collabs tiers to control the level of co-branding:
+- **Ambassador tier** → Full custom storefront with drops, UGC, and brand integration
+- **Creator tier** → Standard landing page with product grid
+- **Affiliate tier** → Basic discount landing page
+
+### Automated Onboarding
+Combine the Collabs approval flow with CreatorCommerce onboarding forms to collect additional creator data (bio, photos, product preferences) as soon as they're approved.
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Shopify Flow Integration](/guides/integrations/content-automation/shopify-flow)
+- [Klaviyo Integration](/guides/integrations/email-sms/klaviyo)
+- [Mailchimp Integration](/guides/integrations/email-sms/mailchimp)

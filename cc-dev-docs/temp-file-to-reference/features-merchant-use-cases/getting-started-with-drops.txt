@@ -1,0 +1,94 @@
+What are Drops?
+Drops are the building block of creator-powered merchandising in our system. Think of them as curated product lists with extra context—titles, descriptions, images or videos, creator notes, even pricing cues or discounts.
+
+‍
+
+A Drop is flexible: it can look like a collection, a bundle, or a basket. The point is: if you want multiple products grouped together under a creator’s voice, Drops are the tool.
+
+‍
+
+Why Drops Matter
+Most marketers think about creator traffic as “get them to buy one hero product.” That works—but it leaves money on the table.
+
+‍
+
+Drops let you:
+
+Tell a story: “Here’s my full skincare routine” vs. “Buy this cleanser.”
+Increase order size: shoppers see the bigger picture and are nudged to add more.
+Make it easy: with one click, a shopper can add the whole Drop to their cart.
+Stay flexible: Drops can be collections, bundles, or curated kits. To each their own.
+‍
+
+Where You’ll Use Drops
+On creator pages → Display curated Drops front and center.
+In featured carousels → Rotate Drops like seasonal collections.
+In your theme’s product lists → Swap your standard collection feed for Drops.
+With prebuilt Drop sections → Show the Drop with bundle total + discount built in.
+In creator dashboards → Let creators make and share their own Drops.
+‍
+
+How Creators Use Drops
+Creators can:
+
+Curate products that fit their style or story.
+Add context with titles, images, or short notes (“Why I picked this”).
+Publish instantly on their co-branded page.
+Share checkout links directly to their Drops in Stories, bios, or DMs.
+No spreadsheets. No technical setup. Just curation and sharing.
+
+‍
+
+Drops + Forms
+Drops can be collected through:
+
+Onboarding forms → capture a creator’s go-to picks right away.
+Custom campaign forms → e.g. “Holiday Gifting Set.”
+Creator dashboards → ongoing curation, updates, and bundle sharing.
+This means Drops are always up to date and tailored to each campaign.
+
+‍
+
+Best Practices for Drops
+Positioning matters → Put Drops above the fold on creator pages.
+Show the value → Display the total price with discount included (if applicable).
+Make it simple → One-click “Add All,” plus the option to buy individual items.
+Leverage trust → Creator notes are powerful; they beat generic product copy.
+Think mobile → Make sure “Add All” is easy to tap on phones.
+‍
+
+Measuring Success
+When you roll out Drops, look at:
+
+Average order value (AOV) vs. traffic without Drops
+Adoption rate → how often shoppers hit “Add All”
+Attach rate → how many orders include multiple Drop items
+Link performance → creator page vs. direct checkout link
+‍
+
+If a Drop isn’t driving engagement or revenue, update it. Treat Drops like a living retail display.
+
+‍
+
+FAQs
+Are Drops just Shopify Collections?
+Not quite. A Collection is a broad group of products. A Drop is curated—it comes with context, creator voice, and often a clear call to “Add All.”
+
+‍
+
+Do Drops always need a discount?
+No. The creator’s curation alone adds value. Discounts help, but Drops work without them.
+
+‍
+
+What if something is out of stock?
+The Drop still works—shoppers can add what’s available, and you can update the Drop anytime.
+
+‍
+
+The Bottom Line
+Drops are the foundation for creator-driven shopping experiences. They turn a creator’s taste into shoppable storytelling, whether as a bundle, a collection, or a seasonal kit.
+
+‍
+
+If you’re serious about making influencer and affiliate programs drive bigger carts and more loyalty, Drops are the place to start.

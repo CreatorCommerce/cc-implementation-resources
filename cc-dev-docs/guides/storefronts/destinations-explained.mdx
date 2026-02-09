@@ -1,44 +1,107 @@
 ---
 title: 'Destinations Explained'
-description: 'Understand CC Destinations—the feature that routes traffic to personalized co-branded funnels.'
+description: 'Understand CC Destinations—the feature that routes affiliate traffic to personalized co-branded funnels.'
 ---
 
 ## What is a Destination?
 
-A **Destination** is where you send traffic for a co-branded experience. When a creator shares their link, customers land on their personalized destination.
+A **Destination** is a core CreatorCommerce feature that controls **where shoppers land** after clicking an affiliate link. It connects your affiliate tiers to specific co-branded shopping experiences, ensuring every click leads to a page designed to convert.
 
-## Destination Types
+## The Three Core Parts
 
-| Type | URL Pattern | Use Case |
-|------|-------------|----------|
-| **Creator Page** | `/pages/creators/sarah-jones` | Dedicated landing page |
-| **Collection** | `/collections/sarahs-picks` | Product collection |
-| **Product** | `/products/serum?ref=sarah` | Direct product link |
-| **Custom** | `/shop/sarah` | Custom routing |
+### 1. Collaboration Tiers
+Every CC campaign has tiers (e.g., "Ambassadors", "Influencers", "Affiliates"). Each tier can have its own destination configuration.
+
+### 2. Landing Page Logic
+The destination defines which page template the shopper sees. This can be:
+- A metaobject-powered creator landing page
+- A collection page
+- A product page
+- A custom page
+
+### 3. Optional Query Parameters
+Destinations can append query parameters to the landing URL for additional control over what the shopper sees.
 
 ## How Destinations Work
 
 ```
-Creator shares link → Customer clicks → CC resolves creator
-       ↓                    ↓                   ↓
-  Unique URL          Landing page         Personalized UI
+Creator shares their affiliate link
+       ↓
+Link routes through CC redirect (/apps/cc-storefront/redirect)
+       ↓
+CC resolves: Which creator? → Which tier? → Which destination?
+       ↓
+Shopper lands on the configured co-branded page
+       ↓
+Cart attributes set → Personalized experience begins
 ```
 
-## Creating Destinations
+## Destination Types
 
-Destinations are automatically created when you:
+| Type | URL Pattern | Best For |
+|------|-------------|----------|
+| **Creator Landing Page** | `/pages/creators/{{shop.handle}}` | Dedicated creator storefronts |
+| **Collection** | `/collections/[collection-handle]` | Product-focused experiences |
+| **Product** | `/products/[product-handle]` | Direct product promotion |
+| **Homepage** | `/` | Full-funnel site personalization |
+| **Custom Page** | `/pages/[page-handle]` | Campaign-specific pages |
 
-1. Create a collab in CreatorCommerce
-2. The creator's metaobject generates a page
-3. Their unique handle becomes the URL
+## Configuring Destinations
 
-## Linking to Destinations
+<Steps>
+  <Step title="Navigate to your campaign">
+    In the CreatorCommerce dashboard, open the campaign you want to configure.
+  </Step>
+  <Step title="Select a tier">
+    Choose the collaboration tier you want to set a destination for.
+  </Step>
+  <Step title="Set the landing page">
+    Choose where traffic for this tier should land. For most use cases, the **Creator Landing Page** (metaobject page template) is the best starting point.
+  </Step>
+  <Step title="Add query parameters (optional)">
+    Append parameters to control the experience further. The most common:
 
-Creators can link to any page and append their handle:
+    ```
+    ?view=[template-name]
+    ```
+
+    The `view` parameter tells Shopify which page template to render, letting you use different layouts for different campaigns or tiers.
+  </Step>
+</Steps>
+
+## The `?view=` Parameter
+
+The `view` query parameter is a powerful way to switch between different page templates for the same metaobject type. This means you can create multiple landing page designs and route different campaigns to different layouts.
+
+**Example:** You have two landing page templates:
+- `metaobject/creator.json` — Standard layout
+- `metaobject/creator.summer-campaign.json` — Summer campaign layout
+
+Set the destination URL to include `?view=summer-campaign` and shoppers will see the summer-specific design.
+
+See [Create a Landing Page Template](/guides/storefronts/create-landing-page-template) for details on creating multiple templates.
+
+## Tier-Driven Destination Strategy
+
+| Tier | Destination | Experience Level |
+|------|-------------|------------------|
+| **VIP / Celebrity** | Custom landing page with full brand takeover | Premium co-branding |
+| **Ambassador** | Creator landing page with drops, UGC, bio | Full co-branded storefront |
+| **Influencer** | Standard landing page with product grid | Standard co-branding |
+| **Affiliate** | Collection page or homepage with personalization | Lightweight co-branding |
+
+## Linking Affiliate Platforms
+
+When using an affiliate platform (Social Snowball, Refersion, GRIN, etc.), set the platform's **landing page URL** to the CreatorCommerce redirect:
 
 ```
-yourbrand.com/collections/all?ref=sarah-jones
-yourbrand.com/products/best-seller?ref=sarah-jones
+https://your-store.myshopify.com/apps/cc-storefront/redirect
 ```
 
-CC tracks the referral and personalizes the experience.
+CreatorCommerce handles the rest — resolving the affiliate, determining their destination, and routing traffic to the right co-branded experience.
+
+## Related
+
+- [Building Co-branded Landing Pages](/guides/storefronts/landing-pages-overview)
+- [Create a Landing Page Template](/guides/storefronts/create-landing-page-template)
+- [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)

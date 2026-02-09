@@ -1,0 +1,50 @@
+How creators can copy direct referral links drops (bundles, baskets, etc)
+Baskets, bundles, drops, curations, whatever you call it, creators can copy a direct link to them via the CreatorCommerce storefront editor to share directly with their audience or even individual clients (perfect for prescriptive product lists).
+
+One of the most powerful features of CreatorCommerce is the ability for creators, practitioners, and partners to curate bundles—collections of products that reflect their voice and audience—and then share those bundles directly with their community.
+
+With just a few clicks, you can generate a direct checkout link that skips distractions and takes customers straight to purchase. Here’s how it works:
+
+‍
+
+Step 1: Open the Storefront Editor
+Log into your CreatorCommerce dashboard as a creator and open your Storefront Editor. Scroll down to the Drops section (sometimes called bundles, baskets or curated sets, depending on your brand setup).
+
+‍
+
+Step 2: Select a set of products
+From the list of bundles you’ve already created, choose the one you’d like to share. This might be a skincare routine, a seasonal collection, or a best-seller kit you’ve curated.
+
+‍
+
+Step 3: Copy the Link
+Direct checkout link – the most powerful option. This link takes the customer straight to Shopify checkout, with the full bundle pre-loaded.
+‍
+
+
+‍
+
+Step 4: Share with Your Community
+Paste the link anywhere:
+
+Send it directly to a client or friend.
+Post it in your socials.
+Include it in newsletters or group chats.
+When someone clicks the link, they’ll land in Shopify checkout, with a curated bundle already waiting for them. Any discounts you’ve applied will automatically load. From there, the customer can simply pay and complete their purchase.
+
+‍
+
+
+‍
+
+‍
+
+Why This Matters
+Direct checkout links remove friction & grow AOV. Instead of asking an audience to hunt through a catalog, you hand them the exact products—bundled together, with savings applied, ready to buy.
+
+It’s seamless for them, and it maximizes conversions for you.
+
+‍
+
+⚡ Pro tip: Use this feature alongside your co-branded landing pages for the best results. Visitors get the story and context of your bundle, and then—with one click—they can check out instantly.
+

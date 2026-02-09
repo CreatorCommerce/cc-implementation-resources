@@ -1,0 +1,123 @@
+---
+title: 'Usage of Collections'
+description: 'Understanding why CreatorCommerce stores creator product selections in Shopify collections instead of referencing products directly.'
+---
+
+## The Short Answer
+
+CreatorCommerce creates a Shopify collection for each creator's drop (their curated product picks). This isn't arbitrary — it's a deliberate architectural decision driven by Shopify Liquid limitations and performance needs.
+
+## Reason 1: The `all_products` Limit
+
+Shopify's `all_products` global object has a hard cap: **you can only look up a maximum of 20 unique products per page render** using `all_products[handle]` or `all_products[id]`.
+
+```liquid
+{%- comment -%} This breaks after 20 unique products on a page {%- endcomment -%}
+{% for product_data in drop_products %}
+  {% assign product = all_products[product_data.handle] %}
+  {{ product.title }}
+{% endfor %}
+```
+
+If a creator has 25 products in their drop — or if you're rendering multiple drops on a page — you'll silently hit the cap. Products 21+ return nothing. No error, no warning, just blank output.
+
+**Collections don't have this limit.** When you iterate `collection.products`, Shopify paginates natively and you can access up to 1,000 products per collection with no lookup cap.
+
+```liquid
+{%- comment -%} This works for any number of products {%- endcomment -%}
+{% for product in collection.products %}
+  {{ product.title }}
+{% endfor %}
+```
+
+## Reason 2: Full Product Object Access
+
+When you reference a product through a collection, you get the **complete Shopify product object** — images, variants, prices, metafields, availability, everything. This is the same object you'd get on a product page.
+
+With `all_products`, you also get the full object, but you're capped at 20 lookups. And with JSON-stored product IDs alone (what CC stores in metaobject data), you only have the ID — you can't access price, images, or availability without looking the product up somewhere.
+
+Collections solve both problems: unlimited products, full data.
+
+## Reason 3: Automatic Product Sync
+
+When a creator updates their drop (adds or removes products), CreatorCommerce syncs those changes to the Shopify collection via the Admin API. The Liquid templates don't need to change — they already iterate `collection.products`, so the updated product list renders automatically on the next page load.
+
+```
+Creator updates drop in CC dashboard
+       ↓
+CC syncs changes via Shopify Admin API
+       ↓
+Shopify collection products updated
+       ↓
+Next page render shows updated products — no theme changes needed
+```
+
+## Reason 4: Native Shopify Compatibility
+
+Collections are a first-class Shopify concept. Every Shopify theme already knows how to render collections. By storing creator products as collections, CC gets:
+
+- **Theme editor compatibility** — Sections can reference collections natively
+- **Section settings** — Collection pickers work in the theme editor
+- **Product card snippets** — Your existing `product-card` snippet works with CC products
+- **Pagination** — Large drops paginate using Shopify's built-in pagination
+- **Sorting & filtering** — Shopify's collection sorting/filtering works out of the box
+
+## How It Works in Practice
+
+Each creator drop maps to exactly one Shopify collection:
+
+| CC Concept | Shopify Object | Relationship |
+|-----------|---------------|-------------|
+| Drop | Collection | 1:1 mapping |
+| Drop product list | Collection products | Synced automatically |
+| Drop title | Collection title (prefixed with `CC //`) | Synced |
+| Drop description | Collection description | Synced |
+
+### Accessing Products via Collection
+
+```liquid
+{% liquid
+  assign drops_json = cc_creator.data.value['cc-creator-drops']
+  assign drops_collections = cc_creator['cc-creator-drops'].value
+%}
+
+{% for json_drop in drops_json %}
+  {% assign collection_id = json_drop['cc-creator-drop-collection-id'] %}
+
+  {% for collection_drop in drops_collections %}
+    {% if collection_drop.id | append: '' == collection_id %}
+      <h2>{{ json_drop['cc-creator-drop-title'] }}</h2>
+
+      {% for product in collection_drop.products %}
+        {% render 'product-card', product: product %}
+      {% endfor %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+<Note>
+The `| append: ''` filter converts the collection ID (integer) to a string for comparison with the JSON-stored ID (string). This is required — see [ID Type Conversion](/references/shopify-integration-data-model#collection-integration).
+</Note>
+
+## What This Means for Your Store
+
+### Collection Volume
+
+If you have 200 creators each with 1 drop, you'll have 200 additional collections in your Shopify admin. CC prefixes these with `CC //` so they're easy to filter. See [Hide CC Collections](/guides/storefronts/hide-cc-collections) for organizing your admin.
+
+### Collection Limits
+
+Shopify stores can have up to **5,000 custom collections** (or more on Plus). For most programs, CC collection usage is well within limits.
+
+### Don't Modify CC Collections
+
+CC manages these collections. Don't rename, reorder products, or delete them manually — changes will be overwritten on the next sync. Manage everything through CreatorCommerce.
+
+## Related
+
+- [Shopify Integration Data Model](/references/shopify-integration-data-model) — Full data model reference
+- [Showcase Product Lists](/guides/storefronts/showcase-product-lists) — Displaying drops on pages
+- [Hide CC Collections](/guides/storefronts/hide-cc-collections) — Admin organization
+- [Drops & Products Data Model](/references/drops-products-data-model) — Drop structure details

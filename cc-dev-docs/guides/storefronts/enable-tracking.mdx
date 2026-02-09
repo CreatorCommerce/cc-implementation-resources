@@ -1,60 +1,120 @@
 ---
 title: 'Enable Tracking on Liquid Themes'
-description: 'Set up attribution tracking so orders are credited to the right creators.'
+description: 'Set up the CreatorCommerce SDK and Web Pixel for accurate attribution tracking on Shopify Liquid themes.'
 ---
+
+Tracking is a two-step setup: enable the **CreatorCommerce SDK** (sets cart attributes for creator context) and enable the **Web Pixel** (tracks funnel events for analytics).
 
 ## What Gets Tracked
 
 - Landing page visits
-- Product views
+- Product views in creator context
 - Add to cart events
 - Checkout starts
 - Completed orders
+- Revenue attribution to creators
 
-## Implementation
+## Step 1: Enable the CreatorCommerce SDK
 
-### 1. Set Cart Attributes
+The SDK is a theme app embed that detects affiliate context and writes cart attributes to personalize the shopping experience.
 
-On creator pages, set cart attributes to persist creator context:
+<Steps>
+  <Step title="Open Theme App Embeds">
+    In Shopify Admin → **Online Store → Themes → Customize → App embeds** (in the left sidebar).
+  </Step>
+  <Step title="Enable CreatorCommerce SDK">
+    Find "CreatorCommerce" in the app embeds list and toggle it **on**. Save the theme.
+  </Step>
+  <Step title="Verify it's working">
+    Visit your store through a creator link, then check that cart attributes are set:
 
-```liquid
-{% if cc_creator %}
-<script>
-  fetch('/cart/update.js', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      attributes: {
-        'cc-creator-handle': {{ cc_creator.handle | json }},
-        'cc-discount-code': {{ cc_creator.cc-collab-discount-code | json }}
-      }
-    })
+    ```javascript
+    // Run in browser console on your store
+    fetch(window.Shopify.routes.root + 'cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        console.log('Cart attributes:', cart.attributes);
+        // Should show: cc-creator-handle, cc-creator-id, cc-campaign-id
+      });
+    ```
+  </Step>
+</Steps>
+
+### Cart Attributes Set by the SDK
+
+| Attribute | Description | Example |
+|-----------|-------------|---------|
+| `cc-creator-handle` | Creator's metaobject handle for Liquid lookups | `sarah-jones` |
+| `cc-creator-id` | Creator's unique ID for attribution | `68d4828e02627cba69144aa2` |
+| `cc-campaign-id` | Campaign ID (if applicable) | `67a93e156cc51f6c4e878e0c` |
+| `cc-shop-id` | Shop/channel ID | `67a93e156cc51f6c4e878e0c` |
+
+These attributes persist through the entire session and are included in the order metadata.
+
+## Step 2: Enable the CC Web Pixel
+
+The web pixel provides funnel-level analytics for co-branded experiences.
+
+<Steps>
+  <Step title="Open the CreatorCommerce dashboard">
+    Navigate to the CreatorCommerce app in your Shopify admin.
+  </Step>
+  <Step title="Go to Settings → Tracking">
+    Find the Web Pixel settings in the CreatorCommerce dashboard.
+  </Step>
+  <Step title="Enable the pixel">
+    Toggle the web pixel **on**. This installs a Customer Events pixel in your Shopify store that tracks co-branded funnel activity.
+  </Step>
+</Steps>
+
+## Verification Checklist
+
+After enabling both the SDK and web pixel:
+
+1. **Visit a creator link** — Navigate to a creator's landing page URL
+2. **Check cart attributes** — Run the console snippet above to verify attributes are set
+3. **Browse products** — Navigate to a product page and verify creator context is present
+4. **Add to cart** — Add a product and confirm the cart still has CC attributes
+5. **Complete a test checkout** — Verify the order is tagged with creator attribution
+
+## How to Verify Cart Attributes (Full Snippet)
+Paste in your browser console:
+
+```javascript
+var formData = new FormData();
+fetch(window.Shopify.routes.root + 'cart/update.js', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json())
+.then(res => {
+  console.log('Full cart response:', res);
+  console.log('CC attributes:', {
+    handle: res.attributes['cc-creator-handle'],
+    creatorId: res.attributes['cc-creator-id'],
+    campaignId: res.attributes['cc-campaign-id'],
+    shopId: res.attributes['cc-shop-id']
   });
-</script>
-{% endif %}
+})
+.catch(error => console.error('Error:', error));
 ```
 
-### 2. Add Checkout Discount
+## Using Cart Attributes in Liquid
 
-Ensure discount auto-applies at checkout:
+Once the SDK sets cart attributes, reference them in any Liquid template:
 
 ```liquid
-{% assign checkout_url = '/checkout' %}
-{% if cart.attributes['cc-discount-code'] %}
-  {% assign checkout_url = checkout_url | append: '?discount=' | append: cart.attributes['cc-discount-code'] %}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+
+{% if cc_creator %}
+  {%- comment -%} Creator context is active — personalize the page {%- endcomment -%}
 {% endif %}
 ```
 
-### 3. Enable CC Web Pixel (Optional)
+## Related
 
-For enhanced tracking, enable the CC Web Pixel in Settings → Customer Events.
-
-## Verification
-
-1. Visit a creator page
-2. Add product to cart
-3. Check cart attributes in browser console:
-   ```javascript
-   fetch('/cart.js').then(r => r.json()).then(c => console.log(c.attributes))
-   ```
-4. Complete checkout and verify order is tagged
+- [SDK Getting Started](/references/sdk/getting-started)
+- [Referencing Creator Content](/references/sdk/referencing-creator-content)
+- [Affiliate Link Tracking Reference](/references/affiliate-link-tracking)
+- [Order & Customer Tags](/references/order-customer-tags)

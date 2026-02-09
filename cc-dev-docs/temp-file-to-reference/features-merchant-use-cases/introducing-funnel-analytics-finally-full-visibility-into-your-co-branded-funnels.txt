@@ -1,0 +1,71 @@
+Introducing funnel analytics: Finally, full visibility into your co-branded funnels
+
+
+🚨 Funnel Analytics is here — no more SQL hacks or guessing games. Now you can track every step from partner landing page to checkout 🛒 and finally see what’s printing and where you need to optimize.
+
+
+For way too long, we've been winging it. When brands asked, "How is our creator program doing?" we'd roll up our sleeves, hack together a SQL query, paste it into a spreadsheet, and write up a quick take. Sound familiar? Yeah—not exactly scalable, and definitely not empowering for brands who want instant answers.
+
+‍
+
+That's why we're beyond thrilled to announce the release of Funnel Analytics inside CreatorCommerce.
+
+‍
+
+This isn't just another dashboard. It's self-serve clarity—finally.
+
+‍
+
+Why Funnels Matter More Than Ever
+Let's face it: in influencer commerce, the path from "link in bio" to "thank you for your order" isn't linear. It's a journey filled with micro-conversions that make or break success.
+
+‍
+
+Creators drive traffic, yes. But how well does that traffic convert? Where does it drop off? Which steps of your funnel need tuning—the landing page, the product page, the cart, checkout, or even post-purchase?
+
+‍
+
+Until now, you had to guess. Not anymore.
+
+‍
+
+What Funnel Analytics Brings to the Table
+With our new analytics tab, CreatorCommerce brands can now:
+
+Filter by campaign or date range: Zoom into the last 7, 30, or 90 days—or choose custom periods.
+See total revenue, conversion rates, AOV, and new customer acquisition: Not just who bought—but who was brand new.
+Break down funnel performance step-by-step: See the real impact of co-branded landing pages, product pages, and even checkout customizations.
+Visualize journey impacts: For example, notice that while 19% hit the product page, 26% went straight to add-to-cart—a huge signal about impulse and intent.
+Monitor user-level conversion insights: From unique sessions, to session-to-checkout rates, and how quickly they convert.
+Review top products: Find out what your creators and their audiences are really moving.
+‍
+
+
+Example data
+‍
+
+Personalization = Power
+This release goes way beyond vanity metrics. It's about proving the value of personalization at scale. When you co-brand thoughtfully—showing things like "Kenya thanks you for shopping with her" in the cart or checkout—it works. Now you can see exactly how much.
+
+‍
+
+These aren't vague directional signals. They're precise diagnostics. You can now identify bottlenecks, optimize on the fly, and attribute success down to specific funnel steps and creator campaigns.
+
+‍
+
+This is Just the Start
+We’re not stopping here. With this self-service pipeline now in place, expect a wave of deeper, more advanced reporting capabilities in the near future. Think cohort performance, creator vs creator split testing, funnel stage benchmarks—you name it.
+
+‍
+
+We're incredibly excited to get this into your hands. Early data from funnels we've analyzed already shows one thing very clearly: brands who understand and optimize their creator funnels are printing money.
+
+‍
+
+Now you can too.
+
+‍
+
+Funnel Analytics is live today.
+
+Go see what your funnel is really telling you.

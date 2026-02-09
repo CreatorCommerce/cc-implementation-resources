@@ -1,0 +1,19 @@
+How to see if there's an outage impacting my CreatorCommerce account
+See the full list of service provider status pages that could indicate an outage.
+
+Status pages to check
+CreatorCommerce uses a number of world-class partners & providers to powers its services. That said, bad things still happen to good people. To determine if there's an underlying outage that may be impacting your CreatorCommerce account & implementation, check this list:
+
+‍
+
+https://www.cloudflarestatus.com/
+
+https://shopstatus.shopifyapps.com/
+
+https://status.railway.com/
+
+https://health.aws.amazon.com/health/status
+
+https://status.cloud.google.com/
+
+https://azure.status.microsoft/en-us/status

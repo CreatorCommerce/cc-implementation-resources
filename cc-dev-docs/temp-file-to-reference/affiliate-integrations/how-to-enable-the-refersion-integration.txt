@@ -1,0 +1,85 @@
+How to enable the Refersion Integration
+Use the Refersion integration to provide affiliates with co-branded affiliate shops to affiliates you are recruiting & managing in the Refersion platform. Once connected, you can automatically issue co-branded landing pages to affiliates based on their Refersion Offer.
+
+
+This article links out to additional help articles in order to assist in completing end-to-end integration enablement. Complete each linked article to ensure you've completed setup.
+
+‍
+
+Step 1: Enable the affiliate sync
+The core outcome of this integration is that your affiliates are being synced with CreatorCommerce. To do this, follow these steps:
+
+Go to your Refersion dashboard
+Go to the 'Account' tab > then "Settings" tab
+Scroll down and select "Webhooks" on the left-hand side
+Click to create 4 webhooks using the following URLs and topics
+‍
+
+Webhook Topic 1: New Conversion Trigger
+
+URL: https://webhooks.creatorcommerce.shop/webhooks/integrations/refersion/webhooks/conversion-trigger/created?myshopifyDomain=YOUR-MYSHOPIFY-DOMAIN
+
+‍
+
+Webhook Topic 2: Affiliate Details Change
+
+URL: https://webhooks.creatorcommerce.shop/webhooks/integrations/refersion/webhooks/affiliate/updated?myshopifyDomain=YOUR-MYSHOPIFY-DOMAIN
+
+‍
+
+Webhook Topic 3: Affiliate Status Change
+
+URL: https://webhooks.creatorcommerce.shop/webhooks/integrations/refersion/webhooks/affiliate/updated?myshopifyDomain=YOUR-MYSHOPIFY-DOMAIN
+
+‍
+
+Webhook Topic 4: New Affiliate
+
+URL: https://webhooks.creatorcommerce.shop/webhooks/integrations/refersion/webhooks/affiliate/updated?myshopifyDomain=YOUR-MYSHOPIFY-DOMAIN
+
+‍
+
+
+Successful Configuration
+‍
+
+As of this moment, the integration is now enabled. However, you'll need to complete a few more steps before you'll be ready to go live with the integration.
+
+‍
+
+Step 2: Review and update your affiliate email flows
+Before completing this step, you'll need to setup your CreatorCommerce emails in your email service providers. This task is independent of Refersion. To do this, select an finish one of the guides below based on your service provider for email communications:
+
+Setup your creator communication emails for Klaviyo
+Setup your creator communication emails for SendLane
+Setup your creator communication emails for Mailchimp
+Submit a request for the CreatorCommerce team to do this for you by filling out this request form.
+‍
+
+Step 3: Update the default Refersion system emails
+With your own custom emails & invitation flows setup in your email service provider, you'll no longer need Refersion to send their default system emails. Leaving these on will lead to affiliates receiving duplicate emails whenever something occurs in Refersion (an email from your ESP, and an email from Refersion). Follow these steps to turn off the relevant emails in Refersion (some of these are okay to remain on, as they do not conflict with your ESP):
+
+In Refersion, go to 'Channels' tab, then click the 'Email Templates' tab
+Disable the "New Affiliate" email by scrolling down to 'Email Status' andswitching it to 'Off'
+If your goal is to switch all users over to their CreatorCommerce links instead of using a traditional affiliate link, then for the following emails you'll additionally need to scroll down and switch "Referral Link" to "Off": Approved Conversion, Pending Conversion, Denied Conversion, New Payment Alert, Payment - Gift Card.
+After clicking save and seeing the success messages, no further action is needed
+
+Refersion Email Updates
+‍
+
+Step 4: Edit the title of relevant Refersion Offers to begin invitations
+CreatorCommerce will only sync affiliates who are contained within programs with the correct title structure. This ensures that you can control who should receive shops. Follow these steps to do this:
+
+Go to your Refersion dashboard
+Go to the "Manage" tab, then the "Offers" tab
+Select to edit an Offer, or create a new one
+Add "CC // " to the beginning of each relevant Offer name (Examples: "CC // Primary Affiliates" or "CC // 10% Discounts, 20% Commissions")
+Remember to save your Offer name changes
+
+Adding "CC //" to Offer names
+‍
+
+Step 5: Go-live
+With these steps complete, you should now be live. This means your emails will automatically send whenever you add new affiliates to relevant programs. Additional recommendations at this point are to promote the offering via a manual email campaign to existing customers, on social media, and to let any customer communities know as well.
+
+Want to receive a free go-to-market consultation? Book some time here. The team will take you through strategies and will provide you with additional collateral to support the rollout.

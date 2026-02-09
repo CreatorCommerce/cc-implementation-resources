@@ -1,0 +1,103 @@
+How to Share banner & copy settings across homepage and creator landing pages
+Maintaining a consistent brand story across your traditional Shopify homepage and Creator landing pages shouldn't mean duplicating effort every time you change a banner, update headline copy, or launch a new campaign. Yet for many merchants, that's exactly the reality—leading to wasted time, version control issues, and inconsistent shopper experiences.
+
+
+Thankfully, Shopify’s Theme Settings paired with CreatorCommerce’s co-branded funnel architecture gives you a powerful workaround: you can define shared content in your Theme Settings panel and reference it across both your homepage and all creator landing pages—ensuring centralized control from a single source of truth.
+
+‍
+
+🧠 Why this matters
+Without shared settings:
+
+You’d have to update homepage banners and creator page banners separately.
+Minor tweaks (like a copy update or seasonal image swap) require multiple theme edits.
+Inconsistencies can creep in between your brand site and your co-branded influencer experiences.
+‍
+
+With shared Theme Settings:
+
+Update once in your theme settings, and it reflects everywhere.
+Easily swap hero images, CTAs, or shared copy during a drop or campaign launch.
+Reduce dev work by creating a “top-down” architecture.
+‍
+
+🔧 How to Set This Up
+1. Create a new Theme Setting group
+In your Shopify theme (via the Shopify Theme Editor):
+
+Go to Theme Settings → click the gear icon.
+Scroll down and create a new group—call it something like: Home/creator landing pages
+This will act as the shared config for all landing environments.
+
+‍
+
+2. Add your shared inputs
+Inside this Theme Settings group, add the content you want to reuse across pages. Common examples:
+
+Banner image: Upload a hero banner you want shown on both your homepage and creator pages.
+Copy or Headlines: Add a text field for a shared H1 or supporting subtext.
+Call-to-action label: Add a string input like “Shop Now” or “Discover More.”
+CTA link: URL or page link you want to be consistent across both environments.
+Example setup:
+
+| Field     | Type         | Example Value                           |
+| --------- | ------------ | --------------------------------------- |
+| Banner    | Image Picker | `072125-hp-hero-3.jpg`                  |
+| Headline  | Text         | `Built for Movement, Designed for You.` |
+| CTA Label | Text         | `Shop the Collection`                   |
+| CTA Link  | URL          | `/collections/core-essentials`          |
+‍
+
+3. Reference the setting in your homepage and creator templates
+In both your homepage and creator page Liquid templates or sections, reference the setting like this:
+
+<img src="{{ settings.home_creator_landing_pages_banner | img_url: 'master' }}" alt="Hero banner" />
+<h1>{{ settings.home_creator_landing_pages_headline }}</h1>
+<a href="{{ settings.home_creator_landing_pages_cta_link }}">{{ settings.home_creator_landing_pages_cta_label }}</a>
+‍
+
+Make sure the setting IDs match what you’ve defined in your settings_schema.json file.
+
+‍
+
+4. Test on both pages
+After saving, preview your main homepage and any CreatorCommerce-generated landing pages. The shared settings should render consistently.
+
+To test:
+
+Change the banner in Theme Settings → It should update both homepage and creator landing pages.
+Edit the CTA copy → It should reflect globally.
+‍
+
+⚠️ Gotchas & Tips
+Use logical naming in settings_schema.json so it’s clear these are shared inputs.
+For truly creator-specific overrides, you can still layer in conditional logic in Liquid based on the page context (e.g. if creator_handle).
+If you're not seeing updates, check if your creator templates are explicitly overriding the shared value—remove hardcoded values.
+‍
+
+🧪 Practical Example
+Let’s say you want to run a back-to-school campaign with a new banner and CTA.
+
+Instead of editing your homepage and 30+ creator funnels individually:
+
+Go to Theme Settings → Home/creator landing pages
+Swap the banner to BackToSchool_Hero.jpg
+Change headline to Get Ready for the Semester
+Update CTA to Shop Back-to-School Gear
+Click Save, and your changes reflect everywhere—instantly.
+
+‍
+
+🧭 Summary
+Using Theme Settings to share content between your homepage and CreatorCommerce landing pages is a low-code way to unify your customer journey, reduce maintenance, and stay nimble with marketing campaigns.
+
+‍
+
+Once this pattern is in place, your team can:
+
+Run faster experiments
+Reduce manual editing
+Maintain brand integrity across personalized funnels
+‍
+
+Need help implementing this in your theme? Reach out to CreatorCommerce support or request a template snippet.

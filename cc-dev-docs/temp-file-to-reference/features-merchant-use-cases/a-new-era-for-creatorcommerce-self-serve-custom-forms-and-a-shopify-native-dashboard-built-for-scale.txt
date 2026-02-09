@@ -1,0 +1,191 @@
+A new era for CreatorCommerce: Self-serve, custom forms, and a Shopify-native dashboard built for scale
+
+Today is one of those milestone days — the kind you grind toward for months, quietly fighting through complexity while still shipping for customers in the foreground. Because today, CreatorCommerce officially becomes self-serve. And it arrives alongside one of the most powerful new capabilities we’ve ever released: custom forms built directly into our new Shopify Polaris dashboard.
+
+
+It feels simple now.
+
+But getting here definitely wasn’t.
+
+‍
+
+The truth: PMF is soaring… but a nasty ops problem has been brewing
+This year was huge for validating our product-market fit. But under the surface, we were drifting into dangerous territory. Merchants are not just asking for co-branded landing pages — they are rethinking their entire growth models, their theme strategies, and the way they activate creators.
+
+‍
+
+This means pressure.
+
+Real pressure.
+
+‍
+
+Custom code inside merchant themes
+Overnight feature builds
+Ad hoc integrations
+Internal dev tools duct-taped together
+And at times… essentially becoming the eComm manager for their influencer collabs & stepping up to run everything
+Brands on the right plans have been getting exactly what they needed.
+
+‍
+
+But the rest? They were unintentionally left behind.
+
+And the platform itself?
+
+It has become too technical (without a non-technical outlet to off set to).
+
+‍
+
+Features haven't been making it into the dashboard fast enough.
+
+‍
+
+Support pressure is stacking up.
+
+So we made the kind of call founders usually lose sleep over:
+
+‍
+
+Pause net-new features. Pause major sales pushes. And rebuild the foundation the right way.
+
+‍
+
+The result: A fully embedded, Shopify-native dashboard that merchants actually understand is here
+As of this week, every CC merchant can update their CreatorCommerce app and unlock a brand-new dashboard — one that feels native to Shopify, fast to navigate, and radically easier to understand.
+
+‍
+
+
+Instead of reinventing UI patterns, we embraced the familiar: Shopify Polaris, the design language merchants already use every day.
+
+‍
+
+And the moment we made that decision, everything clicked.
+
+‍
+
+This new dashboard lets you:
+
+Build co-branded UX directly on your theme — without touching a line of code
+Use CC inside a UI that feels like Shopify, not another app you have to learn
+Access every feature, switch, and toggle from one spot
+Click into help articles, dev docs, flows, and integrations without hunting
+Understand features before enabling them — no more guesswork
+Implement in minutes, not hours or days
+‍
+
+This is a humble UX reset with a very loud impact: merchants learn faster, we ship faster, and everyone gets to outcomes faster.
+
+‍
+
+And now the game-changer: Custom forms you can build On the fly
+Inside this new dashboard lives one of the most powerful tools we’ve ever shipped:
+
+‍
+
+CreatorCommerce Forms — rebuilt to be simple, flexible, and completely self-serve.
+
+‍
+
+Forms are the lifeblood of meaningful collaboration. Recruitment forms are fine for approvals — but what about everything after approval? How do you run a collaboration full of content, storytelling, and conversion-driven merch?
+
+‍
+
+You do it by collecting the right data at the right time.
+
+‍
+
+CreatorCommerce now supports four form types that map to the full creator lifecycle:
+
+‍
+
+Onboarding Forms
+Your activation moment — “You’re approved! Let’s build your storefront.”
+
+‍
+
+Collection Forms
+Perfect for ongoing curation with high-SKU brands.
+
+‍
+
+Product Forms
+Ideal for CPG or vertical brands where creators need to go deep on a few select products.
+
+‍
+
+Custom Forms
+For everything else: B2B affiliates, brand questionnaires, creative briefs, business info — whatever your program requires.
+
+‍
+
+Building one is dead-simple:
+
+Title + description
+Choose which collab tiers should receive it
+Pick fields from your Custom Field Builder
+Add labels or instructions
+Save + toggle on
+The system emails creators automatically
+‍
+
+Creators see these forms directly inside their storefront editor, complete with guided steps to upload logos, banners, copy, product details — and all of it immediately flows into their co-branded experience.
+
+‍
+
+This isn’t “collecting data.”
+
+‍
+
+This is creators actively shaping their own storefronts, fueling better merch, fresher funnels, and higher conversion.
+
+‍
+
+Self-Serve isn’t a feature — It’s a turning point
+We didn’t build this dashboard to look pretty.
+
+‍
+
+We built it because brands were breaking the old model. They need:
+
+Faster activation
+Faster personalization
+Faster iteration
+Less engineering
+Less hand-holding
+More control
+And now they have it.
+
+‍
+
+Whether you’re a category-leading brand or a solopreneur, you can now stand up co-branded creator experiences without needing to code and without needing to relearn a new UI paradigm.
+
+‍
+
+If you can manage Shopify collections or metafields, you can manage CreatorCommerce.
+
+‍
+
+A new chapter for Q4 and beyond
+We’re proud of what ships today — not because it’s flashy, but because it’s foundational.
+
+‍
+
+It sets the stage for everything coming next: deeper automation, smarter defaults, richer data, and more ways for creators to meaningfully shape the commerce experiences they promote.
+
+‍
+
+Self-serve is here.
+
+‍
+
+Custom forms are here.
+
+‍
+
+And the new Shopify-native CreatorCommerce dashboard is officially live.
+
+‍
+
+Let’s build this next chapter together.

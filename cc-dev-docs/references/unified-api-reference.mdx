@@ -3,5 +3,54 @@ title: Unified API Reference
 api: api-reference/unified-api.yaml
 ---
 
-This is the complete API reference for the CreatorCommerce Unified API. Use this API to manage creators, collabs, drops, and generate checkout URLs.
+The CreatorCommerce Unified API provides programmatic access to manage creators, collaborations, drops, and checkout URLs. Use this API to build custom dashboards, integrate with external tools, or create bespoke creator experiences.
 
+## Base URL
+
+```
+https://unified-api.creatorcommerce.shop
+```
+
+## Authentication
+
+Two authentication methods are supported:
+
+| Method | Header | Use Case |
+|--------|--------|----------|
+| **Bearer Token (JWT)** | `Authorization: Bearer {token}` | Authenticated user requests |
+| **Channel API Key** | `x-channel-access-token: {key}` | Server-to-server brand requests |
+| **Partner API Key** | `x-partner-access-token: {key}` | Creator-facing requests |
+
+See the [Authentication Guide](/guides/authentication) for setup details.
+
+## API Patterns
+
+The API is organized into two patterns:
+
+### Channel-Centric (Brand Side)
+
+Endpoints prefixed with `/channels/{myshopifyDomain}/` are used by brands to manage their program:
+
+- **Collabs** -- List, get, and update collaborations
+- **Tiers** -- Retrieve configured collab tiers
+- **Drops** -- Update product curation and enhancements
+- **Magic Links** -- Generate authenticated creator links
+
+### Creator-Centric (Creator Side)
+
+Endpoints prefixed with `/creators/` are used by creators to manage their own data:
+
+- **Collabs** -- View and update their collaborations
+- **Drops** -- Create and manage product curation
+- **Cart URLs** -- Generate checkout-ready URLs
+
+## Quick Links
+
+<CardGroup cols={2}>
+  <Card title="API Overview" icon="book" href="/references/api-overview">
+    Detailed endpoint documentation with request and response examples
+  </Card>
+  <Card title="Authentication" icon="key" href="/guides/authentication">
+    Setup guide for API keys and JWT tokens
+  </Card>
+</CardGroup>

@@ -1,0 +1,83 @@
+How to create a conditional Shopify 🟨 Checkout Block for affiliate purchases
+This guide will walk you through the process of creating a customized checkout block that appears only when customers are purchasing through an affiliate link.
+
+Overview
+A conditional checkout block allows you to display specific messaging or content to customers who have entered your store through an affiliate link. This can be useful for:
+
+Emphasizing exclusive discounts
+Acknowledging the affiliate relationship
+Providing specific instructions or information
+Building trust and transparency
+‍
+
+Step-by-Step Instructions
+1. Create a New Block
+Navigate to your Shopify checkout settings
+Select "Add new block"
+Choose a block type (e.g., Banner, FAQ, or another template that suits your needs)
+Give your block a descriptive name (e.g., "Creator Support Banner")
+‍
+
+2. Add Your Content
+Click "Edit" on your new block
+Add your desired messaging. Some effective approaches include:
+Discount confirmation (e.g., "You're receiving an exclusive 40% discount")
+Affiliate acknowledgment (e.g., "Complete your checkout to support [Creator Name]")
+Value proposition (e.g., "You're shopping through a creator's affiliate link")
+‍
+
+3. Set Display Rules
+This is the crucial step that makes your block appear only for affiliate purchases:
+
+Click on "Display Rules"
+Select "Cart attribute" as the condition
+Choose "contains" as the operator
+Enter "cc-creator-id" as the attribute
+Leave the value field open to check for any value
+‍
+
+Note: The CC Creator ID attribute is automatically added when a shopper enters through an affiliate link.
+
+‍
+
+4. Additional Configuration (Optional)
+For discount-specific messaging, you can add an additional display rule:
+
+Add a condition for "Discount code is not blank"
+This ensures discount-related messages only appear after the discount is applied
+‍
+
+5. Implementation in the Checkout Editor
+Save your block and note the assigned block ID
+Open your checkout editor
+Navigate to the section where you want the block to appear
+Add a dynamic content placeholder
+Link it to your block using the assigned block ID
+‍
+
+Best Practices
+Keep messaging clear and concise
+Test the display rules thoroughly
+Consider creating different blocks for different scenarios (e.g., one for discounts, another for general affiliate acknowledgment)
+Ensure your messaging aligns with your brand voice and affiliate agreements
+‍
+
+Advanced Options
+You can enhance your blocks by:
+
+Personalizing content using cart data
+Incorporating meta object data about the creator
+Using different block types for various purposes
+Adding visual elements that match your brand
+‍
+
+Troubleshooting
+If your block isn't displaying:
+
+Verify the CC Creator ID attribute is being properly set
+Check your display rules configuration
+Ensure the block ID is correctly linked in the checkout editor
+Test the checkout flow through an actual affiliate link
+‍
+
+For additional support or advanced implementations, please contact our support team at help@creatorcommerce.shop.

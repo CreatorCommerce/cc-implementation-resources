@@ -5,7 +5,7 @@ description: 'Access creator data—name, bio, photo, discounts, drops—on any 
 
 ## Creator Resolution Pattern
 
-Use this pattern at the top of any section or template:
+Use this pattern at the top of any section or template to resolve the creator from either context:
 
 ```liquid
 {% liquid
@@ -20,48 +20,176 @@ Use this pattern at the top of any section or template:
 %}
 ```
 
+**Why two branches?**
+- On **metaobject page templates** (landing pages), the `metaobject` variable is the creator — use it directly
+- On **all other pages** (PDP, homepage, collection pages), resolve the creator from cart attributes set by the SDK
+
 ## Available Fields
 
-### Basic Info
+### Identity
 
-| Field | Access | Example |
-|-------|--------|---------|
-| First name | `cc_creator.cc-creator-first-name` | "Sarah" |
-| Last name | `cc_creator.cc-creator-last-name` | "Jones" |
-| Handle | `cc_creator.handle` | "sarah-jones" |
-| Bio | `cc_creator.cc-creator-shop-description` | "Skincare enthusiast..." |
-
-### Discount Info
-
-| Field | Access | Example |
-|-------|--------|---------|
-| Code | `cc_creator.cc-collab-discount-code` | "SARAH15" |
-| Amount | `cc_creator.cc-collab-discount-amount` | 15 |
+| Field | Access | Type | Example |
+|-------|--------|------|---------|
+| First name | `cc_creator.cc-creator-first-name` | Text | `"Sarah"` |
+| Last name | `cc_creator.cc-creator-last-name` | Text | `"Jones"` |
+| Shop handle | `cc_creator.cc-creator-shop-handle` | Text | `"sarah-jones"` |
+| Shop title | `cc_creator.cc-creator-shop-title` | Text | `"Sarah's Shop"` |
+| Shop description | `cc_creator.cc-creator-shop-description` | Text | `"Skincare enthusiast..."` |
+| Is onboarded | `cc_creator.cc-creator-is-onboarded` | Boolean | `true` |
 
 ### Media
 
+| Field | Access | Type |
+|-------|--------|------|
+| Profile picture | `cc_creator.cc-creator-profile-picture` | URL |
+| Cover image | `cc_creator.data.value['cc-creator-cover-image']` | URL |
+| Theme primary color | `cc_creator.cc-creator-shop-theme-primary-color` | Color hex |
+
+### Collaboration (Discount & Affiliate)
+
+| Field | Access | Example |
+|-------|--------|---------|
+| Discount code | `cc_creator.cc-collab-discount-code` | `"SARAH15"` |
+| Discount amount | `cc_creator.cc-collab-discount-amount` | `"15"` |
+| Discount type | `cc_creator.cc-collab-discount-type` | `"Percentage"` or `"Fixed"` |
+| Affiliate code | `cc_creator.cc-collab-affiliate-code` | `"SARAH27668"` |
+| Affiliate link | `cc_creator.cc-collab-affiliate-link` | URL |
+| Relationship manager | `cc_creator.data.value['cc-collab-relationship-manager']` | `"social-snowball"` |
+| Collab tier | `cc_creator.data.value['cc-collab-tier']` | `"CC // Tier 1"` |
+
+### Brand Kit (Channel)
+
 | Field | Access |
 |-------|--------|
-| Profile photo | `cc_creator.data.value.cc-creator-profile-picture` |
-| Cover image | `cc_creator.data.value.cc-creator-cover-image` |
+| Brand primary color | `cc_creator.cc-channel-brandkit-primary-color` |
+| Brand secondary color | `cc_creator.cc-channel-brandkit-secondary-color` |
+| Brand title | `cc_creator.cc-channel-brandkit-title` |
+| Brand description | `cc_creator.cc-channel-brandkit-description` |
+| Brand logo | `cc_creator.cc-channel-brandkit-primary-logo` |
+| Brand banner image | `cc_creator.cc-channel-brandkit-banner-image` |
 
-### Nested Data (Drops)
+### Campaign
+
+| Field | Access |
+|-------|--------|
+| Campaign ID | `cc_creator.data.value['cc-campaign-id']` |
+| Campaign tier | `cc_creator.data.value['cc-campaign-tier']` |
+| Campaign end date | `cc_creator.data.value['cc-campaign-end-date']` |
+
+### Social Handles (Coming Soon)
+
+| Field | Access |
+|-------|--------|
+| Instagram | `cc_creator.cc-instagram-handle` |
+| TikTok | `cc_creator.cc-creator-tiktok-handle` |
+| YouTube | `cc_creator.cc-creator-youtube-handle` |
+
+## Working with Drops
+
+Drops are the core data structure for creator-curated product lists. They live in `cc_creator.data.value['cc-creator-drops']` as a JSON array.
+
+### Drop Structure
+
+Each drop contains:
+
+| Field | Key | Type |
+|-------|-----|------|
+| Drop ID | `cc-creator-drop-id` | String |
+| Handle | `cc-creator-drop-handle` | String |
+| Title | `cc-creator-drop-title` | String |
+| Description | `cc-creator-drop-description` | String |
+| Collection ID | `cc-creator-drop-collection-id` | String (Shopify collection ID) |
+| Products | `cc-creator-drop-products` | Array |
+| Media | `cc-creator-drop-media` | Array |
+
+### Product Structure (within a Drop)
+
+Each product in `cc-creator-drop-products` contains:
+
+| Field | Key | Type |
+|-------|-----|------|
+| Product ID | `id` | String (Shopify product ID) |
+| Title | `title` | String |
+| Handle | `handle` | String |
+| Vendor | `vendor` | String |
+| Images | `images` | Array of `{ src }` |
+| Variants | `variants` | Array of `{ title, price }` |
+| Online store URL | `onlineStoreUrl` | URL |
+| Enhancement note | `enhancement.note` | String (creator's review) |
+| Enhancement media | `enhancement.media` | Array of `{ mimeType, url }` |
+
+### Iterating Drops
 
 ```liquid
-{% assign drops = cc_creator.data.value.cc-creator-drops %}
-{% for drop in drops %}
-  {{ drop['cc-creator-drop-name'] }}
+{% if cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    <h2>{{ drop['cc-creator-drop-title'] }}</h2>
+    <p>{{ drop['cc-creator-drop-description'] }}</p>
+    
+    {% for product in drop['cc-creator-drop-products'] %}
+      <div class="product-card">
+        <img src="{{ product.images[0].src }}" alt="{{ product.title }}">
+        <h3>{{ product.title }}</h3>
+        <p>{{ product.variants[0].price | prepend: '$' }}</p>
+        
+        {% if product.enhancement.note != blank %}
+          <blockquote>"{{ product.enhancement.note }}"</blockquote>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+```
+
+### Matching Current Product to a Drop
+
+On product pages, check if the current product exists in any creator drop:
+
+```liquid
+{% assign shopify_product_id = product.id | append: '' %}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for cc_product in drop['cc-creator-drop-products'] %}
+    {% if cc_product.id == shopify_product_id %}
+      <!-- This product is in the creator's drop -->
+      {% if cc_product.enhancement.note != blank %}
+        <p class="creator-note">{{ cc_product.enhancement.note }}</p>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
 {% endfor %}
 ```
+
+<Warning>
+Always convert `product.id` to a string with `| append: ''` before comparing with JSON-stored IDs. Shopify IDs are integers; JSON stores them as strings. Direct comparison will fail.
+</Warning>
 
 ## Fallback Handling
 
 Always provide fallbacks for missing data:
 
 ```liquid
-{{ cc_creator.cc-creator-first-name | default: 'Our Expert' }}
+{% liquid
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Our Expert'
+  assign creator_bio = cc_creator.cc-creator-shop-description | default: ''
+  assign creator_color = cc_creator.cc-creator-shop-theme-primary-color | default: '#000000'
+%}
 ```
 
-## Full Reference
+## The `data` JSON Field
 
-See [Creator Collab Data Model](/references/creator-collab-data-model) for complete field documentation.
+The `creator.data` field contains the complete JSON representation of the Creator Primitive. While most top-level fields have their own dedicated metaobject fields, `data` is useful for:
+
+- Accessing deeply nested values (drops, products, enhancements)
+- Reading campaign and collab details
+- Building complex conditional logic
+
+Access pattern:
+```liquid
+{{ cc_creator.data.value['field-name'] }}
+```
+
+## Related
+
+- [Creator Collab Data Model](/references/creator-collab-data-model)
+- [Drops & Products Data Model](/references/drops-products-data-model)
+- [Custom Fields Reference](/references/custom-fields-reference)

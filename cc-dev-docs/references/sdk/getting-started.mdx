@@ -1,39 +1,95 @@
 ---
 title: 'SDK Getting Started'
-description: 'Install and initialize the CreatorCommerce Liquid SDK for accessing creator data in your Shopify theme.'
+description: 'Install and initialize the CreatorCommerce SDK for accessing creator data in your Shopify theme.'
 ---
 
 ## What is the CC SDK?
 
-The CreatorCommerce SDK is a collection of Liquid snippets that handle creator data resolution, fallback logic, and common co-branding patterns. It eliminates boilerplate and ensures consistency across your theme.
+The CreatorCommerce SDK is a lightweight JavaScript layer that detects affiliate context from incoming links and stores it in Shopify cart attributes. It runs automatically in the background — once enabled, it handles:
+
+- **Shopper context detection** — When a user arrives through an affiliate link, the SDK reads the creator, campaign, and shop identifiers from the URL
+- **Cart attribute persistence** — The SDK writes `cc-creator-handle`, `cc-creator-id`, `cc-campaign-id`, and `cc-shop-id` to the Shopify cart
+- **Automatic updates** — If the shopper clicks a different affiliate link, the SDK seamlessly updates the cart attributes to reflect the new context
+- **Personalization triggers** — Once cart attributes are set, your Liquid templates can resolve the full creator metaobject and personalize the experience
 
 ## Installation
 
-The SDK is automatically available when you install CreatorCommerce. Core snippets are injected into your theme's `snippets/` directory.
+The SDK is delivered as a Shopify **Theme App Embed**. To enable it:
 
-## Core Snippets
+<Steps>
+  <Step title="Go to Theme App Embeds">
+    In Shopify Admin → **Online Store → Themes → Customize → App Embeds**
+  </Step>
+  <Step title="Enable CreatorCommerce SDK">
+    Toggle the CreatorCommerce SDK embed to **ON** and save.
+  </Step>
+</Steps>
 
-| Snippet | Purpose |
-|---------|---------|
-| `cc-resolve-creator` | Resolves creator from metaobject or cart attributes |
-| `cc-calculate-contrast` | Calculates text color based on background |
-| `cc-dynamic-text` | Token replacement for personalized copy |
-| `cc-product-price` | Displays discounted pricing |
+No code changes are required. The SDK inject runs on every page of your theme once enabled.
 
-## Basic Usage
+## Cart Attributes Set by the SDK
+
+When a shopper arrives through an affiliate link, the SDK writes these attributes:
+
+| Attribute | Example Value | Purpose |
+|-----------|---------------|---------|
+| `cc-creator-handle` | `"tiffanyhoughton"` | Primary key for resolving the creator metaobject |
+| `cc-creator-id` | `"677c1a5b7ea8a6e015ab46f3"` | CreatorCommerce internal creator ID |
+| `cc-campaign-id` | `"6765aa58f5ea34a02280fd3e"` | Campaign the creator belongs to |
+| `cc-shop-id` | `"677c1a5b7ea8a6e015ab46f3"` | CreatorCommerce shop identifier |
+
+## Basic Liquid Usage
+
+Once the SDK sets cart attributes, resolve the creator in any section or snippet:
 
 ```liquid
-{% comment %} At the top of any section {% endcomment %}
-{% render 'cc-resolve-creator' %}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
 
-{% comment %} Now cc_creator is available {% endcomment %}
 {% if cc_creator %}
   <h1>{{ cc_creator.cc-creator-first-name }}'s Picks</h1>
 {% endif %}
 ```
 
+<Tip>
+Place these two `assign` lines at the top of any section or snippet that needs creator context. They're safe to call everywhere — if no creator is present, `cc_creator` will be `nil` and the conditional blocks won't render.
+</Tip>
+
+## Verifying the SDK
+
+To confirm the SDK is working, open your browser console on any page after clicking an affiliate link and run:
+
+```javascript
+fetch(window.Shopify.routes.root + 'cart.js')
+  .then(response => response.json())
+  .then(cart => {
+    console.log('Cart attributes:', cart.attributes);
+    if (cart.attributes['cc-creator-handle']) {
+      console.log('✅ SDK is active. Creator:', cart.attributes['cc-creator-handle']);
+    } else {
+      console.log('❌ No CC attributes found. Check that the SDK embed is enabled.');
+    }
+  });
+```
+
+You should see the `cc-` attributes in the response if the SDK is active.
+
+## How Attribute Updates Work
+
+| Scenario | Behavior |
+|----------|----------|
+| Shopper clicks Creator A's link | Attributes set to Creator A |
+| Same shopper clicks Creator B's link | Attributes **overwritten** to Creator B |
+| Shopper visits directly (no affiliate link) | Existing attributes **persist** from last affiliate visit |
+| Cart is emptied / new session | Attributes cleared with the cart |
+
 ## Next Steps
 
-<Card title="Referencing Creator Content" icon="arrow-right" href="/references/sdk/referencing-creator-content">
-  Learn how to access all creator fields on any page
-</Card>
+<CardGroup cols={2}>
+  <Card title="Referencing Creator Content" icon="database" href="/references/sdk/referencing-creator-content">
+    Access all creator fields on any page
+  </Card>
+  <Card title="Enable Tracking" icon="chart-line" href="/guides/storefronts/enable-tracking">
+    Set up full funnel tracking with the SDK + web pixel
+  </Card>
+</CardGroup>

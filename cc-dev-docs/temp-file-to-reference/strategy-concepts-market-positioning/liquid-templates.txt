@@ -1,0 +1,3 @@
+To understnad this, you need to go tot eh root of the project, then go to cc-liquid-templates:
+
+Then find and understand all sections and snippets that begin in cc- prefix in this directory and then you can understand and outline what they how and how to use and consider them to reduce custom dev.

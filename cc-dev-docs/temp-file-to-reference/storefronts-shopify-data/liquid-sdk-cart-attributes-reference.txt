@@ -1,0 +1,106 @@
+Liquid SDK / Shopify cart attributes reference
+This document provides a high-level overview of how the CreatorCommerce SDK updates shopper context and personalization data by setting & leveraging Shopify cart attributes. Use this reference to understand which attributes are stored, how they are used within Liquid templates, and how to confirm that the SDK is functioning properly.
+
+What the CreatorCommerce SDK Does
+Shopper Context‍
+When a user arrives on your site through an affiliate link, the SDK detects the affiliate context (creator, campaign, etc.) and updates the Shopify cart with the relevant attributes.
+Personalization‍
+The SDK can automatically change or personalize on-page content (e.g., product highlights, creator-specific info) based on the attributes stored in the Shopify cart.
+Automatic Updates‍
+If a shopper clicks a different affiliate link (i.e., switching from one creator to another), the SDK automatically updates the cart attributes so your theme always has accurate, up-to-date context.
+‍
+
+Stored Cart Attributes
+When a shopper arrives through an affiliate link, the SDK writes (or updates) the following cart attributes in Shopify:
+
+cc-campaign-id: "6765aa58f5ea34a02280fd3e"
+cc-creator-handle: "tiffanyhoughton"
+cc-creator-id: "677c1a5b7ea8a6e015ab46f3"
+cc-shop-id: "677c1a5b7ea8a6e015ab46f3"
+These values let you conditionally render content, track conversions, and personalize the shopping journey.
+
+‍
+
+Referencing the Cart Attributes in Liquid
+Assign the Creator Handle - The cc-creator-handle attribute is your primary reference to the creator data stored in a Shopify metaobject.
+Retrieve the Creator Metaobject - Use the cc_handle to look up the corresponding creator metaobject.
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+It's recommended to include these 2 variables at the very top of any page, section, or snippet that you're doing personalization on.
+
+‍
+
+Practical Usage Examples
+Render metaobject values
+Displays the creator’s first and last name as stored within the metaobject.
+
+{{ cc_creator['cc-creator-first-name'] }}
+{{ cc_creator['cc-creator-last-name'] }}
+‍
+
+Loop through metaobject values
+Iterates through each “drop” (e.g., a new product launch) that the creator has set up.
+
+{% if cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+   {% endfor %}
+  {% endif %}
+‍
+
+Conditional Rendering on Product Pages
+Checks if the current product is part of a creator-specific drop and renders custom content (like a special note, extra images, or a discount message).
+
+{% if cc_creator.data.value['cc-creator-drops'] %}
+  {% for drop in cc_creator.data.value['cc-creator-drops'] %}
+    {% for cc_product in drop['cc-creator-drop-products'] %}
+      {% assign product_id_string = product.id | append: '' %}
+      {% if cc_product.id == product_id_string
+        and cc_product.enhancement.note != ''
+        and cc_product.enhancement.note != null
+      %}
+
+      <!-- Conditional product page content goes here -->
+
+      {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+‍
+
+Conditional Affiliate Funnel Content
+Uses the presence of cc_creator to confirm a shopper arrived via an affiliate link and then conditionally renders content.
+
+{% if cc_creator != '' and cc_creator != null %}
+  {% if cc_creator['cc-creator-drops'] %}
+  
+  <!-- Insert conditional content -->
+  
+  {% endif %}
+ {% endif %}
+‍
+
+Verifying SDK & Cart Attributes
+To verify that the SDK is present and updating cart attributes, open your browser console and run:
+
+var formData = new FormData();
+fetch(window.Shopify.routes.root + 'cart/update.js', {
+  method: 'POST',
+  body: formData
+})
+.then(response => {
+  return response.json();
+}).then(res => console.log(res))
+.catch((error) => {
+  console.error('Error:', error);
+});
+This snippet triggers an update to the Shopify cart and then logs the response (including all current cart attributes). If the CreatorCommerce SDK is working, you should see the cc- attributes in the JSON response.
+
+‍
+
+Summary
+The CreatorCommerce SDK automatically sets and maintains affiliate-related context within your Shopify cart attributes. By referencing these attributes (particularly cc-creator-handle), you can dynamically pull in creator-specific data from a metaobject and tailor the shopping experience.
+
+Minimal Setup: Once enabled, the SDK runs in the background, continuously updating cart attributes when shoppers use affiliate links.
+Flexible Access: The stored attributes are accessible anywhere Liquid is available in your Shopify theme.
+Testing: Use the console snippet to confirm that the SDK is injecting the expected attributes into your cart.
+With these details, you can confidently manage affiliate personalization, track campaigns, and build robust, creator-driven shopping experiences in your Shopify store.

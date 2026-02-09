@@ -1,0 +1,59 @@
+---
+title: 'UpPromote'
+description: 'Connect UpPromote affiliate programs with CreatorCommerce co-branded experiences.'
+---
+
+UpPromote is a leading Shopify affiliate and referral marketing app. Integrating it with CreatorCommerce extends your UpPromote affiliates with personalized co-branded shopping experiences that drive higher conversion.
+
+## What This Integration Does
+
+| UpPromote → CC | CC → UpPromote |
+|----------------|----------------|
+| Affiliate profiles | Co-branded page performance |
+| Program tiers | Enhanced conversion data |
+| Commission structures | Attribution signals |
+
+## Setup
+
+<Steps>
+  <Step title="Connect in CreatorCommerce">
+    In your CreatorCommerce dashboard, navigate to **Integrations → UpPromote** and follow the connection flow.
+  </Step>
+  <Step title="Map affiliate programs">
+    Select which UpPromote programs should sync with CreatorCommerce. Use the `CC //` prefix convention on program names to control sync:
+
+    ```
+    CC // Brand Ambassadors
+    CC // Influencer Program
+    ```
+  </Step>
+  <Step title="Set redirect destination">
+    Update the landing page URL for synced programs:
+
+    ```
+    https://your-store.myshopify.com/apps/cc-storefront/redirect
+    ```
+  </Step>
+  <Step title="Test the integration">
+    Click a test affiliate link and verify:
+    - Co-branded landing page loads with creator data
+    - Cart attributes are set correctly
+    - Attribution works in both UpPromote and CC
+  </Step>
+</Steps>
+
+## Use Cases
+
+### Layer Co-branding on Top of UpPromote
+Keep UpPromote managing commissions, payouts, and affiliate recruitment. CreatorCommerce adds the storefront personalization layer that turns clicks into conversions.
+
+### Program-Specific Experiences
+Map different UpPromote programs to different CC campaigns, each with its own landing page template and co-branding level.
+
+### Conversion Optimization
+UpPromote tracks referrals. CreatorCommerce optimizes what happens after the click — personalized landing pages, creator-curated products, and dynamic discounts.
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Destinations Explained](/guides/storefronts/destinations-explained)

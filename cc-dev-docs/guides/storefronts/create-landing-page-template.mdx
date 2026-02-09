@@ -1,6 +1,6 @@
 ---
 title: 'Create a Landing Page Template'
-description: 'Build a custom metaobject template for co-branded creator landing pages.'
+description: 'Build custom metaobject templates for co-branded creator landing pages — including multiple layout variations.'
 ---
 
 ## Template Options
@@ -50,12 +50,70 @@ Create `templates/metaobject/creator.liquid`:
 </div>
 ```
 
+## Creating Multiple Templates
+
+You can create **additional page templates** for the same Creator metaobject type. This lets you run different layout variations for different campaigns, tiers, or styles.
+
+### How to Create an Additional Template
+
+<Steps>
+  <Step title="Open the Theme Editor">
+    In Shopify Admin → Online Store → Themes → Customize.
+  </Step>
+  <Step title="Create a new template">
+    In the template picker at the top of the editor, choose **Create template** and select the `creator` metaobject type. Give it a descriptive name:
+
+    ```
+    creator.summer-campaign
+    creator.minimal
+    creator.full-takeover
+    ```
+  </Step>
+  <Step title="Design the layout">
+    Add and arrange sections for this template variant. Each template can have completely different sections and settings.
+  </Step>
+  <Step title="Assign via Destination">
+    In your CreatorCommerce campaign, set the destination URL to use the `?view=` parameter:
+
+    ```
+    ?view=summer-campaign
+    ```
+
+    This tells Shopify to render `templates/metaobject/creator.summer-campaign.json` instead of the default.
+  </Step>
+</Steps>
+
+### The `?view=` Parameter
+
+The `view` query parameter switches between templates at the URL level:
+
+| URL | Template Used |
+|-----|---------------|
+| `/pages/creators/sarah-jones` | `creator.json` (default) |
+| `/pages/creators/sarah-jones?view=summer-campaign` | `creator.summer-campaign.json` |
+| `/pages/creators/sarah-jones?view=minimal` | `creator.minimal.json` |
+
+This is set in the **Destination** configuration for each tier within a campaign. Different tiers can use different templates:
+
+| Tier | Destination View | Template |
+|------|------------------|----------|
+| VIP | `?view=full-takeover` | Premium, immersive layout |
+| Ambassador | (default) | Standard layout |
+| Affiliate | `?view=minimal` | Simple product grid layout |
+
 ## Testing Your Template
 
-1. Go to Content → Metaobjects → Creator
+1. Go to **Content → Metaobjects → Creator**
 2. Select any creator entry
-3. Click "View on storefront"
+3. Click **"View on storefront"**
+4. Append `?view=[template-name]` to test alternate templates
 
 ## Customization
 
-Modify section settings in the theme editor or directly in code. Each CC section accepts customization options.
+Modify section settings in the theme editor or directly in code. Each CC section accepts customization options for colors, layout, and content display.
+
+## Related
+
+- [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages)
+- [Destinations Explained](/guides/storefronts/destinations-explained)
+- [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)

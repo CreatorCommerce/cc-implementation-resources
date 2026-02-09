@@ -1,0 +1,177 @@
+How to setup automated Klaviyo flows to communicate with affiliates at scale
+Setup your primary Klaviyo flow to invite your creators to launch co-branded shops with your brand's products. If you use Klaviyo, this should be completed before going live.
+
+⚠️ This guide can take up to 30min to complete. To complete it, submit this form to enable the CreatorCommerce team to provide you with the email templates.
+‍
+
+Before getting started, ensure that you've setup the integration with your affiliate/influencer marketing software(s). This will be needed to email contacts that are affiliates in those platforms.
+
+How to setup the Shopify Collabs integration
+How to setup the Social Snowball integration
+How to setup the Refersion integration
+‍
+
+To get affiliates/influencers/partners to launch co-branded shops with your brand, they first need to become aware of the opportunity. While there are other strategies you can leverage for issuing invitations, your primary Klaviyo flow will drive most of your adoption, and is extremely important to enable before updating your relevant programs/tiers for CreatorCommerce. The article will walk you through setting up this flow in Klaviyo. If you don't want to read it and would rather get some hands on support, you can make a request for the CreatorCommerce team to do this for you here.
+
+‍
+
+Step 1: Get the email template
+The CreatorCommerce team will provide you with the email templates and flows the correspond to them. Fill out this form to get them.
+
+Template contents
+Brand Logo/Header - Set to your brand logo
+H1 Title - Showcasing main topic of the email
+Body Copy Section 1 - Set the main message of the email
+CTA/Button - Set to the main CTA such as the onboarding link or shop link
+Body Copy Section 2 - reminder copy
+(Optional) Promotional/teaser Image - Shows off what a shop looks like - Contact us to get one for your brand
+‍
+
+Pro tip: When you get access to the templates, be very careful about any {{ variables }} you edit.
+
+
+Example of a finished email template
+‍
+
+Step 2: Understanding the email flows
+CreatorCommerce will provide your with 8 email flows. This will take you through what each flow is for, why affiliates enter each one, and how they leave each one. Make sure to review each for yourself in your Klaviyo, and make edits where needed. These flows will be "production-ready", and can go live after your review.
+
+‍
+
+Find the flows
+Go to Flows
+Select the tag "CreatorCommerce"
+‍
+
+[CC TEMPLATE] CreatorCommerce - Collab Invitation
+To inform the affiliate of the new new affiliate program, and what to do next.
+
+Trigger
+"Creator Collaboration Started" - When CreatorCommerce syncs affiliate from the integrated affiliate management platform.
+
+Exit point
+"Creator Drop Created"
+
+OR
+
+When the flow finishes all emails in the chain.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - Welcome Series
+To welcome the affiliate to the new program, and to get them excited and informed about the co-selling experience.
+
+Trigger
+"Creator Drop Created" - Products are added to the co-branded shop for the first time ever.
+
+Exit point
+"Creator Order Attributed" - Affiliate makes a sale.
+
+OR
+
+When the flow finishes all emails in the chain.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - New Drop
+To remind affiliate to share their recent product recommendation.
+
+Trigger
+"Creator Drop Created" - Affiliate adds product to their shop.
+
+Exit point
+When the only email in the chain is sent.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - Onboarding Abandonment
+To re-engage affiliates who start to setup and customize their shop, but never finish.
+
+Trigger
+"Creator Invitation Accepted" - Affiliate selects "Accept" when customizing their shop, followed by no "Creator Drop Created" over the next 4 hours.
+
+Exit point
+"Creator Drop Created" - Products are added to the co-branded shop for the first time ever.
+
+OR
+
+When the flow finishes all emails in the chain.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - Sales Milestones
+To add a layer of gamification to the program and congratulate the affiliate on first sale, 10th sale, and all sales in-between.
+
+Trigger
+"Creator Order Attributed" - When affiliate makes a sale.
+
+Exit point
+When the only email in the chain is sent.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - Shop Abandoned
+To re-engage affiliates who had high intent to participate in the program, and went as far as setting up their shop - but ultimately did not remain productive.
+
+Trigger
+When affiliate is added to the automated segment "Abandoned Creator Shop", which is defined as affiliates with shops who have not made a sale or drop in the last 60 days.
+
+Exit point
+"Creator Drop Created"- Products are added to the co-branded shop.
+
+OR
+
+"Creator Order Attributed" - Affiliate makes a sale.
+
+OR
+
+When the flow finishes all emails in the chain.
+
+‍
+
+[CC TEMPLATE] CreatorCommerce - Shop Updated
+To remind the affiliate that they made changes, and to reaffirm their new handle if they changed it.
+
+Trigger
+"Shop Updated" - When shop settings are saved in the dashboard for the specific shop.
+
+Exit point
+When the only email in the chain is sent.
+
+‍
+
+[CC Template] CreatorCommerce - New Campaign
+Campaign is used to engage affiliates and notify them of a new campaign you are running that you want them to participate in.
+
+Trigger
+"Creator Added To Campaign" - Triggered when a corresponding campaign is enabled, or the start date for an active campaign passes.
+
+Exit points
+"Creator Removed From Campaign" - When a corresponding campaign is disabled, or the the end date for a active campaign is passes.
+
+OR
+
+"Creator Added To Campaign" - For if individual is added to another campaign.
+
+OR
+
+When the flow finishes all emails in the chain.
+
+‍
+
+
+All 8 flows
+‍
+
+Step 3: Go live with the flows
+With each flow, select "Update action statuses" and set everything to "Live".
+
+Note: Before proceeding, you should have already enabled the CreatorCommerce integration for your affiliate/influencer marketing platform of choice, and that platform should also already be connected to Klaviyo. You should also have at least one co-branded page build so that when affiliates get invited, they have a co-branded page to ultimately share with others.
+
+Go live 🚀
+Review your email flows and co-branded page one more time
+Make sure you've reviewed and made proper edits to the default emails for your current affiliate platform. Checkout the integration-centric guides on default email edits per integration partner in the Brand Help Center
+Return to the main guide for how to go live with your respective affiliate program in the Brand Help center
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.

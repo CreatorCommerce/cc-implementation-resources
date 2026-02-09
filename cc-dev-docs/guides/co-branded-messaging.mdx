@@ -1,6 +1,126 @@
 ---
-title: "Personalize customer emails around each creator"
-description: "Description of your new file."
+title: 'Co-branded Email & SMS'
+description: 'Personalize customer emails and SMS around each creator to increase opens, clicks, and repeat purchases.'
 ---
 
-Personalize customer emails around each creator
+## Why Co-branded Messaging Matters
+
+When a customer arrives through a creator's link, the trust that drove the click doesn't stop at the landing page. Every email, SMS, and notification that follows should reinforce that relationship.
+
+**Generic emails after a creator-driven visit:**
+- Feel disconnected from the experience that brought them in
+- Lose the personal endorsement that drove the click
+- Miss the opportunity to deepen the creator-customer bond
+
+**Co-branded emails after a creator-driven visit:**
+- Reference the creator by name in subject lines and body
+- Include the creator's photo and endorsement
+- Remind the shopper of their exclusive discount
+- Link back to the creator's page for repeat visits
+
+## The Impact
+
+| Metric | Standard Emails | Co-branded Emails | Why |
+|--------|----------------|-------------------|-----|
+| Open rate | Baseline | +15-30% higher | Creator name in subject line drives curiosity |
+| Click rate | Baseline | +20-40% higher | Familiar endorsement drives action |
+| Cart recovery | Baseline | +25-50% higher | Discount reminder + creator context reduces hesitation |
+| Repeat purchase | Baseline | Higher | Ongoing creator relationship drives return visits |
+
+## How It Works
+
+CreatorCommerce passes creator context through the entire customer journey:
+
+```
+Shopper clicks creator link
+       |
+CC SDK sets cart attributes (cc-creator-handle, cc-discount-code)
+       |
+Cart attributes persist to order
+       |
+Order data syncs to email platform (Klaviyo, Attentive, etc.)
+       |
+Email flows branch: creator-attributed vs. standard
+       |
+Co-branded emails sent with creator personalization
+```
+
+## What Gets Personalized
+
+| Element | Data Source | Example |
+|---------|-----------|---------|
+| Subject line | Creator name | "Sarah saved these for you" |
+| Header image | Creator profile photo | Creator photo + brand logo |
+| Body copy | Creator name + endorsement | "The items Sarah picked for you are still available" |
+| Discount block | Discount code + amount | "Use code SARAH15 for 15% off" |
+| CTA link | Creator handle | Links back to creator's storefront page |
+| Product recs | Creator's drops | Products the creator specifically curated |
+
+## Flows to Co-brand
+
+### Must-Have (Start Here)
+
+<CardGroup cols={2}>
+  <Card title="Cart Abandonment" icon="cart-shopping">
+    "You left Sarah's picks behind" -- the highest-ROI flow to personalize
+  </Card>
+  <Card title="Post-Purchase" icon="check">
+    "Thanks for shopping with Sarah!" -- reinforces the relationship
+  </Card>
+</CardGroup>
+
+### High Impact
+
+<CardGroup cols={2}>
+  <Card title="Browse Abandonment" icon="eye">
+    "Sarah thought you'd like these" -- re-engage window shoppers
+  </Card>
+  <Card title="Replenishment" icon="rotate">
+    "Time to restock Sarah's favorites" -- drive repeat purchases
+  </Card>
+</CardGroup>
+
+### Growth
+
+<CardGroup cols={2}>
+  <Card title="Win-back" icon="heart">
+    "Sarah has new recommendations for you" -- re-engage lapsed customers
+  </Card>
+  <Card title="Review Request" icon="star">
+    "How did you like Sarah's picks?" -- collect social proof
+  </Card>
+</CardGroup>
+
+## Getting Started
+
+<Steps>
+  <Step title="Understand the data flow">
+    Learn how creator data moves from your store to your email platform.
+  </Step>
+  <Step title="Enable connections">
+    Connect CreatorCommerce to Klaviyo, Attentive, or your email provider.
+  </Step>
+  <Step title="Build your first co-branded flow">
+    Clone your cart abandonment flow and add a creator-context branch.
+  </Step>
+  <Step title="Test with real traffic">
+    Send a test order through a creator link and verify personalization renders.
+  </Step>
+</Steps>
+
+## Guides in This Section
+
+<CardGroup cols={2}>
+  <Card title="Data Flow Explained" icon="diagram-project" href="/guides/emails/data-flow-explained">
+    How creator context flows from store to email platform
+  </Card>
+  <Card title="Enable Connections" icon="plug" href="/guides/emails/enable-connections">
+    Connect CC to Klaviyo, Attentive, and other platforms
+  </Card>
+  <Card title="Testing Emails" icon="flask" href="/guides/emails/testing-emails">
+    QA your co-branded email flows
+  </Card>
+  <Card title="Send Co-branded Emails" icon="envelope" href="/guides/send-co-branded-emails">
+    Full implementation guide with templates
+  </Card>
+</CardGroup>

@@ -1,0 +1,4 @@
+Cusror rules to think about how to consider helping a user construct a prompt for agentic coding
+
+.cursor/rules/cc-cursor-prompt-generator.mdc
+.cursor/rules/cc-general-prompt-generator.mdc

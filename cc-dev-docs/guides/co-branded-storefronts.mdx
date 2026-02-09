@@ -1,4 +1,128 @@
 ---
-title: "Personalize storefront UX around each creator"
-description: "Personalize storefront UX around each creator"
+title: 'Co-branded Storefronts'
+description: 'Turn your Shopify store into a personalized shopping experience for every creator, influencer, and affiliate in your program.'
 ---
+
+## What Are Co-branded Storefronts?
+
+A co-branded storefront is a personalized shopping experience on **your existing Shopify store** that dynamically adapts based on which creator referred the shopper. Instead of sending affiliate traffic to a generic product page, every click leads to a page that feels like it was built just for that creator and their audience.
+
+```
+Creator shares link → Shopper clicks → Lands on personalized page → Shops with context
+```
+
+**What can change per creator:**
+- Hero sections with their name, photo, and bio
+- Their curated product picks (drops)
+- Personalized quotes, notes, and media
+- Their exclusive discount code
+- Brand colors or accent adjustments
+- Any code-level component on the store
+
+**What stays the same:**
+- Your Shopify theme and infrastructure
+- Your checkout, fulfillment, and operations
+- Your product catalog and pricing logic
+- Your analytics and order management
+
+## How It Works
+
+CreatorCommerce uses three Shopify-native building blocks:
+
+<CardGroup cols={3}>
+  <Card title="Metaobjects" icon="database">
+    Creator data (name, bio, products, media) stored as Shopify metaobjects — accessible in Liquid like any other Shopify data
+  </Card>
+  <Card title="Cart Attributes" icon="cart-shopping">
+    The CC SDK writes `cc-creator-handle` to the cart when a shopper arrives via an affiliate link — this attribute persists through checkout
+  </Card>
+  <Card title="Templates" icon="browser">
+    Shopify metaobject page templates serve as creator landing pages; theme sections personalize any other page using the cart attribute
+  </Card>
+</CardGroup>
+
+## Two Approaches
+
+<Tabs>
+  <Tab title="App Blocks (No Code)">
+    Use pre-built CreatorCommerce app blocks in the Shopify theme editor:
+
+    - Drag and drop creator hero, product grid, quote badge, and discount banners
+    - Configure via the visual editor
+    - No developer required for basic setups
+    - Good for getting started quickly
+
+    **Best for:** Teams without dev resources, quick launches, testing layouts
+  </Tab>
+
+  <Tab title="Custom Theme Sections (Code)">
+    Build custom Liquid sections that read directly from the creator metaobject:
+
+    - Full control over layout and design
+    - Access to all creator data fields including custom fields
+    - Conditional rendering based on creator presence
+    - Full-funnel personalization across every page
+
+    **Best for:** Brands that want pixel-perfect control, complex layouts, full-funnel personalization
+  </Tab>
+</Tabs>
+
+## What You Can Personalize
+
+| Touchpoint | What Changes | How |
+|------------|-------------|-----|
+| **Landing pages** | Full creator showcase — hero, bio, products, media | Metaobject page template |
+| **Navigation banners** | "Shopping with Sarah" persistent header | Theme section reading cart attributes |
+| **Collection pages** | Creator's curated collection highlighted | Cart attribute context |
+| **Product pages** | Creator quote, why-I-love-it note, UGC | Cart attribute + metaobject data |
+| **Cart drawers** | Discount reminder, savings display | Cart attribute |
+| **Checkout** | Auto-applied discount code | Shopify discount integration |
+| **Post-purchase** | Creator thank-you message | Order attributes |
+| **Any code-level component** | Anything you need | Use variables dfirectly in it |
+
+## Getting Started
+
+<Steps>
+  <Step title="Understand Destinations">
+    Learn how CreatorCommerce routes affiliate traffic to the right page for each creator and tier.
+  </Step>
+
+  <Step title="Install the SDK">
+    The CC SDK detects affiliate context and writes cart attributes — the foundation for all personalization.
+  </Step>
+
+  <Step title="Build Your First Landing Page">
+    Create a metaobject page template that dynamically renders each creator's profile and products.
+  </Step>
+
+  <Step title="Extend Across the Funnel">
+    Add co-branded touches to product pages, cart, checkout, and post-purchase.
+  </Step>
+
+  <Step title="Enable Tracking">
+    Set up funnel analytics to measure performance from landing to checkout.
+  </Step>
+</Steps>
+
+## Guides in This Section
+
+<CardGroup cols={2}>
+  <Card title="Destinations Explained" icon="route" href="/guides/storefronts/destinations-explained">
+    How CC routes affiliate traffic to personalized experiences
+  </Card>
+  <Card title="SDK Getting Started" icon="code" href="/references/sdk/getting-started">
+    Install the SDK that powers affiliate context detection
+  </Card>
+  <Card title="Full-Funnel Personalization" icon="paintbrush" href="/guides/storefronts/full-funnel-personalization">
+    Extend co-branding across your entire theme
+  </Card>
+  <Card title="Enable Tracking" icon="chart-line" href="/guides/storefronts/enable-tracking">
+    Set up funnel analytics and attribution
+  </Card>
+  <Card title="App Blocks 101" icon="puzzle-piece" href="/guides/storefronts/app-blocks-101">
+    Use pre-built blocks for no-code co-branding
+  </Card>
+  <Card title="Getting Started with Landing Pages" icon="browser" href="/guides/storefronts/getting-started-landing-pages">
+    Build your first creator landing page
+  </Card>
+</CardGroup>

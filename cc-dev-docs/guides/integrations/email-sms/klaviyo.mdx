@@ -1,68 +1,132 @@
 ---
 title: 'Klaviyo'
-description: 'Sync partner data to Klaviyo for co-branded email and SMS flows.'
+description: 'Sync partner data to Klaviyo for co-branded email flows, affiliate communication, and customer-to-affiliate conversion.'
 ---
 
-Klaviyo is the primary integration for co-branded messaging in CreatorCommerce.
-
-## What This Integration Does
-
-| CC → Klaviyo | Use Case |
-|--------------|----------|
-| Partner profiles | Segment partners for messaging |
-| Performance data | Trigger performance-based flows |
-| Co-branded variables | Personalize customer emails with partner content |
-| Events | Trigger flows on CC events |
+Klaviyo is the primary email integration for CreatorCommerce. It powers two distinct communication channels: **messaging your affiliates** and **personalizing emails to customers** with creator context.
 
 ## Two Sides of Klaviyo
 
-Klaviyo serves two purposes in CC:
-
-### 1. Partner Messaging
-Email/SMS to your partners:
+### 1. Affiliate Messaging (B2B)
+Email/SMS to your creators and affiliates:
 - Welcome sequences
-- Performance updates
-- Activation reminders
+- Onboarding reminders
+- Performance updates and milestones
+- Campaign announcements
+- Drop notifications
 
-### 2. Consumer Co-branding
-Email/SMS to customers with partner personalization:
-- Cart abandonment with partner discount
-- Post-purchase with partner message
-- Welcome series with partner intro
+### 2. Consumer Co-branding (B2C)
+Email/SMS to customers with creator personalization:
+- Cart abandonment with creator's discount
+- Post-purchase with creator thank-you message
+- Welcome series with creator intro
+- Win-back flows with creator context
 
-<Card title="The 2 Sides of Klaviyo" icon="arrows-left-right" href="/references/klaviyo-two-sides">
-  Detailed guide on using Klaviyo for both partner and consumer messaging.
+<Card title="Deep Dive: The 2 Sides of Klaviyo" icon="arrows-left-right" href="/references/klaviyo-two-sides">
+  Detailed reference on using Klaviyo for both affiliate and consumer messaging.
 </Card>
 
 ## Setup
 
 <Steps>
   <Step title="Connect Klaviyo">
-    In CC Admin → Integrations → Klaviyo, connect with OAuth.
+    In CC Admin → Integrations → Klaviyo, connect with OAuth. This enables event syncing and profile enrichment.
   </Step>
   <Step title="Configure sync">
-    Choose partner properties to sync to Klaviyo profiles.
+    Choose which partner properties to sync to Klaviyo profiles.
   </Step>
-  <Step title="Set up events">
-    Enable CC events to trigger Klaviyo flows.
+  <Step title="Get email templates from CreatorCommerce">
+    CreatorCommerce provides pre-built email templates for each of the 8 core affiliate flows. Import these into Klaviyo as your starting point and customize to match your brand.
   </Step>
-  <Step title="Build flows">
-    Create Klaviyo flows using CC data and triggers.
+  <Step title="Build the 8 core affiliate flows">
+    Set up automated Klaviyo flows for key affiliate lifecycle moments (detailed below).
+  </Step>
+</Steps>
+
+## The 8 Core Affiliate Flows
+
+These flows automate communication across the entire affiliate lifecycle.
+
+### 1. Collab Invitation
+**Trigger:** CreatorCommerce `collab.invited` event  
+**Purpose:** Welcome new affiliates and guide them to set up their storefront  
+**Content:** Invitation details, onboarding link, program benefits
+
+### 2. Welcome Series
+**Trigger:** CreatorCommerce `collab.approved` event  
+**Purpose:** Onboard approved creators with setup instructions  
+**Content:** Storefront link, how to curate products, sharing tips, discount code details
+
+### 3. New Drop Notification
+**Trigger:** CreatorCommerce `drop.created` event  
+**Purpose:** Notify creators when new products are available to add to their storefront  
+**Content:** New product details, link to add products, sharing suggestions
+
+### 4. Onboarding Abandonment
+**Trigger:** CreatorCommerce `onboarding.started` event (with time delay check for completion)  
+**Purpose:** Re-engage creators who started onboarding but didn't complete it  
+**Content:** Reminder to finish setup, support link, program value proposition
+
+### 5. Sales Milestones
+**Trigger:** CreatorCommerce `milestone.reached` event  
+**Purpose:** Celebrate creator achievements and incentivize continued promotion  
+**Content:** Congratulations, performance stats, bonus details, next milestone preview
+
+### 6. Shop Abandoned
+**Trigger:** CreatorCommerce `shop.abandoned` event  
+**Purpose:** Re-engage creators who set up their storefront but haven't shared it  
+**Content:** Sharing tips, content angles, link to their storefront
+
+### 7. Shop Updated
+**Trigger:** CreatorCommerce `shop.updated` event  
+**Purpose:** Confirm storefront changes and encourage sharing  
+**Content:** Summary of updates, preview link, sharing CTA
+
+### 8. New Campaign
+**Trigger:** CreatorCommerce `campaign.created` event  
+**Purpose:** Announce new campaigns to relevant creators  
+**Content:** Campaign details, product selection, talking points, deadline
+
+## Customer-to-Affiliate Conversion
+
+Turn your best customers into affiliates using Klaviyo flows.
+
+### Setup
+
+<Steps>
+  <Step title="Create a Klaviyo flow triggered by 'Ordered Product'">
+    In Klaviyo, create a new flow with the **Ordered Product** trigger.
+  </Step>
+  <Step title="Add filters">
+    Filter for qualified customers:
+    - **Order count ≥ 2** (repeat purchasers)
+    - **Not already an affiliate** (check for absence of `cc_partner_status` property)
+  </Step>
+  <Step title="Add a time delay">
+    Wait 3-7 days after purchase to let the customer experience the product before inviting them.
+  </Step>
+  <Step title="Send the invitation email">
+    Craft an email inviting them to join your affiliate program. Include:
+    - Personalized opening referencing their purchase
+    - Program benefits (commission, exclusive access, co-branded storefront)
+    - Direct link to the CreatorCommerce application form or magic link
   </Step>
 </Steps>
 
 ## Synced Properties
 
-| CC Field | Klaviyo Property |
-|----------|------------------|
-| Partner name | cc_partner_name |
-| Shop URL | cc_shop_url |
-| Discount code | cc_discount_code |
-| Tier | cc_partner_tier |
-| Lifetime sales | cc_lifetime_sales |
+| CC Field | Klaviyo Property | Direction |
+|----------|------------------|-----------|
+| Partner name | `cc_partner_name` | CC → Klaviyo |
+| Shop URL | `cc_shop_url` | CC → Klaviyo |
+| Discount code | `cc_discount_code` | CC → Klaviyo |
+| Tier | `cc_partner_tier` | CC → Klaviyo |
+| Lifetime sales | `cc_lifetime_sales` | CC → Klaviyo |
+| Creator handle | `cc_creator_handle` | CC → Klaviyo |
 
 ## Related
 
-- [Klaviyo Webhooks](/references/webhooks-klaviyo)
+- [Klaviyo Reference: Two Sides](/references/klaviyo-two-sides)
 - [Consumer Email Variables](/guides/emails/variables-reference)
 - [Creator Email Variables](/guides/creator-emails/variables-reference)
+- [Webhooks: Klaviyo Events](/references/webhooks-klaviyo)
