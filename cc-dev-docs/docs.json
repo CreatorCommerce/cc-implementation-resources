@@ -253,7 +253,11 @@
                               "group":"Use Cases for AI",
                               "expanded":false,
                               "pages":[
-                                 "ai-guides/ai-guide-first-landing-page"
+                                 "ai-guides/ai-guide-first-landing-page",
+                                 "ai-guides/ai-creator-pl",
+                                 "ai-guides/ai-coding-assistant",
+                                 "ai-guides/ai-collab-strategy",
+                                 "guides/ai-agents/discovery-framework"
                               ]
                            }
                         ]
@@ -745,21 +749,8 @@
                   "anchor":"Connect to MCP",
                   "icon":"plug",
                   "pages":[
-                     "guides/mcp"
-                  ]
-               },
-               {
-                  "anchor":"AI Agent Prompts",
-                  "icon":"robot",
-                  "groups":[
-                     {
-                        "group":"Agent Prompts",
-                        "expanded":false,
-                        "pages":[
-                           "guides/ai-agents/pl-financial-strategist",
-                           "guides/ai-agents/discovery-framework"
-                        ]
-                     }
+                     "guides/mcp",
+                     "guides/mcp-examples"
                   ]
                }
             ]

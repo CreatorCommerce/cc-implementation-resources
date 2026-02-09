@@ -1,0 +1,172 @@
+---
+title: 'MCP Prompt Examples'
+description: 'Ready-to-use prompts for getting the most out of CreatorCommerce docs with AI assistants.'
+---
+
+Once you've [connected to the CreatorCommerce MCP](/guides/mcp), try these prompts to see what's possible. Copy any prompt below and paste it into your AI assistant.
+
+---
+
+## Build Something
+
+<AccordionGroup>
+  <Accordion title="Co-branded hero section">
+    ```text
+    Help me build a co-branded hero section that uses CreatorCommerce.
+    It should display the creator's name, profile picture, and a short
+    bio. Use the creator metaobject data and include a neutral fallback
+    for when no creator context is present.
+    ```
+  </Accordion>
+
+  <Accordion title="Creator product grid with drops">
+    ```text
+    I need a product grid section that displays a creator's curated
+    product lists (drops). Each drop should have its own title and
+    description, with products pulled from the associated Shopify
+    collection. Follow the CreatorCommerce drops data model.
+    ```
+  </Accordion>
+
+  <Accordion title="Convert an existing section to support drops">
+    ```text
+    I have an existing Shopify section that displays products from a
+    collection. Help me convert it to also support CreatorCommerce
+    drops while keeping the original collection behavior as a fallback.
+    Here's my current section code: [paste your section]
+    ```
+  </Accordion>
+
+  <Accordion title="Conditional popup blocking during creator funnels">
+    ```text
+    Help me write a JavaScript snippet for theme.liquid that hides
+    newsletter popups and discount modals when a shopper is in a
+    creator funnel (has an active creator context with a discount).
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Plan a Strategy
+
+<AccordionGroup>
+  <Accordion title="Creator program P&L">
+    ```text
+    Help me build out a P&L for my creator program. I need to
+    understand my commission ceiling, break-even per creator, and
+    how to structure tiers. Walk me through it step by step.
+    ```
+  </Accordion>
+
+  <Accordion title="End-to-end collab strategy">
+    ```text
+    I'm launching a creator collaboration program for my DTC brand.
+    Help me design the full strategy — who to recruit, how to
+    activate them, what the shopper experience should look like,
+    and how to measure success.
+    ```
+  </Accordion>
+
+  <Accordion title="Campaign ideation with co-branded emails">
+    ```text
+    Help me ideate on a new campaign that uses co-branded emails
+    post-purchase. I want to re-engage customers who bought through
+    a creator's link with follow-up emails featuring that creator's
+    recommendations and discount code.
+    ```
+  </Accordion>
+
+  <Accordion title="Merchant discovery prep">
+    ```text
+    I have a sales call with a DTC skincare brand that does $2M/year
+    and has 50 affiliates. Help me run a discovery framework and
+    build a tailored CreatorCommerce presentation for them.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Debug an Issue
+
+<AccordionGroup>
+  <Accordion title="Creator data not appearing">
+    ```text
+    My creator's name and bio aren't showing up on the landing page.
+    The section works in the Theme Editor but is blank on the live
+    site. What should I check?
+    ```
+  </Accordion>
+
+  <Accordion title="Discount not applying">
+    ```text
+    My creator discount isn't showing on product pages. The cart
+    attribute is set but the price doesn't change. Walk me through
+    the debugging steps.
+    ```
+  </Accordion>
+
+  <Accordion title="Drops products not rendering">
+    ```text
+    I'm iterating through a creator's drops but no products are
+    showing up. The drop titles display fine. Help me figure out
+    why the product loop is empty.
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Learn a Concept
+
+<AccordionGroup>
+  <Accordion title="How the creator data model works">
+    ```text
+    Explain how CreatorCommerce stores creator data in Shopify.
+    What are metaobjects, how do I access creator fields in Liquid,
+    and what's the difference between top-level fields and nested
+    data.value fields?
+    ```
+  </Accordion>
+
+  <Accordion title="Why collections instead of all_products">
+    ```text
+    Why does CreatorCommerce use Shopify collections for drop
+    products instead of all_products[]? Explain the technical
+    limitation and how collections solve it.
+    ```
+  </Accordion>
+
+  <Accordion title="Full-funnel personalization">
+    ```text
+    What does full-funnel personalization mean in CreatorCommerce?
+    How does creator context persist from the landing page through
+    product pages, cart, checkout, and post-purchase emails?
+    ```
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Tips for Better Results
+
+- **Be specific.** "Help me build a hero section" is good. "Help me build a hero section with the creator's profile picture, name, and a gradient background using their brand colors" is better.
+- **Share your code.** If you're modifying an existing section, paste the current code so the AI can preserve your existing functionality.
+- **Mention your theme.** Dawn, Prestige, custom — the theme matters for snippet naming and conventions.
+- **Reference these docs.** If using Cursor with MCP, you can point to specific doc pages: "Using the patterns from the drops data model reference, help me..."
+
+---
+
+## Go Deeper with AI Use Cases
+
+For more structured AI-guided workflows, check out the dedicated use-case pages:
+
+<CardGroup cols={2}>
+  <Card title="Build a Landing Page" icon="browser" href="/ai-guides/ai-guide-first-landing-page">
+    Step-by-step guided build for your first co-branded page.
+  </Card>
+  <Card title="Code with CreatorCommerce" icon="code" href="/ai-guides/ai-coding-assistant">
+    General-purpose coding assistant for any CC integration.
+  </Card>
+  <Card title="Creator Program P&L" icon="calculator" href="/ai-guides/ai-creator-pl">
+    Guided financial modeling for your creator program.
+  </Card>
+  <Card title="Collab Strategy" icon="lightbulb" href="/ai-guides/ai-collab-strategy">
+    Design an end-to-end creator collaboration strategy.
+  </Card>
+</CardGroup>
