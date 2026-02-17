@@ -253,6 +253,7 @@
                               "group":"Use Cases for AI",
                               "expanded":false,
                               "pages":[
+                                 "ai-guides/ai-broad-strokes-onboarding",
                                  "ai-guides/ai-guide-first-landing-page",
                                  "ai-guides/ai-creator-pl",
                                  "ai-guides/ai-coding-assistant",

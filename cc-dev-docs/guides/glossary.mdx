@@ -55,7 +55,11 @@ An association between a creator and a channel. Each collab represents the core 
 - `custom` - Custom fields specific to the collab
 
 ### Tier (Collab Tier)
-An assigned tier level to a collab that defines the discount rates, relationship type, and classification level (e.g., "Ambassadors", "Influencers", "Partners"). Tiers determine the benefits and permissions for creators within a collaboration and may be associated with campaigns.
+An assigned tier level to a collab that defines the discount rates, relationship type, and classification level (e.g., "Ambassadors", "Influencers", "Partners"). Tiers determine the benefits and permissions for creators within a collaboration and may be associated with campaigns (also known as Destinations).
+
+**Key Distinction:**
+- **Tiers** define the relationship level and discount structure for creators
+- **Destinations (Campaigns)** are marketing initiatives that group multiple tiers together and define where traffic is routed
 
 **Related API Fields:**
 - `collabTier` - Tier ID reference
@@ -63,10 +67,16 @@ An assigned tier level to a collab that defines the discount rates, relationship
 - `shopifyCollabsTierName` - Name from Shopify Collabs
 - `tierKey` - Unique tier identifier
 - `discount` - Discount configuration for this tier
-- `campaign` - Associated campaign reference
+- `campaign` - Associated campaign/destination reference
 
-### Campaign
-A marketing initiative that groups multiple collab tiers together. Campaigns can have brand pages, product pages, and redirect URL templates.
+### Campaign (Destination)
+A marketing initiative that groups multiple collab tiers together. Also referred to as a **Destination**. Campaigns can have brand pages, product pages, and redirect URL templates. They serve as the routing mechanism that determines where traffic from different tiers is directed.
+
+**Tiers vs Destinations:**
+- **Tiers** = The relationship level and discount structure (e.g., "Ambassador Tier", "Influencer Tier")
+- **Destinations/Campaigns** = The marketing initiative that routes traffic and groups tiers (e.g., "Holiday Campaign", "Product Launch Campaign")
+
+Multiple tiers can belong to the same campaign/destination, allowing you to organize different creator relationship levels under a unified marketing initiative.
 
 **Related API Fields:**
 - `_id` - Campaign's unique identifier
@@ -160,6 +170,31 @@ A unique code used for tracking and applying discounts. Synonymous with discount
 **Related API Fields:**
 - `affiliateCode` - The affiliate/discount code
 - `affiliateUrl` - Full affiliate link URL
+
+### Safelinks
+A discount link format that automatically applies a discount code when a customer clicks through, without requiring them to manually enter the code at checkout. Safelinks provide a seamless shopping experience by embedding the discount directly in the URL.
+
+**How CreatorCommerce Supports Safelinks:**
+
+1. **Integrated Platform Support:**
+   - For platforms that natively support safelinks (e.g., Shopify Collabs, certain affiliate networks), CreatorCommerce integrates directly with the platform's safelink functionality
+   - The platform's safelink URLs are preserved and used as-is, maintaining full compatibility with the platform's tracking and attribution systems
+
+2. **Cross-Platform Safelink Creation:**
+   - For platforms that don't support safelinks, CreatorCommerce can create a 1:1 discount value equivalent
+   - When a discount code is created in an external platform (e.g., an affiliate network), CreatorCommerce can automatically create a matching Shopify discount code with the same value
+   - This ensures creators get the same discount experience regardless of which platform generated the original code
+
+3. **Attribution Preservation:**
+   - Even when CreatorCommerce creates equivalent discount codes for platforms without safelink support, attribution is maintained back to the original platform
+   - CreatorCommerce preserves the original platform's URL parameters in the affiliate link
+   - This allows the external platform to continue tracking conversions and attributing sales correctly, while customers benefit from automatic discount application
+
+**Benefits:**
+- Seamless customer experience (no manual code entry required)
+- Consistent discount application across all platforms
+- Maintained attribution tracking for external platforms
+- Unified discount management regardless of source platform
 
 ## Media
 
