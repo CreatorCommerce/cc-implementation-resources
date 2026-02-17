@@ -47,16 +47,77 @@ Create `snippets/cc-dynamic-text.liquid`:
 
 ## Supported Tokens
 
-| Token | With Creator | Without Creator |
-|-------|--------------|-----------------|
-| `[CREATOR_NAME]` | Sarah | our expert |
-| `[CREATOR_FULL_NAME]` | Sarah Jones | our team |
-| `[DISCOUNT_CODE]` | SARAH15 | (empty) |
-| `[DISCOUNT_AMOUNT]` | 15 | (empty) |
+| Token | With Creator | Without Creator | Notes |
+|-------|--------------|-----------------|-------|
+| `[CREATOR_NAME]` | Sarah | our expert | Most commonly used |
+| `[CREATOR_FULL_NAME]` | Sarah Jones | our team | For formal contexts |
+| `[DISCOUNT_CODE]` | SARAH15 | *(empty string)* | Pair with conditional rendering |
+| `[DISCOUNT_AMOUNT]` | 15 | *(empty string)* | Numeric — add `%` or `$` in your template |
+
+### Extending with Custom Tokens
+
+You can extend the snippet to support additional tokens. Common additions:
+
+```liquid
+{% liquid
+  assign output = text
+  
+  if cc_creator
+    assign output = output | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name
+    assign output = output | replace: '[CREATOR_FULL_NAME]', cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name
+    assign output = output | replace: '[DISCOUNT_CODE]', cc_creator.cc-collab-discount-code
+    assign output = output | replace: '[DISCOUNT_AMOUNT]', cc_creator.cc-collab-discount-amount
+    assign output = output | replace: '[SHOP_TITLE]', cc_creator.cc-creator-shop-title
+    assign output = output | replace: '[BIO]', cc_creator.cc-creator-shop-description
+  else
+    assign output = output | replace: '[CREATOR_NAME]', 'our expert'
+    assign output = output | replace: '[CREATOR_FULL_NAME]', 'our team'
+    assign output = output | replace: '[DISCOUNT_CODE]', ''
+    assign output = output | replace: '[DISCOUNT_AMOUNT]', ''
+    assign output = output | replace: '[SHOP_TITLE]', 'Our Shop'
+    assign output = output | replace: '[BIO]', ''
+  endif
+%}
+
+{{ output }}
+```
+
+### Supporting Custom Fields
+
+For custom fields specific to your merchant program, add additional `replace` lines:
+
+```liquid
+{% comment %} Custom field tokens — add as needed {% endcomment %}
+{% if cc_creator %}
+  {% assign output = output | replace: '[SPECIALTY]', cc_creator.data.value['cc-specialty'] %}
+  {% assign output = output | replace: '[LOCATION]', cc_creator.data.value['cc-location'] %}
+{% else %}
+  {% assign output = output | replace: '[SPECIALTY]', '' %}
+  {% assign output = output | replace: '[LOCATION]', '' %}
+{% endif %}
+```
+
+---
+
+## Handling Empty Tokens Gracefully
+
+When a token resolves to empty (e.g., no discount code), the surrounding text might look awkward. Use conditional rendering around the entire element:
+
+```liquid
+{% comment %} ❌ Awkward: "Use code  for % off!" (when no discount) {% endcomment %}
+<p>{% render 'cc-dynamic-text', text: 'Use code [DISCOUNT_CODE] for [DISCOUNT_AMOUNT]% off!', cc_creator: cc_creator %}</p>
+
+{% comment %} ✅ Better: Only show the discount line when the code exists {% endcomment %}
+{% if cc_creator and cc_creator.cc-collab-discount-code != blank %}
+  <p>{% render 'cc-dynamic-text', text: section.settings.discount_text, cc_creator: cc_creator %}</p>
+{% endif %}
+```
+
+---
 
 ## Example Settings
 
-In your section schema:
+In your section schema, include info text so merchants know which tokens are available:
 
 ```json
 {
@@ -64,6 +125,20 @@ In your section schema:
   "id": "heading",
   "label": "Heading",
   "default": "Shop [CREATOR_NAME]'s favorites",
-  "info": "Use [CREATOR_NAME], [DISCOUNT_CODE], [DISCOUNT_AMOUNT] for personalization"
+  "info": "Tokens: [CREATOR_NAME], [CREATOR_FULL_NAME], [DISCOUNT_CODE], [DISCOUNT_AMOUNT]"
+},
+{
+  "type": "textarea",
+  "id": "subheading",
+  "label": "Subheading",
+  "default": "Hand-picked by [CREATOR_NAME] just for you",
+  "info": "Tokens: [CREATOR_NAME], [CREATOR_FULL_NAME]"
 }
 ```
+
+---
+
+## Related
+
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — All available creator fields for building custom tokens
+- [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) — Use dynamic text when converting sections

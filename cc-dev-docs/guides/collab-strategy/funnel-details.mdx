@@ -386,6 +386,9 @@ Use the content you've collected throughout the funnel:
 | UGC gallery | ✓ |  | ✓ |  |  |
 | Product picks | ✓ | ✓ |  | ✓ | ✓ |
 | Discount code | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Custom fields (collab) | ✓ | ✓ | ✓ |  | ✓ |
+| Custom fields (drop) | ✓ |  |  |  |  |
+| Custom fields (product) | ✓ |  | ✓ |  |  |
 
 ### Dynamic Text Tokens
 
@@ -398,6 +401,16 @@ Use tokens to personalize messaging at scale:
 [cc-creator-discount-amount]→ "15%"
 [cc-creator-shop-tagline]   → "Clean beauty picks"
 ```
+
+#### Custom Field Tokens
+
+Beyond built-in tokens, [custom fields](/references/custom-fields-reference) collected via [forms](/guides/creator-experience/forms/overview) can also appear throughout the funnel:
+
+- **Collab-level fields** (e.g., creator specialty, credentials) → Available everywhere the creator context exists
+- **Drop-level fields** (e.g., drop tagline, seasonal theme) → Available when iterating through drops
+- **Product-level fields** (e.g., "Why I love this," sizing notes) → Available within product loops inside drops
+
+Custom field data flows automatically from forms into the creator metaobject, so it can be displayed on landing pages, product pages, pop-ups, or even in co-branded emails.
 
 ---
 

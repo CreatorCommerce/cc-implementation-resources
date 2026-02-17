@@ -7,6 +7,21 @@ Once you've [connected to the CreatorCommerce MCP](/guides/mcp), try these promp
 
 ---
 
+## Main AI Use Case
+
+**Discover available use cases:**
+> "Tell me the AI use cases you have available"
+
+This prompt helps you discover all the AI-guided workflows and use cases available in the CreatorCommerce documentation.
+
+---
+
+## Specific Prompt Examples
+
+The prompts below showcase specific conventions for prompting and demonstrate what's possible with CreatorCommerce:
+
+---
+
 ## Build Something
 
 <AccordionGroup>
@@ -34,6 +49,25 @@ Once you've [connected to the CreatorCommerce MCP](/guides/mcp), try these promp
     collection. Help me convert it to also support CreatorCommerce
     drops while keeping the original collection behavior as a fallback.
     Here's my current section code: [paste your section]
+    ```
+  </Accordion>
+
+  <Accordion title="Build a creator directory">
+    ```text
+    Help me build a creator directory section where shoppers can browse
+    all public creators in a responsive grid. Each card should show the
+    creator's profile picture, name, and a short bio. Include filtering
+    by category and a "similar creators" mode based on shared attributes.
+    ```
+  </Accordion>
+
+  <Accordion title="Create a new co-branded section from scratch">
+    ```text
+    Help me create a new co-branded testimonial section that shows a
+    creator's quote, profile picture, and name. It should use dynamic
+    text tokens so the merchant can customize the heading, support the
+    Theme Editor preview with a creator picker, and fall back gracefully
+    when no creator context is present.
     ```
   </Accordion>
 
@@ -75,11 +109,12 @@ Once you've [connected to the CreatorCommerce MCP](/guides/mcp), try these promp
     ```
   </Accordion>
 
-  <Accordion title="Merchant discovery prep">
+  <Accordion title="CreatorCommerce fit discovery">
     ```text
     I have a sales call with a DTC skincare brand that does $2M/year
-    and has 50 affiliates. Help me run a discovery framework and
-    build a tailored CreatorCommerce presentation for them.
+    and has 50 affiliates on Social Snowball. Help me run a fit
+    discovery to determine if CreatorCommerce is right for them and
+    build a tailored value narrative if it is.
     ```
   </Accordion>
 </AccordionGroup>
@@ -157,8 +192,17 @@ Once you've [connected to the CreatorCommerce MCP](/guides/mcp), try these promp
 For more structured AI-guided workflows, check out the dedicated use-case pages:
 
 <CardGroup cols={2}>
+  <Card title="Broad Strokes Onboarding" icon="rocket" href="/ai-guides/ai-broad-strokes-onboarding">
+    Quick-start funnel strategy when you're not sure where to begin.
+  </Card>
   <Card title="Build a Landing Page" icon="browser" href="/ai-guides/ai-guide-first-landing-page">
     Step-by-step guided build for your first co-branded page.
+  </Card>
+  <Card title="Theme Edits" icon="pen-to-square" href="/ai-guides/ai-theme-edits">
+    Add dynamic text, creator media, fallbacks, or convert sections to support drops.
+  </Card>
+  <Card title="Build a Creator Directory" icon="users" href="/ai-guides/ai-creator-directory">
+    Build browsable creator grids, search, and "similar creators" experiences.
   </Card>
   <Card title="Code with CreatorCommerce" icon="code" href="/ai-guides/ai-coding-assistant">
     General-purpose coding assistant for any CC integration.

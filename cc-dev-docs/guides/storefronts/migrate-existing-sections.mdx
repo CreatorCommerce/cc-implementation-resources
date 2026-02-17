@@ -1,77 +1,342 @@
 ---
 title: 'Migrate Existing Sections'
-description: 'Convert your current theme sections to support creator co-branding.'
+description: 'Convert your current theme sections to support creator co-branding without breaking existing functionality.'
 ---
 
 ## Migration Approach
 
-Don't rebuild from scratch. Add creator awareness to existing sections.
+Don't rebuild from scratch. Add creator awareness to existing sections. The goal is to enhance what you already have — your section works exactly the same when there's no creator context, but personalizes dynamically when a creator is active.
+
+<Warning>
+**Never modify original theme files directly.** Always duplicate first. Create a `cc-` prefixed copy (e.g., `cc-featured-collection.liquid`) so you can roll back at any time.
+</Warning>
+
+---
+
+## Before You Start
+
+### File Naming Convention
+
+```
+Original:   sections/featured-collection.liquid
+CC Version: sections/cc-featured-collection.liquid
+```
+
+### Migration Checklist
+
+- [ ] Identify which sections to migrate (see Priority Sections below)
+- [ ] Duplicate each file with `cc-` prefix
+- [ ] Add creator resolution at the top
+- [ ] Identify personalizable elements in the HTML
+- [ ] Wrap those elements with conditionals
+- [ ] Add preview creator setting for theme editor
+- [ ] Test with and without creator context
+- [ ] Update your page templates to reference the CC version
+
+---
 
 ## Step-by-Step Process
 
 ### 1. Add Creator Resolution
 
-At the top of any section:
+Add the universal resolution block at the **very top** of the section, before any HTML or existing Liquid:
 
 ```liquid
 {% liquid
   if metaobject
     assign cc_creator = metaobject
+  elsif request.design_mode and section.settings.preview_creator_handle != blank
+    assign cc_creator = metaobjects.creator[section.settings.preview_creator_handle]
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
     assign cc_creator = metaobjects.creator[cc_handle]
   endif
+  
+  assign has_creator = cc_creator != blank
 %}
 ```
 
+<Note>
+This block handles three scenarios in priority order: metaobject page (direct access), theme editor preview (testing), and cart attribute resolution (all other pages). Order matters — `metaobject` check must come first.
+</Note>
+
 ### 2. Identify Personalizable Elements
 
-| Element | Personalization |
-|---------|-----------------|
-| Headings | Add creator name |
-| Images | Swap for creator photo |
-| Copy | Include discount info |
-| CTAs | Reference exclusive offer |
+Scan the section's HTML for elements that could be personalized with creator data:
+
+| Element | What to Personalize | Creator Field |
+|---------|-------------------|---------------|
+| **Headings** | Add creator name or use dynamic text tokens | `cc-creator-first-name` |
+| **Hero images** | Swap for creator profile picture or featured media | `cc-creator-profile-picture` |
+| **Subheadings / body copy** | Replace with creator description or bio | `cc-creator-shop-description` |
+| **CTAs** | Reference exclusive offer or discount code | `cc-collab-discount-code` |
+| **Background colors** | Apply creator brand color | `cc-creator-shop-theme-primary-color` |
+| **Product grids** | Filter to creator drops collections | `cc-creator-drops` |
 
 ### 3. Wrap with Conditionals
 
+For each personalizable element, wrap the output with a creator check. The `else` branch should always render the original content:
+
 ```liquid
-{% if cc_creator %}
-  <h2>{{ cc_creator.cc-creator-first-name }}'s Favorites</h2>
+{% if has_creator %}
+  <h2>{{ cc_creator.cc-creator-first-name | escape }}'s Favorites</h2>
 {% else %}
   <h2>{{ section.settings.heading }}</h2>
 {% endif %}
 ```
 
-### 4. Add Preview Setting
-
-For theme editor testing:
-
-```json
-{
-  "type": "text",
-  "id": "preview_creator_handle",
-  "label": "Preview Creator (editor only)"
-}
-```
+**For images:**
 
 ```liquid
-{% if request.design_mode and section.settings.preview_creator_handle != blank %}
-  {% assign cc_creator = metaobjects.creator[section.settings.preview_creator_handle] %}
+{% if has_creator and cc_creator.cc-creator-profile-picture %}
+  <img 
+    src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 600 }}" 
+    alt="{{ cc_creator.cc-creator-first-name | escape }}"
+    loading="lazy"
+  >
+{% elsif section.settings.image %}
+  <img 
+    src="{{ section.settings.image | image_url: width: 600 }}" 
+    alt="{{ section.settings.image.alt }}"
+    loading="lazy"
+  >
 {% endif %}
 ```
 
+**For discount banners:**
+
+```liquid
+{% if has_creator and cc_creator.cc-collab-discount-code %}
+  <div class="discount-banner">
+    Use code <strong>{{ cc_creator.cc-collab-discount-code | escape }}</strong>
+    for {{ cc_creator.cc-collab-discount-amount | escape }}% off
+  </div>
+{% endif %}
+```
+
+### 4. Use Dynamic Text Tokens
+
+For text settings that should personalize, use the `cc-dynamic-text` snippet so merchants can write text like "Shop [cc-creator-first-name]'s picks" in the theme editor:
+
+```liquid
+<h1>
+  {% render 'cc-dynamic-text', text: section.settings.heading, cc_creator: cc_creator %}
+</h1>
+```
+
+See the [Dynamic Content Snippet](/guides/storefronts/dynamic-content-snippet) for full token reference.
+
+### 5. Apply Creator Brand Colors
+
+If the section has colored elements, apply creator brand colors via CSS variables:
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-shop-theme-primary-color %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      --cc-primary-color: {{ cc_creator.cc-creator-shop-theme-primary-color | default: 'inherit' }};
+    }
+  </style>
+{% endif %}
+```
+
+Then reference the variable in your existing CSS:
+
+```css
+.section-banner {
+  background-color: var(--cc-primary-color, var(--color-background));
+}
+```
+
+### 6. Add Preview Setting to Schema
+
+Add a preview creator handle setting so merchants and developers can test the co-branded experience in the theme editor without needing cart attributes:
+
+```json
+{
+  "type": "header",
+  "content": "CreatorCommerce Preview"
+},
+{
+  "type": "text",
+  "id": "preview_creator_handle",
+  "label": "Preview Creator Handle",
+  "info": "Enter a creator handle to preview co-branded appearance in the editor. This does not affect the live site."
+}
+```
+
+### 7. Converting Product Grids to Support Drops
+
+If the section displays products, you can optionally filter to the creator's drops:
+
+```liquid
+{% if has_creator and cc_creator.cc-creator-drops.value %}
+  {% assign drops_data = cc_creator.data.value['cc-creator-drops'] %}
+  {% assign drops_collections = cc_creator['cc-creator-drops'].value %}
+  
+  {% for json_drop in drops_data %}
+    {% assign drop_collection_id = json_drop['cc-creator-drop-collection-id'] %}
+    
+    {% for collection_drop in drops_collections %}
+      {% if collection_drop.id | append: '' == drop_collection_id %}
+        {% for product in collection_drop.products limit: section.settings.products_per_row %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% else %}
+  {% comment %} Original product rendering {% endcomment %}
+  {% for product in section.settings.collection.products limit: section.settings.products_per_row %}
+    {% render 'product-card', product: product %}
+  {% endfor %}
+{% endif %}
+```
+
+<Note>
+The `| append: ''` on `collection_drop.id` converts the integer ID to a string so it matches the string ID stored in the JSON drops data. This type conversion is critical — see [ID Type Conversion](/references/sdk/referencing-creator-content#id-type-conversion).
+</Note>
+
+---
+
 ## Priority Sections
 
-1. Hero/banner sections
-2. Featured collection
-3. Product grid
-4. Testimonial/quote blocks
-5. Email signup
+Migrate sections in this order based on impact:
+
+| Priority | Section Type | Why First |
+|----------|-------------|-----------|
+| 1 | **Hero / banner** | First thing visitors see — creator name + photo = immediate personalization |
+| 2 | **Featured collection / product grid** | Shows creator drops — the core shopping experience |
+| 3 | **Promotional banner** | Display discount code prominently |
+| 4 | **Testimonial / quote block** | Creator endorsement and social proof |
+| 5 | **Email signup / newsletter** | Personalize opt-in messaging with creator context |
+| 6 | **Footer / announcement bar** | Subtle touches that reinforce the co-branded feel |
+
+---
+
+## Complete Example: Migrating a Featured Collection
+
+Here's a full before/after showing the migration of a typical featured collection section:
+
+**Before (original `featured-collection.liquid`):**
+
+```liquid
+<section class="featured-collection">
+  <h2>{{ section.settings.heading }}</h2>
+  <div class="product-grid">
+    {% for product in section.settings.collection.products limit: 4 %}
+      {% render 'product-card', product: product %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Featured Products" },
+    { "type": "collection", "id": "collection", "label": "Collection" }
+  ]
+}
+{% endschema %}
+```
+
+**After (new `cc-featured-collection.liquid`):**
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  elsif request.design_mode and section.settings.preview_creator_handle != blank
+    assign cc_creator = metaobjects.creator[section.settings.preview_creator_handle]
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+  assign creator_name = cc_creator.cc-creator-first-name | default: '' | escape
+-%}
+
+<section class="featured-collection">
+  <h2>
+    {%- if has_creator -%}
+      {% render 'cc-dynamic-text', text: section.settings.heading, cc_creator: cc_creator %}
+    {%- else -%}
+      {{ section.settings.heading }}
+    {%- endif -%}
+  </h2>
+  
+  <div class="product-grid">
+    {%- if has_creator and cc_creator.cc-creator-drops.value -%}
+      {%- assign drops_data = cc_creator.data.value['cc-creator-drops'] -%}
+      {%- assign drops_collections = cc_creator['cc-creator-drops'].value -%}
+      
+      {%- for json_drop in drops_data limit: 1 -%}
+        {%- assign drop_collection_id = json_drop['cc-creator-drop-collection-id'] -%}
+        
+        {%- for collection_drop in drops_collections -%}
+          {%- if collection_drop.id | append: '' == drop_collection_id -%}
+            {%- for product in collection_drop.products limit: 4 -%}
+              {% render 'product-card', product: product %}
+            {%- endfor -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    {%- else -%}
+      {%- for product in section.settings.collection.products limit: 4 -%}
+        {% render 'product-card', product: product %}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CC Featured Collection",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop [cc-creator-first-name]'s Picks" },
+    { "type": "collection", "id": "collection", "label": "Fallback Collection" },
+    {
+      "type": "header",
+      "content": "CreatorCommerce Preview"
+    },
+    {
+      "type": "text",
+      "id": "preview_creator_handle",
+      "label": "Preview Creator Handle",
+      "info": "Enter a creator handle to preview co-branded appearance in the editor."
+    }
+  ],
+  "presets": [{ "name": "CC Featured Collection" }]
+}
+{% endschema %}
+```
+
+---
 
 ## Testing Checklist
 
-- [ ] Section works without creator context
-- [ ] Section personalizes with creator context
-- [ ] Fallbacks are neutral (not broken)
-- [ ] Preview setting works in editor
+<Checklist>
+  - [ ] Section works without creator context (fallback renders correctly)
+  - [ ] Section personalizes with creator context (name, image, drops)
+  - [ ] Dynamic text tokens resolve correctly
+  - [ ] Fallbacks are neutral — not broken, not referencing a missing creator
+  - [ ] Preview setting works in theme editor
+  - [ ] Images lazy load and have alt text
+  - [ ] Discount code displays only when creator has one
+  - [ ] Product grid falls back to setting collection when no drops
+  - [ ] ID comparisons use string conversion (`| append: ''`)
+  - [ ] No Liquid errors in server logs
+</Checklist>
+
+---
+
+## Related
+
+- [Dynamic Content Snippet](/guides/storefronts/dynamic-content-snippet) — Token replacement for text settings
+- [Show Discounted Prices](/guides/dev/show-discounted-prices) — Price display with creator discounts
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Full field reference
+- [AI Use Case: Theme Edits](/ai-guides/ai-theme-edits) — Get AI guidance on section conversions

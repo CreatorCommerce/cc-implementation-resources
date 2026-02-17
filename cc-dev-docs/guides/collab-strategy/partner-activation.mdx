@@ -84,6 +84,20 @@ The co-branded experience is only as good as the data behind it. You need:
     - Extracted from existing sites
     - AI color matching from photos
   </Accordion>
+  
+  <Accordion title="Custom Data (via Custom Fields & Forms)">
+    **What:** Segment-specific data like specialties, credentials, audience demographics, product testimonials, sizing info, content preferences
+    
+    **Why:** Enables deeper personalization, richer storefront content, and segment-specific experiences
+    
+    **How to get it:**
+    - [Onboarding forms](/guides/creator-experience/forms/onboarding/overview) for collab-level data at signup
+    - [Collection forms](/guides/creator-experience/forms/collection/overview) for drop-level data during curation
+    - [Product forms](/guides/creator-experience/forms/product/overview) for product-level data within drops
+    - [Custom forms](/guides/creator-experience/forms/custom/overview) for ongoing or campaign-specific collection
+    
+    All form data maps to [custom fields](/references/custom-fields-reference) that are immediately available for storefront rendering.
+  </Accordion>
 </AccordionGroup>
 
 ### Collection Methods
@@ -93,14 +107,24 @@ The co-branded experience is only as good as the data behind it. You need:
     **When to use:** Best for intentional, structured data collection
     
     **Implementation:**
-    - Onboarding questionnaires
-    - Progressive profiling (ask more over time)
-    - Quick-edit fields in partner dashboard
+    CreatorCommerce provides built-in form types designed for different data collection moments:
+    
+    - **Onboarding forms** — Collect identity, preferences, and activation data at signup
+    - **Collection forms** — Gather drop-level data like titles, descriptions, featured media when creators curate product lists
+    - **Product forms** — Collect product-level notes, testimonials, or sizing info within drops
+    - **Custom forms** — Ongoing or campaign-specific data collection (e.g., seasonal content, UGC submissions)
+    
+    Each form type maps to [custom fields](/references/custom-fields-reference) at the appropriate level (collab, drop, or product), so the data collected is automatically available in Liquid templates on the storefront.
     
     **Tips:**
-    - Keep forms short and focused
+    - Keep forms short and focused — each form type serves a distinct purpose
     - Explain why you're asking each question
     - Allow skipping with "we'll figure it out" fallback
+    - Use progressive profiling: start with onboarding forms, add collection/product forms as creators engage
+    
+    <Tip>
+    CC's native forms eliminate the need for custom development for most data collection use cases. You define the fields in the dashboard, and collected data flows directly into the creator's metaobject for storefront rendering.
+    </Tip>
   </Tab>
   
   <Tab title="Order History">

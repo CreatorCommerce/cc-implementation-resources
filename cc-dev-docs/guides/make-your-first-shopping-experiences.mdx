@@ -82,6 +82,67 @@ Once you have creators and collabs set up, you can build co-branded shopping exp
 - Link to creator pages
 - Search functionality
 
+## Three Ways to Launch
+
+Before diving into code, choose your implementation approach. Each has different speed, customization, and complexity trade-offs.
+
+| Approach | Speed | Customization | Best For |
+|----------|-------|---------------|----------|
+| **Pre-Built CC Sections** | ⚡⚡⚡ Fastest (30–60 min) | Low | Quick tests, proof of concept, getting live today |
+| **Subtle Theme Modifications** | ⚡⚡ Balanced (1–2 hours) | Medium | Existing brands that want to keep their current design but add creator touches |
+| **Experimental Bespoke** | ⚡ Moderate (2–4 hours) | High | Brands wanting something unique and on-brand |
+
+### Approach 1: Pre-Built CC Sections
+
+Use CreatorCommerce's pre-built sections (files starting with `cc-` in your theme's `sections/` folder) to build a complete creator landing page template.
+
+**What you do:**
+1. Select 2–4 CC sections that match your brand personality (hero + products + optional banner)
+2. Create a `templates/metaobject/creator.json` template that orders them
+3. Configure basic settings in the Theme Editor
+
+**Common sections:**
+- `cc-hero-equinox.liquid` — High-impact animated hero
+- `cc-hero-primavera-mini.liquid` — Clean, minimal hero
+- `cc-drops-product-curated-lists-shell.liquid` — Product grid with drops
+- `cc-banner-momentum.liquid` — Promotional banner
+
+### Approach 2: Subtle Theme Modifications
+
+Copy your current homepage template and make subtle modifications to add creator personalization. Your brand stays intact — you're just layering in creator context.
+
+**What you do:**
+1. Duplicate `templates/index.json` to create a creator version
+2. Modify headlines to include creator name via dynamic text tokens
+3. Add discount code display to CTAs
+4. Optionally filter products to creator drops
+
+**Key modifications:**
+- **Headlines:** Use `[cc-creator-first-name]` tokens in text settings
+- **Price display:** Add `cc-price.liquid` snippet to show creator discounts
+- **Product grids:** Optionally filter to creator drops collections
+- **Banners:** Display discount code prominently
+
+### Approach 3: Experimental Bespoke
+
+Start with your homepage as the foundation, then transform 2–3 key sections into something fresh and creator-forward. Keep the brand feel but add intentional creator elements.
+
+**What you do:**
+1. Start with `index.json` as your base
+2. Pick 2–3 sections to transform (typically hero + product grid + one other)
+3. Either enhance existing sections with creator data, replace them with CC sections, or build custom sections using CC data access patterns
+
+**Best when you want:**
+- A unique look that stands out from typical affiliate pages
+- Creative flexibility to experiment with layouts
+- A hybrid of your existing brand aesthetic with creator elements
+
+<Tip>
+**Not sure which approach?** Start with **Approach 1 (Pre-Built CC Sections)** — it gets you live fastest. You can always evolve to Approach 2 or 3 once you see what works. Or build all three and A/B test different approaches with different creator segments.
+</Tip>
+
+---
+
 ## Building Your First Experience
 
 ### Step 1: Access Creator Data

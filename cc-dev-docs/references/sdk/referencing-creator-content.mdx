@@ -165,7 +165,9 @@ Always convert `product.id` to a string with `| append: ''` before comparing wit
 
 ## Fallback Handling
 
-Always provide fallbacks for missing data:
+Always provide fallbacks for missing data. The fallback value should be **neutral** — it should make sense to a shopper even when no creator is present.
+
+### Quick Fallback Pattern
 
 ```liquid
 {% liquid
@@ -174,6 +176,113 @@ Always provide fallbacks for missing data:
   assign creator_color = cc_creator.cc-creator-shop-theme-primary-color | default: '#000000'
 %}
 ```
+
+### Fallback Strategy by Field Type
+
+| Field Type | Has Creator + Has Data | Has Creator + Missing Data | No Creator |
+|-----------|----------------------|--------------------------|-----------|
+| **Name / text** | Show creator value | Use `| default:` neutral text | Use section settings value |
+| **Profile picture** | Show creator image | Show initials or section fallback image | Show section settings image or hide |
+| **Bio / description** | Show creator bio | Hide element entirely | Show section settings text or hide |
+| **Discount code** | Show discount UI | Hide discount UI entirely | Hide discount UI entirely |
+| **Discount amount** | Calculate + show price | Hide price modification | Show original price only |
+| **Brand color** | Apply CSS variable | Use `| default:` theme color | Use theme default |
+| **Drops / products** | Iterate creator drops | Show section collection fallback | Show section collection fallback |
+| **Social handles** | Show linked icons | Hide individual missing icons | Hide social section entirely |
+
+### Conditional Rendering Pattern
+
+For UI elements that should only appear when data exists (not just default values):
+
+```liquid
+{%- comment -%} Only show the discount banner if there's an actual code {%- endcomment -%}
+{% if cc_creator and cc_creator.cc-collab-discount-code != blank %}
+  <div class="discount-banner">
+    Use code <strong>{{ cc_creator.cc-collab-discount-code | escape }}</strong>
+    for {{ cc_creator.cc-collab-discount-amount | escape }}% off
+  </div>
+{% endif %}
+
+{%- comment -%} Only show bio if it exists — don't show empty space {%- endcomment -%}
+{% if cc_creator and cc_creator.cc-creator-shop-description != blank %}
+  <p class="creator-bio">{{ cc_creator.cc-creator-shop-description | escape }}</p>
+{% endif %}
+```
+
+### Three-State Handling
+
+Best practice for robust sections — handle all three states:
+
+```liquid
+{% if cc_creator and cc_creator.cc-creator-first-name != blank %}
+  {%- comment -%} State 1: Creator present, data available {%- endcomment -%}
+  <h2>Shop {{ cc_creator.cc-creator-first-name | escape }}'s Picks</h2>
+{% elsif cc_creator %}
+  {%- comment -%} State 2: Creator present, specific data missing {%- endcomment -%}
+  <h2>Shop Curated Picks</h2>
+{% else %}
+  {%- comment -%} State 3: No creator context at all {%- endcomment -%}
+  <h2>{{ section.settings.heading }}</h2>
+{% endif %}
+```
+
+## Custom Fields (Customer Fields)
+
+Custom fields let merchants extend the creator data model with additional fields specific to their program. These fields live inside the `data` JSON and are accessed differently depending on their level.
+
+### Field Levels
+
+| Level | Description | Access Pattern |
+|-------|-------------|---------------|
+| **Creator-level** | Custom fields on the creator (e.g., `cc-bio`, `cc-shoe-size`) | `cc_creator.data.value['cc-field-name']` |
+| **Drop-level** | Custom fields on a drop (e.g., `cc-featured-media`, `cc-drop-theme`) | `drop['cc-field-name']` (within drops iteration) |
+| **Product-level** | Custom fields on a product within a drop (e.g., `cc-shoe-size`, `cc-fit-notes`) | `product['cc-field-name']` (within products iteration) |
+
+### Accessing Custom Fields
+
+```liquid
+{%- comment -%} Creator-level custom field {%- endcomment -%}
+{% assign creator_bio = cc_creator.data.value['cc-bio'] %}
+{% if creator_bio != blank %}
+  <p>{{ creator_bio | escape }}</p>
+{% endif %}
+
+{%- comment -%} Drop-level custom field {%- endcomment -%}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% assign featured_media = drop['cc-featured-media'] %}
+  {% if featured_media != blank %}
+    <img src="{{ featured_media }}" alt="Featured">
+  {% endif %}
+{% endfor %}
+
+{%- comment -%} Product-level custom field {%- endcomment -%}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% for product in drop['cc-creator-drop-products'] %}
+    {% assign shoe_size = product['cc-shoe-size'] %}
+    {% if shoe_size != blank %}
+      <span>Creator wears size {{ shoe_size | escape }}</span>
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+```
+
+### Custom Fields + Filtering
+
+Custom fields are useful for filtering creators in directories or products in grids:
+
+```liquid
+{%- comment -%} Filter creators by a custom field value {%- endcomment -%}
+{% for creator in metaobjects.creator %}
+  {% assign creator_data = creator.data.value %}
+  {% if creator_data['cc-specialty'] == 'yoga' %}
+    {%- comment -%} Show this creator {%- endcomment -%}
+  {% endif %}
+{% endfor %}
+```
+
+See [Custom Fields Reference](/references/custom-fields-reference) for a full list of common custom field patterns.
+
+---
 
 ## The `data` JSON Field
 

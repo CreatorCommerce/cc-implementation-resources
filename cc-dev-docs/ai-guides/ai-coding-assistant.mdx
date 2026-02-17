@@ -95,6 +95,7 @@ Ask these questions to understand their project before writing any code.
 | 2 | Do you need to display the creator's product recommendations (drops)? | Drops have their own iteration pattern — collections, not all_products |
 | 3 | Do you need product-level data from drops? (Enhancement notes, variants, custom fields?) | Requires nested iteration through drops → products |
 | 4 | Do you need the creator's discount code or amount? | Different field paths for discount data |
+| 5 | Does the brand use custom fields beyond the standard CC fields? If so, at which level — collab, drop, or product? | Custom fields have different access patterns per level. They may have been populated via forms (onboarding, custom, collection, or product forms). See [Custom Fields Reference](/references/custom-fields-reference) |
 
 ### Section 3: The Environment
 
@@ -165,6 +166,38 @@ When the section needs to work on **both**:
 - Drop products: `drop['cc-creator-drop-products']`
 - Product-level custom fields: `product_item['cc-creator-drop-product-FIELD-NAME']`
 
+### Custom Fields (Beyond Base Metaobject)
+
+Brands can define custom fields at three scoping levels. These fields are typically populated via CC forms (onboarding, custom, collection, or product forms) and stored alongside the base metaobject data.
+
+**Collab-level custom fields** (1 field instance per collab):
+```liquid
+{{ cc_creator.data.value['cc-hero-header'] }}
+{{ cc_creator.data.value['cc-logo'].url }}
+```
+
+**Drop-level custom fields** (1 field instance per drop/collection):
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {{ json_drop['custom']['cc-drop-short-form-2'] }}
+  {{ json_drop['custom']['cc-drop-media-2'] }}
+{% endfor %}
+```
+
+**Product-level custom fields** (1 field instance per product):
+```liquid
+{% for json_product in json_drop['cc-creator-drop-products'] %}
+  {% assign enhancement_custom = json_product['cc-creator-drop-product-enhancement-custom'] %}
+  {% if enhancement_custom %}
+    {{ enhancement_custom['cc-product-short-form-2'] }}
+  {% endif %}
+{% endfor %}
+```
+
+**How custom fields get populated:** Brands configure forms in the CC dashboard — onboarding forms (initial signup), custom forms (ad-hoc data), collection forms (per-drop data), and product forms (per-product data). Collection forms can nest inside onboarding or custom forms, and product forms can nest inside collection forms. The data collected flows into these custom field slots and becomes available in Liquid via the patterns above.
+
+For the full field type reference (text, media, arrays, objects) and naming conventions, see [Custom Fields Reference](/references/custom-fields-reference).
+
 ### ID Comparison (Critical)
 
 Shopify IDs are integers. JSON-stored IDs are strings. Always convert:
@@ -224,12 +257,97 @@ When the user asks for one of these, here's the approach:
 6. Update schema name to include "CC" prefix
 7. Add "Fallback Collection" label to collection setting
 
+**For the step-by-step walkthrough, see:** [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) or the [Theme Edits AI Use Case — Pattern 7](/ai-guides/ai-theme-edits).
+
+### Creating a New Co-Branded Section from Scratch
+
+When building a brand-new section (hero, testimonial, product grid, etc.) that uses creator data:
+
+1. **Creator resolution** — Always start with the standard pattern:
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  if cc_creator == blank and request.design_mode
+    assign cc_creator = section.settings.preview_creator
+  endif
+-%}
+```
+
+2. **Dynamic text processing** — All user-configurable text settings should resolve `[field-name]` tokens:
+```liquid
+{% capture heading_text %}{% render 'cc-process-dynamic-text', input_text: section.settings.heading %}{% endcapture %}
+```
+
+3. **Image fallback chain** — Creator image → section setting fallback → hide:
+```liquid
+{%- if cc_creator and cc_creator.cc-creator-profile-picture -%}
+  <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 400 }}" alt="{{ cc_creator.cc-creator-first-name | escape }}">
+{%- elsif section.settings.fallback_image -%}
+  <img src="{{ section.settings.fallback_image | image_url: width: 400 }}" alt="{{ section.settings.fallback_image.alt | escape }}">
+{%- endif -%}
+```
+
+4. **Schema organization** — Every co-branded section needs these headers:
+   - "Content & Text" — All text settings with dynamic text info
+   - "Design & Styling" — Colors, layout, spacing
+   - "Advanced Settings" — Preview creator picker + custom CSS textarea
+
+5. **CSS scoping** — Always scope to section ID:
+```liquid
+#shopify-section-{{ section.id }} .cc-title { /* section-scoped styles */ }
+```
+
+6. **Preview support** — Add a metaobject picker for Theme Editor testing:
+```json
+{
+  "type": "metaobject",
+  "id": "preview_creator",
+  "label": "Preview Any Creator",
+  "info": "Select any creator to preview. Not shown on live site.",
+  "metaobject_type": "creator"
+}
+```
+
+**Reference docs for new sections:**
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Field access patterns
+- [Drops & Products Data Model](/references/drops-products-data-model) — Drops iteration
+- [Custom Fields Reference](/references/custom-fields-reference) — Product-level enhancement fields
+
+### Building a Creator Directory
+
+When building a creator directory, search, or "find a creator" experience:
+
+1. **Use the full metaobject dataset** — not cart context:
+```liquid
+{% for creator in metaobjects.creator %}
+  {% assign creator_data = creator.data.value %}
+  {% if creator_data['cc-public'] == 'Y' %}
+    {%- comment -%} Render creator card {%- endcomment -%}
+  {% endif %}
+{% endfor %}
+```
+
+2. **Always filter by public status** — Only show `cc-public == 'Y'` creators
+3. **Set performance limits** — Cap results with `break` for large datasets
+4. **Shared attribute filtering** — Match creators by tier, location, category, or interests
+5. **Exclude current creator** when showing "similar creators"
+6. **Handle empty results** with a user-friendly message
+
+**For the full guided workflow, see:** [Creator Directory AI Use Case](/ai-guides/ai-creator-directory)
+
 ### Building a Creator Landing Page
 1. Create a metaobject page template for the `creator` type
 2. Add hero section with creator name, bio, profile picture
 3. Add drops/product grid section
 4. Use `metaobject` directly for data access
 5. All creator data is available without cart attribute resolution
+
+**For the step-by-step guided build, see:** [Build Your First Landing Page](/ai-guides/ai-guide-first-landing-page)
 
 ### Adding Creator Context to Existing Pages
 1. Use cart attribute resolution (not metaobject)
@@ -251,8 +369,9 @@ When the user asks for one of these, here's the approach:
 
 ### Data & Field References
 - [Creator & Collab Data Model](/references/creator-collab-data-model) — **Read this** for the complete list of creator metaobject fields and their types
-- [Drops & Products Data Model](/references/drops-products-data-model) — **Read this** for the full drops iteration pattern and product-level fields
-- [Custom Fields Reference](/references/custom-fields-reference) — How brands define and access custom creator fields
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Cart attribute resolution, field access patterns, and context-aware data resolution
+- [Drops & Products Data Model](/references/drops-products-data-model) — **Read this** for the full drops iteration pattern, JSON vs. collection matching, and product-level enhancement fields
+- [Custom Fields Reference](/references/custom-fields-reference) — How brands define and access custom creator fields at creator, drop, and product levels
 - [Usage of Collections](/references/why-collections) — Why products live in collections and how to iterate them
 
 ### SDK & Cart Attributes
@@ -261,6 +380,7 @@ When the user asks for one of these, here's the approach:
 
 ### Storefront How-Tos
 - [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages) — Step-by-step for the first creator page
+- [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) — Converting existing sections to support drops
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization) — Extending co-branding beyond the landing page
 - [Showcase Product Lists](/guides/storefronts/showcase-product-lists) — Rendering drops in product grids
 - [Discount Prices](/guides/storefronts/discount-prices) — Showing creator discounts on product cards
@@ -306,6 +426,7 @@ Once you've collected the theme strategy, use case, creator type, scope, and any
 - **Never hardcode a specific creator handle.** All code must resolve creators dynamically.
 - **Never skip null guards.** Every field access must handle missing data.
 - **Never use `{{ cc_creator.FIELD }}` for nested data.** Use `{{ cc_creator.data.value.FIELD }}` for custom/nested fields.
+- **Always ask about custom fields.** Brands may have collab-level, drop-level, or product-level custom fields populated via forms. These won't appear in the base metaobject — check `data.value`, `json_drop['custom']`, or `json_product['cc-creator-drop-product-enhancement-custom']`.
 - **Always escape user-facing strings** with `| escape`.
 - **Always convert types for ID comparisons** using `| append: ''`.
 - **Don't dump full metaobjects to JavaScript.** Serialize only the minimal fields needed.

@@ -79,6 +79,7 @@
                                  "guides/features/co-branded-product-pages",
                                  "guides/features/co-branded-carts-checkout",
                                  "guides/features/co-branded-product-lists",
+                                 "guides/features/co-branded-creator-directories",
                                  "guides/features/co-branded-popups",
                                  "guides/features/shopify-native-attribution",
                                  "guides/features/recruitment-integrations",
@@ -255,6 +256,8 @@
                               "pages":[
                                  "ai-guides/ai-broad-strokes-onboarding",
                                  "ai-guides/ai-guide-first-landing-page",
+                                 "ai-guides/ai-theme-edits",
+                                 "ai-guides/ai-creator-directory",
                                  "ai-guides/ai-creator-pl",
                                  "ai-guides/ai-coding-assistant",
                                  "ai-guides/ai-collab-strategy",
@@ -451,6 +454,13 @@
                         "pages":[
                            "guides/storefronts/cart-checkout-overview",
                            "guides/storefronts/conditional-checkout-block"
+                        ]
+                     },
+                     {
+                        "group":"CREATOR DIRECTORIES",
+                        "expanded":false,
+                        "pages":[
+                           "guides/storefronts/creator-directory"
                         ]
                      },
                      {

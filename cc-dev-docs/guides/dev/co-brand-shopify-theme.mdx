@@ -7,10 +7,38 @@ description: 'Implement CreatorCommerce co-branding in your Shopify theme using 
 
 Co-branding your Shopify theme means making sections and templates that dynamically personalize based on creator context. This guide covers:
 
+- Choosing the right build pattern for your goal
 - Accessing creator data in Liquid
 - Building co-branded sections
 - Implementing CSS variables for theming
 - Handling fallbacks gracefully
+
+---
+
+## Choosing Your Build Pattern
+
+Before writing code, identify which pattern fits your goal. Each has different data access, complexity, and use case trade-offs.
+
+| Goal | Pattern | Complexity | Key Decision |
+|------|---------|------------|-------------|
+| **Create a new co-branded section** | Build from scratch with creator resolution, dynamic text, and fallbacks | Medium | Use `metaobject` on landing pages, cart attributes elsewhere |
+| **Convert an existing section to support drops** | Duplicate the section, add drops detection, keep original as fallback | Medium-High | Never modify the original file — create a `cc-` prefixed copy |
+| **Add creator context to existing pages** | Use cart attribute resolution + conditional rendering | Low-Medium | Wrap all creator elements in `{% if cc_creator %}` guards |
+| **Build a creator landing page** | Create a metaobject page template with CC sections | Low | Use `metaobject` directly — no cart attribute resolution needed |
+| **Build a creator directory** | Iterate the full metaobject dataset (not cart context) | Medium | Always filter by public status, cap iteration for performance |
+| **Hide/suppress UI during creator funnels** | Add Liquid + JS near `</body>` with MutationObserver | Low | Check both `cc_creator` exists AND has discount data |
+
+### How to Decide
+
+**"I want a dedicated page for each creator"** → Build a [landing page](/guides/storefronts/getting-started-landing-pages) using a metaobject page template
+
+**"I want to personalize my existing homepage when a creator link is clicked"** → Add creator context to existing pages using cart attribute resolution
+
+**"I have a product grid or carousel I want to show drops in"** → [Convert the existing section](/guides/storefronts/migrate-existing-sections) to support drops with dual-mode rendering
+
+**"I want a new hero, testimonial, or banner section with creator data"** → Build a new co-branded section from scratch (see below)
+
+**"I want shoppers to browse and discover creators"** → Build a [creator directory](/guides/storefronts/creator-directory) that iterates the full metaobject dataset
 
 ---
 
@@ -307,6 +335,50 @@ Handle both contexts:
 
 ---
 
+## Accessing Custom Field Data
+
+### Custom Fields in Sections
+
+Custom fields collected via [CC's form system](/guides/creator-experience/forms/overview) are stored in the creator metaobject and accessible via Liquid. They exist at three levels:
+
+```liquid
+{% comment %} Collab-level custom field (one per partnership) {% endcomment %}
+{% assign creator_specialty = cc_creator.data.value['cc-creator-specialty'] %}
+
+{% comment %} Drop-level custom field (within a drop loop) {% endcomment %}
+{% for drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% assign drop_tagline = drop['cc-drop-tagline'] %}
+{% endfor %}
+
+{% comment %} Product-level custom field (within a product loop inside a drop) {% endcomment %}
+{% for product_item in drop['cc-creator-drop-products'] %}
+  {% assign love_note = product_item['cc-product-love-note'] %}
+{% endfor %}
+```
+
+### Conditional Rendering with Custom Fields
+
+```liquid
+{% liquid
+  assign creator_specialty = cc_creator.data.value['cc-creator-specialty'] | default: ''
+  assign creator_tagline = cc_creator.data.value['cc-creator-tagline'] | default: ''
+%}
+
+{% if creator_specialty != blank %}
+  <p class="cc-specialty">{{ creator_specialty | escape }}</p>
+{% endif %}
+
+{% if creator_tagline != blank %}
+  <h2 class="cc-tagline">{{ creator_tagline | escape }}</h2>
+{% endif %}
+```
+
+<Info>
+Custom field names are defined when brands set up [custom fields](/references/custom-fields-reference) in the CC dashboard. Always check the actual field names with the brand and add null guards — custom fields are optional and may not be populated for every creator.
+</Info>
+
+---
+
 ## Setting Cart Attributes
 
 ### On Landing Page Load
@@ -446,8 +518,29 @@ Add a preview creator setting for theme editor testing:
 
 ---
 
+---
+
+## Directory Architecture Note
+
+Creator directories are architecturally different from co-branded sections. They iterate the **full metaobject dataset** rather than reading a single creator from cart context. Key principles:
+
+- **No cart attribute resolution** — directories don't use `cart.attributes['cc-creator-handle']`
+- **Full dataset iteration** — loop `metaobjects.creator` with public status filtering
+- **Performance caps** — always use `break` to limit iterations (Liquid loops through every entry otherwise)
+- **Optional: exclude current creator** — on landing pages, hide the active creator from "similar creators" sections
+
+See [Build a Creator Directory](/guides/storefronts/creator-directory) for full implementation patterns.
+
+---
+
 ## Related Resources
 
 - [Designing Storefronts by Persona](/guides/collab-strategy/co-branded-storefronts) — Design strategy
 - [The Full Shopping Journey](/guides/collab-strategy/funnel-details) — Full funnel co-branding
 - [Show Discounted Prices](/guides/dev/show-discounted-prices) — Price display implementation
+- [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) — Convert existing sections
+- [Build a Creator Directory](/guides/storefronts/creator-directory) — Directory implementation
+- [The Build Spectrum](/guides/dev/build-spectrum/overview) — Choose your customization level
+- [Custom Fields Reference](/references/custom-fields-reference) — Custom field types and Liquid access patterns
+- [Custom Forms Overview](/guides/creator-experience/forms/overview) — How data is collected for custom fields
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Guide to deciding what custom data to store

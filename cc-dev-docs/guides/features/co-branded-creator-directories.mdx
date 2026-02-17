@@ -1,0 +1,148 @@
+---
+title: 'Co-Branded Creator Directories'
+description: 'Let shoppers browse, discover, and connect with your creator network through browsable directories on your storefront.'
+---
+
+## What Is a Creator Directory?
+
+A creator directory is a storefront page (or section) where shoppers can browse all the creators, ambassadors, practitioners, or partners associated with your brand. Unlike a landing page that focuses on a single creator, a directory presents your entire creator network as a discoverable experience.
+
+**Why it matters:**
+- Shoppers can find creators they already follow
+- New shoppers discover creators relevant to their interests
+- Builds brand credibility through social proof at scale
+- Drives traffic to individual creator pages
+
+---
+
+## Types of Directories
+
+### Full Network Directory
+
+**What:** A dedicated page showing all public creators in a browsable grid.
+
+**Best for:**
+- Brands with 10+ active creators
+- Stores where creator discovery is a key part of the shopping journey
+- Building trust — "look how many experts recommend us"
+
+**Shopper experience:** Browse a grid of creator cards with photos, names, and short bios. Click any card to visit that creator's dedicated landing page.
+
+### Category-Filtered Directory
+
+**What:** A directory with built-in filtering by category, specialty, location, or tier.
+
+**Best for:**
+- Brands with diverse creator types (e.g., fitness trainers vs. nutritionists vs. wellness coaches)
+- Stores with regional creators where geography matters
+- Enterprise programs with tiered partnerships
+
+**Shopper experience:** Choose a filter (e.g., "Yoga" or "New York") to narrow down the creator grid. Useful when your creator base is large enough that browsing all at once would be overwhelming.
+
+### Similar Creators
+
+**What:** A section (usually on a creator's landing page) showing creators who share an attribute — same tier, category, location, etc.
+
+**Best for:**
+- Cross-pollination between similar creator audiences
+- Keeping shoppers exploring after they've viewed one creator's page
+- Encouraging discovery of lesser-known creators alongside popular ones
+
+**Shopper experience:** "If you like Sarah, you might also like..." — a row of related creator cards at the bottom of a landing page.
+
+### Featured / Curated Spotlight
+
+**What:** A small, hand-picked selection of featured creators displayed on your homepage, collection pages, or other high-traffic areas.
+
+**Best for:**
+- Highlighting new creators or seasonal partnerships
+- Homepage social proof without a full directory
+- Campaigns promoting specific creator segments
+
+**Shopper experience:** A compact row or banner of 3–6 featured creators, often with a "View All" link to the full directory.
+
+---
+
+## Choosing the Right Directory Type
+
+| Your Situation | Recommended Type |
+|---------------|-----------------|
+| 10–30 creators, simple program | Full Network Directory |
+| 30+ creators, diverse categories | Category-Filtered Directory |
+| Already have landing pages, want cross-discovery | Similar Creators section |
+| Homepage social proof, small program | Featured / Curated Spotlight |
+| Enterprise with tiers + regions | Category-Filtered + Similar Creators |
+
+<Tip>
+**Start with the Full Network Directory.** It's the simplest to build and works for any program size. You can layer on filtering and "similar creators" as your program grows.
+</Tip>
+
+---
+
+## Key Capabilities
+
+### What You Can Display
+
+- **Creator profile photo** — or initials fallback if no photo
+- **Creator name** — first name, full name, or display name
+- **Short bio / description** — truncated for card view
+- **Creator category / specialty** — from custom fields
+- **Creator location** — if geography is relevant
+- **Drops count** — number of curated product lists
+- **Discount availability** — indicator that a code exists
+
+### Filtering Options
+
+- By **category** (e.g., "fitness", "beauty", "nutrition")
+- By **tier** (e.g., "ambassador", "affiliate", "VIP")
+- By **location** (e.g., "New York", "London")
+- By **custom fields** (any field stored in the creator metaobject)
+
+### Performance Guardrails
+
+- Configure maximum creators displayed per page
+- Option to require profile pictures (hide incomplete profiles)
+- Exclude the currently active creator from directory sections
+
+---
+
+## What It Looks Like in Practice
+
+**Wellness brand (30 practitioners):**
+Full directory page at `/pages/our-practitioners`. Each card shows practitioner photo, name, specialty, and location. Clicking opens their dedicated page with recommended products.
+
+**Fashion brand (100+ influencers):**
+Category-filtered directory with tabs for "Style", "Fitness", "Lifestyle". Each tab shows a filtered grid. Homepage features a "Featured Creators" spotlight with 4 hand-picked influencers.
+
+**Supplement brand (15 athletes):**
+Full directory on homepage as a social proof section. Each athlete's landing page includes a "Similar Athletes" section showing others in the same sport category.
+
+---
+
+## Getting Started
+
+<Steps>
+  <Step title="Decide on directory type">
+    Based on your program size and shopper journey, pick one of the types above.
+  </Step>
+  <Step title="Ensure creators are public">
+    Creators need their `cc-public` field set to `Y` to appear in directories. Verify this in your CreatorCommerce dashboard.
+  </Step>
+  <Step title="Build the directory section">
+    Follow the [technical implementation guide](/guides/storefronts/creator-directory) to build the Liquid section.
+  </Step>
+  <Step title="Add to a page template">
+    Add the directory section to a page template (or the homepage) via the theme editor.
+  </Step>
+  <Step title="Test and iterate">
+    Verify filtering, mobile layout, and empty states. Adjust columns and max creators per page.
+  </Step>
+</Steps>
+
+---
+
+## Related
+
+- [Build a Creator Directory (Technical Guide)](/guides/storefronts/creator-directory) — Liquid implementation patterns, CSS, and schema
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — All available creator fields
+- [AI Use Case: Build a Creator Directory](/ai-guides/ai-creator-directory) — Get guided AI help building your directory

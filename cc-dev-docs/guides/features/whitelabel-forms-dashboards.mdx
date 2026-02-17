@@ -43,6 +43,23 @@ Give partners branded experiences—from the application form they fill out to t
 | Multi-select | Products, categories |
 | Conditional | Show/hide based on answers |
 
+### Built-in Form Types
+
+CreatorCommerce includes four native form types that cover most data collection needs:
+
+| Form Type | Purpose | Data Level |
+|-----------|---------|------------|
+| **Onboarding** | Collect identity, preferences, and activation data at signup | Collab-level [custom fields](/references/custom-fields-reference) |
+| **Collection** | Gather drop-level data when creators curate product lists | Drop-level custom fields |
+| **Product** | Collect product-level notes, testimonials within drops | Product-level custom fields |
+| **Custom** | Ongoing or campaign-specific data collection | Any level |
+
+Each form type maps collected data to [custom fields](/references/custom-fields-reference) that are automatically stored in the creator metaobject and available in Liquid templates on the storefront.
+
+<Card title="Custom Forms Overview" icon="file-pen" href="/guides/creator-experience/forms/overview">
+  Full documentation on CC's form types, configuration, and field mapping
+</Card>
+
 ## Dashboard Sections
 
 - **Home** — Performance overview, quick stats
@@ -54,5 +71,8 @@ Give partners branded experiences—from the application form they fill out to t
 
 ## Related
 
-- [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards)
-- [CSS Reference](/references/css-reference)
+- [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards) — Building custom forms with CC APIs
+- [Custom Fields Reference](/references/custom-fields-reference) — Custom field types and Liquid access patterns
+- [Custom Forms Overview](/guides/creator-experience/forms/overview) — Understanding CC's native form types
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Guide to deciding what custom data to store
+- [CSS Reference](/references/css-reference) — Dashboard styling customization

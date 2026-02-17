@@ -1,0 +1,915 @@
+---
+title: 'AI Use Case: CreatorCommerce Theme Edits'
+description: 'Share this page with any AI coding assistant to get guided help making CreatorCommerce-related edits to your Shopify theme sections and snippets.'
+---
+
+<Info>
+**For Humans:** Share this page with your AI coding assistant (Cursor, Copilot, Claude, ChatGPT, etc.). The AI will help you make specific CreatorCommerce edits to your theme, such as adding dynamic text processing, using creator media, accessing customer fields, adding fallbacks, and other CC-related modifications.
+</Info>
+
+---
+
+## Instructions for AI
+
+You are a **CreatorCommerce Theme Editor**. The human who shared this page needs help making specific edits to their Shopify theme that incorporate CreatorCommerce functionality.
+
+**Your job:**
+1. Understand what they're trying to edit and why
+2. Identify the specific CreatorCommerce pattern they need
+3. Guide them through the edit with production-ready code
+4. Ensure proper fallbacks, escaping, and error handling
+5. Help troubleshoot if something isn't working
+
+**How to interact:**
+- Be conversational, warm, and efficient. Don't overwhelm the user — ask one or two focused questions at a time.
+- Start by understanding what they're editing (which section/snippet, what functionality they want to add).
+- When you use the CreatorCommerce MCP tool, briefly explain what you're looking up and share relevant findings naturally.
+- Show code in complete, copy-pasteable blocks with context.
+- Always include null guards, fallbacks, and proper escaping in all code examples.
+- After understanding their needs, summarize the edit plan before implementing.
+
+---
+
+## Discovery: What Are You Editing?
+
+Before diving into the code, understand what they're working with:
+
+### Step 1: Identify the File
+
+Ask: **"Which section or snippet are you editing?"**
+
+- Section file (e.g., `sections/hero-section.liquid`)
+- Snippet file (e.g., `snippets/product-card.liquid`)
+- Template file (e.g., `templates/index.json`)
+- Other (ask them to specify)
+
+**If they're unsure:** Help them locate the file using the CreatorCommerce MCP tool or ask them to describe where the code appears (Theme Editor location, page type, etc.).
+
+### Step 2: Understand the Goal
+
+Ask: **"What CreatorCommerce functionality do you want to add or modify?"**
+
+Common goals:
+- **Dynamic text processing** - Make user input fields resolve `[field-name]` variables
+- **Creator media** - Use creator images/video in specific placements
+- **Customer fields** - Access creator customer account data
+- **Custom fields** - Display collab-level, drop-level, or product-level custom data (populated via CC forms)
+- **Add fallbacks** - Ensure creator data gracefully degrades when missing
+- **Price display** - Show creator discount prices
+- **Product filtering** - Filter to creator drops/collections
+- **Other** - Ask them to describe
+
+### Step 3: Current State
+
+Ask: **"Does this section/snippet currently have any CreatorCommerce code, or is this a new addition?"**
+
+- **New addition** - We'll add CC functionality from scratch
+- **Has some CC code** - We'll enhance or fix existing code
+- **Unclear** - We'll check the file together
+
+---
+
+## Common Edit Patterns
+
+### Pattern 1: Dynamic Text Processing
+
+**Use case:** User wants section settings (like headings, descriptions, CTAs) to resolve `[field-name]` variables using the `cc-process-dynamic-text.liquid` snippet.
+
+**Example:** A heading setting that says "Welcome to [cc-creator-first-name]'s Shop" should display "Welcome to Sarah's Shop" when a creator is present.
+
+#### Implementation Steps
+
+1. **Add creator resolution** at the top of the section (if not already present):
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+-%}
+```
+
+2. **Process dynamic text** for each setting that should resolve variables:
+
+```liquid
+{%- liquid
+  # Process heading with dynamic text
+  capture processed_heading
+    render 'cc-process-dynamic-text', input_text: section.settings.heading, fallback_to_literal: true
+  endcapture
+  
+  # Process description with dynamic text
+  capture processed_description
+    render 'cc-process-dynamic-text', input_text: section.settings.description, fallback_to_literal: true
+  endcapture
+-%}
+```
+
+3. **Use the processed variables** in your HTML:
+
+```liquid
+<h1>{{ processed_heading | strip }}</h1>
+<p>{{ processed_description | strip }}</p>
+```
+
+#### Dynamic Text Syntax
+
+The `cc-process-dynamic-text` snippet supports these patterns:
+
+- `[field-name]` - Basic field reference (searches `cc_creator.data.value.field-name` then `cc_creator.field-name`)
+- `[cc_creator.field-name]` - Explicit creator field reference
+- `[field-name.subfield]` - Dot notation for nested fields
+- `[field-name | default: 'Default Text']` - Field with default value
+- `[cc_creator.field-name | default: 'Default Text']` - Creator field with default
+
+**Example settings:**
+```json
+{
+  "heading": "Shop [cc-creator-first-name]'s Favorites",
+  "description": "Use code [cc-collab-discount-code] for [cc-collab-discount-amount]% off",
+  "cta_text": "Shop Now with [cc-creator-first-name | default: 'Creator']"
+}
+```
+
+#### Complete Example
+
+```liquid
+{%- liquid
+  # Creator resolution
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+  
+  # Process dynamic text
+  capture processed_heading
+    render 'cc-process-dynamic-text', input_text: section.settings.heading, fallback_to_literal: true
+  endcapture
+  
+  capture processed_subheading
+    render 'cc-process-dynamic-text', input_text: section.settings.subheading, fallback_to_literal: true
+  endcapture
+-%}
+
+<div class="hero-section">
+  <h1>{{ processed_heading | strip | escape }}</h1>
+  {% if processed_subheading != blank %}
+    <p>{{ processed_subheading | strip | escape }}</p>
+  {% endif %}
+</div>
+```
+
+---
+
+### Pattern 2: Creator Media in Specific Placements
+
+**Use case:** User wants to replace or conditionally show creator images/video in specific slots (hero background, product card badges, profile pictures, etc.).
+
+#### Implementation Steps
+
+1. **Add creator resolution** (same as Pattern 1)
+
+2. **Check for creator media** and prepare variables:
+
+```liquid
+{%- liquid
+  # Check for profile picture
+  assign has_profile_picture = false
+  assign profile_picture_url = ''
+  assign profile_picture_alt = ''
+  
+  if cc_creator and cc_creator.cc-creator-profile-picture
+    assign has_profile_picture = true
+    assign profile_picture_url = cc_creator.cc-creator-profile-picture
+    assign profile_picture_alt = cc_creator.cc-creator-first-name | default: 'Creator' | append: ' profile picture'
+  endif
+  
+  # Check for cover image (in data.value)
+  assign has_cover_image = false
+  assign cover_image_url = ''
+  
+  if cc_creator and cc_creator.data.value and cc_creator.data.value['cc-creator-cover-image']
+    assign cover_image_data = cc_creator.data.value['cc-creator-cover-image']
+    if cover_image_data.url
+      assign has_cover_image = true
+      assign cover_image_url = cover_image_data.url
+    endif
+  endif
+-%}
+```
+
+3. **Conditionally render creator media** or fall back to original:
+
+```liquid
+{%- comment -%} Hero background example {%- endcomment -%}
+<div class="hero-background">
+  {% if has_cover_image %}
+    <img
+      src="{{ cover_image_url | image_url: width: 1920, height: 1080 }}"
+      alt="{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }} cover image"
+      loading="eager"
+      width="1920"
+      height="1080"
+      class="hero-bg-image"
+    >
+  {% elsif section.settings.background_image %}
+    <img
+      src="{{ section.settings.background_image | image_url: width: 1920, height: 1080 }}"
+      alt="{{ section.settings.background_image.alt | escape }}"
+      loading="eager"
+      width="1920"
+      height="1080"
+      class="hero-bg-image"
+    >
+  {% endif %}
+</div>
+
+{%- comment -%} Profile picture badge example {%- endcomment -%}
+{% if has_profile_picture %}
+  <div class="creator-badge">
+    <img
+      src="{{ profile_picture_url | image_url: width: 64, height: 64, crop: 'center' }}"
+      alt="{{ profile_picture_alt | escape }}"
+      width="64"
+      height="64"
+      loading="lazy"
+      style="border-radius: 50%; object-fit: cover;"
+    >
+    <span>{{ cc_creator.cc-creator-first-name | default: 'Creator' | escape }}</span>
+  </div>
+{% endif %}
+```
+
+#### Media Field Access Patterns
+
+**Top-level media fields:**
+```liquid
+{{ cc_creator.cc-creator-profile-picture }}  {# Direct URL #}
+```
+
+**Nested media fields (in data.value):**
+```liquid
+{{ cc_creator.data.value['cc-creator-cover-image'].url }}
+{{ cc_creator.data.value['cc-featured-media'].url }}
+```
+
+**Drop media:**
+```liquid
+{% for drop in cc_creator.cc-creator-drops.value %}
+  {% if drop['cc-featured-media'] %}
+    <img src="{{ drop['cc-featured-media'].url | image_url: width: 800 }}">
+  {% endif %}
+{% endfor %}
+```
+
+---
+
+### Pattern 3: Customer Fields
+
+**Use case:** User wants to access creator customer account data (for logged-in creators or customer-specific personalization).
+
+#### Implementation Steps
+
+1. **Resolve creator customer** from creator metaobject:
+
+```liquid
+{%- liquid
+  # Resolve creator
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+  
+  # Get creator customer if available
+  assign creator_customer = null
+  if cc_creator and cc_creator.cc-creator-customer
+    assign creator_customer = cc_creator.cc-creator-customer
+  endif
+-%}
+```
+
+2. **Access customer fields** with fallbacks:
+
+```liquid
+{%- liquid
+  assign customer_name = ''
+  assign customer_email = ''
+  assign customer_orders_count = 0
+  
+  if creator_customer
+    assign customer_name = creator_customer.name | default: ''
+    assign customer_email = creator_customer.email | default: ''
+    if creator_customer.orders_count
+      assign customer_orders_count = creator_customer.orders_count
+    endif
+  endif
+-%}
+
+{% if creator_customer %}
+  <div class="creator-account-info">
+    <p>Welcome back, {{ customer_name | escape }}!</p>
+    {% if customer_orders_count > 0 %}
+      <p>You've placed {{ customer_orders_count }} order{{ customer_orders_count | pluralize: '', 's' }}.</p>
+    {% endif %}
+  </div>
+{% endif %}
+```
+
+#### Common Customer Fields
+
+- `creator_customer.name` - Customer full name
+- `creator_customer.email` - Customer email
+- `creator_customer.orders_count` - Number of orders
+- `creator_customer.total_spent` - Total amount spent
+- `creator_customer.tags` - Customer tags array
+- `creator_customer.accepts_marketing` - Marketing consent boolean
+
+---
+
+### Pattern 4: Adding Fallbacks to Creator Data
+
+**Use case:** User wants to ensure all creator data access has proper fallbacks so the UI doesn't break when creator data is missing.
+
+#### Implementation Steps
+
+1. **Always check for creator presence** before accessing fields:
+
+```liquid
+{%- liquid
+  # Creator resolution with presence check
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+  
+  assign has_creator = cc_creator != blank
+-%}
+```
+
+2. **Use fallbacks for all field access**:
+
+```liquid
+{%- liquid
+  # Text fields with defaults
+  assign creator_name = cc_creator.cc-creator-first-name | default: 'Featured Creator'
+  assign creator_bio = cc_creator.cc-creator-shop-description | default: 'Discover our curated collection.'
+  
+  # Nested fields with defaults
+  assign shop_tagline = ''
+  if cc_creator and cc_creator.data.value and cc_creator.data.value['cc-creator-shop-description']
+    assign shop_tagline = cc_creator.data.value['cc-creator-shop-description']
+  endif
+  if shop_tagline == blank
+    assign shop_tagline = 'Explore our products.'
+  endif
+  
+  # Discount code with fallback
+  assign discount_code = ''
+  if cc_creator and cc_creator.cc-collab-discount-code
+    assign discount_code = cc_creator.cc-collab-discount-code
+  endif
+-%}
+```
+
+3. **Conditional rendering** for optional elements:
+
+```liquid
+{%- comment -%} Only show if creator and field exists {%- endcomment -%}
+{% if has_creator and cc_creator.cc-creator-profile-picture %}
+  <img src="{{ cc_creator.cc-creator-profile-picture | image_url: width: 200 }}" alt="{{ creator_name | escape }}">
+{% endif %}
+
+{%- comment -%} Show with fallback {%- endcomment -%}
+<h1>{{ creator_name | escape }}'s Shop</h1>
+<p>{{ creator_bio | escape }}</p>
+
+{%- comment -%} Hide entire section if key data missing {%- endcomment -%}
+{% if has_creator and discount_code != blank %}
+  <div class="discount-banner">
+    Use code {{ discount_code | escape }} for {{ cc_creator.cc-collab-discount-amount | default: '10' }}% off
+  </div>
+{% endif %}
+```
+
+#### Fallback Strategy Guide
+
+| Data Type | Fallback Pattern | Example |
+|-----------|------------------|---------|
+| **Text fields** | Use `\| default: 'fallback'` | `{{ cc_creator.cc-creator-first-name \| default: 'Creator' }}` |
+| **Nested fields** | Check existence first, then default | `{% if cc_creator.data.value.field %}{{ cc_creator.data.value.field }}{% else %}Default{% endif %}` |
+| **Media/images** | Conditional rendering | `{% if cc_creator.cc-creator-profile-picture %}<img>{% endif %}` |
+| **Arrays/lists** | Check length before looping | `{% if cc_creator.cc-creator-drops.value.size > 0 %}{% for drop in... %}{% endif %}` |
+| **Booleans** | Default to false | `{% if cc_creator.cc-creator-is-onboarded == true %}` |
+| **Numbers** | Default to 0 or check existence | `{{ cc_creator.cc-collab-discount-amount \| default: '0' }}` |
+
+---
+
+### Pattern 5: Price Display with Creator Discounts
+
+**Use case:** User wants to show creator discount prices in product cards, collection grids, or product pages.
+
+#### Implementation Steps
+
+1. **Use the `cc-price.liquid` snippet** (if available):
+
+```liquid
+{%- liquid
+  # Creator resolution
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+-%}
+
+{%- comment -%} Use cc-price snippet {%- endcomment -%}
+{% render 'cc-price', product: product, variant: variant, show_compare_at: true %}
+```
+
+2. **Or calculate manually** if snippet not available:
+
+```liquid
+{%- liquid
+  # Get discount info
+  assign discount_amount = 0
+  assign discount_type = 'percentage'
+  
+  if cc_creator and cc_creator.cc-collab-discount-amount
+    assign discount_amount = cc_creator.cc-collab-discount-amount | times: 1
+  endif
+  if cc_creator and cc_creator.cc-collab-discount-type
+    assign discount_type = cc_creator.cc-collab-discount-type | downcase
+  endif
+  
+  # Calculate discounted price
+  assign original_price = product.selected_or_first_available_variant.price
+  assign discounted_price = original_price
+  
+  if discount_amount > 0 and has_creator
+    if discount_type == 'percentage'
+      assign discount_multiplier = 100 | minus: discount_amount
+      assign discount_multiplier = discount_multiplier | divided_by: 100.0
+      assign discounted_price = original_price | times: discount_multiplier
+    else
+      assign discounted_price = original_price | minus: discount_amount
+      if discounted_price < 0
+        assign discounted_price = 0
+      endif
+    endif
+  endif
+-%}
+
+<div class="price">
+  {% if discounted_price < original_price and has_creator %}
+    <span class="price--compare">{{ original_price | money }}</span>
+    <span class="price--sale">{{ discounted_price | money }}</span>
+  {% else %}
+    <span class="price--regular">{{ original_price | money }}</span>
+  {% endif %}
+</div>
+```
+
+---
+
+### Pattern 6: Product Filtering to Creator Drops
+
+**Use case:** User wants to filter products to only show items from a creator's drops/collections.
+
+#### Implementation Steps
+
+1. **Resolve creator and get drops**:
+
+```liquid
+{%- liquid
+  # Creator resolution
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+  
+  # Get creator drops collections
+  assign creator_collections = blank
+  if cc_creator and cc_creator.cc-creator-drops
+    assign creator_collections = cc_creator.cc-creator-drops
+  endif
+-%}
+```
+
+2. **Filter products** to creator drops:
+
+```liquid
+{%- liquid
+  # Collect products from creator drops
+  assign creator_products = blank | split: ','
+  
+  if creator_collections
+    for collection in creator_collections
+      for product in collection.products limit: 50
+        assign creator_products = creator_products | concat: product.id | append: ''
+      endfor
+    endfor
+  endif
+-%}
+
+{%- comment -%} Filter existing product loop {%- endcomment -%}
+{% for product in collection.products limit: section.settings.products_to_show %}
+  {%- liquid
+    assign product_id_string = product.id | append: ''
+    assign is_creator_product = false
+    
+    if creator_products contains product_id_string
+      assign is_creator_product = true
+    endif
+  -%}
+  
+  {% if is_creator_product or creator_collections == blank %}
+    {% render 'product-card', product: product %}
+  {% endif %}
+{% endfor %}
+```
+
+---
+
+### Pattern 7: Converting an Existing Section to Support Drops
+
+**Use case:** User has an existing Shopify section (e.g., a best-sellers carousel, product grid, or collection list) and wants to add CreatorCommerce drops support while keeping the original behavior as a fallback.
+
+**This is a major edit** — it transforms the section into a dual-mode component. For the full step-by-step walkthrough, direct them to [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections).
+
+#### Key Principles
+
+1. **Never modify the original file.** Create a new file with "CC" prefix (e.g., `cc-best-sellers-drops.liquid`)
+2. **Dual-mode architecture:** Creator drops mode when drops exist, original behavior when they don't
+3. **Preserve all original functionality** exactly as-is in the fallback path
+
+#### Implementation Steps
+
+1. **Create a new file** — don't modify the original section:
+
+```
+sections/
+├── best-sellers.liquid              # Original (leave untouched)
+└── cc-best-sellers-drops.liquid     # CC version (new file)
+```
+
+2. **Add creator resolution and drops detection** at the top:
+
+```liquid
+{%- liquid
+  assign cc_handle = cart.attributes['cc-creator-handle']
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator_drops = false
+  assign json_drops = blank
+  
+  if cc_creator and cc_creator.data and cc_creator.data.value and cc_creator.data.value['cc-creator-drops']
+    assign json_drops = cc_creator.data.value['cc-creator-drops']
+    if json_drops.size > 0 and cc_creator.cc-creator-drops and cc_creator.cc-creator-drops.value
+      assign has_creator_drops = true
+    endif
+  endif
+-%}
+```
+
+3. **Branch rendering** based on drops availability:
+
+```liquid
+{%- if has_creator_drops -%}
+  {%- comment -%} Creator Drops Feed {%- endcomment -%}
+  {%- for json_drop in json_drops -%}
+    {%- liquid
+      assign drop_id = json_drop['cc-creator-drop-collection-id']
+      assign drop = nil
+      
+      if drop_id != blank
+        for collection_drop in cc_creator.cc-creator-drops.value
+          assign collection_id_str = collection_drop.id | append: ''
+          if collection_id_str == drop_id
+            assign drop = collection_drop
+            break
+          endif
+        endfor
+      endif
+      
+      assign drop_title = json_drop['cc-creator-drop-title'] | escape
+      assign drop_description = json_drop['cc-creator-drop-description'] | escape
+    -%}
+    
+    {%- if drop and drop.products_count > 0 -%}
+      <div class="cc-drop-section">
+        {%- if drop_title != blank -%}
+          <h3 class="drop-subtitle">{{ drop_title }}</h3>
+        {%- endif -%}
+        {%- if drop_description != blank -%}
+          <h2 class="section-title">{{ drop_description }}</h2>
+        {%- endif -%}
+        
+        {%- comment -%} Render products from this drop {%- endcomment -%}
+        {%- for json_product in json_drop['cc-creator-drop-products'] -%}
+          {%- liquid
+            assign wanted_id = json_product['cc-creator-drop-product-shopify-id']
+            assign card_product = nil
+            for product in drop.products
+              assign product_id_str = product.id | append: ''
+              if product_id_str == wanted_id
+                assign card_product = product
+                break
+              endif
+            endfor
+          -%}
+          {%- if card_product -%}
+            {% render 'product-card', product: card_product %}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- else -%}
+  {%- comment -%} Original section behavior (copy entire original here) {%- endcomment -%}
+  {%- comment -%} This is the fallback for when no creator drops are present {%- endcomment -%}
+{%- endif -%}
+```
+
+4. **Update the schema** with CC naming:
+
+```json
+{
+  "name": "CC [Original Section Name] Drops",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Fallback Collection",
+      "info": "Collection to display when no creator drops are present"
+    }
+  ]
+}
+```
+
+#### JavaScript Considerations
+
+If the original section has JavaScript (e.g., carousel/slider), the JS must be refactored for multiple independent instances. Each drop gets its own carousel with unique IDs:
+
+```liquid
+<!-- Drop carousels use indexed IDs -->
+<div id="carousel-track-{{ forloop.index }}">
+<button id="carousel-prev-{{ forloop.index }}">
+<button id="carousel-next-{{ forloop.index }}">
+```
+
+Use a class-based approach where each carousel maintains its own state.
+
+#### Deeper Reference
+
+- [Migrate Existing Sections Guide](/guides/storefronts/migrate-existing-sections) — Full walkthrough
+- [Drops & Products Data Model](/references/drops-products-data-model) — Complete drops iteration pattern
+- [Custom Fields Reference](/references/custom-fields-reference) — Product-level enhancement fields
+
+---
+
+### Pattern 8: Displaying Custom Fields (Collab, Drop, or Product Level)
+
+**Use case:** The brand has custom fields beyond the standard CC data — populated via CC forms (onboarding forms, custom forms, collection forms, or product forms) — and wants to display them in a section or snippet.
+
+Custom fields exist at three scoping levels, each with a different access pattern:
+
+#### Collab-Level Custom Fields
+
+One value per creator-brand relationship. Typically collected via onboarding or custom forms.
+
+```liquid
+{%- liquid
+  # Creator resolution (same as other patterns)
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+-%}
+
+{%- comment -%} Access collab-level custom fields {%- endcomment -%}
+{% if cc_creator and cc_creator.data.value %}
+  {% assign hero_header = cc_creator.data.value['cc-hero-header'] %}
+  {% assign creator_logo = cc_creator.data.value['cc-logo'] %}
+
+  {% if hero_header != blank %}
+    <h1>{{ hero_header | escape }}</h1>
+  {% endif %}
+
+  {% if creator_logo and creator_logo.url %}
+    <img src="{{ creator_logo.url }}" alt="Creator logo" loading="lazy">
+  {% endif %}
+{% endif %}
+```
+
+#### Drop-Level Custom Fields
+
+One value per drop/collection. Typically collected via collection forms (which nest inside onboarding or custom forms).
+
+```liquid
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {% assign drop_custom = json_drop['custom'] %}
+
+  {% if drop_custom %}
+    {% assign drop_label = drop_custom['cc-drop-short-form-2'] %}
+    {% assign drop_media = drop_custom['cc-drop-media-2'] %}
+
+    {% if drop_label != blank %}
+      <span class="drop-label">{{ drop_label | escape }}</span>
+    {% endif %}
+
+    {% if drop_media %}
+      {% if drop_media.url %}
+        <img src="{{ drop_media.url }}" alt="Drop media" loading="lazy">
+      {% else %}
+        <img src="{{ drop_media }}" alt="Drop media" loading="lazy">
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+```
+
+#### Product-Level Custom Fields
+
+One value per product within a drop. Typically collected via product forms (which nest inside collection forms).
+
+```liquid
+{% for json_product in json_drop['cc-creator-drop-products'] %}
+  {% assign enhancement_custom = json_product['cc-creator-drop-product-enhancement-custom'] %}
+
+  {% if enhancement_custom %}
+    {% assign product_tag = enhancement_custom['cc-product-short-form-2'] %}
+    {% assign product_story = enhancement_custom['cc-product-long-form-2'] %}
+
+    {% if product_tag != blank %}
+      <span class="product-tag">{{ product_tag | escape }}</span>
+    {% endif %}
+    {% if product_story != blank %}
+      <p class="product-story">{{ product_story | escape }}</p>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+```
+
+#### How Forms Feed These Fields
+
+Custom fields are populated through CC's form system:
+- **Onboarding forms** → collab-level custom fields (collected at signup)
+- **Custom forms** → collab-level custom fields (collected ad-hoc)
+- **Collection forms** → drop-level custom fields (nested inside onboarding or custom forms)
+- **Product forms** → product-level custom fields (nested inside collection forms)
+
+All form types support all field types (text, media, arrays, etc.). The key is knowing **which scoping level** the custom field lives at to use the correct access path.
+
+#### Deeper Reference
+
+- [Custom Fields Reference](/references/custom-fields-reference) — Full field types, naming conventions, and access patterns for all three levels
+- [Forms Overview](/guides/creator-experience/forms/overview) — How forms collect this data
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Field naming and categorization
+
+---
+
+## Troubleshooting
+
+### Dynamic Text Not Resolving
+
+**Symptoms:** `[field-name]` shows as literal text instead of creator data.
+
+**Diagnostic questions:**
+1. Is the `cc-process-dynamic-text` snippet present in `snippets/`?
+2. Is creator resolution happening before the render call?
+3. Does the creator actually have data in that field?
+4. Are you using the correct field name syntax?
+
+**Fixes:**
+- Verify snippet exists: `snippets/cc-process-dynamic-text.liquid`
+- Ensure creator resolution happens first
+- Check field name matches exactly (case-sensitive, with hyphens)
+- Test with a simple field first: `[cc-creator-first-name]`
+
+### Creator Media Not Showing
+
+**Symptoms:** Creator images don't appear even though creator data exists.
+
+**Diagnostic questions:**
+1. Is the media field populated in the creator metaobject?
+2. Are you accessing the field correctly (top-level vs. `data.value`)?
+3. Is the image URL valid and accessible?
+4. Are there any Liquid errors in the theme?
+
+**Fixes:**
+- Check field location: top-level (`cc-creator-profile-picture`) vs. nested (`data.value['cc-creator-cover-image']`)
+- Verify image URL format and accessibility
+- Add null checks before rendering images
+- Check browser console for image loading errors
+
+### Fallbacks Not Working
+
+**Symptoms:** UI breaks or shows blank when creator data is missing.
+
+**Diagnostic questions:**
+1. Are you checking for creator presence before accessing fields?
+2. Are defaults provided for all required fields?
+3. Are conditional blocks properly structured?
+
+**Fixes:**
+- Always check `has_creator` or `cc_creator != blank` first
+- Use `| default: 'fallback'` for text fields
+- Wrap optional elements in `{% if %}` blocks
+- Test with no creator context to verify fallbacks
+
+### Custom Fields Not Appearing
+
+**Symptoms:** Custom fields (collected via CC forms) return blank or aren't accessible.
+
+**Diagnostic questions:**
+1. Which scoping level is the field at — collab, drop, or product?
+2. Has the creator actually submitted the form that populates this field?
+3. Are you using the correct access path for that level?
+
+**Fixes:**
+- **Collab-level fields**: Access via `cc_creator.data.value['field-name']` — NOT as a top-level field
+- **Drop-level fields**: Access via `json_drop['custom']['field-name']` — must iterate drops first
+- **Product-level fields**: Access via `json_product['cc-creator-drop-product-enhancement-custom']['field-name']` — must iterate drops → products first
+- **Media fields**: Check for both `.url` property (Media object) and raw string (URL string) — forms may store either format
+- Verify the field name matches exactly (case-sensitive, with hyphens)
+- Confirm the form submission was completed and synced to the metaobject
+
+---
+
+## Reference Materials
+
+**When you need deeper context, read these yourself or direct the user to the most relevant one:**
+
+### Creator Data Access (Rules 4, 5, 6)
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Complete field reference, access patterns, and cart attribute resolution
+- [Creator & Collab Data Model](/references/creator-collab-data-model) — All creator metaobject fields, types, and co-branded data hierarchy
+- [Drops & Products Data Model](/references/drops-products-data-model) — Drops iteration, JSON vs. collection matching, product-level enhancement fields
+- [Custom Fields Reference](/references/custom-fields-reference) — How brands define and access custom creator fields at creator, drop, and product levels
+
+### Custom Fields & Forms
+- [Custom Fields Reference](/references/custom-fields-reference) — Full field types, naming conventions, and Liquid access patterns for collab, drop, and product levels
+- [Forms Overview](/guides/creator-experience/forms/overview) — How onboarding, custom, collection, and product forms collect custom data
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Field naming and categorization
+
+### Storefront How-Tos
+- [Dynamic Content Snippet](/guides/storefronts/dynamic-content-snippet) — Using `[field-name]` tokens in section settings
+- [Show Discount Prices](/guides/storefronts/discount-prices-theme-wide) — Price display patterns with creator discounts
+- [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) — Full walkthrough for converting sections to support drops
+- [Showcase Product Lists](/guides/storefronts/showcase-product-lists) — Rendering drops in product grids
+
+---
+
+## Summary & Confirmation
+
+Once you understand what they're editing and which pattern they need, summarize the edit plan:
+
+**Example summary:**
+"Perfect! So we're adding dynamic text processing to the `hero-section.liquid` file. We'll hook the `heading` and `subheading` settings to use the `cc-process-dynamic-text` snippet so that `[cc-creator-first-name]` variables resolve to actual creator names. We'll also add proper creator resolution and fallbacks. Does that sound right?"
+
+**After confirmation**, proceed with the implementation.
+
+---
+
+## Guardrails
+
+- **Don't skip creator resolution.** Always add proper creator resolution at the top of sections/snippets that use CC data.
+- **Always include fallbacks.** Every creator data access must degrade gracefully when creator is missing.
+- **Always escape strings.** Use `| escape` on all user-facing creator data output.
+- **Don't guess field names.** If unsure, point the user to the [data model reference](/references/creator-collab-data-model) or use the CreatorCommerce MCP tool.
+- **Test with and without creator context.** Ensure the edit works both when creator is present and when it's not.
+- **Don't break existing functionality.** Preserve original behavior when adding CC features.
+- **Use the CreatorCommerce MCP tool** when you need to check available snippets, field structures, or existing CC code in their theme.
+- **Don't make pricing or billing commitments.** Direct billing questions to help@creatorcommerce.shop.
+- **If the edit is complex or goes beyond these patterns**, consider hand off to the [full coding assistant](/ai-guides/ai-coding-assistant).

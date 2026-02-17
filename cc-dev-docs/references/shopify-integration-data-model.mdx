@@ -7,9 +7,20 @@ CreatorCommerce syncs creator data to Shopify through metaobjects, collections, 
 
 ## Metaobject Integration
 
+<Info>
+**No Configuration Required:** CreatorCommerce automatically creates and configures the `creator` metaobject type in your Shopify store. The metaobject is pre-configured to create new pages on entries by default, so you can start building landing page templates immediately without any metaobject setup.
+</Info>
+
 ### Creator Metaobject
 
-The primary integration point is a Shopify metaobject of type `creator` that mirrors creator data for Liquid template access.
+CreatorCommerce automatically creates a Shopify metaobject of type `creator` that mirrors creator data for Liquid template access. **You don't need to create or configure this metaobject** — CC handles all setup, including:
+
+- Metaobject type creation
+- Field definitions and types
+- **Page creation enabled by default** (new pages are automatically created for each creator entry)
+- Data synchronization from CreatorCommerce to Shopify
+
+The metaobject is ready to use as soon as CreatorCommerce is installed and your first creator is added.
 
 ### Metaobject Structure
 

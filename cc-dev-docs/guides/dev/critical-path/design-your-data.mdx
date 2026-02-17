@@ -71,7 +71,7 @@ No webhooks to build. No sync jobs to maintain. No data consistency bugs to debu
 
 ### Extending With Custom Fields
 
-Need to track something new? Add a custom field:
+Need to track something new? Add a [custom field](/references/custom-fields-reference):
 
 - Shoe size for fashion influencers
 - Specialty for medical professionals
@@ -79,6 +79,21 @@ Need to track something new? Add a custom field:
 - Content format preference
 
 No deployment. No database work. Just add it and use it.
+
+### Collecting Custom Data With Forms
+
+Custom fields need data. CreatorCommerce's [built-in form system](/guides/creator-experience/forms/overview) handles collection at every level:
+
+| Form Type | Collects | Use Case |
+|-----------|----------|----------|
+| **[Onboarding forms](/guides/creator-experience/forms/onboarding/overview)** | Collab-level fields | Specialty, credentials, bio, preferences at signup |
+| **[Collection forms](/guides/creator-experience/forms/collection/overview)** | Drop-level fields | Drop taglines, featured media, seasonal themes |
+| **[Product forms](/guides/creator-experience/forms/product/overview)** | Product-level fields | "Why I love this," sizing notes, testimonials |
+| **[Custom forms](/guides/creator-experience/forms/custom/overview)** | Any level | Campaign-specific, ongoing data collection |
+
+Form data flows directly into the metaobject — no API work, no sync logic, no custom backend. The data appears in Liquid templates automatically.
+
+See [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) for guidance on what to collect.
 
 ## Think Deeply About Data
 

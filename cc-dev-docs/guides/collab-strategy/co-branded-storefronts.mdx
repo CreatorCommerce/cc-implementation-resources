@@ -372,11 +372,12 @@ Brand Base Template
     - Product selections and preferences
     - Optional color overrides
     - Custom content blocks
+    - [Custom field data](/references/custom-fields-reference) — specialty, testimonials, product notes, and any segment-specific data collected via [forms](/guides/creator-experience/forms/overview)
     
     **How it works:**
-    - Data from CreatorCommerce metaobjects
-    - Partner can edit via dashboard
-    - Renders within segment template
+    - Data from CreatorCommerce metaobjects (including custom fields)
+    - Partner can edit via dashboard or submit updates through forms
+    - Renders within segment template using Liquid access patterns
   </Tab>
 </Tabs>
 
@@ -433,8 +434,12 @@ Not all partners need the same level of personalization:
 |-------|---------------------|----------|
 | **Basic** | Name, photo, discount code | High-volume micro-influencers |
 | **Standard** | + Bio, product picks, quote | Active mid-tier partners |
-| **Premium** | + UGC gallery, custom sections | Top performers |
-| **Custom** | Full bespoke design | VIP/celebrity partners |
+| **Premium** | + UGC gallery, custom sections, custom field data | Top performers |
+| **Custom** | Full bespoke design with segment-specific custom fields | VIP/celebrity partners |
+
+<Info>
+At the **Premium** and **Custom** levels, [custom fields](/references/custom-fields-reference) unlock deeper personalization. For example, a practitioner's credentials and specialty, an influencer's content style preference, or product-level "why I love this" notes—all collected via [CC's form system](/guides/creator-experience/forms/overview) and displayed dynamically on the storefront.
+</Info>
 
 ### Scaling Personalization
 

@@ -116,6 +116,11 @@ Based on their answers above, ask relevant follow-up questions:
 **If they mentioned integrations:**
 - Are there any apps or integrations that need to be accounted for in the landing page?
 
+**If they have custom forms or enrichment workflows:**
+- What custom data do creators submit through forms? (Bios, custom headlines, certifications, product notes, media galleries?)
+- At which level is that data — collab-level, per-drop, or per-product?
+- Should any of this custom data appear on the landing page?
+
 **If they're unsure where to start**, offer examples: "Most brands start with a co-branded landing page template for their top creators — want me to walk you through that?"
 
 ---
@@ -168,6 +173,24 @@ On metaobject pages, creator data is directly available:
 ```
 
 No cart attribute resolution needed — the `metaobject` variable IS the creator.
+
+**Custom fields beyond the base metaobject:** Brands may have additional custom fields populated through CC forms (onboarding, custom, collection, or product forms). These are stored at three levels:
+
+```liquid
+{%- comment -%} Collab-level custom fields (1 per collab) {%- endcomment -%}
+{{ cc_creator.data.value['cc-hero-header'] }}
+
+{%- comment -%} Drop-level custom fields (1 per drop) {%- endcomment -%}
+{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
+  {{ json_drop['custom']['cc-drop-short-form-2'] }}
+{% endfor %}
+
+{%- comment -%} Product-level custom fields (1 per product) {%- endcomment -%}
+{% assign enhancement_custom = json_product['cc-creator-drop-product-enhancement-custom'] %}
+{{ enhancement_custom['cc-product-short-form-2'] }}
+```
+
+**Ask:** "Does your brand have custom fields beyond the standard CC fields? For example, custom headlines, media, certifications, or product-level notes collected through forms?" If yes, identify the scoping level and use the appropriate access pattern above.
 
 ---
 
@@ -300,10 +323,13 @@ If their page isn't working, ask these diagnostic questions:
 - [Building Prerequisites](/building-prerequisites) — Setup requirements and verification checklist
 - [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages) — Step-by-step walkthrough
 - [Creator & Collab Data Model](/references/creator-collab-data-model) — **Read this** for the complete field reference
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Cart attribute resolution and field access patterns
 - [Drops & Products Data Model](/references/drops-products-data-model) — **Read this** if they need to display product lists
+- [Custom Fields Reference](/references/custom-fields-reference) — Product-level enhancement fields and custom creator data
 - [Showcase Product Lists](/guides/storefronts/showcase-product-lists) — Rendering creator drops in grids
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization) — Extending beyond the landing page
 - [AI Use Case: Code with CreatorCommerce](/ai-guides/ai-coding-assistant) — **Hand off here** if their needs go beyond a landing page
+- [AI Use Case: Theme Edits](/ai-guides/ai-theme-edits) — **Hand off here** for specific section edits like adding dynamic text or converting sections
 
 ### Available Template Files
 

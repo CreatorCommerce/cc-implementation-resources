@@ -87,13 +87,36 @@ Copy this JSON snippet into any MCP-compatible client:
   </Step>
 </Steps>
 
-### Claude (via MCP)
+### Claude
 
-Use the contextual menu on any page of these docs:
+#### In Claude.ai (web/app):
 
-1. Click the **contextual menu** (top right of any page)
-2. Select **Claude**
-3. The page content is automatically loaded as context
+<Steps>
+  <Step title="Open Settings">
+    Go to Settings → Integrations (or look for the integrations/connectors menu)
+  </Step>
+  <Step title="Add MCP Server">
+    Add a custom MCP server by providing the URL:
+    ```
+    https://creatorcommerce.dev/mcp
+    ```
+  </Step>
+</Steps>
+
+#### In Claude Code (CLI):
+
+Add it to your `.claude/settings.json` or project-level `claude_code_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "creatorcommerce": {
+      "type": "url",
+      "url": "https://creatorcommerce.dev/mcp"
+    }
+  }
+}
+```
 
 ### ChatGPT / Perplexity
 
@@ -123,22 +146,7 @@ Every page in these docs has a **contextual menu** with one-click access to:
 
 ## Example Prompts
 
-Once connected, try these prompts:
-
-**Implementation:**
-> "Show me how to build a co-branded hero section with creator photo and discount code"
-
-**Strategy:**
-> "What are the steps to launch a collaboration program with CreatorCommerce?"
-
-**Debugging:**
-> "My creator discount isn't showing on product pages. What should I check?"
-
-**API:**
-> "How do I create a new collab via the CC API?"
-
-**Best Practices:**
-> "What's the recommended way to handle creator context across my Shopify theme?"
+See [example prompts and use cases](/guides/mcp-examples) for ready-to-use prompts and AI-guided workflows.
 
 ---
 

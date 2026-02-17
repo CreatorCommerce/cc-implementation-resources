@@ -122,6 +122,26 @@ This is the most important section. Push for specificity.
 | 2 | What should the onboarding experience feel like? (Self-serve, white-glove, automated, personal) | Shapes the funnel from signup to first action |
 | 3 | What do creators need to do before they're "activated"? (Add products, customize their page, share their link, post content) | Defines the activation funnel and its metrics |
 | 4 | Will you seed product? To whom, and at what stage? | Seeding is expensive — it should be earned, not default |
+| 5 | What custom data do you need from creators beyond basics (name, email, social)? Think about: certifications, specialties, custom bios/headlines, product testimonials, media galleries. | Determines the forms and custom fields strategy. CC supports custom fields at three levels (collab, drop, product) populated through four form types (onboarding, custom, collection, product). This data powers personalized storefronts. |
+
+### Section 4b: Data Collection Strategy (Forms & Custom Fields)
+
+If the user needs custom data beyond the basics, dig deeper:
+
+| # | Question | Why You're Asking |
+|---|----------|-------------------|
+| 1 | What information should be collected at signup vs. over time? | Onboarding forms collect at signup; custom forms collect ad-hoc; collection forms collect per-drop; product forms collect per-product |
+| 2 | Do you need per-product content from creators? (e.g., "Why I love this," personal ratings, usage tips) | Determines if product forms are needed inside collection forms |
+| 3 | Do you need per-collection/drop content? (e.g., collection descriptions, themed media, seasonal copy) | Determines if collection forms are needed |
+| 4 | Should this custom data appear on the storefront? If so, where — hero, product cards, directory, etc.? | Links the forms strategy directly to the storefront implementation |
+
+**Key insight for the user:** The data you collect through forms becomes the custom fields that power personalized storefronts. Plan the storefront experience and the data collection together — what shows up on the site determines what you need to ask for in forms.
+
+**Form hierarchy:**
+- **Onboarding forms** → initial signup data + can contain collection forms
+- **Custom forms** → ad-hoc data collection + can contain collection forms
+- **Collection forms** → per-drop/collection data + can contain product forms
+- **Product forms** → per-product data (nested inside collection forms)
 
 ### Section 5: The Shopper Experience
 
@@ -134,6 +154,7 @@ This is where CreatorCommerce's platform capabilities shape the strategy.
 | 3 | Do you want creators to have dedicated landing pages with their own URL? (e.g., yourbrand.com/pages/creators/sarah) | Determines if you need metaobject page templates |
 | 4 | Should the creator's context persist across the site? (Show their name/photo on product pages, cart, checkout) | Determines full-funnel personalization scope |
 | 5 | Should creators be able to curate their own product lists? Or do you assign products? | Determines drops workflow — self-serve vs. brand-managed |
+| 6 | Should custom data collected from creators (via forms) appear on the storefront? Where? | Custom fields at collab, drop, and product levels can surface as custom headlines, credentials, testimonials, media galleries, etc. on landing pages, directories, and product pages |
 
 ### Section 6: Compensation & Economics
 
@@ -189,6 +210,8 @@ After completing discovery, assemble the strategy into these sections. **Be spec
 
 ### 3. Onboarding & Activation Flow
 - Step-by-step creator journey from signup to first sale
+- **Forms strategy:** What data to collect at each stage (onboarding forms → collection forms → product forms)
+- **Custom fields mapping:** Which custom fields power which storefront experiences
 - Automation opportunities (welcome emails, reminders, milestone celebrations)
 - Definition of "activated" and target activation rate
 
@@ -226,6 +249,11 @@ After completing discovery, assemble the strategy into these sections. **Be spec
 ### Financial Modeling
 - [Creator Program P&L Strategy](/creator-program-pl) — Full financial framework with unit economics, cost stacking, and benchmarks
 - [AI Use Case: Creator P&L](/ai-guides/ai-creator-pl) — **Direct the user here** if they need a deep financial modeling session
+
+### Forms & Custom Data
+- [Forms Overview](/guides/creator-experience/forms/overview) — Onboarding, custom, collection, and product forms
+- [Custom Fields Reference](/references/custom-fields-reference) — Field types, scoping levels, and access patterns
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Field naming and categorization strategy
 
 ### Messaging & Activation
 - [Co-branded Email & SMS](/guides/co-branded-messaging) — How creator context flows into customer communications

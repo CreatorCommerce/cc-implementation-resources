@@ -1,0 +1,513 @@
+---
+title: 'Build a Creator Directory'
+description: 'Implement a browsable, filterable creator directory on your Shopify storefront using metaobject iteration.'
+---
+
+## What Is a Creator Directory?
+
+A creator directory lets shoppers browse, search, and discover creators associated with your brand. Unlike co-branded landing pages (which personalize around a single creator), directories iterate the **full creator dataset** to display many creators at once.
+
+---
+
+## Key Architecture Principle
+
+Creator directories use the **full metaobject dataset** — they do NOT use the current cart creator context:
+
+```liquid
+{%- comment -%} ❌ Don't use cart context for directories {%- endcomment -%}
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+
+{%- comment -%} ✅ Use the full metaobject dataset {%- endcomment -%}
+{% for creator in metaobjects.creator %}
+  {% assign creator_data = creator.data.value %}
+  {% if creator_data['cc-public'] == 'Y' %}
+    {%- comment -%} Render this creator {%- endcomment -%}
+  {% endif %}
+{% endfor %}
+```
+
+### Always Filter by Public Status
+
+Never show non-public creators in a directory:
+
+```liquid
+{% if creator_data['cc-public'] == 'Y' %}
+  {%- comment -%} Safe to display {%- endcomment -%}
+{% endif %}
+```
+
+### Always Set Performance Limits
+
+Cap the number of creators processed to avoid slow page loads:
+
+```liquid
+{%- liquid
+  assign max_creators = section.settings.creators_per_page | default: 24
+  assign creator_count = 0
+  
+  for creator in metaobjects.creator
+    if creator_count >= max_creators
+      break
+    endif
+    
+    assign creator_data = creator.data.value
+    if creator_data['cc-public'] == 'Y'
+      assign creator_count = creator_count | plus: 1
+      # ... render creator card
+    endif
+  endfor
+-%}
+```
+
+---
+
+## Browse All Creators
+
+The simplest directory — shows all public creators in a responsive grid.
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign max_creators = section.settings.creators_per_page | default: 24
+  assign creator_count = 0
+  assign require_picture = section.settings.require_profile_picture
+-%}
+
+<div class="creator-directory">
+  <div class="creator-grid">
+    {%- for creator in metaobjects.creator -%}
+      {%- liquid
+        if creator_count >= max_creators
+          break
+        endif
+        
+        assign creator_data = creator.data.value
+        
+        # Skip non-public creators
+        if creator_data['cc-public'] != 'Y'
+          continue
+        endif
+        
+        # Optional: skip creators without profile pictures
+        if require_picture
+          unless creator.cc-creator-profile-picture
+            continue
+          endunless
+        endif
+        
+        # Skip current creator if configured
+        if section.settings.exclude_current_creator and cc_creator
+          if creator.handle == cc_creator.handle
+            continue
+          endif
+        endif
+        
+        assign creator_count = creator_count | plus: 1
+        assign creator_name = creator.cc-creator-first-name | default: 'Creator' | escape
+        assign creator_bio = creator_data['cc-creator-shop-description'] | default: '' | escape | truncate: 120
+      -%}
+      
+      <a href="{{ creator.system.url }}" class="creator-card">
+        {%- if creator.cc-creator-profile-picture -%}
+          <img
+            src="{{ creator.cc-creator-profile-picture | image_url: width: 300, height: 300, crop: 'center' }}"
+            alt="{{ creator_name }}"
+            loading="lazy"
+            width="300"
+            height="300"
+            class="creator-card__image"
+          >
+        {%- else -%}
+          {%- liquid
+            assign first_initial = creator.cc-creator-first-name | slice: 0, 1 | upcase | default: '?'
+            assign last_initial = creator.cc-creator-last-name | slice: 0, 1 | upcase | default: ''
+            assign initials = first_initial | append: last_initial
+          -%}
+          <div class="creator-card__initials">
+            <span>{{ initials }}</span>
+          </div>
+        {%- endif -%}
+        
+        <div class="creator-card__info">
+          <h3 class="creator-card__name">{{ creator_name }}</h3>
+          {%- if creator_bio != blank -%}
+            <p class="creator-card__bio">{{ creator_bio }}</p>
+          {%- endif -%}
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+  
+  {%- if creator_count == 0 -%}
+    <p class="creator-directory__empty">{{ section.settings.empty_message | default: 'No creators found.' }}</p>
+  {%- endif -%}
+</div>
+```
+
+---
+
+## Similar Creators (Shared Attribute Matching)
+
+Shows creators that share an attribute with the current creator — same tier, location, category, etc. Useful on creator landing pages to encourage discovery.
+
+```liquid
+{%- liquid
+  # Get current creator context
+  assign current_creator_handle = cart.attributes['cc-creator-handle']
+  assign current_creator = metaobjects.creator[current_creator_handle]
+  
+  if current_creator == blank and metaobject
+    assign current_creator = metaobject
+  endif
+  
+  assign max_similar = section.settings.max_similar | default: 8
+  assign similar_count = 0
+  
+  # Determine shared attribute to match on
+  assign shared_attribute = section.settings.shared_attribute | default: 'cc-collab-tier'
+  assign current_value = current_creator.data.value[shared_attribute]
+-%}
+
+{%- if current_creator and current_value != blank -%}
+  <div class="similar-creators">
+    <h2>{{ section.settings.heading | default: 'Similar Creators' }}</h2>
+    <div class="creator-grid">
+      {%- for creator in metaobjects.creator -%}
+        {%- liquid
+          if similar_count >= max_similar
+            break
+          endif
+          
+          assign creator_data = creator.data.value
+          
+          # Skip non-public, current creator, and non-matching
+          if creator_data['cc-public'] != 'Y'
+            continue
+          endif
+          if creator.handle == current_creator.handle
+            continue
+          endif
+          if creator_data[shared_attribute] != current_value
+            continue
+          endif
+          
+          assign similar_count = similar_count | plus: 1
+        -%}
+        
+        <a href="{{ creator.system.url }}" class="creator-card">
+          {%- if creator.cc-creator-profile-picture -%}
+            <img
+              src="{{ creator.cc-creator-profile-picture | image_url: width: 200, height: 200, crop: 'center' }}"
+              alt="{{ creator.cc-creator-first-name | escape }}"
+              loading="lazy"
+            >
+          {%- endif -%}
+          <h3>{{ creator.cc-creator-first-name | default: 'Creator' | escape }}</h3>
+        </a>
+      {%- endfor -%}
+    </div>
+    
+    {%- if similar_count == 0 -%}
+      <p>{{ section.settings.empty_message | default: 'No similar creators found.' }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+```
+
+---
+
+## Category-Based Filtering
+
+Filter creators by a specific category, tag, or tier using section settings:
+
+```liquid
+{%- liquid
+  assign filter_category = section.settings.category_filter | default: ''
+  assign max_creators = section.settings.creators_per_page | default: 24
+  assign creator_count = 0
+-%}
+
+<div class="creator-directory creator-directory--filtered">
+  <div class="creator-grid">
+    {%- for creator in metaobjects.creator -%}
+      {%- liquid
+        if creator_count >= max_creators
+          break
+        endif
+        
+        assign creator_data = creator.data.value
+        
+        if creator_data['cc-public'] != 'Y'
+          continue
+        endif
+        
+        # Apply category filter if set
+        if filter_category != blank
+          assign creator_category = creator_data['cc-creator-category'] | default: ''
+          if creator_category != filter_category
+            continue
+          endif
+        endif
+        
+        assign creator_count = creator_count | plus: 1
+      -%}
+      
+      <a href="{{ creator.system.url }}" class="creator-card">
+        {%- if creator.cc-creator-profile-picture -%}
+          <img
+            src="{{ creator.cc-creator-profile-picture | image_url: width: 300, height: 300, crop: 'center' }}"
+            alt="{{ creator.cc-creator-first-name | escape }}"
+            loading="lazy"
+          >
+        {%- endif -%}
+        <h3>{{ creator.cc-creator-first-name | default: 'Creator' | escape }}</h3>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+```
+
+---
+
+## CSS Starter
+
+Responsive grid for directory cards:
+
+```liquid
+{%- style -%}
+  #shopify-section-{{ section.id }} .creator-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop | default: 4 }}, 1fr);
+    gap: 1.5rem;
+    padding: 2rem 0;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card {
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card__image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card__initials {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #666;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card__name {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-card__bio {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+  
+  #shopify-section-{{ section.id }} .creator-directory__empty {
+    text-align: center;
+    padding: 3rem;
+    color: #999;
+  }
+  
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .creator-grid {
+      grid-template-columns: repeat({{ section.settings.columns_mobile | default: 2 }}, 1fr);
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+  }
+  
+  {%- if section.settings.custom_css != blank -%}
+    {{ section.settings.custom_css }}
+  {%- endif -%}
+{%- endstyle -%}
+```
+
+---
+
+## Schema Configuration
+
+A comprehensive schema for directory sections:
+
+```json
+{
+  "name": "Creator Directory",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content & Display"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Our Creators"
+    },
+    {
+      "type": "text",
+      "id": "empty_message",
+      "label": "Empty State Message",
+      "default": "No creators found."
+    },
+    {
+      "type": "range",
+      "id": "creators_per_page",
+      "label": "Creators per page",
+      "min": 4,
+      "max": 100,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "require_profile_picture",
+      "label": "Require Profile Picture",
+      "default": true,
+      "info": "Only show creators who have a profile picture uploaded."
+    },
+    {
+      "type": "checkbox",
+      "id": "exclude_current_creator",
+      "label": "Exclude Current Creator",
+      "default": true,
+      "info": "Hide the currently active creator (if any) from the directory."
+    },
+    {
+      "type": "header",
+      "content": "Filtering"
+    },
+    {
+      "type": "text",
+      "id": "category_filter",
+      "label": "Category Filter",
+      "info": "Only show creators matching this category. Leave blank for all."
+    },
+    {
+      "type": "text",
+      "id": "shared_attribute",
+      "label": "Shared Attribute (for Similar Creators)",
+      "default": "cc-collab-tier",
+      "info": "The data field to match creators on. Common: cc-collab-tier, cc-creator-location, cc-creator-category"
+    },
+    {
+      "type": "range",
+      "id": "max_similar",
+      "label": "Max Similar Creators",
+      "min": 2,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "info": "For shared attribute matching mode."
+    },
+    {
+      "type": "header",
+      "content": "Design & Styling"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns (Desktop)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Columns (Mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "info": "Custom styles scoped to this section."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Creator Directory"
+    }
+  ]
+}
+```
+
+---
+
+## Performance Guidelines
+
+| Creator Count | Recommended Approach |
+|--------------|---------------------|
+| **Under 50** | Render all at once with client-side filtering |
+| **50–200** | Use server-side limits with `break` and pagination |
+| **200+** | Performance limits are critical — cap rendered results, use category filtering to narrow |
+
+**Always use `break`** to cap iteration. Without it, Liquid loops through every metaobject entry even if you only display 24.
+
+---
+
+## Troubleshooting
+
+### No Creators Appearing
+
+1. Do creators have `cc-public` set to `'Y'` in their data?
+2. Is `require_profile_picture` enabled but creators lack images?
+3. Is `category_filter` set to a value that doesn't match any creators?
+4. Is `creators_per_page` set to a very low number?
+
+### Shared Attribute Matching Returns Nothing
+
+1. Does the current creator have the shared attribute populated?
+2. Do other creators share the same attribute with matching values?
+3. Is the attribute field name exact (case-sensitive, with hyphens)?
+4. Are the matching creators marked as public?
+
+---
+
+## Related
+
+- [Creator & Collab Data Model](/references/creator-collab-data-model) — All creator metaobject fields and types
+- [Referencing Creator Content](/references/sdk/referencing-creator-content) — Field access patterns and context resolution
+- [Custom Fields Reference](/references/custom-fields-reference) — Custom creator fields for filtering
+- [Co-branded Creator Directories](/guides/features/co-branded-creator-directories) — Strategic overview of directory types
+- [AI Use Case: Build a Creator Directory](/ai-guides/ai-creator-directory) — Get guided help from AI

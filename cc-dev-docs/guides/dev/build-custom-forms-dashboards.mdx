@@ -5,14 +5,27 @@ description: 'Create partner application forms, content collection interfaces, a
 
 ## Overview
 
-CreatorCommerce provides built-in dashboards, but you may need:
+CreatorCommerce provides built-in dashboards and a native form system, but you may need:
 
 - **Custom application forms** with your branding
 - **Specialized data collection** for your use case
 - **Embedded dashboards** in your existing tools
 - **White-label partner portals**
 
-This guide covers building these interfaces.
+This guide covers building these interfaces from scratch using CC APIs and Shopify integration.
+
+<Info>
+**Before you build from scratch**, check if CC's native form system covers your needs. CreatorCommerce includes built-in form types that handle most common data collection scenarios with zero custom code:
+
+- **[Onboarding forms](/guides/creator-experience/forms/onboarding/overview)** — Collect identity, preferences, and activation data at signup
+- **[Collection forms](/guides/creator-experience/forms/collection/overview)** — Collect drop-level data (titles, descriptions, media) when creators curate products
+- **[Product forms](/guides/creator-experience/forms/product/overview)** — Collect product-level data (testimonials, sizing notes) within drops
+- **[Custom forms](/guides/creator-experience/forms/custom/overview)** — Ongoing or campaign-specific data collection
+
+All form data maps to [custom fields](/references/custom-fields-reference) at the collab, drop, or product level — and is automatically available in Liquid templates on the storefront.
+
+**Build custom only when you need:** deeply branded application experiences, integration with external systems (CRM, analytics), or dashboard functionality beyond what CC's native portal provides.
+</Info>
 
 ---
 
@@ -532,3 +545,6 @@ function validateField(name, value) {
 - [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API integration
 - [Collect Content from Creators](/guides/collect-creator-content) — Content collection strategy
 - [CC API Reference](/references/unified-api-reference) — Full API documentation
+- [Custom Fields Reference](/references/custom-fields-reference) — How brands define and access custom creator fields
+- [Custom Forms Overview](/guides/creator-experience/forms/overview) — Understanding CC's native form types
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Guide to deciding what custom data to store

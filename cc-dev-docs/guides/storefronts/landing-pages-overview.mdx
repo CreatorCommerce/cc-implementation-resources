@@ -14,6 +14,59 @@ A co-branded landing page should:
 - **Maintain brand consistency** — Use your brand's design language while incorporating partner elements
 - **Drive clear actions** — Guide visitors toward purchase with compelling CTAs
 
+---
+
+## Which Landing Page Pattern Fits Your Goal?
+
+Before building, choose the pattern that matches your use case. Each pattern has different data access, URL structure, and personalization trade-offs.
+
+| Pattern | How It Works | Best For |
+|---------|-------------|----------|
+| **Dedicated Creator Page** | Each creator gets their own URL (e.g., `/pages/creators/sarah-jones`). All creator data is directly available on the page. | Most common. Best for SEO, sharing, and a fully personalized experience. |
+| **Campaign Landing Page** | One page URL that adapts based on which creator link was clicked. The page personalizes dynamically per visitor. | Affiliate campaigns where you want a single page that personalizes per visitor. |
+| **Homepage Co-Branding** | Existing homepage sections enhance with creator context when a visitor arrives via a creator link. No new pages needed. | Progressive enhancement. Minimal disruption to your existing storefront. |
+
+### Pattern A: Dedicated Creator Page
+
+**URL structure:** `/pages/creators/[handle]`
+
+Each creator gets their own page with a unique URL. This is the most common pattern because:
+- **SEO-friendly** — Pages are indexable and rank for creator name + brand searches
+- **Shareable** — Each creator gets a clean link to share
+- **Full control** — The entire page is dedicated to the creator experience
+
+**How it works:** You create a metaobject page template for the `creator` type. Shopify generates a page for each creator, and the `metaobject` variable gives you direct access to all creator data.
+
+### Pattern B: Campaign Landing Page
+
+**URL structure:** Single URL (e.g., `/pages/campaign`) that adapts per visitor
+
+One page URL that dynamically personalizes based on which creator link was clicked. The CreatorCommerce SDK sets cart attributes when a shopper clicks a creator link, and sections read those attributes to resolve creator data.
+
+**Best when:**
+- You're running a single campaign with many creators
+- You want one URL to manage, not one per creator
+- You need quick deployment for seasonal pushes
+
+**Trade-off:** No SEO benefit per creator — the page is the same URL for everyone.
+
+### Pattern C: Homepage Co-Branding
+
+**URL structure:** Your existing homepage URL
+
+Your existing homepage sections detect creator context and enhance accordingly — no new pages, no new templates. When a visitor arrives via a creator link, they see personalized elements (creator name in headlines, discount code in banners, creator photo in the hero). When no creator context exists, the page looks exactly as it always did.
+
+**Best when:**
+- You want minimal disruption to your current storefront
+- You're testing creator commerce before committing to dedicated pages
+- Your homepage already converts well and you want to add creator context, not replace the page
+
+<Tip>
+**Not sure?** Start with **Pattern A (Dedicated Creator Page)**. It's the most common, gives you the most flexibility, and delivers the best SEO value. You can always add Patterns B or C later for specific campaigns.
+</Tip>
+
+---
+
 ## Key Components
 
 <CardGroup cols={2}>
@@ -31,8 +84,11 @@ A co-branded landing page should:
   </Card>
 </CardGroup>
 
+---
+
 ## Related Guides
 
-- [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages)
-- [How to Create a New Landing Page Template](/guides/storefronts/create-landing-page-template)
-- [App Blocks 101](/guides/storefronts/app-blocks-101)
+- [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages) — Step-by-step walkthrough
+- [How to Create a New Landing Page Template](/guides/storefronts/create-landing-page-template) — Building the JSON template
+- [App Blocks 101](/guides/storefronts/app-blocks-101) — Zero-code alternative
+- [AI Use Case: Build Your First Landing Page](/ai-guides/ai-guide-first-landing-page) — Get guided help from AI with pattern selection and implementation
