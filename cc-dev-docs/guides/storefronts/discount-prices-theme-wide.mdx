@@ -19,8 +19,14 @@ Create `snippets/cc-price.liquid` to handle both **Percentage** and **Fixed** di
 {% endcomment %}
 
 {% liquid
-  assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
 %}
 
 {%- liquid
@@ -80,7 +86,7 @@ Replace price displays throughout your theme:
 Show customers how much they're saving:
 
 ```liquid
-{% if cc_creator %}
+{% if has_creator %}
   {%- liquid
     if cc_creator['cc-collab-discount-type'] == 'Percentage'
       assign savings = cart.total_price | times: cc_creator['cc-collab-discount-amount'] | divided_by: 100

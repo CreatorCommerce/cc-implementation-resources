@@ -26,7 +26,7 @@ Prefer a compact `{% liquid %}` block near the top of the section/snippet to avo
 
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
@@ -166,7 +166,7 @@ Copy these concerns into a dedicated `{% liquid %}` setup block at the top of yo
 
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
@@ -259,7 +259,7 @@ window.__ccCreator = {
 
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
@@ -315,7 +315,7 @@ Minimal setup you’ll reuse:
 
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']

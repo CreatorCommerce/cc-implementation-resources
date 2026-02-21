@@ -153,10 +153,18 @@ Start with your homepage as the foundation, then transform 2–3 key sections in
 
 **Basic Pattern:**
 ```liquid
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 
-{% if cc_creator %}
+{% if has_creator %}
   <h1>Shop with {{ cc_creator.cc-creator-first-name }}</h1>
 {% endif %}
 ```
@@ -388,4 +396,3 @@ After building your first experience:
 - [Co-Branded Storefronts](/guides/co-branded-storefronts) - Detailed implementation guide
 - [Drops & Products Data Model](/references/drops-products-data-model) - Understanding drop structure
 - [Data Model Overview](/references/data-model-overview) - Access patterns
-

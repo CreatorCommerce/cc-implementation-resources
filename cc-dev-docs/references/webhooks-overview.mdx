@@ -9,7 +9,7 @@ CreatorCommerce webhooks are delivered through two native integrations:
 
 <CardGroup cols={2}>
   <Card title="Shopify Flow" icon="shopify">
-    Triggers for order attribution, partner creation, tier changes, and more.
+    Trigger and action support for CreatorCommerce creator/collab sync automations.
   </Card>
   <Card title="Klaviyo" icon="envelope">
     Events for profile enrichment, co-branded email flows, and segmentation.
@@ -24,11 +24,13 @@ CreatorCommerce webhooks are delivered through two native integrations:
 
 | Trigger | Fires When |
 |---------|------------|
-| CC Order Attributed | Order is attributed to a partner |
-| CC Partner Created | New collab is created |
-| CC Partner Activated | Partner activates their page |
-| CC Tier Changed | Partner tier changes |
-| CC Drop Created | Partner creates a new drop |
+| CreatorCommerce - Creator Updated | A creator/collab record is updated in CreatorCommerce |
+
+## Shopify Flow Actions
+
+| Action | Purpose |
+|--------|---------|
+| Sync Tier Assignment with CreatorCommerce | Sync creator + tier assignment data (commonly from Shopify Collabs, but supports custom mapped inputs) |
 
 [Learn more about Shopify Flow →](/guides/dev/implement-shopify-flow)
 

@@ -187,8 +187,16 @@ When visitors click through to product pages, maintain the partner context:
 
 ```liquid
 {% comment %} Check for partner context {% endcomment %}
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 
 {% if cc_creator %}
   <div class="cc-partner-endorsement">

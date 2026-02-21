@@ -516,7 +516,8 @@ And my current code:
 ```liquid
 {% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
   {% for drop_product in json_drop['cc-creator-drop-products'] %}
-    {% if product.id == drop_product['cc-creator-drop-product-shopify-id'] %}
+    {% assign product_id_str = product.id | append: '' %}
+    {% if product_id_str == drop_product['cc-creator-drop-product-shopify-id'] %}
       <!-- Match found -->
     {% endif %}
   {% endfor %}
@@ -567,4 +568,3 @@ Copy specific sections for quick questions or troubleshooting.
 - [The 3 M's](/the-3-ms) - Strategic orientation
 - [Glossary](/glossary) - Key concepts and terminology
 - All data model docs - Complete context for implementations
-

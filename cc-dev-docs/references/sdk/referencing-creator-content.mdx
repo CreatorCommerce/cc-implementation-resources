@@ -26,14 +26,35 @@ Use this pattern at the top of any section or template to resolve the creator fr
 
 ## Available Fields
 
+### Out-of-the-Box Base Fields
+
+These fields are available by default in CreatorCommerce (no additional custom field setup required).
+
+| Group | Fields |
+|-------|--------|
+| Creator identity | `cc-creator-id`, `cc-creator-first-name`, `cc-creator-last-name`, `cc-creator-email`, `cc-creator-handle`, `cc-creator-is-onboarded`, `cc-creator-profile-picture` |
+| Creator shop | `cc-creator-shop-id`, `cc-creator-shop-handle`, `cc-creator-shop-title`, `cc-creator-shop-url`, `cc-creator-shop-description`, `cc-creator-shop-theme-primary-color` |
+| Collaboration | `cc-collab-id`, `cc-collab-relationship-manager`, `cc-collab-tier`, `cc-collab-tier-key`, `cc-collab-discount-amount`, `cc-collab-discount-type`, `cc-collab-tier-discount-amount`, `cc-collab-tier-discount-type`, `cc-collab-affiliate-code`, `cc-collab-discount-code`, `cc-collab-affiliate-link` |
+| Shopify refs | `cc-creator-collection`, `cc-creator-metaobject`, `cc-collab-metaobject`, `cc-creator-customer` |
+| Channel | `cc-channel-handle`, `cc-channel-myshopify-domain`, `cc-channel-brandkit-primary-color`, `cc-channel-brandkit-title`, `cc-channel-brandkit-primary-logo`, `cc-channel-integrations-klaviyo-enabled`, `cc-channel-default-messaging-enabled` |
+| Campaign | `cc-campaign-id`, `cc-campaign-title` |
+
+<Note>
+Some stores may expose legacy `cc-channel-myshopify-domian` alongside `cc-channel-myshopify-domain`. Treat the correctly spelled key as canonical and support the typo variant only for backward compatibility.
+</Note>
+
 ### Identity
 
 | Field | Access | Type | Example |
 |-------|--------|------|---------|
+| Creator ID | `cc_creator.cc-creator-id` | Text | `"6997d1305fe142fd13cff4b6"` |
 | First name | `cc_creator.cc-creator-first-name` | Text | `"Sarah"` |
 | Last name | `cc_creator.cc-creator-last-name` | Text | `"Jones"` |
+| Email | `cc_creator.cc-creator-email` | Text | `"jill+test@creatorcommerce.shop"` |
+| Creator handle | `cc_creator.cc-creator-handle` | Text | `"jill-650"` |
 | Shop handle | `cc_creator.cc-creator-shop-handle` | Text | `"sarah-jones"` |
 | Shop title | `cc_creator.cc-creator-shop-title` | Text | `"Sarah's Shop"` |
+| Shop URL | `cc_creator.cc-creator-shop-url` | URL | `"https://drops.shop/jill-650/nuuds"` |
 | Shop description | `cc_creator.cc-creator-shop-description` | Text | `"Skincare enthusiast..."` |
 | Is onboarded | `cc_creator.cc-creator-is-onboarded` | Boolean | `true` |
 
@@ -56,6 +77,10 @@ Use this pattern at the top of any section or template to resolve the creator fr
 | Affiliate link | `cc_creator.cc-collab-affiliate-link` | URL |
 | Relationship manager | `cc_creator.data.value['cc-collab-relationship-manager']` | `"social-snowball"` |
 | Collab tier | `cc_creator.data.value['cc-collab-tier']` | `"CC // Tier 1"` |
+| Collab ID | `cc_creator.data.value['cc-collab-id']` | `"6997d1305fe142fd13cff4d7"` |
+| Tier key | `cc_creator.data.value['cc-collab-tier-key']` | `"28002"` |
+| Tier discount amount | `cc_creator.data.value['cc-collab-tier-discount-amount']` | `"20"` |
+| Tier discount type | `cc_creator.data.value['cc-collab-tier-discount-type']` | `"Percentage"` |
 
 ### Brand Kit (Channel)
 
@@ -67,14 +92,17 @@ Use this pattern at the top of any section or template to resolve the creator fr
 | Brand description | `cc_creator.cc-channel-brandkit-description` |
 | Brand logo | `cc_creator.cc-channel-brandkit-primary-logo` |
 | Brand banner image | `cc_creator.cc-channel-brandkit-banner-image` |
+| Channel handle | `cc_creator.data.value['cc-channel-handle']` |
+| MyShopify domain | `cc_creator.data.value['cc-channel-myshopify-domain']` |
+| Klaviyo enabled | `cc_creator.data.value['cc-channel-integrations-klaviyo-enabled']` |
+| Default messaging enabled | `cc_creator.data.value['cc-channel-default-messaging-enabled']` |
 
 ### Campaign
 
 | Field | Access |
 |-------|--------|
 | Campaign ID | `cc_creator.data.value['cc-campaign-id']` |
-| Campaign tier | `cc_creator.data.value['cc-campaign-tier']` |
-| Campaign end date | `cc_creator.data.value['cc-campaign-end-date']` |
+| Campaign title | `cc_creator.data.value['cc-campaign-title']` |
 
 ### Social Handles (Coming Soon)
 
@@ -108,15 +136,11 @@ Each product in `cc-creator-drop-products` contains:
 
 | Field | Key | Type |
 |-------|-----|------|
-| Product ID | `id` | String (Shopify product ID) |
-| Title | `title` | String |
-| Handle | `handle` | String |
-| Vendor | `vendor` | String |
-| Images | `images` | Array of `{ src }` |
-| Variants | `variants` | Array of `{ title, price }` |
-| Online store URL | `onlineStoreUrl` | URL |
-| Enhancement note | `enhancement.note` | String (creator's review) |
-| Enhancement media | `enhancement.media` | Array of `{ mimeType, url }` |
+| Product ID | `cc-creator-drop-product-shopify-id` | String (Shopify product ID) |
+| Enhancement note | `cc-creator-drop-product-enhancement-note` | String (creator's review) |
+| Enhancement media | `cc-creator-drop-product-enhancement-media` | Array |
+| Enhancement variant | `cc-creator-drop-product-enhancement-variant` | String (variant ID) |
+| Product note | `cc-creator-drop-product-note` | String |
 
 ### Iterating Drops
 
@@ -128,12 +152,10 @@ Each product in `cc-creator-drop-products` contains:
     
     {% for product in drop['cc-creator-drop-products'] %}
       <div class="product-card">
-        <img src="{{ product.images[0].src }}" alt="{{ product.title }}">
-        <h3>{{ product.title }}</h3>
-        <p>{{ product.variants[0].price | prepend: '$' }}</p>
+        <p>Product ID: {{ product['cc-creator-drop-product-shopify-id'] }}</p>
         
-        {% if product.enhancement.note != blank %}
-          <blockquote>"{{ product.enhancement.note }}"</blockquote>
+        {% if product['cc-creator-drop-product-enhancement-note'] != blank %}
+          <blockquote>"{{ product['cc-creator-drop-product-enhancement-note'] }}"</blockquote>
         {% endif %}
       </div>
     {% endfor %}
@@ -149,10 +171,10 @@ On product pages, check if the current product exists in any creator drop:
 {% assign shopify_product_id = product.id | append: '' %}
 {% for drop in cc_creator.data.value['cc-creator-drops'] %}
   {% for cc_product in drop['cc-creator-drop-products'] %}
-    {% if cc_product.id == shopify_product_id %}
+    {% if cc_product['cc-creator-drop-product-shopify-id'] == shopify_product_id %}
       <!-- This product is in the creator's drop -->
-      {% if cc_product.enhancement.note != blank %}
-        <p class="creator-note">{{ cc_product.enhancement.note }}</p>
+      {% if cc_product['cc-creator-drop-product-enhancement-note'] != blank %}
+        <p class="creator-note">{{ cc_product['cc-creator-drop-product-enhancement-note'] }}</p>
       {% endif %}
     {% endif %}
   {% endfor %}

@@ -169,9 +169,17 @@ Before you start building with CreatorCommerce, make sure you have everything se
 2. Create test snippet or section
 3. Try accessing creator data:
    ```liquid
-   {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-   {% assign cc_creator = metaobjects.creator[cc_handle] %}
-   {% if cc_creator %}
+   {% liquid
+     if metaobject
+       assign cc_creator = metaobject
+     else
+       assign cc_handle = cart.attributes['cc-creator-handle']
+       assign cc_creator = metaobjects.creator[cc_handle]
+     endif
+     
+     assign has_creator = cc_creator != blank
+   %}
+   {% if has_creator %}
      Creator found: {{ cc_creator.cc-creator-first-name }}
    {% endif %}
    ```
@@ -253,7 +261,6 @@ Once you have everything set up:
 - [How to Use These Docs](/how-to-use-these-docs) - Leveraging documentation with LLMs
 - [The 3 M's](/the-3-ms) - Strategic orientation
 - [Data Model Overview](/data-model-overview) - Understanding the architecture
-
 
 
 

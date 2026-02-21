@@ -219,9 +219,16 @@ Channel → Collab → Drop → Enhancement → Product
 
 **On Other Pages:**
 ```liquid
-{# Via cart attributes #}
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 ```
 
 ### Via API
@@ -297,4 +304,3 @@ Cart Attributes → Creator Handle → Metaobject Lookup → Full Creator Data
 - [Drops & Products Data Model](/drops-products-data-model) - Drops and products architecture
 - [Shopify Integration Data Model](/shopify-integration-data-model) - Metaobjects and collections
 - [Custom Fields Reference](/custom-fields-reference) - Field configuration and access patterns
-

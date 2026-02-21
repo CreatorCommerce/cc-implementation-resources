@@ -24,12 +24,18 @@ The key pattern: **match the current product's Shopify ID against products in th
 
 ## Resolving Creator Context
 
-On product pages (not metaobject pages), resolve the creator from cart attributes:
+Use a single canonical pattern so the same section/snippet works on both creator metaobject templates and regular storefront pages:
 
 ```liquid
 {% liquid
-  assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
 %}
 ```
 

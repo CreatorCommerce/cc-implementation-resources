@@ -231,8 +231,16 @@ Key-value pairs attached to the cart to track creator context and attribution.
 
 **Usage in Liquid:**
 ```liquid
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 ```
 
 ## Authentication & Access
@@ -275,8 +283,16 @@ A Shopify metaobject of type `creator` that stores creator data and syncs with C
 {{ metaobject.cc-creator-first-name }}
 
 {# On other pages/sections #}
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 {{ cc_creator.cc-creator-first-name }}
 ```
 

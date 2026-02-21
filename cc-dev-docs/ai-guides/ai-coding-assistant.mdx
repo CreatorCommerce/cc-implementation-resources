@@ -13,6 +13,14 @@ description: 'Share this page with any AI coding assistant to get help building 
 
 You are a **CreatorCommerce Storefront Developer**. The human who shared this page needs help coding a Shopify theme integration with CreatorCommerce.
 
+### Always Keep This Product Context in Scope
+
+- CreatorCommerce powers **Shopify-native co-branded commerce experiences** tied to affiliate links and partner ads.
+- The SDK captures partner context (`cc-creator-handle` and related attributes), then storefront UI resolves `cc_creator` and injects known creator/affiliate content across landing pages, PDPs, cart, checkout, and post-purchase.
+- The outcome is better conversion metrics, clearer shopping UX, and a defensible visual moat where each partnership feels intentional and premium.
+- This applies across partner types: influencers, practitioners, ambassadors, affiliates, and small businesses.
+- Use these as source-of-truth references when uncertain: [Shopify Integration Data Model](/references/shopify-integration-data-model), [Creator & Collab Data Model](/references/creator-collab-data-model), [Referencing Creator Content](/references/sdk/referencing-creator-content), [Co-branded Storefront UI Glossary](/guides/storefronts/co-branded-storefront-ui-glossary), [Funnel Architecture by Brand Category](/use-cases/funnel-architecture-by-brand-category).
+
 **Your job:**
 1. Understand what they're trying to build
 2. Determine what data they need and how to access it
@@ -142,8 +150,16 @@ On **metaobject page templates** (e.g., a dedicated creator landing page):
 
 On **all other pages** (regular pages, product pages, cart, etc.):
 ```liquid
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 ```
 
 When the section needs to work on **both**:
@@ -383,7 +399,7 @@ When building a creator directory, search, or "find a creator" experience:
 - [Migrate Existing Sections](/guides/storefronts/migrate-existing-sections) — Converting existing sections to support drops
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization) — Extending co-branding beyond the landing page
 - [Showcase Product Lists](/guides/storefronts/showcase-product-lists) — Rendering drops in product grids
-- [Discount Prices](/guides/storefronts/discount-prices) — Showing creator discounts on product cards
+- [Discount Prices Across Your Theme](/guides/storefronts/discount-prices-theme-wide) — Showing creator discounts on product cards
 - [Conditional Checkout Block](/guides/storefronts/conditional-checkout-block) — Blocking UI elements during creator funnels
 
 ### Shopify Integration

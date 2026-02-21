@@ -89,6 +89,22 @@ The creator metaobject has two access patterns:
 | `cc-collab-discount-code` | String | Discount code for this creator | `data.value` or via collab |
 | `cc-collab-discount-amount` | Number | Discount percentage/amount | Via collab relationship |
 
+### Out-of-the-Box Base Field Inventory
+
+The following creator payload keys are available by default and do not require custom fields:
+
+- Creator identity: `cc-creator-id`, `cc-creator-first-name`, `cc-creator-last-name`, `cc-creator-email`, `cc-creator-handle`, `cc-creator-is-onboarded`, `cc-creator-profile-picture`
+- Creator shop: `cc-creator-shop-id`, `cc-creator-shop-handle`, `cc-creator-shop-title`, `cc-creator-shop-url`, `cc-creator-shop-description`, `cc-creator-shop-theme-primary-color`
+- Collaboration: `cc-collab-id`, `cc-collab-relationship-manager`, `cc-collab-tier`, `cc-collab-tier-key`, `cc-collab-discount-amount`, `cc-collab-discount-type`, `cc-collab-tier-discount-amount`, `cc-collab-tier-discount-type`, `cc-collab-affiliate-code`, `cc-collab-discount-code`, `cc-collab-affiliate-link`
+- Shopify refs: `cc-creator-collection`, `cc-creator-metaobject`, `cc-collab-metaobject`, `cc-creator-customer`
+- Channel: `cc-channel-handle`, `cc-channel-myshopify-domain`, `cc-channel-brandkit-primary-color`, `cc-channel-brandkit-title`, `cc-channel-brandkit-primary-logo`, `cc-channel-integrations-klaviyo-enabled`, `cc-channel-default-messaging-enabled`
+- Campaign: `cc-campaign-id`, `cc-campaign-title`
+- Drops: `cc-creator-drops` including nested drop/product keys like `cc-creator-drop-id`, `cc-creator-drop-collection-id`, `cc-creator-drop-product-shopify-id`, and enhancement fields
+
+<Note>
+Backward-compatible payloads may include `cc-channel-myshopify-domian` (typo) in addition to `cc-channel-myshopify-domain`. Use the correctly spelled key as canonical.
+</Note>
+
 ## Collab (Collaboration) Data Structure
 
 ### Collab Entity
@@ -201,20 +217,28 @@ Collabs are assigned a tier level that determines discount rates and relationshi
 **Standard Pattern:**
 ```liquid
 {% liquid
-  assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
 %}
 ```
 
 **Template Context Branching:**
 ```liquid
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
     assign cc_creator = metaobjects.creator[cc_handle]
   endif
+  
+  assign has_creator = cc_creator != blank
 %}
 ```
 
@@ -319,7 +343,14 @@ Use the creator's handle to access metaobjects, not the ID:
 
 ```liquid
 {# ✅ Correct #}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
 
 {# ❌ Wrong #}
 {% assign cc_creator = metaobjects.creator[creator_id] %}
@@ -352,8 +383,13 @@ Resolve creator once at the top of your template:
 
 ```liquid
 {% liquid
-  assign cc_handle = cart.attributes['cc-creator-handle']
-  assign cc_creator = metaobjects.creator[cc_handle]
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
   assign has_creator = cc_creator != blank
 %}
 ```
@@ -364,4 +400,3 @@ Resolve creator once at the top of your template:
 - [Drops & Products Data Model](/drops-products-data-model) - Drop structures
 - [Shopify Integration Data Model](/shopify-integration-data-model) - Metaobjects
 - [Custom Fields Reference](/custom-fields-reference) - Custom field patterns
-

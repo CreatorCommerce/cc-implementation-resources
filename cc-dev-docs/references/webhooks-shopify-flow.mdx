@@ -7,78 +7,56 @@ description: 'CreatorCommerce triggers available in Shopify Flow for automating 
 
 | Trigger | Fires When | Key Data |
 |---------|------------|----------|
-| **CC Order Attributed** | Order attributed to a partner | Order, partner, commission |
-| **CC Partner Created** | New collab created | Partner details, tier |
-| **CC Partner Activated** | Partner activates their page | Partner, activation time |
-| **CC Tier Changed** | Partner tier changes | Partner, old tier, new tier |
-| **CC Drop Created** | Partner creates a new drop | Partner, drop details |
-| **CC Milestone Reached** | Partner hits a milestone | Partner, milestone type, value |
+| **CreatorCommerce - Creator Updated** | A creator/collab record is updated in CreatorCommerce | Current + previous key creator fields |
 
 ## Trigger Data
 
-### CC Order Attributed
+### CreatorCommerce - Creator Updated (Currently Available Fields)
 
 ```json
 {
-  "order": {
-    "id": "gid://shopify/Order/123",
-    "total_price": "150.00",
-    "discount_codes": ["SARAH15"]
-  },
-  "partner": {
-    "handle": "sarah-jones",
-    "firstName": "Sarah",
-    "tier": "gold"
-  },
-  "attribution": {
-    "discountCode": "SARAH15",
-    "commissionAmount": 15.00
-  }
+  "ccCreatorId": "string",
+  "ccCreatorShopId": "string",
+  "ccCreatorMetaobjectId": "string",
+  "ccCreatorShopHandle": "string",
+  "ccCreatorDiscountCode": "string",
+  "ccCreatorAffiliateCode": "string",
+  "ccCreatorAffiliateUrl": "string",
+  "ccCreatorShopHandlePrev": "string",
+  "ccCreatorDiscountCodePrev": "string",
+  "ccCreatorAffiliateCodePrev": "string",
+  "ccCreatorAffiliateUrlPrev": "string"
 }
 ```
 
-### CC Partner Created
-
-```json
-{
-  "partner": {
-    "id": "creator_123",
-    "handle": "sarah-jones",
-    "firstName": "Sarah",
-    "lastName": "Jones",
-    "email": "sarah@example.com",
-    "tier": "starter"
-  }
-}
-```
+<Note>
+These are the fields currently exposed in Flow variable picker for `CreatorCommerce - Creator Updated`.
+</Note>
 
 ## Common Workflows
 
-### Auto-Upgrade Tier
+### Update External Systems on Creator Changes
 
 ```
-Trigger: CC Order Attributed
-Condition: Partner total revenue >= $5,000
-Action: Update partner tier → Gold
-Action: Send notification email
+Trigger: CreatorCommerce - Creator Updated
+Condition: ccCreatorAffiliateCode != ccCreatorAffiliateCodePrev
+Action: Sync affiliate code to CRM / ESP / analytics destination
 ```
 
-### Welcome New Partners
+### Keep Storefront Link Systems in Sync
 
 ```
-Trigger: CC Partner Created
-Action: Send welcome email
-Action: Create task in project management
-Action: Post to Slack
+Trigger: CreatorCommerce - Creator Updated
+Condition: ccCreatorShopHandle != ccCreatorShopHandlePrev
+Action: Update deep links or storefront references
 ```
 
-### High-Value Order Alert
+### Keep Discount Automations Accurate
 
 ```
-Trigger: CC Order Attributed
-Condition: Order value >= $500
-Action: Send Slack notification
-Action: Tag partner as "high-value-driver"
+Trigger: CreatorCommerce - Creator Updated
+Condition: ccCreatorDiscountCode != ccCreatorDiscountCodePrev
+Action: Update discount-aware messaging flows
 ```
 
 ## Using in Flow

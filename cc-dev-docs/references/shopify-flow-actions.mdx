@@ -9,37 +9,48 @@ CreatorCommerce exposes actions in Shopify Flow that let you automate partner pr
 
 | Action | What It Does | Common Use |
 |--------|-------------|-----------|
-| **Update Partner Tier** | Changes a partner's collaboration tier | Auto-promote based on performance |
-| **Tag Partner** | Adds a tag to a partner's collab record | Segment for campaigns |
-| **Send CC Notification** | Triggers a notification through CC | Custom alerts |
-| **Sync Partner Data** | Forces a data refresh for a partner | After external changes |
+| **Sync Tier Assignment with CreatorCommerce** | Syncs creator and tier data into CreatorCommerce (commonly from Shopify Collabs) | Create/update collabs from Flow variables |
+
+## Action Inputs (Currently Available)
+
+For **Sync Tier Assignment with CreatorCommerce**, these input fields are currently available:
+
+- `First Name`
+- `Last Name`
+- `Email`
+- `Location`
+- `Tier Name`
+- `Affiliate Code`
+- `Community Member Id`
+- `Primary Username`
+- `MyShopify Domain`
+
+<Note>
+This action is often used with Shopify Collabs variables, but it can also be used with custom data sources as long as the required values are mapped.
+</Note>
 
 ## Using Actions in Flow
 
-### Auto-Promote Top Performers
+### Sync Collab from Shopify Collabs
 
 ```
-Trigger: CC Order Attributed
-Condition: Partner total sales >= 50 orders
-Action: Update Partner Tier → "Gold"
-Action: Send CC Notification → "Congratulations on Gold tier!"
+Trigger: Shopify Collabs event (or another Flow trigger)
+Action: Sync Tier Assignment with CreatorCommerce
+  - First Name
+  - Last Name
+  - Email
+  - Tier Name
+  - Affiliate Code
+  - Community Member Id
+  - Primary Username
+  - MyShopify Domain
 ```
 
-### Flag High-Value Partners
+### Sync Custom Source Data
 
 ```
-Trigger: CC Order Attributed
-Condition: Order value >= $500
-Action: Tag Partner → "high-value-driver"
-Action: Send Slack message → #partner-wins
-```
-
-### Campaign Enrollment
-
-```
-Trigger: CC Partner Activated
-Condition: Partner tier == "Ambassador"
-Action: Tag Partner → "holiday-campaign-2025"
+Trigger: Any Shopify Flow trigger with creator data available
+Action: Sync Tier Assignment with CreatorCommerce
 ```
 
 ## Combining Triggers and Actions
@@ -48,10 +59,9 @@ The real power is combining CC triggers with CC actions and other Shopify Flow c
 
 | Trigger | + Condition | + Action |
 |---------|------------|----------|
-| CC Order Attributed | Revenue threshold met | Update Partner Tier |
-| CC Partner Created | Tier == "Starter" | Send onboarding email via Klaviyo |
-| CC Drop Created | Partner is in "VIP" segment | Post to Slack, send thank-you |
-| CC Milestone Reached | Milestone == "100 orders" | Tag Partner, update tier |
+| Shopify Collabs / custom trigger | Creator data present | Sync Tier Assignment with CreatorCommerce |
+| CreatorCommerce - Creator Updated | Affiliate code changed | Sync to external CRM |
+| CreatorCommerce - Creator Updated | Shop handle changed | Update downstream links |
 
 ## Related
 

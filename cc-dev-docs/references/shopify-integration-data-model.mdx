@@ -26,6 +26,33 @@ The metaobject is ready to use as soon as CreatorCommerce is installed and your 
 
 **Metaobject Type:** `creator`
 
+### Base Fields (Out-of-the-Box, No Custom Fields Required)
+
+These fields are part of the default CreatorCommerce creator payload and are available without creating additional custom fields.
+
+| Group | Base Fields |
+|-------|-------------|
+| Creator identity | `cc-creator-id`, `cc-creator-first-name`, `cc-creator-last-name`, `cc-creator-email`, `cc-creator-handle`, `cc-creator-is-onboarded`, `cc-creator-profile-picture` |
+| Creator shop | `cc-creator-shop-id`, `cc-creator-shop-handle`, `cc-creator-shop-title`, `cc-creator-shop-url`, `cc-creator-shop-description`, `cc-creator-shop-theme-primary-color` |
+| Collaboration | `cc-collab-id`, `cc-collab-relationship-manager`, `cc-collab-tier`, `cc-collab-tier-key`, `cc-collab-discount-amount`, `cc-collab-discount-type`, `cc-collab-tier-discount-amount`, `cc-collab-tier-discount-type`, `cc-collab-affiliate-code`, `cc-collab-discount-code`, `cc-collab-affiliate-link` |
+| Shopify object refs | `cc-creator-collection`, `cc-creator-metaobject`, `cc-collab-metaobject`, `cc-creator-customer` |
+| Channel / brand kit | `cc-channel-handle`, `cc-channel-myshopify-domain`, `cc-channel-brandkit-primary-color`, `cc-channel-brandkit-title`, `cc-channel-brandkit-primary-logo`, `cc-channel-integrations-klaviyo-enabled`, `cc-channel-default-messaging-enabled` |
+| Campaign | `cc-campaign-id`, `cc-campaign-title` |
+| Drops JSON | `cc-creator-drops` and nested fields like `cc-creator-drop-id`, `cc-creator-drop-collection-id`, `cc-creator-drop-product-shopify-id`, `cc-creator-drop-product-enhancement-note`, `cc-creator-drop-product-enhancement-media`, `cc-creator-drop-product-enhancement-variant` |
+
+#### Drop/Product Nested Base Keys
+
+Inside each `cc-creator-drops[]` object, default keys include:
+
+- Drop-level: `cc-creator-drop-id`, `cc-creator-drop-handle`, `cc-creator-drop-title`, `cc-creator-drop-description`, `cc-creator-drop-collection-id`
+- Product-level: `cc-creator-drop-product-id`, `cc-creator-drop-product-title`, `cc-creator-drop-product-shopify-id`, `cc-creator-drop-product-shopify-handle`, `cc-creator-drop-product-enhancement-id`, `cc-creator-drop-product-enhancement-note`, `cc-creator-drop-product-enhancement-media`, `cc-creator-drop-product-enhancement-variant`
+- Enhancement object mirrors: `enhancement.cc-creator-drop-product-enhancement-id`, `enhancement.cc-creator-drop-product-enhancement-note`, `enhancement.cc-creator-drop-product-enhancement-media`, `enhancement.cc-creator-drop-product-enhancement-variant`, plus compatibility mirrors `enhancement.note`, `enhancement.media`, `enhancement.cc-creator-drop-product-shopify-id`
+- Shopify product mirrors for rendering convenience: `id`, `title`, `vendor`, `handle`, `images[]`, `variants[]`
+
+<Note>
+Some payloads include both `cc-channel-myshopify-domain` (correct spelling) and `cc-channel-myshopify-domian` (legacy typo variant). Prefer `cc-channel-myshopify-domain` when present, but handle both defensively.
+</Note>
+
 **Top-Level Fields:**
 ```liquid
 {{ metaobject.cc-creator-first-name }}
@@ -58,6 +85,10 @@ The metaobject is ready to use as soon as CreatorCommerce is installed and your 
 | `drops[]` | `cc-creator-drops` | Collection list |
 | Drops JSON | `data.value['cc-creator-drops']` | JSON |
 
+<Tip>
+Use this field mapping table for concepts and storage shape, and use **Base Fields (Out-of-the-Box)** above as the canonical runtime key list.
+</Tip>
+
 ### Metaobject Access Patterns
 
 **On Metaobject Page Templates:**
@@ -69,21 +100,29 @@ The metaobject is ready to use as soon as CreatorCommerce is installed and your 
 
 **On Other Pages/Sections:**
 ```liquid
-{# Via cart attributes #}
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
-```
-
-**In Snippets:**
-```liquid
-{# Template context branching #}
 {% liquid
-  if template.name contains 'metaobject'
+  if metaobject
     assign cc_creator = metaobject
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
     assign cc_creator = metaobjects.creator[cc_handle]
   endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+**In Snippets:**
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
 %}
 ```
 
@@ -354,8 +393,16 @@ Returns URL with cart attributes:
 
 **In Liquid:**
 ```liquid
-{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
 ```
 
 ### Cart Attribute Persistence
@@ -372,7 +419,14 @@ Handles are more reliable than IDs for metaobject access:
 
 ```liquid
 {# ✅ Correct #}
-{% assign cc_creator = metaobjects.creator[cc_handle] %}
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+%}
 
 {# ❌ Wrong #}
 {% assign cc_creator = metaobjects.creator[creator_id] %}
@@ -412,7 +466,3 @@ Use JSON for drops, nested data, custom fields:
 - [Creator & Collab Data Model](/creator-collab-data-model) - Creator structures
 - [Drops & Products Data Model](/drops-products-data-model) - Drop structures
 - [Custom Fields Reference](/custom-fields-reference) - Field patterns
-
-
-
-
