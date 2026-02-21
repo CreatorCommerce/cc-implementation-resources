@@ -1,0 +1,469 @@
+---
+title: 'Quick Start: Out-of-the-Box Blocks'
+description: 'Get your first co-branded storefront live in under an hour using CreatorCommerce pre-built sections—no code required.'
+---
+
+<Info>
+**Fastest path to launch.** This guide walks you through setting up a complete co-branded storefront using CreatorCommerce's pre-built sections. Perfect for getting started quickly and testing your setup.
+</Info>
+
+## Prerequisites
+
+Before you can build and test your storefront, you need:
+
+1. **At least one collaboration synced** — A creator partnership must exist in CreatorCommerce
+2. **Test creator set up** — Create a test creator to preview your build
+3. **Test destination configured** — Map a test tier to your creator template
+
+### Step 1: Create a Test Creator
+
+**Why:** You need a creator with data to test your storefront. Building is possible without one, but testing requires real creator data.
+
+**How to set up:**
+
+<Steps>
+  <Step title="Create a test program/tier in your affiliate software">
+    Set up a test tier (e.g., "Test Program" or "Development Tier") in your affiliate platform (Shopify Collabs, Impact, etc.).
+  </Step>
+  <Step title="Add a test creator">
+    Create a test creator with a John Doe-style profile:
+    - Name: "Test Creator" or "John Doe"
+    - Email: Your email (so you can access onboarding)
+    - Assign to your test tier
+  </Step>
+  <Step title="Sync to CreatorCommerce">
+    The creator should automatically sync to CreatorCommerce. Verify they appear in your CreatorCommerce dashboard.
+  </Step>
+  <Step title="Configure test destination">
+    In CreatorCommerce, go to **Settings → Destinations** and create a test destination mapped to your test tier. This routes affiliate traffic to your creator template.
+  </Step>
+  <Step title="Complete test creator onboarding">
+    Click on your test creator in CreatorCommerce, then click **Copy onboarding link**. Go through the onboarding flow to:
+    - Add a profile photo
+    - Write a bio
+    - Create product collections (drops)
+    - Add product reviews/notes
+    - Upload UGC content
+    
+    **Why this matters:** Your storefront will be much more interesting and realistic if your test creator has actual content, reviews, and product collections.
+  </Step>
+</Steps>
+
+<Warning>
+**Don't skip onboarding your test creator.** A storefront with real content, reviews, and collections is much easier to design and test than an empty one.
+</Warning>
+
+---
+
+## Theme Setup
+
+### Step 1: Enable CreatorCommerce SDK
+
+**Location:** Theme Editor → App Embeds
+
+**Why:** The SDK detects affiliate context and writes cart attributes (`cc-creator-handle`, `cc-creator-id`) that power all personalization. This is essential for full-funnel tracking and personalization.
+
+<Steps>
+  <Step title="Open Theme Editor">
+    In Shopify Admin → **Online Store → Themes → Customize**
+  </Step>
+  <Step title="Open App Embeds">
+    In the left sidebar, click **App embeds**
+  </Step>
+  <Step title="Enable CreatorCommerce SDK">
+    Find "CreatorCommerce" in the list and toggle it **on**
+  </Step>
+  <Step title="Save">
+    Click **Save** to apply the change
+  </Step>
+</Steps>
+
+<Info>
+**Do this first.** Enabling the SDK early ensures tracking works from the start and you can test personalization immediately.
+</Info>
+
+### Step 2: Create Creator Template
+
+**Location:** Theme Editor → Page Templates
+
+<Steps>
+  <Step title="Open Page Picker">
+    In the Theme Editor, click **Homepage** to open the page picker menu
+  </Step>
+  <Step title="Navigate to Creator">
+    Scroll down and click **Creator** (or search for "creator")
+  </Step>
+  <Step title="Create Template">
+    Click **Create template**. This creates your base CreatorCommerce template (`templates/metaobject/creator.json`)
+  </Step>
+</Steps>
+
+**What you have now:** An empty creator page template. Next, we'll populate it with sections.
+
+### Step 3: Copy Homepage Sections
+
+**Why:** Starting with your homepage gives you a one-to-one copy to work from. Your creator page will have the same structure, but personalized for creators.
+
+**Two methods:**
+
+<Tabs>
+  <Tab title="Easy Way (Recommended)">
+    **Copy the JSON file:**
+    
+    1. In your theme files, open `templates/index.json`
+    2. Copy all contents
+    3. Open `templates/metaobject/creator.json`
+    4. Paste the contents
+    5. Save
+    
+    **Result:** Your creator template now has all your homepage sections.
+  </Tab>
+  
+  <Tab title="Section by Section">
+    **If you prefer the visual editor:**
+    
+    1. In Theme Editor, open your homepage
+    2. For each section, click the section → **Duplicate**
+    3. Switch to your creator template
+    4. Click **Add section** → Find the duplicated section
+    5. Repeat for all sections (can take a while with 25+ sections)
+  </Tab>
+</Tabs>
+
+**What you have now:** A creator template that's a duplicate of your homepage. Next, we'll replace the hero section with a creator-specific hero.
+
+---
+
+## Hero Section Setup
+
+### Replace Homepage Hero with Creator Hero
+
+**Why:** Your homepage hero changes with seasonal offers and campaigns. Your creator hero should be consistent to the creator's offer, which flexes with their content and discounts (all dynamic anyway).
+
+<Steps>
+  <Step title="Find your hero section">
+    In your creator template, locate your homepage hero section
+  </Step>
+  <Step title="Remove the homepage hero">
+    Click the section → **Remove section**
+  </Step>
+  <Step title="Add CC Hero section">
+    Click **Add section** → Search for "CC" → You'll see:
+    - **CC Hero - Equinox** — Immersive, animated gradient hero with WebGL effects
+    - **CC Hero - Primavera** — Clean, minimal hero with carousel support
+    
+    For this guide, we'll use **CC Hero - Primavera**
+  </Step>
+  <Step title="Select Primavera Hero">
+    Click **CC Hero - Primavera** to add it
+  </Step>
+</Steps>
+
+**What you'll see:** Initially, the hero will look bland—just a background. Your fonts should be applied. This is normal. Now we'll configure it.
+
+### Configure Primavera Hero Section
+
+Click on the hero section to open its settings. Here's what to configure:
+
+#### Content & Copy
+
+**Eyebrow (Creator Badge Text):**
+- **Recommended:** `Recommended by [cc-creator-first-name]`
+- This appears as a small badge at the top
+
+**Heading:**
+- Replace the default lorem ipsum with something engaging
+- **Examples:**
+  - `Shop with [cc-creator-first-name]`
+  - `Discover this new product line with [cc-creator-first-name]`
+  - `Go nude with [cc-creator-first-name]` (for a clothing brand called "Nudes")
+
+**Description Text:**
+- Make it digestible and value-focused
+- **Example:** `Get [cc-collab-discount-amount]% off by shopping my curated collections. Also check out the new spring collection.`
+
+**Trust Indicator:**
+- Typically better for health/beauty brands
+- For apparel, you can clear this out
+- **Example:** `Trusted by 10,000+ customers`
+
+**CTA Button:**
+- **Button Text:** `Shop my curations` (or similar)
+- **Button Link:** `#drops-anchor` (scrolls to curated collections section)
+
+#### Collab Highlight
+
+**Show Collab Highlight:**
+- Options:
+  - `Show first name` — Displays creator's first name
+  - `Show shop title` — Displays creator's shop title
+  - `Hide labels` — Shows logo/photo without text
+  - `Hide component` — Hides the entire collab highlight
+
+**Recommended:** `Show first name` for most use cases
+
+#### Carousel Display
+
+**Carousel Type:**
+- **Social Design** — Instagram/TikTok-style story carousel
+- **Inline Carousel** — Traditional product carousel
+
+**Fallback Video:**
+- If no UGC is uploaded by the creator, show a tasteful fallback video
+- Keeps the hero engaging even without creator content
+
+#### Styling
+
+**Background:**
+- Set a background color
+- Optionally set a background image
+- Set text color (or use auto-contrast)
+
+**Auto Contrast:**
+- **Enabled:** Text color automatically adjusts (white on dark backgrounds, black on light)
+- **Disabled:** Use manual text color
+
+**Additional Styling Options:**
+- Badge background color
+- Badge border color
+- Button background color (override theme or use theme default)
+- Border widths
+- Border radius (for sharp corners)
+- Vertical padding (all devices)
+- Accent text size
+- Uppercase accent text toggle
+- Star adjustment (for trust indicators)
+- Left padding for desktop (when carousel is on left)
+
+**Custom CSS:**
+- Apply custom CSS as needed for advanced styling
+
+---
+
+## Product Sections
+
+### Choose Your Product Section
+
+CreatorCommerce offers two main product section types:
+
+<Tabs>
+  <Tab title="CC Products - Curated Lists">
+    **Best for:** Higher SKU stores (10+ products)
+    
+    - Great for apparel
+    - Great for health & beauty
+    - Creators can make multiple collections (drops)
+    - Dropdown selector to switch between drops
+    - "Add Bundle to Cart" functionality
+    
+    **When to use:** Stores with many products where creators curate multiple themed collections
+  </Tab>
+  
+  <Tab title="CC Products - Curated Bundle">
+    **Best for:** Lower SKU stores (< 10 products)
+    
+    - Showcases bundles of products
+    - Simpler, focused display
+    - Great for smaller catalogs
+    
+    **When to use:** Stores with fewer products where creators recommend complete bundles
+  </Tab>
+</Tabs>
+
+**For this guide:** We'll focus on **CC Products - Curated Lists** (most common use case).
+
+### Add Curated Lists Section
+
+<Steps>
+  <Step title="Add Section">
+    In your creator template, click **Add section**
+  </Step>
+  <Step title="Search for CC">
+    Type "CC" in the search to filter CreatorCommerce sections
+  </Step>
+  <Step title="Select CC Products - Curated Lists">
+    Click **CC Products - Curated Lists** to add it
+  </Step>
+</Steps>
+
+**What you get:** A pre-built product grid section that:
+- Automatically pulls in creator drops
+- Shows a dropdown to switch between drops
+- Includes a pre-made product card
+- Supports "Add Bundle to Cart"
+
+### Customize Product Card
+
+**Option 1: Use Pre-Built Card (Default)**
+- The section comes with a pre-made product card
+- Works out of the box
+- Good for quick launches
+
+**Option 2: Use Your Theme's Product Card**
+
+If you want to use your theme's existing product card (with quick add, aspect ratio settings, etc.):
+
+<Steps>
+  <Step title="Find Your Theme's Product Card">
+    In your theme files, search for `product-card` or `card-product` (usually in `snippets/`)
+    
+    **Tip:** Check your featured collection section or any product list section—they likely use your theme's product card
+  </Step>
+  <Step title="Copy the Snippet">
+    Open the product card snippet file and copy its contents
+  </Step>
+  <Step title="Paste into Curated Lists Section">
+    In the Theme Editor:
+    1. Click on your **CC Products - Curated Lists** section
+    2. Find the **Custom Product Card** or **Product Card Snippet** setting
+    3. Paste your snippet code
+    
+    **Alternative:** If the section has a snippet selector, choose your theme's product card snippet
+  </Step>
+</Steps>
+
+**Result:** Your curated lists now use your theme's product card with all its bells and whistles (quick add, aspect ratios, etc.).
+
+---
+
+## Product Page Customization
+
+### Add Creator Quote Sections
+
+When customers view products, show creator endorsements and quotes. CreatorCommerce offers two complementary sections:
+
+<Tabs>
+  <Tab title="CC Product - Quote Badge">
+    **What it is:** A sticky banner that appears when a creator has a note or media for the product
+    
+    **Features:**
+    - Shows creator avatar
+    - Displays product quote/note
+    - Shows UGC attached to product
+    - Expandable to reveal full quote and media carousel
+    - Sticky positioning options
+    
+    **Best for:** Prominent, always-visible creator endorsement
+  </Tab>
+  
+  <Tab title="CC Product - Quote Editorial">
+    **What it is:** An editorial-style quote display
+    
+    **Features:**
+    - Shows the same quote as the badge
+    - More editorial, magazine-style presentation
+    - Shows creator image
+    - Different visual treatment
+    
+    **Best for:** Editorial, story-driven product pages
+  </Tab>
+</Tabs>
+
+**Recommendation:** Use **both** sections together. They show the same quote but in different formats—the badge is a sticky banner, the editorial is more integrated into the page flow.
+
+### Add Quote Sections to Product Template
+
+<Steps>
+  <Step title="Open Product Template">
+    In Theme Editor, go to your product template (usually `templates/product.json` or the default product template)
+  </Step>
+  <Step title="Add Section">
+    Click **Add section** → Search for "CC"
+  </Step>
+  <Step title="Add Quote Badge">
+    Add **CC Product - Quote Badge** section
+  </Step>
+  <Step title="Add Quote Editorial">
+    Add **CC Product - Quote Editorial** section
+  </Step>
+  <Step title="Configure Settings">
+    For each section, configure:
+    - Visibility settings
+    - Position (for badge: fixed top, fixed bottom, or natural)
+    - Styling (colors, fonts, spacing)
+    - Behavior (expand on click, etc.)
+  </Step>
+</Steps>
+
+### Preview as Creator
+
+**How to test:**
+
+<Steps>
+  <Step title="Select Preview as Creator">
+    In the Theme Editor, find **Preview as creator** or **Select preview as creator** option
+  </Step>
+  <Step title="Switch Product">
+    You'll also need to switch the product preview to a product that has a review from the selected creator
+  </Step>
+  <Step title="View Sections">
+    The quote badge and editorial sections will appear on the product page when:
+    - Creator context is active (via cart attributes or metaobject page)
+    - The creator has a product enhancement (note or media) for that product
+  </Step>
+</Steps>
+
+**Note:** If a creator doesn't have a note or media for a product, these sections won't display (by design).
+
+---
+
+## Testing Your Storefront
+
+### Final Checklist
+
+Before publishing:
+
+- [ ] CreatorCommerce SDK is enabled (App Embeds)
+- [ ] Creator template created and populated
+- [ ] Hero section configured with creator content
+- [ ] Product section added (curated lists or bundles)
+- [ ] Product card customized (if desired)
+- [ ] Product page quote sections added
+- [ ] Test creator has content (photo, bio, drops, reviews)
+
+### Publish and Test
+
+<Steps>
+  <Step title="Publish Theme">
+    In Theme Editor, click **Publish** to make your changes live
+  </Step>
+  <Step title="Get Affiliate Link">
+    Click on your test creator in CreatorCommerce → Copy their affiliate link
+  </Step>
+  <Step title="Test the Experience">
+    Open the affiliate link in a new browser (or incognito window) to see the full co-branded experience:
+    - Creator landing page with personalized hero
+    - Curated product collections
+    - Product pages with creator quotes
+    - Discount codes applied
+  </Step>
+</Steps>
+
+**What to verify:**
+- Creator name and photo appear correctly
+- Product collections load
+- Creator quotes show on product pages
+- Discount codes work
+- Cart attributes are set (check in browser console)
+- Mobile experience works
+
+---
+
+## Next Steps
+
+Once your basic storefront is live:
+
+1. **Add More Sections** — Explore other CC sections (banners, testimonials, etc.)
+2. **Customize Styling** — Fine-tune colors, fonts, spacing to match your brand
+3. **Test with Real Creators** — Invite a real creator to test the experience
+4. **Extend to Full Funnel** — Add co-branding to cart, checkout, and post-purchase
+5. **Enable Tracking** — Set up analytics to measure performance
+
+## Related Documentation
+
+- [Co-branded Storefronts](/guides/co-branded-storefronts) — Complete overview of co-branded experiences
+- [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages) — Deep dive into metaobject templates
+- [Co-branded Landing Pages](/guides/features/co-branded-landing-pages) — Landing page features
+- [Co-branded Product Pages](/guides/features/co-branded-product-pages) — Product page personalization
+- [Co-branded Product Lists](/guides/features/co-branded-product-lists) — Product collection displays
+- [Enable Tracking](/guides/storefronts/enable-tracking) — Set up attribution and analytics

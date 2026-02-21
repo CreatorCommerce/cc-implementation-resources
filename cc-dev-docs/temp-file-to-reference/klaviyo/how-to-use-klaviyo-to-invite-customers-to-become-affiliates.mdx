@@ -1,0 +1,77 @@
+How to use Klaviyo to invite customers to become affiliates
+A guide for nudging qualified customers to apply and join your gated affiliate/influencer community. This guide is not relevant if you automatically convert customers into affiliates already.
+
+
+
+This strategy is only applicable if you affiliate management software isn't already converting customers into affiliates. Said differently, this guide is for merchants who are only recruiting influencers/affiliates through opt-in or sign-up forms -- in which case, this article will walk through how to setup a Klaviyo flow that targets qualified customers who should be nudged to join your program. This article will also touch on ways to craft your email and will include a couple templates.
+
+‍
+
+Step 1: Create a flow for 'Post-Purchase Followup - Convert Customers to Affiliates'
+Setup the flow
+Go to Flows
+Click "Create flow"
+Click "Create From Scratch"
+Name your flow "Post-Purchase Followup - Convert Customers to Affiliates" and apply the tag "CreatorCommerce"
+For your trigger, select "Metric", and then select "Ordered Product"
+Add a Profile filter for "Has not been in flow at any time"
+Add a Profile filter to require them to reach an order count by selecting "What someone has done (or not done)" the selecting "Placed Order" and then setting that to your required order count threshold, such as "2".
+Additionally add a Profile filter to ensure they have not already apart of your affiliate program. You can do this by selecting "Properties about someone" and the selecting "Affiliate Code" (Or any other field relevant to your affiliate integration) and setting to "is not set"
+
+Expected setup in Klaviyo for filtering
+‍
+
+Step 2: Create the email invitations
+‍
+
+Building the email
+Drag-and-drop the "Email" block onto the flow
+After placing the block, select it, and disable/uncheck "Skip recently emailed profiles", and also make sure "Enable UTM Tracking" is enabled/checked
+Select the dots on the email block to start building the email, and select "text only" for the invitation to make it feel personal (Feel free to use any other template you see fit)
+Structure the email content using the email template:
+‍
+
+Email template
+Subject: Exclusive Invitation: Earn Rewards for Your <<YOUR-BRAND-NAME>> Recommendations!
+
+‍
+
+Hi {{ first_name }},
+
+We want to thank you so much for your continued support of <<YOUR-BRAND-NAME>>. Our team's working on your order, and will get it shipped out as soon as possible.
+
+Given your passion for our products, we wanted to extend an exclusive opportunity to earn on any future recommendations you make to others.
+
+We're thrilled to be rolling out our new Affiliate Program this year, designed to reward our most loyal customers and advocates. This program allows you to earn VIP commissions for every referral you make, turning your recommendations into direct benefits for you.
+
+Highlights of Our Affiliate Program:
+
+Earn generous commissions (Up to <<PERCENT>>% off)
+Track every order with ease
+Receive dedicated support from our team
+Get your own branded shop to sell from
+If you wish to accept, you can sign up here: <<INCLUDE-YOUR-AFFILIATE-APPLICATION-URL>>
+
+We'd love to have you onboard.
+
+Thank you,
+
+<<NAME-OF-A-FOUNDER-OR-LEADER>>
+
+<<ROLE>> of <<COMPANY-NAME>>
+
+‍
+
+
+Email examples in the wild
+‍
+
+Step 3: Enable the flow
+Select "Update action statuses" and set everything to "Live". At this point, customers will begin to receive emails.
+
+
+Success
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.
+

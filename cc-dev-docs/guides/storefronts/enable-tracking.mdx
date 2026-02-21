@@ -67,6 +67,22 @@ The web pixel provides funnel-level analytics for co-branded experiences.
   </Step>
 </Steps>
 
+<Info>
+**Default:** The web pixel is enabled by default. You should only disable it if you have a specific reason (custom tracking solution, testing phase, troubleshooting). The web pixel is essential for accurate attribution and performance measurement.
+</Info>
+
+**What gets tracked:**
+- Landing page visits
+- Product views in creator context
+- Add to cart events
+- Checkout starts
+- Completed orders
+- Revenue attribution to creators
+
+<Warning>
+**Keep the web pixel enabled** unless you have a specific reason to disable it. Disabling it will prevent accurate attribution tracking and performance measurement.
+</Warning>
+
 ## Verification Checklist
 
 After enabling both the SDK and web pixel:
@@ -114,6 +130,8 @@ Once the SDK sets cart attributes, reference them in any Liquid template:
 
 ## Related
 
+- [Initial Settings](/guides/initial-settings) — Configure web pixel and other tracking settings
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel) — Technical implementation details
 - [SDK Getting Started](/references/sdk/getting-started)
 - [Referencing Creator Content](/references/sdk/referencing-creator-content)
 - [Affiliate Link Tracking Reference](/references/affiliate-link-tracking)

@@ -23,7 +23,7 @@
   no_drops_behavior: section.settings.no_drops_behavior,
   fallback_collection: section.settings.fallback_collection,
   products_to_show: section.settings.products_to_show,
-  product_card_snippet: section.settings.product_card_snippet,
+  use_custom_product_card: section.settings.use_custom_product_card,
   product_card_border_radius: section.settings.product_card_border_radius,
   dropdown_border_width: section.settings.dropdown_border_width,
   dropdown_border_radius: section.settings.dropdown_border_radius,
@@ -175,10 +175,11 @@
       "info": "Number of products to display from the fallback collection"
     },
     {
-      "type": "liquid",
-      "id": "product_card_snippet",
-      "label": "Product Card Snippet",
-      "info": "Custom Liquid code for each product card. Variables: 'product' (Shopify object), 'display_price', 'display_compare_price', 'has_creator_discount'. For drops, 'json_product' includes variant ID. Use any Liquid syntax. Dawn: {% render 'card-product', card_product: product, media_aspect_ratio: 'square' %}"
+      "type": "checkbox",
+      "id": "use_custom_product_card",
+      "label": "Use a custom product card (Technical)",
+      "default": false,
+      "info": "When enabled, the section will use the 'cc-custom-product-card' snippet instead of the default product card. Edit snippets/cc-custom-product-card.liquid to customize the product card. Available variables: 'product' (Shopify object), 'display_price', 'display_compare_price', 'has_creator_discount'. For drops, 'json_product' includes variant ID."
     },
     {
       "type": "header",

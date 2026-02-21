@@ -17,8 +17,43 @@ Give partners branded experiences—from the application form they fill out to t
 
 ## Dashboard Customization
 
+### Styles Override URL
+
+The **Styles Override URL** setting (found in Settings → Store Information) allows you to completely take over the UI of CreatorCommerce-hosted forms and dashboards by linking to a custom CSS file.
+
+**How to set it up:**
+
+<Steps>
+  <Step title="Create your CSS file">
+    Generate a stylesheet with your brand fonts, colors, and styling. You can use ChatGPT, Claude, or your existing brand CSS as a base. See the [CSS Reference](/references/css-reference) for available selectors.
+  </Step>
+  <Step title="Upload to Shopify">
+    In Shopify Admin → **Content → Files**, click **Upload file** and select your CSS file.
+  </Step>
+  <Step title="Copy the file URL">
+    Once uploaded, click the file to copy its URL (e.g., `https://cdn.shopify.com/s/files/1/xxxxx/xxxxx/your-styles.css`).
+  </Step>
+  <Step title="Paste into CreatorCommerce">
+    Go to CreatorCommerce → **Settings → Store Information → Styles Override URL** and paste the URL.
+  </Step>
+</Steps>
+
+**Use cases:**
+- Hide the "Powered by CreatorCommerce" banner
+- Change border radius, colors, fonts to match your brand
+- Customize form layouts and dashboard appearance
+- Match your exact brand guidelines
+
+**Best practices:**
+- Keep CSS file under 100KB
+- Use version query parameters: `styles.css?v=2025-01-15`
+- Test across mobile and desktop
+- Don't hide required form fields or break functionality
+
+### CSS Injection Example
+
 ```css
-/* Injected via CC admin */
+/* Injected via Styles Override URL */
 :root {
   --cc-primary-color: #FF4438;
   --cc-font-family: 'Your Brand Font', sans-serif;
@@ -32,6 +67,10 @@ Give partners branded experiences—from the application form they fill out to t
   content: url('https://yourbrand.com/logo.svg');
 }
 ```
+
+<Card title="Initial Settings Guide" icon="gear" href="/guides/initial-settings">
+  Complete guide to configuring Styles Override URL and other initial settings
+</Card>
 
 ## Form Customization
 
@@ -71,8 +110,10 @@ Each form type maps collected data to [custom fields](/references/custom-fields-
 
 ## Related
 
+- [Initial Settings](/guides/initial-settings) — Configure Styles Override URL and brand kit values
 - [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards) — Building custom forms with CC APIs
 - [Custom Fields Reference](/references/custom-fields-reference) — Custom field types and Liquid access patterns
 - [Custom Forms Overview](/guides/creator-experience/forms/overview) — Understanding CC's native form types
 - [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields) — Guide to deciding what custom data to store
 - [CSS Reference](/references/css-reference) — Dashboard styling customization
+- [Dashboard CSS Overview](/references/dashboard-overview-css) — Best practices and troubleshooting

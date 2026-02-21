@@ -645,8 +645,8 @@
                     assign has_creator_discount = has_discount_output
                   -%}
                   <div class="cc-product-card">
-                    {%- if product_card_snippet != blank -%}
-                      {{ product_card_snippet }}
+                    {%- if use_custom_product_card -%}
+                      {%- render 'cc-custom-product-card', product: product, display_price: display_price, display_compare_price: display_compare_price, has_creator_discount: has_creator_discount -%}
                     {%- else -%}
                       <a href="{{ product.url }}" class="product-card-link">
                         <div class="product-card__image">
@@ -719,8 +719,8 @@
                       assign has_creator_discount = has_discount_output
                     -%}
                     <div class="cc-product-card">
-                      {%- if product_card_snippet != blank -%}
-                        {{ product_card_snippet }}
+                      {%- if use_custom_product_card -%}
+                        {%- render 'cc-custom-product-card', product: product, display_price: display_price, display_compare_price: display_compare_price, has_creator_discount: has_creator_discount, json_product: json_product -%}
                       {%- else -%}
                         <a href="{{ product.url }}" class="product-card-link">
                           <div class="product-card__image">

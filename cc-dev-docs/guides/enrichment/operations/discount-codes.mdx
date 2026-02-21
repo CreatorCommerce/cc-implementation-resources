@@ -5,6 +5,10 @@ description: 'Auto-create and manage partner discount codes.'
 
 Every partner needs a discount code. Manage them automatically.
 
+<Info>
+**Enable Safe Discount Codes** in Settings → Discount Settings to protect base discount codes while generating unique codes per checkout. See [Initial Settings](/guides/initial-settings) for configuration.
+</Info>
+
 ## Auto-Create on Activation
 
 **Trigger:** CC Partner Activated
@@ -12,10 +16,15 @@ Every partner needs a discount code. Manage them automatically.
 **Condition:** No discount code exists
 
 **Actions:**
-1. Generate code: `{FIRSTNAME}{DISCOUNT}` (e.g., SARAH20)
+1. Generate code using template from Settings → Discount Settings → Safe Discount Code Template
+   - Default pattern: `{FIRSTNAME}{DISCOUNT}` (e.g., SARAH20)
+   - Can include `{FIRSTNAME}`, `{LASTNAME}`, `{DISCOUNT}` variables
+   - Random number always appended for uniqueness
 2. Handle conflicts: SARAH20A, SARAH20B
 3. Create Shopify discount (percentage, unlimited use)
 4. Store in `cc-collab-discount-code` and `cc-collab-discount-amount`
+
+**Note:** If Safe Discount Codes is enabled, base codes are protected and unique codes are generated per checkout session.
 
 ## Tier-Based Updates
 

@@ -44,6 +44,23 @@ description: 'CreatorCommerce events sent to Klaviyo for segmentation and flow t
 }
 ```
 
+### CC Checkout Started
+
+```json
+{
+  "event": "CC Checkout Started",
+  "properties": {
+    "CartValue": 150.00,
+    "CartItems": 3,
+    "CreatorHandle": "sarah-jones",
+    "CreatorName": "Sarah",
+    "DiscountCode": "SARAH15",
+    "DiscountAmount": 15,
+    "CheckoutUrl": "https://store.com/checkouts/abc123"
+  }
+}
+```
+
 ### CC Order Placed
 
 ```json
@@ -63,16 +80,55 @@ description: 'CreatorCommerce events sent to Klaviyo for segmentation and flow t
 
 ## Profile Properties Set
 
-When events fire, these properties are set on the customer profile:
+When events fire, these properties are maintained on the Klaviyo profile. Properties are updated automatically as creator data changes.
 
-| Property | Description |
-|----------|-------------|
-| `cc_creator_handle` | Creator's handle |
-| `cc_creator_name` | Creator's first name |
-| `cc_discount_code` | Discount code used |
-| `cc_discount_amount` | Discount percentage |
-| `cc_creator_image` | Creator profile photo URL |
-| `cc_landing_url` | Original landing page |
+### Creator Properties
+
+| Property | Example | Description |
+|----------|---------|-------------|
+| `cc-creator-id` | `699337f05fe142fd1335fdc5` | Unique creator identifier |
+| `cc-creator-handle` | `faces-505` | Creator's URL handle |
+| `cc-creator-first-name` | `Tracy` | Creator's first name |
+| `cc-creator-last-name` | `Gardner` | Creator's last name |
+| `cc-creator-email` | `contact@facesskinclinic.co.uk` | Creator's email address |
+| `cc-creator-is-onboarded` | `false` | Whether creator has completed onboarding |
+| `cc-creator-profile-picture` | `https://assets.drops.shop/.../profile.jpeg` | Creator profile photo URL |
+| `cc-creator-metaobject` | `gid://shopify/Metaobject/251067891951` | Shopify metaobject reference |
+| `cc-creator-collection` | `gid://shopify/Collection/487856799983` | Creator's product collection ID |
+
+### Shop Properties
+
+| Property | Example | Description |
+|----------|---------|-------------|
+| `cc-creator-shop-id` | `699346552f3e3800ef1760b4` | Unique shop identifier |
+| `cc-creator-shop-handle` | `faces-505` | Shop URL handle |
+| `cc-creator-shop-title` | `Faces Skin Clinic - Tracy` | Shop display title |
+| `cc-creator-shop-description` | `Explore my handpicked products...` | Shop description text |
+| `cc-creator-shop-url` | `https://drops.shop/faces-505/healf` | Full shop URL |
+| `cc-creator-shop-theme-primary-color` | `#000000` | Shop theme primary color |
+
+### Collaboration Properties
+
+| Property | Example | Description |
+|----------|---------|-------------|
+| `cc-collab-id` | `699337f05fe142fd1335fde4` | Unique collaboration identifier |
+| `cc-collab-affiliate-code` | `FACESSKIN` | Affiliate tracking code |
+| `cc-collab-affiliate-link` | `https://gb.healf.com/FACESSKIN` | Affiliate link URL |
+| `cc-collab-discount-code` | `FACESSKIN` | Discount code for this collaboration |
+| `cc-collab-discount-amount` | `10` | Discount amount (number) |
+| `cc-collab-discount-type` | `Percentage` | Discount type (Percentage or Fixed) |
+| `cc-collab-tier` | `Tier 1: Rise` | Creator's tier name |
+| `cc-collab-tier-key` | `82072` | Tier identifier key |
+| `cc-collab-tier-discount-amount` | `10` | Tier-specific discount amount |
+| `cc-collab-tier-discount-type` | `Percentage` | Tier-specific discount type |
+| `cc-collab-relationship-manager` | `superfiliate` | Relationship manager platform |
+| `cc-collab-metaobject` | `gid://shopify/Metaobject/251067891951` | Collaboration metaobject reference |
+
+### Invitation Properties
+
+| Property | Example | Description |
+|----------|---------|-------------|
+| `cc-invite-url` | `https://dashboard.creatorcommerce.shop/invitation?...` | Creator invitation URL |
 
 ## Flow Triggers
 
@@ -108,3 +164,192 @@ Create segments based on CC properties:
 - **CC Referred Customers**: `cc_creator_handle is set`
 - **High-Value Creator Traffic**: `cc_creator_handle is set AND Total CLV > 200`
 - **Specific Creator Audience**: `cc_creator_handle equals sarah-jones`
+
+---
+
+## Affiliate Lifecycle Events (B2B)
+
+These events are sent to Klaviyo to power automated flows for your creators, influencers, and affiliates. See [The Two Sides of Klaviyo](/references/klaviyo-two-sides) for details on how these differ from consumer events.
+
+### Creator Drop Created
+
+Fires when a creator adds products to their shop.
+
+```json
+{
+  "event": "Creator Drop Created",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-handle": "tracy-505",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "cc-creator-email": "contact@facesskinclinic.co.uk",
+    "cc-creator-is-onboarded": false,
+    "cc-campaign-id": "68795849fa65db8a8295e078",
+    "cc-campaign-title": "Superfiliate Campaign",
+    "cc-channel-handle": "healf",
+    "cc-channel-brandkit-title": "Healf",
+    "cc-channel-brandkit-primary-color": "#000000",
+    "products": {
+      "0": {
+        "id": "7888165372143",
+        "title": "Collagen Peptides",
+        "handle": "vp-collagen-peptides-567g-case-of-6",
+        "vendor": "Vital Proteins",
+        "price": "40.99",
+        "cc-creator-drop-product-enhancement-note": "My go to collagen, easy to use - stir straight into tea or coffee.",
+        "cc-creator-drop-product-shopify-id": "7888165372143",
+        "onlineStoreUrl": "https://healf.com/products/vp-collagen-peptides-567g-case-of-6"
+      },
+      "1": {
+        "id": "8044464832751",
+        "title": "Perfect Amino Powder - Mixed Berry",
+        "handle": "perfect-amino-powder-mixed-berry",
+        "vendor": "BodyHealth",
+        "price": "51.99",
+        "cc-creator-drop-product-enhancement-note": "Tastes great, easy to mix.. The building blocks of protein, hormones and neurotransmitters.",
+        "cc-creator-drop-product-shopify-id": "8044464832751",
+        "onlineStoreUrl": "https://healf.com/products/perfect-amino-powder-mixed-berry"
+      }
+    }
+  }
+}
+```
+
+### Creator Collaboration Started
+
+Fires when CreatorCommerce syncs a new affiliate from your integrated affiliate management platform.
+
+```json
+{
+  "event": "Creator Collaboration Started",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "cc-creator-email": "contact@facesskinclinic.co.uk",
+    "cc-creator-is-onboarded": false,
+    "cc-creator-profile-picture": null,
+    "cc-collab-id": "699337f05fe142fd1335fde4",
+    "cc-collab-affiliate-code": "FACESSKIN",
+    "cc-collab-affiliate-link": "https://gb.healf.com/FACESSKIN",
+    "cc-collab-discount-code": "FACESSKIN",
+    "cc-collab-discount-amount": 10,
+    "cc-collab-discount-type": "Percentage",
+    "cc-collab-tier": "Tier 1: Rise",
+    "cc-collab-tier-key": "82072",
+    "cc-collab-tier-discount-amount": 10,
+    "cc-collab-tier-discount-type": "Percentage",
+    "cc-collab-relationship-manager": "superfiliate",
+    "cc-invite-url": "https://dashboard.creatorcommerce.shop/invitation?email=contact%40facesskinclinic.co.uk&channel=how2go.myshopify.com",
+    "cc-channel-handle": "healf",
+    "cc-channel-brandkit-title": "Healf",
+    "cc-channel-brandkit-description": "The Four Pillars are our foundation. True wellbeing emerges from the balance of EAT, MOVE, MIND, SLEEP, and we provide you with the tools and rituals to achieve this.",
+    "cc-channel-brandkit-primary-color": "#000000",
+    "cc-channel-brandkit-primary-logo": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/677b61beb50fbc87608b35b7.png",
+    "cc-channel-myshopify-domain": "how2go.myshopify.com",
+    "cc-channel-integrations-klaviyo-enabled": true,
+    "cc-channel-default-messaging-enabled": false
+  }
+}
+```
+
+### Creator Invitation Accepted
+
+Fires when a creator starts onboarding by accepting an invitation.
+
+```json
+{
+  "event": "Creator Invitation Accepted",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-handle": "tracy-505",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "cc-creator-email": "contact@facesskinclinic.co.uk",
+    "cc-channel-handle": "healf",
+    "cc-channel-brandkit-title": "Healf"
+  }
+}
+```
+
+### Creator Order Attributed
+
+Fires when a sale is tracked to the creator.
+
+```json
+{
+  "event": "Creator Order Attributed",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-handle": "tracy-505",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "order-id": "12345",
+    "order-total": 150.00,
+    "order-items-count": 3,
+    "cc-channel-handle": "healf"
+  }
+}
+```
+
+### Shop Updated
+
+Fires when a creator updates their shop settings.
+
+```json
+{
+  "event": "Shop Updated",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "cc-creator-email": "contact@facesskinclinic.co.uk",
+    "cc-creator-is-onboarded": false,
+    "cc-creator-profile-picture": null,
+    "cc-creator-shop-id": "699337f06905fbef33f753b8",
+    "cc-creator-shop-url": "-",
+    "cc-creator-shop-theme-primary-color": "#000000",
+    "cc-collab-id": "699337f05fe142fd1335fde4",
+    "cc-collab-affiliate-code": "FACESSKIN",
+    "cc-collab-affiliate-link": "https://gb.healf.com/FACESSKIN",
+    "cc-collab-discount-code": "FACESSKIN",
+    "cc-collab-discount-amount": 10,
+    "cc-collab-discount-type": "Percentage",
+    "cc-collab-tier": "Tier 1: Rise",
+    "cc-collab-tier-key": "82072",
+    "cc-collab-tier-discount-amount": 10,
+    "cc-collab-tier-discount-type": "Percentage",
+    "cc-collab-relationship-manager": "superfiliate",
+    "cc-channel-handle": "healf",
+    "cc-channel-brandkit-title": "Healf",
+    "cc-channel-brandkit-description": "The Four Pillars are our foundation. True wellbeing emerges from the balance of EAT, MOVE, MIND, SLEEP, and we provide you with the tools and rituals to achieve this.",
+    "cc-channel-brandkit-primary-color": "#000000",
+    "cc-channel-brandkit-primary-logo": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/677b61beb50fbc87608b35b7.png",
+    "cc-channel-myshopify-domain": "how2go.myshopify.com",
+    "cc-channel-integrations-klaviyo-enabled": true,
+    "cc-channel-default-messaging-enabled": false
+  }
+}
+```
+
+### Creator Added To Campaign
+
+Fires when a campaign is launched or a creator is added to an existing campaign.
+
+```json
+{
+  "event": "Creator Added To Campaign",
+  "properties": {
+    "cc-creator-id": "699337f05fe142fd1335fdc5",
+    "cc-creator-handle": "tracy-505",
+    "cc-creator-first-name": "Tracy",
+    "cc-creator-last-name": "Gardner",
+    "cc-creator-email": "contact@facesskinclinic.co.uk",
+    "cc-campaign-id": "68795849fa65db8a8295e078",
+    "cc-campaign-title": "Superfiliate Campaign",
+    "cc-channel-handle": "healf",
+    "cc-channel-brandkit-title": "Healf"
+  }
+}
+```

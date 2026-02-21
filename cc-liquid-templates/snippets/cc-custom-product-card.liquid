@@ -1,0 +1,39 @@
+{%- comment -%}
+  Custom Product Card Snippet
+  This snippet is used when "Use a custom product card (Technical)" is enabled in the CC Products - Lists section.
+  
+  Available variables:
+  - product: Shopify product object
+  - display_price: The price to display (with creator discount applied if applicable)
+  - display_compare_price: The compare at price
+  - has_creator_discount: Boolean indicating if creator discount is applied
+  - json_product: (For drops only) JSON product data including variant ID
+  
+  INSERT CUSTOM PRODUCT CARD SNIPPET HERE
+  Replace the code below with your custom product card markup.
+{%- endcomment -%}
+
+{%- comment -%} Default example - replace with your custom code {%- endcomment -%}
+<a href="{{ product.url }}" class="product-card-link">
+  <div class="product-card__image">
+    {%- if product.featured_image -%}
+      <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy" width="600" height="600">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="product-card__info">
+    <p class="product-card__title">{{ product.title }}</p>
+    <div class="product-card__price">
+      {%- if has_creator_discount or display_compare_price > display_price -%}
+        <span class="price-sale">{{ display_price | money }}</span>
+        <span class="price-compare">{{ display_compare_price | money }}</span>
+      {%- else -%}
+        {{ display_price | money }}
+      {%- endif -%}
+    </div>
+    {%- unless product.available -%}
+      <span class="product-card__badge">{{ 'products.product.sold_out' | t }}</span>
+    {%- endunless -%}
+  </div>
+</a>

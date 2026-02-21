@@ -7,6 +7,10 @@ description: 'Ensure creator discounts stay applied throughout the shopping jour
 
 Customers who arrive via a creator link shouldn't lose their discount. Maintained discount protection ensures the code persists across sessions, page navigations, and checkout flows.
 
+<Info>
+**Enable Safe Discount Codes** in Settings → Discount Settings to protect your base discount codes from coupon scrapers while providing unique codes per checkout.
+</Info>
+
 ## Key Capabilities
 
 - **Session persistence** — Discount survives page refreshes
@@ -14,6 +18,43 @@ Customers who arrive via a creator link shouldn't lose their discount. Maintaine
 - **Auto-application** — Code applied at checkout automatically
 - **Stacking rules** — Define how creator discounts interact with promos
 - **Expiration handling** — Graceful fallback when codes expire
+- **Safe discount codes** — Unique codes per checkout protect base discounts
+
+## Safe Discount Codes
+
+**Location:** Settings → Discount Settings → Enable Safe Discount Codes
+
+**What it does:**
+- Creates a unique, safe discount code every time someone clicks a creator link and starts checkout
+- Base discount code (e.g., `CREATOR20`) remains safe and not exposed to coupon code tools
+- Cloned codes are unique per checkout session
+- Base discount stays protected from coupon code scrapers
+
+**How it works:**
+1. Customer clicks creator link
+2. When checkout starts, a cloned discount is auto-generated
+3. The cloned code is unique (includes random number)
+4. Base discount remains protected
+
+**Code template:**
+Configure the format in **Settings → Discount Settings → Safe Discount Code Template**:
+- Use `{FIRSTNAME}`, `{LASTNAME}`, `{DISCOUNT}` variables
+- Example: `{FIRSTNAME}{DISCOUNT}` → `SARAH20` + random → `SARAH201234`
+- Random number always appended for uniqueness
+
+**When to enable:**
+- You want to protect base discount codes from coupon scrapers
+- You need unique codes per checkout for tracking
+- You're not using an affiliate platform that already handles this
+
+**When to disable:**
+- You're using an affiliate platform with built-in discount protection
+- You want to use the base discount code directly
+- You have custom discount management logic
+
+<Card title="Initial Settings Guide" icon="gear" href="/guides/initial-settings">
+  Complete guide to configuring safe discount codes and discount settings
+</Card>
 
 ## Protection Layers
 
@@ -66,5 +107,7 @@ if (discountCode) {
 
 ## Related
 
-- [Support Unique Discounts](/guides/dev/support-unique-discounts)
-- [Show Discounted Prices](/guides/dev/show-discounted-prices)
+- [Initial Settings](/guides/initial-settings) — Configure safe discount codes and templates
+- [Support Unique Discounts](/guides/dev/support-unique-discounts) — Technical implementation
+- [Show Discounted Prices](/guides/dev/show-discounted-prices) — Display discounted prices in theme
+- [Discount Code Management](/guides/enrichment/operations/discount-codes) — Auto-creation workflows

@@ -1,0 +1,483 @@
+---
+title: 'Initial Settings Configuration'
+description: 'Configure your CreatorCommerce instance with brand kit values, creator settings, onboarding configuration, discount protection, and tracking preferences.'
+---
+
+<Info>
+**First time setup?** Complete these settings before creating your first collabs. These configurations establish defaults that apply across all creator partnerships and co-branded experiences.
+</Info>
+
+## Overview
+
+Initial settings are organized into four main categories:
+
+1. **Store Information** — Brand kit values (name, colors, logo, cover image, CSS overrides)
+2. **Creator Settings** — Shop creation, messaging, product visibility
+3. **Onboarding Settings** — Splash screen content and form configuration
+4. **Discount Settings** — Safe discount code protection and templates
+5. **Tracking** — Web pixel configuration
+
+---
+
+## Store Information (Brand Kit)
+
+Brand kit values set the default visual identity for all creators and appear across forms, dashboards, and co-branded storefronts.
+
+### Brand Display Name
+
+**Location:** Settings → Store Information → Name
+
+**What it does:**
+- Displays generically on all CreatorCommerce forms
+- Appears anywhere your brand name displays for a creator
+- Sets the default brand name that pulls through into pre-built CreatorCommerce templates
+- Stored in your CreatorCommerce metaobject data
+
+**Example:** "Acme Fitness" appears on creator onboarding forms and co-branded landing pages.
+
+### Primary Color
+
+**Location:** Settings → Store Information → Primary Color
+
+**What it does:**
+- Sets the default primary color (hex) for all creators
+- If a creator has previously set a color in any CreatorCommerce instance, their favorite color is intelligently brought over
+- If a creator has never set a color, defaults to your brand's primary color
+- Creators can change this if you allow them to customize
+
+**Use cases:**
+- Co-branded storefront theming
+- Creator dashboard branding
+- Form styling
+- Email templates
+
+**Related:**
+- [Co-branded Storefronts](/guides/co-branded-storefronts) — How brand colors appear on creator landing pages
+- [CSS Styling of CC Pages](/references/css-reference) — Override colors with custom CSS
+
+### Primary Logo
+
+**Location:** Settings → Store Information → Primary Logo
+
+**What it does:**
+- Sets the default logo for creator experiences
+- Used in co-branded templates and creator dashboards
+- Appears on forms and onboarding screens
+
+**Best practices:**
+- Use a logo mark with square dimensions (or at least even width × height)
+- Recommended: 400×400px minimum
+- Formats: PNG, SVG, or JPG
+- Transparent background preferred
+
+**Related:**
+- [Co-branded Templates](/guides/co-branded-storefronts) — Logo usage in Liquid sections
+- [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards) — Logo in creator dashboards
+
+### Cover Image
+
+**Location:** Settings → Store Information → Cover Image
+
+**What it does:**
+- Used on custom forms and onboarding screens
+- Can be an image or video
+- Will be cropped to fit display areas
+
+**Best practices:**
+- Use high-quality imagery that represents your brand
+- Consider video for more engaging onboarding experiences
+- Recommended dimensions: 1920×1080px (16:9 aspect ratio)
+- File size: Keep under 5MB for optimal loading
+
+**Related:**
+- [Onboarding Forms](/guides/creator-experience/forms/onboarding/overview) — Cover image display
+- [Custom Forms](/guides/creator-experience/forms/custom/overview) — Cover image in form templates
+
+### Styles Override URL
+
+**Location:** Settings → Store Information → Styles Override URL
+
+**What it does:**
+- Allows you to paste a link to a CSS stylesheet
+- Completely takes over the UI of CreatorCommerce-hosted forms and dashboards
+- Enables full visual customization without modifying core functionality
+
+**Use cases:**
+- Hide the "Powered by CreatorCommerce" banner
+- Change border radius, colors, fonts
+- Match your exact brand guidelines
+- Customize form layouts and dashboard appearance
+
+**How to set up:**
+
+<Steps>
+  <Step title="Create your CSS file">
+    Generate a stylesheet with your brand fonts, colors, and styling preferences. You can use:
+    - ChatGPT or Claude to generate a complete stylesheet
+    - Your existing brand CSS as a base
+    - The [CSS Reference](/references/css-reference) for available selectors
+  </Step>
+  <Step title="Upload to Shopify">
+    In Shopify Admin:
+    1. Go to **Content → Files**
+    2. Click **Upload file**
+    3. Select your CSS file
+    4. Wait for upload to complete
+  </Step>
+  <Step title="Copy the file URL">
+    Once uploaded, click the file in your Files list to copy its URL. It will look like:
+    ```
+    https://cdn.shopify.com/s/files/1/xxxxx/xxxxx/your-styles.css
+    ```
+  </Step>
+  <Step title="Paste into CreatorCommerce">
+    Go back to CreatorCommerce → Settings → Store Information → Styles Override URL
+    Paste the URL and save.
+  </Step>
+</Steps>
+
+**Best practices:**
+- Keep CSS file under 100KB
+- Use version query parameters for cache busting: `styles.css?v=2025-01-15`
+- Test across mobile and desktop
+- Don't hide required form fields or break functionality
+
+**Related:**
+- [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards) — Full dashboard customization guide
+- [CSS Reference](/references/css-reference) — Available CSS selectors and classes
+- [Dashboard CSS Overview](/references/dashboard-overview-css) — Best practices and troubleshooting
+
+---
+
+## Creator Settings
+
+Configure how creator shops are created, what products they can see, and how they're communicated with.
+
+### Automatically Create Shops for New Clubs
+
+**Location:** Settings → Creator Settings → Automatically Create Shops
+
+**Recommended:** ✅ Enabled
+
+**What it does:**
+- **Enabled:** Shop is created automatically with default data when a new collab is established. Creators can go through onboarding to add extra data, but the shop exists immediately.
+- **Disabled:** Creators must explicitly create their shops by going through the onboarding form. Shop won't exist until onboarding is completed.
+
+**When to disable:**
+- You want to gate shop creation behind a specific onboarding flow
+- You need creators to complete certain steps before their shop is accessible
+- You're running a curated program where not all creators get shops immediately
+
+**Related:**
+- [Make Your First Collabs](/guides/make-your-first-collabs) — Creating creator partnerships
+- [Onboarding Forms](/guides/creator-experience/forms/onboarding/overview) — Shop creation during onboarding
+
+### Enable Default Messaging / Creator Communication
+
+**Location:** Settings → Creator Settings → Enable Default Messaging
+
+**What it does:**
+- **Enabled:** CreatorCommerce sends emails on your behalf to notify creators about:
+  - Available onboarding forms
+  - Form availability notifications
+  - System-generated communications
+- **Disabled:** You handle all creator communication manually or use Klaviyo flows based on CreatorCommerce events
+
+**When to disable:**
+- You have a sophisticated email automation setup in Klaviyo
+- You want full control over messaging tone and timing
+- You're using custom email templates
+
+**Alternative approach (when disabled):**
+Use Klaviyo integration to create flows based on CreatorCommerce events:
+- `collab.invited` — Send invitation email
+- `collab.approved` — Welcome series
+- `onboarding.started` — Onboarding reminders
+- `drop.created` — New product notifications
+
+**Related:**
+- [Klaviyo Integration](/guides/integrations/email-sms/klaviyo) — Setting up event-based email flows
+- [Creator Messaging](/guides/creator-experience/messaging/overview) — Communication strategies
+- [Welcome Flows](/guides/creator-experience/messaging/welcome-flows) — Onboarding email sequences
+
+### Show Unavailable Products
+
+**Location:** Settings → Creator Settings → Show Unavailable Products
+
+**Default:** ❌ Disabled
+
+**What it does:**
+- **Enabled:** Products that are out of stock or unavailable appear in onboarding flows and product selection
+- **Disabled:** Only available products are shown (default behavior)
+
+**When to enable:**
+- You want creators to choose products that aren't yet available for sale
+- You're doing pre-launch product selection
+- You want creators to get a jump on adding products to their drops before they go live
+
+**Use case example:**
+A new product line launches in 2 weeks. You enable this setting so creators can curate their drops now, and when products become available, they're already set up.
+
+**Related:**
+- [Product Selection](/guides/creator-experience/forms/collection/overview) — How creators choose products
+- [Drops & Collections](/guides/features/co-branded-product-lists) — Product curation in drops
+
+### Exclude Products with Tags for Creators
+
+**Location:** Settings → Creator Settings → Exclude Products with Tags
+
+**What it does:**
+- Allows you to tag products in Shopify that creators should not be able to select
+- Enter tag names separated by commas
+- Tagged products are hidden from creator product selection flows
+
+**Example:**
+If you enter `wholesale,internal-use,test-product`, any product with those tags won't appear in creator onboarding or product selection forms.
+
+**How to use:**
+1. In Shopify Admin, tag products you want to exclude
+2. In CreatorCommerce Settings, enter the tag names (comma-separated)
+3. Tagged products are automatically filtered out
+
+**Related:**
+- [Product Selection](/guides/creator-experience/forms/collection/overview) — Product filtering in forms
+
+### Recommended Collection ID
+
+**Location:** Settings → Creator Settings → Recommended Collection ID
+
+**What it does:**
+- Showcases a list of recommended products in your forms
+- Puts products you want creators to see right in front of them
+- Helps guide creators toward specific products or collections
+
+**How to find a Collection ID:**
+1. In Shopify Admin, go to **Products → Collections**
+2. Click on the collection you want to recommend
+3. Look at the URL: `https://admin.shopify.com/store/yourstore/collections/1234567890`
+4. The number at the end is the Collection ID
+
+**Use cases:**
+- Highlight best-selling products
+- Showcase new product launches
+- Guide creators to high-margin items
+- Feature seasonal collections
+
+**Related:**
+- [Product Selection](/guides/creator-experience/forms/collection/overview) — How recommended products appear
+- [Drops & Collections](/guides/features/co-branded-product-lists) — Product curation
+
+---
+
+## Onboarding Settings
+
+Configure the splash screen and initial messaging creators see when they first access onboarding.
+
+### Onboarding Title
+
+**Location:** Settings → Onboarding Settings → Title
+
+**What it does:**
+- Displays on the splash screen of the onboarding page
+- First thing creators see when they start onboarding
+- Sets the tone for the onboarding experience
+
+**Best practices:**
+- Keep it short and welcoming
+- Examples: "Welcome to [Brand] Partners", "Join Our Creator Community", "Let's Get Started"
+
+### Onboarding Description
+
+**Location:** Settings → Onboarding Settings → Description
+
+**What it does:**
+- Appears below the title on the splash screen
+- Provides context about the program and what creators can expect
+- Helps set expectations
+
+**Best practices:**
+- 2-3 sentences maximum
+- Explain the value proposition
+- Set clear expectations
+
+### Onboarding Perks
+
+**Location:** Settings → Onboarding Settings → Perks
+
+**What it does:**
+- Displays in three slots on the onboarding splash screen
+- Separated by commas
+- Highlights key benefits of joining your program
+
+**Format:**
+Enter three perks separated by commas:
+```
+Exclusive discounts, Early access to new products, Performance-based commissions
+```
+
+**Best practices:**
+- Keep each perk concise (3-5 words)
+- Focus on creator benefits
+- Make them specific and compelling
+
+**Related:**
+- [Onboarding Forms](/guides/creator-experience/forms/onboarding/overview) — Full onboarding form configuration
+- [Partner Enrollment](/guides/collab-strategy/partner-enrollment) — Onboarding strategy
+
+---
+
+## Discount Settings
+
+Configure safe discount code protection to keep base discount codes secure while providing unique codes per checkout.
+
+### Enable Safe Discount Codes
+
+**Location:** Settings → Discount Settings → Enable Safe Discount Codes
+
+**What it does:**
+- **Enabled:** Creates a unique, safe discount code every time someone clicks a creator link and starts checkout
+- **Disabled:** Uses the base discount code directly (exposed to coupon code tools)
+
+**How it works:**
+- Base discount code (e.g., `CREATOR20`) remains safe and not exposed
+- When a customer clicks a creator link and starts checkout, a cloned discount is created
+- The cloned code is unique per checkout session
+- Base discount stays protected from coupon code scrapers
+
+**Why use it:**
+- Protects your base discount codes from being discovered by coupon tools
+- Allows you to track individual checkout sessions
+- Maintains discount security while providing seamless checkout experience
+
+**When to disable:**
+- You're using an affiliate platform that already handles discount protection
+- You want to use the base discount code directly
+- You have custom discount management logic
+
+**Related:**
+- [Maintained Discount Protection](/guides/features/maintained-discount-protection) — How discounts persist through checkout
+- [Support Unique Discounts](/guides/dev/support-unique-discounts) — Technical implementation
+- [Discount Code Management](/guides/enrichment/operations/discount-codes) — Auto-creation workflows
+
+### Safe Discount Code Template
+
+**Location:** Settings → Discount Settings → Safe Discount Code Template
+
+**What it does:**
+- Defines the format for auto-generated safe discount codes
+- Can include dynamic variables: first name, last name, discount value
+- Always appends a random number at the end for uniqueness
+
+**Template variables:**
+- `{FIRSTNAME}` — Creator's first name (uppercase)
+- `{LASTNAME}` — Creator's last name (uppercase)
+- `{DISCOUNT}` — Discount percentage or amount
+
+**Examples:**
+
+| Template | Example Output |
+|----------|----------------|
+| `{FIRSTNAME}{DISCOUNT}` | `SARAH20` + random → `SARAH201234` |
+| `{FIRSTNAME}{LASTNAME}{DISCOUNT}` | `SARAHJONES20` + random → `SARAHJONES201234` |
+| `{DISCOUNT}{FIRSTNAME}` | `20SARAH` + random → `20SARAH1234` |
+
+**Important:** A random number is always appended to the end of the generated code, regardless of your template.
+
+**Best practices:**
+- Keep codes under 20 characters (before random number)
+- Use meaningful combinations creators can remember
+- Test that generated codes don't conflict with existing codes
+
+**Related:**
+- [Discount Code Management](/guides/enrichment/operations/discount-codes) — Code generation patterns
+- [Support Unique Discounts](/guides/dev/support-unique-discounts) — Technical implementation details
+
+---
+
+## Tracking Settings
+
+### Creator Commerce Web Pixel
+
+**Location:** Settings → Tracking → Web Pixel
+
+**Default:** ✅ Enabled (recommended to keep enabled)
+
+**What it does:**
+- Tracks ecommerce metrics for co-branded experiences
+- Provides attribution data for creator performance
+- Enables funnel analytics and conversion tracking
+
+**What gets tracked:**
+- Landing page visits
+- Product views
+- Add to cart events
+- Checkout starts
+- Completed orders
+- Revenue attribution
+
+**When to disable:**
+- You have a custom tracking solution
+- You're in a testing/development phase and want to avoid tracking noise
+- You need to temporarily disable for troubleshooting
+
+<Warning>
+**Keep this enabled** unless you have a specific reason to disable it. The web pixel is essential for accurate attribution and performance measurement.
+</Warning>
+
+**Related:**
+- [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel) — Technical implementation
+- [Enable Tracking on Liquid Themes](/guides/storefronts/enable-tracking) — Theme integration
+- [Shopify Native Attribution](/guides/features/shopify-native-attribution) — Attribution methodology
+
+---
+
+## Settings Checklist
+
+Use this checklist when setting up your CreatorCommerce instance:
+
+### Store Information
+- [ ] Set brand display name
+- [ ] Configure primary color (hex)
+- [ ] Upload primary logo (square dimensions recommended)
+- [ ] Upload cover image (for forms/onboarding)
+- [ ] (Optional) Set styles override URL for custom CSS
+
+### Creator Settings
+- [ ] Enable "Automatically create shops for new clubs" (recommended)
+- [ ] Configure default messaging preference
+- [ ] Set "Show unavailable products" if needed
+- [ ] Configure product exclusion tags if needed
+- [ ] Set recommended collection ID if desired
+
+### Onboarding Settings
+- [ ] Set onboarding title
+- [ ] Write onboarding description
+- [ ] Configure three onboarding perks (comma-separated)
+
+### Discount Settings
+- [ ] Enable safe discount codes (if not using affiliate platform)
+- [ ] Configure safe discount code template
+
+### Tracking
+- [ ] Verify web pixel is enabled (default)
+
+---
+
+## Next Steps
+
+After completing initial settings:
+
+1. **Create Your First Collab** — [Make Your First Collabs](/guides/make-your-first-collabs)
+2. **Configure Forms** — [Onboarding Forms](/guides/creator-experience/forms/onboarding/overview)
+3. **Set Up Co-branded Storefronts** — [Co-branded Storefronts](/guides/co-branded-storefronts)
+4. **Connect Your Tech Stack** — [Connect Your Tech Stack](/guides/connect-your-tech-stack)
+
+---
+
+## Related Documentation
+
+- [Getting Started](/guides/getting-started) — Developer quick start
+- [Make Your First Collabs](/guides/make-your-first-collabs) — Creating partnerships
+- [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards) — Customizing creator experiences
+- [Onboarding Forms](/guides/creator-experience/forms/onboarding/overview) — Form configuration
+- [Discount Code Management](/guides/enrichment/operations/discount-codes) — Discount workflows

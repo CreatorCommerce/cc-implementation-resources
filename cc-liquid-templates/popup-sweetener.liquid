@@ -562,6 +562,25 @@
     return true;
   }
   
+  // Verify popup is actually visible in DOM
+  function isPopupVisible(popup) {
+    if (!popup) return false;
+    
+    // Check if popup has the open class
+    if (!popup.classList.contains('cc-popup-open')) return false;
+    
+    // Check computed styles to ensure it's actually visible
+    const computedStyle = window.getComputedStyle(popup);
+    const isDisplayed = computedStyle.display !== 'none' && 
+                        computedStyle.visibility !== 'hidden' && 
+                        computedStyle.opacity !== '0';
+    
+    // Check if popup is in the DOM
+    const isInDOM = document.body.contains(popup);
+    
+    return isDisplayed && isInDOM;
+  }
+  
   // Open popup
   function openPopup() {
     // CRITICAL: Double-check if popup should show
@@ -576,6 +595,8 @@
     const popup = document.getElementById(POPUP_ID);
     if (!popup) {
       console.error('❌ Popup element not found:', POPUP_ID);
+      // Ensure scroll is NOT locked if popup doesn't exist
+      document.body.classList.remove('cc-popup-scroll-lock');
       return;
     }
     
@@ -602,8 +623,17 @@
     popup.style.opacity = '1';
     popup.classList.add('cc-popup-open');
     
-    // ONLY lock scroll after popup is confirmed to show
-    document.body.classList.add('cc-popup-scroll-lock');
+    // CRITICAL: Verify popup is actually visible before locking scroll
+    // Use requestAnimationFrame to ensure styles have been applied
+    requestAnimationFrame(function() {
+      if (isPopupVisible(popup)) {
+        // ONLY lock scroll after popup is confirmed visible
+        document.body.classList.add('cc-popup-scroll-lock');
+      } else {
+        console.warn('⚠️ Popup opened but not visible - NOT locking scroll');
+        document.body.classList.remove('cc-popup-scroll-lock');
+      }
+    });
     
     // Increment view count (skip in preview mode)
     if (!PREVIEW_MODE) {
@@ -615,10 +645,13 @@
   // Close popup
   function closePopup() {
     const popup = document.getElementById(POPUP_ID);
+    
+    // Always remove scroll lock, even if popup element is missing
+    document.body.classList.remove('cc-popup-scroll-lock');
+    
     if (!popup) return;
     
     popup.classList.remove('cc-popup-open');
-    document.body.classList.remove('cc-popup-scroll-lock');
   }
   
   // Initialize triggers
@@ -653,6 +686,8 @@
           openPopup();
         } else {
           console.log('⏱️ Timer fired but popup now blocked - not showing');
+          // Ensure scroll is NOT locked
+          document.body.classList.remove('cc-popup-scroll-lock');
         }
       }
     }, TRIGGER_DELAY);
@@ -674,6 +709,8 @@
           openPopup();
         } else {
           console.log('📜 Scroll trigger fired but popup now blocked - not showing');
+          // Ensure scroll is NOT locked
+          document.body.classList.remove('cc-popup-scroll-lock');
         }
       }
     };
@@ -876,8 +913,8 @@
     setInterval(function() {
       if (document.body.classList.contains('cc-popup-scroll-lock')) {
         const popup = document.getElementById(POPUP_ID);
-        if (!popup || !popup.classList.contains('cc-popup-open')) {
-          console.warn('⚠️ Scroll locked but popup not open - UNLOCKING');
+        if (!isPopupVisible(popup)) {
+          console.warn('⚠️ Scroll locked but popup not visible - UNLOCKING');
           document.body.classList.remove('cc-popup-scroll-lock');
         }
       }
@@ -910,6 +947,26 @@
     
     // Initialize triggers
     initTriggers();
+    
+    // CRITICAL: Ensure scroll is unlocked on page unload/hide
+    // Prevents scroll lock from persisting if user navigates away
+    window.addEventListener('beforeunload', function() {
+      document.body.classList.remove('cc-popup-scroll-lock');
+    });
+    
+    // Unlock scroll if page becomes hidden (tab switch, minimize, etc.)
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        // Page is hidden - unlock scroll as safety measure
+        document.body.classList.remove('cc-popup-scroll-lock');
+      } else {
+        // Page is visible again - verify popup state
+        const popup = document.getElementById(POPUP_ID);
+        if (!isPopupVisible(popup)) {
+          document.body.classList.remove('cc-popup-scroll-lock');
+        }
+      }
+    });
   }
   
   // Run on DOM ready

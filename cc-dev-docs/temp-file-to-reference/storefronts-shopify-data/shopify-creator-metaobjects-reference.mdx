@@ -1,0 +1,586 @@
+Shopify Creator metaobjects reference
+CreatorCommerce provides real-time access to your affiliate data via Shopify Metaobjects. This extends your access to CreatorCommerce’s Creator Primitive concept, giving you greater ability to build shopping surfaces & business logic around affiliate collaborations. This functionality is available on the CreatorCommerce Pro Plan and up.
+
+What you’ll learn
+Learn how to access the Creator Primitive — a data structure that CreatorCommerce syncs with Shopify Metaobjects. What is the Creator Primitive? It’s an assortment of fields that contain everything CreatorCommerce knows about your affiliates: from products they recommend, to their media, to their bio.
+
+‍
+
+Ideal use-cases for working with the Creator metaobject is to pull data into dedicated landing pages for your affiliates, as well as other pages in the shopping funnel (such as product pages). 
+
+‍
+
+Reminder: This functionality is available on the CreatorCommerce Pro Plan and up.
+
+‍
+
+Enabling the sync
+If you haven’t already, enable this feature by going to the CreatorCommerce dashboard > Brand Kit > Merchandising > enable “Sync data with Shopify” > then save.
+
+‍
+
+Please note that when enabled, CreatorCommerce will create a new collection anytime a creator makes a drop. These collections will be available to online sales channels, and will contain the collection metafield seo.hidden with the value of 1 so that you can filter these out of search or any other use-case.
+
+‍
+
+Shopify metaobjects 101
+Shopify metaobjects are custom data structures that allow merchants to store and manage unique information beyond Shopify's default fields, such as custom product details, brand stories, or sizing charts. These metaobjects enable greater flexibility in tailoring storefronts to business needs, enhancing customer experience by offering more specific and dynamic content. They are especially useful for integrating with apps and providing detailed product information or personalized experiences.
+
+‍
+
+How to connect a metaobject to your theme - https://help.shopify.com/en/manual/custom-data/metaobjects/connecting-to-your-online-store
+
+‍
+
+How to reference a metaobject in Liquid syntax- https://shopify.dev/docs/api/liquid/objects/metaobject 
+
+‍
+
+CreatorCommerce key terms for metaobject references
+‍
+
+creator - The affiliate behind the collaboration. Representing identifiable information like their name, onboarding status & unique ID. 
+
+‍
+
+shop - Consumer-facing representation of how the collaboration is manifested. Is this a boutique? Recommendations? What accent colors are set to pull in if needed? Provided in the affiliate dashboard.
+
+‍
+
+collab - Details about the collaboration pulled from connected affiliate platforms (Discount code, affiliate link, etc).
+
+‍
+
+channel - Key details about your brand that you want easy access to when creating an automation or shopping surface. Provided in the CreatorCommerce dashboard.
+
+‍
+
+campaign - Indication of if the creator is in a CreatorCommerce campaign or not. Used for coding conditional behavior.
+
+‍
+
+drops - CreatorCommerce’s unit for affiliate-provided curations/recommendations. This object includes an array of drops, with context on each drop such as a title, caption, and products. Each drop also includes enhancements for each product, which includes a written review and additional media for a given product.
+
+‍
+
+Creator metaobject structure
+The creator metaobject contains reference to a variety of fields, offering alternative methods to access data depending on use-case. The key for each metaobject entry represents each affiliate's shop handle.
+
+
+Creator metafield as seen in the Shopify Dashboard
+‍
+
+Fields per metaobject entry
+Below are the default fields, custom fields can be added as well based on specific needs.
+
+‍
+
+‍creator.cc-creator-id
+
+Field type: Single line text
+
+Contents: Creator’s unique identifier for CreatorCommerce
+
+‍
+
+creator.cc-creator-first-name
+
+Field type: Single line text
+
+Contents: Creator’s first name from affiliate platform
+
+‍
+
+cc-creator-last-name
+
+Field type: Single line text
+
+Contents: Creator’s last name from affiliate platform
+
+‍
+
+creator.cc-creator-is-onboarded
+
+Field type: True or false
+
+Contents: Boolean indication of if creator has made a drop before or not
+
+‍
+
+creator.cc-creator-profile-picture
+
+Field type: Single line text
+
+Contents: Creator’s profile picture
+
+‍
+
+creator.cc-creator-shop-id
+
+Field type: Single line text
+
+Contents: Creator’s unique identifier for their shop
+
+‍
+
+creator.cc-creator-shop-handle
+
+Field type: Single line text
+
+Contents: Creator’s shop handle, a distinct key used for filtering for your creator. This key is referenced in all CreatorCommerce query parameters, cookies, and attributes.
+
+‍‍
+
+creator.cc-instagram-handle (Coming Soon)
+
+Field type: Single line text
+
+Contents: Creator’s instagram handle 
+
+‍
+
+creator.cc-creator-tiktok-handle (Coming Soon)
+
+Field type: Single line text
+
+Contents: Creator’s TikTok handle
+
+‍
+
+creator.cc-creator-youtube-handle (Coming Soon)
+
+Field type: Single line text
+
+Contents: Creator’s Youtube channel handle
+
+‍
+
+creator.cc-creator-shop-title
+
+Field type: Single line text
+
+Contents: Creator’s title of their CreatorCommerce instance
+
+‍
+
+creator.cc-shop-description
+
+Field type: Single line text
+
+Contents: Creator’s provided shop description/bio
+
+‍
+
+creator.cc-creator-shop-theme-primary-color
+
+Field type: Color
+
+Contents: Creator’s primary color
+
+‍
+
+creator.cc-creator-collab-id
+
+Field type: Single line text
+
+Contents: Creator’s unique identifier for this collaboration instance in CreatorCommerce
+
+‍
+
+cc-collab-affiliate-code
+
+Field type: Single line text
+
+Contents: The creator’s dafiliate code for the connected relationship manager
+
+‍
+
+creator.cc-collab-discount-code
+
+Field type: Single line text
+
+Contents: The creator’s discount code for the connected relationship manager
+
+‍
+
+creator.cc-collab-affiliate-link
+
+Field type: Single line text
+
+Contents: The creator’s affiliate link for the connected relationship manager
+
+‍
+
+creator.cc-channel-brandkit-primary-color
+
+Field type: Color
+
+Contents: Brand-submitted primary color in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-secondary-color
+
+Field type: Color
+
+Contents: Brand-submitted secondary color in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-title
+
+Field type: Single line text
+
+Contents: Brand-submitted title in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-description
+
+Field type: Single line text
+
+Contents: Brand-submitted description in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-primary-logo
+
+Field type: URL
+
+Contents: Brand-submitted logo in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-banner-image
+
+Field type: URL
+
+Contents: Brand-submitted banner image in Brand Kit
+
+‍
+
+creator.cc-channel-brandkit-brand-image
+
+Field type: URL
+
+Contents: Brand-submitted brand image in Brand Kit
+
+‍
+
+creator.cc-creator-collection
+
+Field type: List of collections
+
+Contents: A collection that contains every product that the creator recommends
+
+‍
+
+creator.cc-creator-drops
+
+Field type: List of collections
+
+Contents: A collection for each drop from the affiliate. Each collection contains a creator.cc_drop_description metafield.
+
+‍
+
+creator.cc-creator-products
+
+Field type: List of products
+
+Contents: A list of products representing every product a creator has recommended
+
+‍
+
+creator.cc-creator-discount-type
+
+Field type: Single line text
+
+Contents: Type of discount available to consumers (Percentage | Fixed)
+
+‍
+
+creator.cc-creator-discount-amount
+
+Field type: Single line text
+
+Contents: The raw value of the discount for consumer display, without a unit included (Note which type it is with the field above)
+
+‍
+
+creator.data
+
+Field type: JSON
+
+Contents: Comprehensive of data shared for the affiliate, contains aditional fields useful for programmatc logic & rendering.
+
+‍
+
+Full list of properties & fields in creator.data
+
+{
+  "cc-creator-id": "6716799e2d244ed0bbb83c61",
+  "cc-creator-first-name": "Kenyon",
+  "cc-creator-last-name": "Brown",
+  "cc-creator-is-onboarded": true,
+  "cc-creator-profile-picture": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/6717f0983177a1493fc1d24a.jpeg",
+  "cc-creator-shop-id": "67167a7aa2a4d7291b4ff1f0",
+  "cc-creator-shop-handle": "kenyonbrown55888383",
+  "cc-creator-shop-title": "Kenyon's Shop",
+  "cc-creator-shop-description": "Explore my handpicked products from my favorite brand. Everything here is personally tested and approved by me, and your purchase helps support what I do. Plus, you’ll score an exclusive discount!",
+  "cc-creator-shop-theme-primary-color": "#000000",
+  "cc-collab-id": "6716799e2d244ed0bbb83c6d",
+  "cc-collab-relationship-manager": "social-snowball",
+  "cc-collab-tier": "CC // Tier 1",
+  "cc-collab-tier-key": "18661",
+  "cc-collab-discount-amount": "10",
+  "cc-collab-discount-type": "Percentage" | "Fixed",
+  "cc-collab-tier-discount-amount": "10",
+  "cc-collab-tier-discount-type": "Percentage",
+  "cc-collab-affiliate-code": "KENYON27668",
+  "cc-collab-discount-code": "KENYON27668",
+  "cc-collab-affiliate-link": "https://www.healf.com/KENYON27668",
+  "cc-campaign-id": "671b0363278f0e9f5f53ee76",
+  "cc-campaign-end-date": "2025-01-03T06:00:00.000Z",
+  "cc-campaign-tier": "CC // test",
+  "cc-campaign-tier-title": "CC // test",
+  "cc-campaign-tier-key": "18661",
+  "cc-campaign-relationship-manager": "social-snowball",
+  "cc-channel-id": "670575d44f4d0bf2782d1451",
+  "cc-channel-handle": "healf",
+  "cc-channel-myshopify-domian": "how2go.myshopify.com",
+  "cc-channel-myshopify-domain": "how2go.myshopify.com",
+  "cc-channel-brandkit-primary-color": "#000000",
+  "cc-channel-brandkit-title": "Healf",
+  "cc-channel-brandkit-description": "The Four Pillars are our foundation. True wellbeing emerges from the balance of EAT, MOVE, MIND, SLEEP, and we provide you with the tools and rituals to achieve this.",
+  "cc-channel-brandkit-primary-logo": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/670e7f90590c1f7cac128260.png",
+  "cc-channel-integrations-klaviyo-enabled": true,
+  "cc-creator-drops": [
+    {
+      "cc-creator-drop-id": "67167a7aa2a4d7291b4ff1ff",
+      "cc-creator-drop-handle": "favourites",
+      "cc-creator-drop-title": "Favs",
+      "cc-creator-drop-description": "Here's a handful of favorites from Healf that I genrally always recommend.",
+      "cc-creator-drop-collection-id": "448373522671",
+      "cc-creator-drop-products": [
+        {
+          "images": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/165/files/2_58a3f60d-3301-4e69-8d84-a79ef27fe52d.jpg?v=1728986081"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/175/files/1_59cd4d43-6310-475c-84a8-6204b0481228.jpg?v=1728986081"
+            }
+          ],
+          "title": "Holi (Stick) Sensitive Deodorant",
+          "id": "8792375853295",
+          "body_html": "Key Benefits. Specially formulated for sensitive skin. Nourishes and hydrates with soothing oils and butters. Subtle floral and woody fragrance for lasting freshness. This all-natural, gentle deodorant is specially crafted for sensitive skin and is free from baking soda and aluminium. Enriched with nourishing oils and butters, it soothes, hydrates, and refreshes without causing irritation. The fragrance blends floral notes of jasmine and bergamot with warm sandalwood for a subtle scent that lasts. Handmade and free from harsh ingredients, Holi (Stick) provides long-lasting freshness, helping you feel good, smell great, and stay confident all day.",
+          "vendor": "Agent Nateur",
+          "created_at": "2024-10-15T03:27:54Z",
+          "handle": "agent-nateur-holi-stick-sensitive-deodorant",
+          "updated_at": "2023-11-17T19:06:11-05:00",
+          "published_at": "2024-10-15T13:35:02Z",
+          "variants": [
+            {
+              "title": "1.7oz",
+              "price": "24.99"
+            }
+          ],
+          "onlineStoreUrl": "https://healf.com/products/agent-nateur-holi-stick-sensitive-deodorant",
+          "enhancement": {
+            "note": "This is an essential piece of deo for me.",
+            "media": []
+          }
+        },
+        {
+          "images": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/4_f753716b-6ef5-482e-83c5-0a7c6a7c106e.jpg?v=1729501162"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/2_badf44dc-2aaf-445c-86cf-032077b740d4.jpg?v=1729501162"
+            }
+          ],
+          "title": "Nano-Hydroxyapatite Kids Toothpaste with Prebiotics - Vanilla Vibes",
+          "id": "8795989115119",
+          "body_html": "Key Benefits. Supports the oral microbiome to keep the mouth healthy. Fights cavities, bad breath, and tooth sensitivity. Fluoride-free, dentist-formulated, and safe to swallow. Make brushing fun for kids with this fluoride-free toothpaste that tastes like delicious vanilla frosting. Formulated by functional dentists, this toothpaste harnesses the power of nano-Hydroxyapatite (n-Ha) to remineralise and strengthen teeth while reducing sensitivity and fighting cavities and bad breath. It’s packed with nourishing ingredients like L-arginine, xylitol, and prebiotics to support a happy oral microbiome. Best of all, Fygg is free from disruptors like essential oils, emulsifiers, detergents, and SLS, ensuring the mouth’s delicate ecosystem remains healthy and balanced. Formulated with safe and gentle ingredients, this toothpaste is safe to swallow and requires no rinsing. Plus, its yummy taste makes brushing teeth something your little ones will look forward to.",
+          "vendor": "Fygg",
+          "created_at": "2024-10-21T07:41:21Z",
+          "handle": "fygg-nano-hydroxyapatite-kids-toothpaste-with-prebiotics-vanilla-vibes",
+          "updated_at": "2023-11-17T19:06:11-05:00",
+          "published_at": "2024-10-21T12:15:01Z",
+          "variants": [
+            {
+              "title": "113g",
+              "price": "14.99"
+            }
+          ],
+          "onlineStoreUrl": "https://healf.com/products/fygg-nano-hydroxyapatite-kids-toothpaste-with-prebiotics-vanilla-vibes",
+          "enhancement": {
+            "note": "The kids love this one, and they look forward to brushing their teeth.",
+            "media": []
+          }
+        },
+        {
+          "images": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/4_ff5fb1e5-ef12-4a23-a520-da077cfcfb53.jpg?v=1729501209"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/2_f9edbf3a-4a76-4cc4-b713-51bca35c8b71.jpg?v=1729501209"
+            }
+          ],
+          "title": "Nano-Hydroxyapatite Toothpaste with Prebiotics - Mild Mint",
+          "id": "8795989049583",
+          "body_html": "Key Benefits. Supports your oral microbiome to keep your mouth healthy. Fights cavities, bad breath, and tooth sensitivity. Safe, clean, and gentle formula. Transform your oral care routine with Fygg's Nano-Hydroxyapatite Toothpaste! Crafted by functional dentists, this innovative formula harnesses the power of nano-Hydroxyapatite (n-Ha) to remineralise and strengthen your teeth, while reducing sensitivity and combating cavities and bad breath. Infused with nourishing ingredients like L-arginine, xylitol, and prebiotics, it supports a thriving oral microbiome. Best of all, Fygg is free from disruptors such as essential oils, emulsifiers, detergents, SLS, and fluoride, ensuring your mouth’s delicate ecosystem stays restored and healthy. Enjoy a refreshing mint flavour for a bright, invigorating brushing experience that supports both your oral and overall health.",
+          "vendor": "Fygg",
+          "created_at": "2024-10-21T07:41:21Z",
+          "handle": "fygg-nano-hydroxyapatite-toothpaste-with-prebiotics-mild-mint",
+          "updated_at": "2023-11-17T19:06:11-05:00",
+          "published_at": "2024-10-21T12:12:51Z",
+          "variants": [
+            {
+              "title": "113g",
+              "price": "14.99"
+            }
+          ],
+          "onlineStoreUrl": "https://healf.com/products/fygg-nano-hydroxyapatite-toothpaste-with-prebiotics-mild-mint",
+          "enhancement": {
+            "note": "This one is a personal favorite for me.",
+            "media": []
+          }
+        }
+      ],
+      "cc-creator-drop-media": []
+    },
+    {
+      "cc-creator-drop-id": "6717f1221c348a6e2c4d8994",
+      "cc-creator-drop-handle": "starter-pack",
+      "cc-creator-drop-title": "Starter Pack",
+      "cc-creator-drop-description": "For those new to Healf, this is a fantastic way to get started.",
+      "cc-creator-drop-collection-id": "448416219375",
+      "cc-creator-drop-products": [
+        {
+          "images": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/1_89cd5112-b83c-4d54-8eac-b0dda242f274.jpg?v=1729152563"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/2_9f9cb29a-b002-4340-ab16-47a1276b07ac.jpg?v=1729152562"
+            }
+          ],
+          "title": "OMNi-BiOTiC® 6",
+          "id": "8793020956911",
+          "body_html": "Key Benefits. Supports intestinal health with 6 powerful probiotic strains. Promotes a balanced gut microbiome. Free from animal protein, gluten, yeast, and lactose. OMNi-BiOTiC® 6 is expertly formulated to restore gut balance and support intestinal health. Beneficial bacteria play a crucial role in maintaining the intestinal barrier, removing toxins, and aiding in nutrient absorption. However, factors like an unhealthy diet, stress, and certain medications can disrupt this balance, allowing harmful bacteria to thrive. This imbalance can cause slow digestion, difficulty absorbing nutrients, and more food intolerances. OMNi-BiOTiC® features six carefully selected, highly active probiotic strains that effectively colonise the intestines. This promotes the natural restoration of the gut microbiome, supporting intestinal health and positively influencing various bodily functions.",
+          "vendor": "OMNi-BiOTiC",
+          "created_at": "2024-10-16T07:45:23Z",
+          "handle": "omni-biotic-omni-biotic-r-6",
+          "updated_at": "2023-11-17T19:06:11-05:00",
+          "published_at": "2024-10-17T16:51:55Z",
+          "variants": [
+            {
+              "title": "60g",
+              "price": "44.49"
+            }
+          ],
+          "onlineStoreUrl": "https://healf.com/products/omni-biotic-omni-biotic-r-6",
+          "enhancement": {
+            "note": "For someone with IBS, this has been perfect.",
+            "media": [
+              {
+                "mimeType": "video/mp4",
+                "url": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcy1wcge9W/671af79027fbf80f4213dfa4.mp4"
+              },
+              {
+                "mimeType": "image/webp",
+                "url": "https://assets.drops.shop/user_2Y9PXpJDOvhR4ezcyT91wcge9W/671af7a027fbf80f4213dfa7.webp"
+              }
+            ]
+          }
+        },
+        {
+          "images": [
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/4_ff5fb1e5-ef12-4a23-a520-da077cfcfb53.jpg?v=1729501209"
+            },
+            {
+              "src": "https://cdn.shopify.com/s/files/1/0405/7291/1765/files/2_f9edbf3a-4a76-4cc4-b713-51bca35c8b71.jpg?v=1729501209"
+            }
+          ],
+          "title": "Nano-Hydroxyapatite Toothpaste with Prebiotics - Mild Mint",
+          "id": "8795989049583",
+          "body_html": "Key Benefits. Supports your oral microbiome to keep your mouth healthy. Fights cavities, bad breath, and tooth sensitivity. Safe, clean, and gentle formula. Transform your oral care routine with Fygg's Nano-Hydroxyapatite Toothpaste! Crafted by functional dentists, this innovative formula harnesses the power of nano-Hydroxyapatite (n-Ha) to remineralise and strengthen your teeth, while reducing sensitivity and combating cavities and bad breath. Infused with nourishing ingredients like L-arginine, xylitol, and prebiotics, it supports a thriving oral microbiome. Best of all, Fygg is free from disruptors such as essential oils, emulsifiers, detergents, SLS, and fluoride, ensuring your mouth’s delicate ecosystem stays restored and healthy. Enjoy a refreshing mint flavour for a bright, invigorating brushing experience that supports both your oral and overall health.",
+          "vendor": "Fygg",
+          "created_at": "2024-10-21T07:41:21Z",
+          "handle": "fygg-nano-hydroxyapatite-toothpaste-with-prebiotics-mild-mint",
+          "updated_at": "2023-11-17T19:06:11-05:00",
+          "published_at": "2024-10-21T12:12:51Z",
+          "variants": [
+            {
+              "title": "113g",
+              "price": "14.99"
+            }
+          ],
+          "onlineStoreUrl": "https://healf.com/products/fygg-nano-hydroxyapatite-toothpaste-with-prebiotics-mild-mint",
+          "enhancement": {
+            "note": "Great product!",
+            "media": [
+              {
+                "mimeType": "image/jpeg",
+                "url": "https://assets.drops.shop/user_2Y9PXpJDOvhRp4ezcyT91wcge9W/671af77827fbf80f4213dfa1.jpg"
+              }
+            ]
+          }
+        }
+      ],
+      "cc-creator-drop-media": []
+    }
+  ],
+  "cc-creator-collection": "gid://shopify/Collection/448373555439"
+}
+‍
+
+‍‍
+
+Additional Creator Metafields
+Additional metafields are created for any collections that are created for a corresponding drop, as well as for any products that get selected by an affiliate.
+
+‍
+
+Collection Metafields
+The title of each collection will be set to the drop title (shop.metaobjects.creator[].data.value.drops[].cc-creator-drop-title) for the related drop. The description of each collection will be the drop description (shop.metaobjects.creator[].data.value.drops[].cc-creator-drop-description)
+
+‍
+
+creator.cc-creator-drop-product-enhancement-media
+
+Field type: List of single line text fields
+
+Contents: Array of uploaded media for the given drop
+
+‍
+
+creator.cc-creator-drop-product-enhancement-notes
+
+Field type: List of single line text fields
+
+Contents: Array of written product notes for the drop
+
+‍
+
+creator.cc-creator-drop-products
+
+Field type: List of products
+
+Contents: Products included in the drops
+
+‍
+
+creator.cc-creator-drop-creator
+
+Field type: Metaobject
+
+Contents: Associated Creator metaobject for the drop
+
+‍
+
+Still stuck and trying to get live? No worries, let's get you situated. Book a support call with us here.
