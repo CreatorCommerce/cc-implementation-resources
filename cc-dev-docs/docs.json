@@ -209,14 +209,15 @@
                                        }
                                     ]
                                  },
-                                 {
-                                    "group":"Quick Start Guides",
-                                    "expanded":false,
-                                    "pages":[
-                                       "use-cases/what-you-can-build",
-                                       "guides/make-your-first-collabs",
-                                       "guides/make-your-first-shopping-experiences",
-                                       "guides/connect-your-tech-stack",
+                                {
+                                   "group":"Quick Start Guides",
+                                   "expanded":false,
+                                   "pages":[
+                                      "use-cases/what-you-can-build",
+                                      "use-cases/funnel-architecture-by-brand-category",
+                                      "guides/make-your-first-collabs",
+                                      "guides/make-your-first-shopping-experiences",
+                                      "guides/connect-your-tech-stack",
                                        "guides/collect-creator-content",
                                        "guides/send-co-branded-emails",
                                        "guides/create-workflow-automation",
@@ -416,6 +417,7 @@
                            "references/sdk/getting-started",
                            "guides/storefronts/full-funnel-personalization",
                            "guides/storefronts/enable-tracking",
+                           "guides/storefronts/co-branded-storefront-ui-glossary",
                            "guides/storefronts/app-blocks-101"
                         ]
                      },
