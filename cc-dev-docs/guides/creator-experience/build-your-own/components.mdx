@@ -1,149 +1,146 @@
 ---
 title: 'Components & User Flows'
-description: 'Building blocks for custom partner dashboards—flows, components, and APIs to use.'
+description: 'Technical implementation patterns for custom creator dashboards: pages, forms, drops, products, and proxy-backed saves.'
 ---
 
-Common components and flows for custom partner dashboards, with the APIs to power them.
+This is the practical build guide for custom creator dashboards.
 
-## Core Flows
+## Recommended Page Architecture
 
-### Profile Management
+Use separate pages/modules instead of one giant account page:
 
-**User flow:**
-1. Partner views current profile
-2. Edits fields (bio, photo, social)
-3. Saves changes
-4. Sees confirmation
+- **Dashboard home**
+  - Entry cards/CTAs
+  - Collection list
+  - Share link tools
+  - Informational panels
+- **Manage products**
+  - Full product grid
+  - Filter/sort/search
+  - Add/remove product-to-drop assignment
+- **Collection editor**
+  - Edit title/description/status
+  - Reorder products
+  - Add products
+- **Storefront editor**
+  - Branding, hero/about content, social links
+  - Custom-field save actions by section
 
-**APIs:**
+This keeps flows easier to test and maintain.
+
+## Data Layer Pattern
+
+### 1. Bootstrap identity from customer context
+
+```liquid
+{% if customer.email %}
+  <div data-customer-email="{{ customer.email }}" style="display:none;"></div>
+{% endif %}
+```
+
+### 2. Resolve collab via proxy
+
+Frontend calls your backend (`/api/dashboard/collab?email=...`) and gets normalized collab + drops + custom fields.
+
+### 3. Normalize custom field access
+
+Handle both top-level fields and `customFields[]` handles in one helper so your UI code is stable even if payload shape changes.
+
+## Core How-To Flows
+
+### A) Storefront Editor (Sectioned Form Saves)
+
+Implementation pattern:
+1. Load collab once on page boot
+2. Populate section forms from field-handle map
+3. Save section-by-section (branding, social, hero, about)
+4. Send only changed values in each mutation payload
+5. Show deterministic toast on success/failure
+
+Typical field map examples:
+- `cc-company-logo`
+- `cc-website-url`
+- `cc-cc-instagram-url`
+- `cc-hero-banner`
+- `cc-hero-header-copy`
+- `cc-hero-subheader-copy`
+- `cc-about-section-title`
+
+### B) Collection Editor (Existing + Net-New)
+
+Implementation pattern:
+1. Read `collabId` (and optional `dropId`) from URL
+2. If `dropId` exists: load and edit existing drop
+3. If `dropId` missing: create net-new drop from form + selected products
+4. Persist title, description, status, and ordered product list
+5. Redirect to canonical edit URL after create
+
+### C) Product-to-Collection Assignment
+
+Implementation pattern:
+1. Render product cards from Shopify Storefront API data
+2. Build checkbox/dropdown list from collab drops
+3. On toggle:
+  - add flow -> add product to drop
+  - remove flow -> update drop with remaining product IDs
+4. Refresh local collab cache after mutation
+
+### D) Product Enhancement Editing
+
+Implementation pattern:
+1. Open modal/drawer edit UI from product card
+2. Support note + media upload + collection assignment
+3. Upload media to your upload service first
+4. Save enhancement payload via proxy endpoint
+5. Re-fetch drop data to reconcile local UI state
+
+## UX Patterns That Work Well
+
+### Loading + Empty States
+- Initial page-level skeleton/spinner
+- Section-level loaders for async areas (collections, products)
+- Explicit empty states with CTA
+
+### Optimistic Updates
+- For toggles and simple state flips, update UI immediately
+- Revert on failed mutation and show error toast
+
+### Modal + Drawer Duality
+- Desktop modal and mobile drawer for the same action
+- Shared save logic behind both UIs
+- Ensure body scroll locking and close-on-overlay behavior
+
+### Informational Panels (No API Needed)
+- Include utility blocks (share-link guidance, embed/email instructions, onboarding reminders)
+- Keep these outside your network dependency path so UX still feels useful during outages
+
+## Security Pattern: Proxy All Writes
+
+Do not mutate CC data directly from client bundles.
+
 ```javascript
-// Get current profile
-GET /creators/{creatorId}
-
-// Update profile
-POST /creators/collabs/{collabId}
-{
-  "bio": "Updated bio...",
-  "socialLinks": { "instagram": "@handle" }
-}
+// Frontend
+await fetch('/api/dashboard/update-drop', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ collabId, dropId, title, description, products })
+});
 ```
 
-### Product Selection
-
-**User flow:**
-1. Partner browses products
-2. Selects items for drop
-3. Reorders selections
-4. Adds annotations (optional)
-5. Saves drop
-
-**APIs:**
 ```javascript
-// Get available products
-GET /channels/{domain}/products
-
-// Get current drop
-GET /creators/{creatorId}/drops/{dropId}
-
-// Update drop
-POST /creators/collabs/{collabId}/drops/{dropId}
-{
-  "products": [
-    { "shopifyId": "123", "annotation": "My favorite!" }
-  ]
-}
+// Backend (example)
+app.post('/api/dashboard/update-drop', async (req, res) => {
+  const customer = await requireAuthenticatedCustomer(req);
+  await assertCustomerOwnsCollab(customer, req.body.collabId);
+  const result = await creatorCommerce.updateDrop(req.body);
+  res.json(result);
+});
 ```
 
-### Performance Dashboard
+## Related Technical Docs
 
-**User flow:**
-1. Partner views stats
-2. Filters by date range
-3. Sees orders, revenue, conversion
-
-**APIs:**
-```javascript
-// Get performance data
-GET /creators/{creatorId}/analytics?
-  from=2024-01-01&
-  to=2024-01-31
-```
-
-### Link Sharing
-
-**User flow:**
-1. Partner sees their link
-2. Copies link or downloads QR
-3. Shares on social
-
-**Components:**
-- Copy button with feedback
-- QR code generator
-- Social share buttons
-
-## UI Components
-
-### Profile Card
-
-```jsx
-function ProfileCard({ partner }) {
-  return (
-    <div className="profile-card">
-      <img src={partner.photo} alt={partner.name} />
-      <h2>{partner.name}</h2>
-      <p>{partner.bio}</p>
-      <a href={partner.shopUrl}>View My Shop</a>
-    </div>
-  );
-}
-```
-
-### Product Picker
-
-```jsx
-function ProductPicker({ products, selected, onSelect }) {
-  return (
-    <div className="product-grid">
-      {products.map(product => (
-        <ProductCard 
-          key={product.id}
-          product={product}
-          selected={selected.includes(product.id)}
-          onToggle={() => onSelect(product.id)}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-### Stats Display
-
-```jsx
-function StatsDisplay({ analytics }) {
-  return (
-    <div className="stats-grid">
-      <StatCard label="Orders" value={analytics.orders} />
-      <StatCard label="Revenue" value={formatCurrency(analytics.revenue)} />
-      <StatCard label="Conversion" value={formatPercent(analytics.conversion)} />
-    </div>
-  );
-}
-```
-
-## API Reference
-
-<CardGroup cols={2}>
-  <Card title="Unified API Reference" icon="code" href="/references/unified-api-reference">
-    Full API documentation
-  </Card>
-  <Card title="API Overview" icon="book" href="/references/api-overview">
-    Getting started with APIs
-  </Card>
-  <Card title="Authentication" icon="key" href="/guides/authentication">
-    API authentication guide
-  </Card>
-  <Card title="Endpoints" icon="route" href="/references/unified-api-reference">
-    All available endpoints
-  </Card>
-</CardGroup>
+- [Build Your Own Dashboard Overview](/guides/creator-experience/build-your-own/overview)
+- [Authentication](/guides/creator-experience/build-your-own/auth)
+- [Where to Host](/guides/creator-experience/build-your-own/hosting)
+- [Custom Fields Reference](/references/custom-fields-reference)
+- [Unified API Reference](/references/unified-api-reference)

@@ -100,19 +100,27 @@ Personalize customer-facing emails with creator context so the trust that drove 
 
 Emails sent **to your customers** that reference the creator who referred them. These are your existing Klaviyo flows (cart abandonment, post-purchase, etc.) enhanced with creator personalization.
 
-### How Creator Data Reaches Klaviyo
+### How Creator Data Reaches Klaviyo (Current Recommended)
 
 ```
 Customer clicks creator link
        |
 CC SDK writes cart attributes (cc-creator-handle, cc-discount-code)
        |
-Cart attributes persist through checkout to order
+Shopify Flow template validates creator context + fetches creator metaobject data
        |
-Order data syncs to Klaviyo with CC custom properties
+Klaviyo Track an Event action logs B2C event + customer properties
        |
 Flows branch: creator-attributed vs. standard
 ```
+
+### B2C Event Templates and Names
+
+| Shopify Flow Template | Klaviyo Event Name | Typical Use |
+|-----------------------|--------------------|-------------|
+| `CC // Log a customer abandoned cart Klaviyo event` | `Creator Checkout Abandoned` | Cart abandonment journey |
+| `CC // Log a custom post-purchase Klaviyo event` | `Creator Attributed Order` | Post-purchase / reorder / review asks |
+| `CC // Log a customer marketing opt-in Klaviyo event` | `Marketing Opt In From Creator` | Welcome + nurture flows after subscribe |
 
 ### Klaviyo Profile Properties
 
@@ -120,11 +128,29 @@ When a customer is attributed to a creator, these properties are set on their Kl
 
 | Property | Example | Use In Templates |
 |----------|---------|-----------------|
-| `cc_creator_handle` | `sarah-jones` | Link back to creator page |
-| `cc_creator_name` | `Sarah` | Subject lines, body copy |
-| `cc_discount_code` | `SARAH15` | Discount reminder blocks |
-| `cc_discount_amount` | `15` | Savings callouts |
-| `cc_creator_photo_url` | URL | Header image personalization |
+| `cc-creator-shop-handle` | `sarah-jones` | Link back to creator page |
+| `cc-creator-first-name` | `Sarah` | Subject lines, body copy |
+| `cc-collab-discount-code` | `SARAH15` | Discount reminder blocks |
+| `cc-collab-discount-amount` | `15` | Savings callouts |
+| `cc-creator-profile-picture` | URL | Header image personalization |
+
+In Shopify Flow `Track an Event`, `Event Properties` are typically mapped from:
+
+- `{{getMetaobjectEntry.data}}`
+
+And `Customer Properties` include creator/collab keys such as:
+- `cc-creator-first-name`
+- `cc-creator-last-name`
+- `cc-creator-profile-picture`
+- `cc-creator-shop-title`
+- `cc-creator-shop-theme-primary-color`
+- `cc-creator-shop-handle`
+- `cc-collab-affiliate-link`
+- `cc-collab-discount-amount`
+- `cc-collab-discount-code`
+- `cc-collab-affiliate-code`
+- `cc-collab-discount-type`
+- `cc-creator-shop-description`
 
 ### Flows to Co-brand
 
@@ -142,9 +168,9 @@ When a customer is attributed to a creator, these properties are set on their Kl
 In Klaviyo templates, use conditional blocks to show creator content when available:
 
 ```
-{% if person|lookup:'cc_creator_name' %}
+{% if person|lookup:'cc-creator-first-name' %}
   <!-- Co-branded version -->
-  Shopping with {{ person|lookup:'cc_creator_name' }}
+  Shopping with {{ person|lookup:'cc-creator-first-name' }}
 {% else %}
   <!-- Standard version -->
   Welcome back!
@@ -161,7 +187,7 @@ In Klaviyo templates, use conditional blocks to show creator content when availa
 | **Triggered by** | CC lifecycle events | Standard ecommerce events |
 | **Goal** | Activate and retain partners | Convert and retain customers |
 | **Templates** | Provided by CC | Your existing templates, enhanced |
-| **Data source** | CC events in Klaviyo | CC cart attributes on orders |
+| **Data source** | Creator lifecycle events and creator-state updates | Shopify Flow templates + creator/collab payload mapping |
 
 ## Related
 

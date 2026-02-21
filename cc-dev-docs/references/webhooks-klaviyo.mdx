@@ -1,86 +1,105 @@
 ---
 title: 'Klaviyo Events'
-description: 'CreatorCommerce events sent to Klaviyo for segmentation and flow triggers.'
+description: 'Klaviyo event model for CreatorCommerce, including consumer co-branded flow events and creator lifecycle events.'
 ---
 
-## Available Events
+## Consumer Co-branded Events (B2C)
 
-| Event | Trigger | Use Case |
-|-------|---------|----------|
-| **CC Creator Page View** | Landing page visit | Welcome flow, retargeting |
-| **CC Add to Cart** | Product added with creator context | Abandoned cart flows |
-| **CC Checkout Started** | Checkout with attribution | Cart abandonment |
-| **CC Order Placed** | Completed order | Post-purchase flows |
+These customer-facing co-branded events are sent by Shopify Flow templates using Klaviyo `Track an Event`.
 
-## Event Properties
+| Shopify Flow Template | Event Name in Klaviyo | Trigger |
+|-----------------------|-----------------------|---------|
+| `CC // Log a customer abandoned cart Klaviyo event` | `Creator Checkout Abandoned` | Customer abandons checkout |
+| `CC // Log a custom post-purchase Klaviyo event` | `Creator Attributed Order` | Order created |
+| `CC // Log a customer marketing opt-in Klaviyo event` | `Marketing Opt In From Creator` | Customer marketing opt-in/subscription event |
 
-### CC Creator Page View
+## B2C Track an Event Payload Mapping
 
-```json
-{
-  "event": "CC Creator Page View",
-  "properties": {
-    "creator_handle": "sarah-jones",
-    "creator_name": "Sarah",
-    "page_url": "https://store.com/pages/creators/sarah-jones",
-    "referrer": "https://instagram.com"
-  }
-}
-```
+Each template maps the following into the Klaviyo action:
 
-### CC Add to Cart
+- `Event Properties` -> `{{getMetaobjectEntry.data}}`
+- `Customer Properties` -> creator/collab dictionary from `getMetaobjectEntry.*`
+
+Typical `Customer Properties` payload:
 
 ```json
 {
-  "event": "CC Add to Cart",
-  "properties": {
-    "ProductName": "Hydrating Serum",
-    "ProductID": "gid://shopify/Product/123",
-    "Price": 49.00,
-    "CreatorHandle": "sarah-jones",
-    "CreatorName": "Sarah",
-    "DiscountCode": "SARAH15"
-  }
+  "cc-creator-first-name": "{{getMetaobjectEntry.ccCreatorFirstName}}",
+  "cc-creator-last-name": "{{getMetaobjectEntry.ccCreatorLastName}}",
+  "cc-creator-profile-picture": "{{getMetaobjectEntry.ccCreatorProfilePicture}}",
+  "cc-creator-shop-title": "{{getMetaobjectEntry.ccCreatorShopTitle}}",
+  "cc-creator-shop-theme-primary-color": "{{getMetaobjectEntry.ccCreatorShopThemePrimaryColor}}",
+  "cc-creator-shop-handle": "{{getMetaobjectEntry.ccCreatorShopHandle}}",
+  "cc-collab-affiliate-link": "{{getMetaobjectEntry.ccCollabAffiliateLink}}",
+  "cc-collab-discount-amount": "{{getMetaobjectEntry.ccCollabDiscountAmount}}",
+  "cc-collab-discount-code": "{{getMetaobjectEntry.ccCollabDiscountCode}}",
+  "cc-collab-affiliate-code": "{{getMetaobjectEntry.ccCollabAffiliateCode}}",
+  "cc-collab-discount-type": "{{getMetaobjectEntry.ccCollabDiscountType}}",
+  "cc-creator-shop-description": "{{getMetaobjectEntry.ccCreatorShopDescription}}"
 }
 ```
 
-### CC Checkout Started
+<Note>
+Some templates include additional keys (for example first/last name fields are often included for checkout abandoned and post-purchase flows). Keep your Klaviyo template logic resilient to missing optional fields.
+</Note>
+
+## Example B2C Event Payloads
+
+### Creator Checkout Abandoned
 
 ```json
 {
-  "event": "CC Checkout Started",
-  "properties": {
-    "CartValue": 150.00,
-    "CartItems": 3,
-    "CreatorHandle": "sarah-jones",
-    "CreatorName": "Sarah",
-    "DiscountCode": "SARAH15",
-    "DiscountAmount": 15,
-    "CheckoutUrl": "https://store.com/checkouts/abc123"
-  }
+  "event": "Creator Checkout Abandoned",
+  "properties": "{{getMetaobjectEntry.data}}"
 }
 ```
 
-### CC Order Placed
+### Creator Attributed Order
 
 ```json
 {
-  "event": "CC Order Placed",
-  "properties": {
-    "OrderID": "12345",
-    "TotalPrice": 150.00,
-    "CreatorHandle": "sarah-jones",
-    "CreatorName": "Sarah",
-    "DiscountCode": "SARAH15",
-    "DiscountAmount": 15,
-    "Items": [...]
-  }
+  "event": "Creator Attributed Order",
+  "properties": "{{getMetaobjectEntry.data}}"
 }
 ```
 
-## Profile Properties Set
+### Marketing Opt In From Creator
 
-When events fire, these properties are maintained on the Klaviyo profile. Properties are updated automatically as creator data changes.
+```json
+{
+  "event": "Marketing Opt In From Creator",
+  "properties": "{{getMetaobjectEntry.data}}"
+}
+```
+
+## B2C Flow Trigger Examples
+
+### Cart Abandonment with Creator Context
+
+```
+Trigger: Creator Checkout Abandoned
+Wait: 2-4 hours
+Filter: Has not placed order
+Action: Send co-branded recovery email
+```
+
+### Post-Purchase with Creator Context
+
+```
+Trigger: Creator Attributed Order
+Action: Send co-branded thank you / follow-up flow
+```
+
+### Opt-In Welcome with Creator Context
+
+```
+Trigger: Marketing Opt In From Creator
+Action: Enter creator-personalized welcome/nurture branch
+```
+
+## Shared Creator/Collab Property Reference (Used Across B2C and B2B)
+
+When events fire, these properties are commonly maintained on the Klaviyo profile.
 
 ### Creator Properties
 
@@ -130,40 +149,13 @@ When events fire, these properties are maintained on the Klaviyo profile. Proper
 |----------|---------|-------------|
 | `cc-invite-url` | `https://dashboard.creatorcommerce.shop/invitation?...` | Creator invitation URL |
 
-## Flow Triggers
-
-### Cart Abandonment with Creator Context
-
-```
-Trigger: CC Checkout Started
-Wait: 4 hours
-Filter: Has not placed order
-Action: Send email with creator personalization
-```
-
-### Post-Purchase Thank You
-
-```
-Trigger: CC Order Placed
-Action: Send co-branded thank you email
-```
-
-### Creator Page Retargeting
-
-```
-Trigger: CC Creator Page View
-Wait: 1 day
-Filter: Has not purchased
-Action: Send "Still thinking about it?" email
-```
-
 ## Segmentation
 
 Create segments based on CC properties:
 
-- **CC Referred Customers**: `cc_creator_handle is set`
-- **High-Value Creator Traffic**: `cc_creator_handle is set AND Total CLV > 200`
-- **Specific Creator Audience**: `cc_creator_handle equals sarah-jones`
+- **CC Referred Customers**: `cc-creator-shop-handle is set`
+- **High-Value Creator Traffic**: `cc-creator-shop-handle is set AND Total CLV > 200`
+- **Specific Creator Audience**: `cc-creator-shop-handle equals sarah-jones`
 
 ---
 

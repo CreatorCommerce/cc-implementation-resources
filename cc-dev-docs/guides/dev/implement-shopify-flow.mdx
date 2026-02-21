@@ -1,103 +1,27 @@
 ---
 title: 'Implement a Shopify Flow'
-description: 'Use CreatorCommerce triggers and actions in Shopify Flow to automate creator/collab sync and downstream workflows.'
+description: 'Use-case overview for automating CreatorCommerce workflows with Shopify Flow.'
 ---
 
-## Overview
+## What You Can Do
 
-CreatorCommerce integrates with Shopify Flow so you can react to creator/collab updates and sync data across Shopify and external systems.
+Use Shopify Flow to automate creator/collab operations and downstream system updates.
 
-## Current Trigger Availability
+Common automation outcomes:
 
-| Trigger | Fires When |
-|---------|------------|
-| `CreatorCommerce - Creator Updated` | A creator/collab record is updated in CreatorCommerce |
+- Sync collab/tier updates into CreatorCommerce
+- React to creator state changes (handle/code updates)
+- Trigger CRM, ESP, Slack, and HTTP workflows
+- Power consumer co-branded lifecycle events in Klaviyo
 
-### Trigger Variables (Currently Available)
-
-- `ccCreatorId` (String)
-- `ccCreatorShopId` (String)
-- `ccCreatorMetaobjectId` (String)
-- `ccCreatorShopHandle` (String)
-- `ccCreatorDiscountCode` (String)
-- `ccCreatorAffiliateCode` (String)
-- `ccCreatorAffiliateUrl` (String)
-- `ccCreatorShopHandlePrev` (String)
-- `ccCreatorDiscountCodePrev` (String)
-- `ccCreatorAffiliateCodePrev` (String)
-- `ccCreatorAffiliateUrlPrev` (String)
-
-## Current Action Availability
-
-| Action | What It Does |
-|--------|--------------|
-| `Sync Tier Assignment with CreatorCommerce` | Syncs creator and tier information into CreatorCommerce (typically from Shopify Collabs variables, but can also use custom data). |
-
-### Action Inputs (Currently Available)
-
-- `First Name`
-- `Last Name`
-- `Email`
-- `Location`
-- `Tier Name`
-- `Affiliate Code`
-- `Community Member Id`
-- `Primary Username`
-- `MyShopify Domain`
-
-## Example Flows
-
-### 1) Sync Creator From Shopify Collabs
-
-```
-Trigger: Shopify Collabs event
-Action: Sync Tier Assignment with CreatorCommerce
-  - First Name
-  - Last Name
-  - Email
-  - Tier Name
-  - Affiliate Code
-  - Community Member Id
-  - Primary Username
-  - MyShopify Domain
-```
-
-### 2) React to Affiliate Code Changes
-
-```
-Trigger: CreatorCommerce - Creator Updated
-Condition: ccCreatorAffiliateCode != ccCreatorAffiliateCodePrev
-Action: Send Slack notification
-Action: Update external CRM/ESP profile
-```
-
-### 3) React to Shop Handle Changes
-
-```
-Trigger: CreatorCommerce - Creator Updated
-Condition: ccCreatorShopHandle != ccCreatorShopHandlePrev
-Action: Update link destinations and campaign metadata
-```
-
-## Setup Steps
-
-1. Go to Shopify Admin -> Apps -> Flow.
-2. Create a workflow and choose either:
-   - a Shopify Collabs trigger (to drive the sync action), or
-   - `CreatorCommerce - Creator Updated` (to drive downstream automations).
-3. Add `Sync Tier Assignment with CreatorCommerce` when you need to write/update creator collab data in CC.
-4. Map trigger variables to the action input fields.
-5. Add conditions/actions for downstream systems (Slack, Klaviyo, CRM, HTTP request, etc.).
-6. Test with a real creator update and confirm variable values in Flow run logs.
-
-## Notes
-
-- Treat this page as current-state availability.
-- If new triggers/actions are added, update this guide and the references together.
-
-## Related
+## Best References (How-To)
 
 - [Shopify Flow Triggers](/references/webhooks-shopify-flow)
 - [Shopify Flow Actions](/references/shopify-flow-actions)
-- [Webhooks Overview](/references/webhooks-overview)
+- [Klaviyo Events](/references/webhooks-klaviyo)
+
+## Related
+
 - [Shopify Collabs Integration](/guides/integrations/affiliate/shopify-collabs)
+- [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration)

@@ -75,8 +75,15 @@ CreatorCommerce offers two product section types:
 | `cc-creator-drop-products` | Array of product references |
 | `cc-creator-drop-featured-media` | Hero image/video URL |
 
+## How This Connects
+
+- Product lists are downstream of landing-page creator context and rely on `cc_creator` being resolved correctly.
+- Drop and enhancement fields are populated through creator workflows in [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards) and/or external sync in [Recruitment Integrations](/guides/features/recruitment-integrations).
+- Product-list interactions (`add to cart`, bundle actions) hand off directly to [Co-branded Carts & Checkout](/guides/features/co-branded-carts-checkout) and [Shopify-native Attribution](/guides/features/shopify-native-attribution).
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks) — Add curated lists or bundle sections
 - [Drops & Products Data Model](/references/drops-products-data-model) — Understanding drop structure
 - [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) — Custom theme implementation

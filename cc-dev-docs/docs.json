@@ -42,7 +42,7 @@
       "primary":{
          "type":"button",
          "label":"Book a discovery call",
-         "href":"https://calendly.com/creatorcommerce/30min?utm_source=dev-docs&utm_medium=referral&utm_campaign=developer-onboarding&utm_content=book-a-call"
+         "href":"https://cal.com/team/creatorcommerce/creator-commerce-consultation"
       }
    },
    "navigation":{
@@ -75,6 +75,7 @@
                               "group":"Core Platform Features",
                               "expanded":false,
                               "pages":[
+                                 "guides/features/how-features-connect",
                                  "guides/features/co-branded-landing-pages",
                                  "guides/features/co-branded-product-pages",
                                  "guides/features/co-branded-carts-checkout",
@@ -116,7 +117,8 @@
                                     "group":"Base Case Funnel Tests",
                                     "expanded":false,
                                     "pages":[
-                                       "guides/dev/base-funnels/overview"
+                                       "guides/dev/base-funnels/overview",
+                                       "guides/dev/base-funnels/net-new-funnels"
                                     ]
                                  },
                                  {
@@ -277,6 +279,13 @@
                               "pages":[
                                  "guides/cursor-coding",
                                  "guides/cursor-rules"
+                              ]
+                           },
+                           {
+                              "group":"Codex Setup",
+                              "expanded":false,
+                              "pages":[
+                                 "guides/codex-coding"
                               ]
                            },
                            {
@@ -728,16 +737,15 @@
                         "group":"CONTENT & AUTOMATION",
                         "expanded":false,
                         "pages":[
-                           "guides/integrations/content-automation/shopify-flow",
-                           "guides/integrations/content-automation/zapier"
+                           "guides/integrations/content-automation/shopify-flow"
                         ]
                      },
                      {
                         "group":"ANALYTICS",
                         "expanded":false,
                         "pages":[
-                           "guides/integrations/analytics/triple-whale",
-                           "guides/integrations/analytics/northbeam"
+                           "guides/integrations/analytics/affiliate-platforms",
+                           "guides/integrations/analytics/shopify"
                         ]
                      }
                   ]
@@ -937,6 +945,19 @@
                         "pages":[
                            "guides/claude-coding",
                            "guides/claude-rules"
+                        ]
+                     }
+                  ]
+               },
+               {
+                  "item":"Codex Setup",
+                  "icon":"code",
+                  "groups":[
+                     {
+                        "group":"Codex Setup",
+                        "expanded":false,
+                        "pages":[
+                           "guides/codex-coding"
                         ]
                      }
                   ]

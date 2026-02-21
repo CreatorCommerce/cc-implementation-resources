@@ -1,86 +1,69 @@
 ---
 title: 'Where to Host'
-description: 'Hosting options for custom partner dashboards.'
+description: 'Hosting architecture for custom creator dashboards, including secure proxy patterns.'
 ---
 
-Your custom dashboard needs a home. Options range from simple static hosting to full application platforms.
+Your dashboard UI can be hosted almost anywhere. The important choice is where your secure proxy runs.
 
-## Options
+## Recommended Deployment Shape
 
-### Static Hosting
-
-For simple dashboards (API calls from browser):
-
-| Service | Best For | Cost |
-|---------|----------|------|
-| Vercel | React/Next.js apps | Free tier available |
-| Netlify | Static sites, Jamstack | Free tier available |
-| Cloudflare Pages | Global CDN | Free tier available |
-
-**Pros:** Simple, cheap, fast
-**Cons:** Limited server-side logic
-
-### Serverless
-
-For dashboards needing backend logic:
-
-| Service | Best For | Cost |
-|---------|----------|------|
-| Vercel Functions | Next.js API routes | Usage-based |
-| AWS Lambda | Custom backends | Usage-based |
-| Cloudflare Workers | Edge logic | Usage-based |
-
-**Pros:** Scalable, no server management
-**Cons:** Cold starts, complexity
-
-### Full Application Hosting
-
-For complex dashboards:
-
-| Service | Best For | Cost |
-|---------|----------|------|
-| Render | Full-stack apps | $7+/month |
-| Railway | Rapid deployment | Usage-based |
-| Heroku | Traditional apps | $7+/month |
-| AWS/GCP/Azure | Enterprise | Varies |
-
-**Pros:** Full control, any architecture
-**Cons:** More management
-
-### Embedded in Existing App
-
-If you have an existing partner portal:
-
-- Add CC integration to your current app
-- Use your existing hosting
-- No additional infrastructure
-
-## Recommendations
-
-| Scenario | Recommendation |
-|----------|----------------|
-| Simple read-only dashboard | Static (Vercel/Netlify) |
-| Forms + updates | Static + serverless |
-| Complex workflows | Full application |
-| Existing partner portal | Embed in current |
-
-## Domain Setup
-
-### Subdomain of your site
-```
-partners.yourbrand.com → Your dashboard
+```text
+Theme/customer-account UI
+  -> calls
+Backend proxy (auth + CC + Shopify operations)
+  -> calls
+CreatorCommerce + Shopify APIs
 ```
 
-### Custom domain
-```
-dashboard.yourpartnerprogram.com → Your dashboard
-```
+This keeps API keys and write permissions off the client.
 
-## CORS Configuration
+## Hosting Options
 
-Your dashboard will call CC APIs from the browser. Ensure your domain is allowlisted in CC settings.
+### UI Layer
+
+- Shopify theme + customer account templates
+- Embedded app UI/extensions
+- External React/Next frontend
+
+### Proxy/API Layer
+
+- Serverless functions (Vercel/AWS/Cloudflare)
+- Container app (Render/Railway/Fly/DO App Platform)
+- Existing backend service in your stack
+
+### File Upload Layer (Optional)
+
+- Direct upload to your own storage/CDN
+- Upload worker service, then save returned media URL in CC enhancement/custom fields
+
+## Endpoint Design (Proxy)
+
+Example backend routes:
+
+- `GET /api/dashboard/collab?email=...`
+- `POST /api/dashboard/update-collab`
+- `POST /api/dashboard/update-drop`
+- `POST /api/dashboard/create-drop`
+- `POST /api/dashboard/update-product-enhancement`
+- `PATCH /api/dashboard/update-affiliate`
+
+Keep the frontend unaware of upstream credential details.
+
+## Practical Notes
+
+- Use one canonical base URL per environment (`dev`, `staging`, `prod`)
+- Add request timeouts and structured errors on all routes
+- Log route, collabId/dropId, and status for operational debugging
+- Prefer idempotent update flows when possible
+
+## Security Baseline
+
+- Do not call privileged CC endpoints directly from browser JS
+- Do not expose CC tokens/API keys in Liquid or frontend bundles
+- Validate customer identity and collab ownership on every write
+- Apply rate limiting + basic abuse protections to mutation endpoints
 
 ## Related
 
 - [Authentication](/guides/creator-experience/build-your-own/auth)
-- [Components](/guides/creator-experience/build-your-own/components)
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)

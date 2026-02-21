@@ -3,51 +3,59 @@ title: 'App Blocks 101'
 description: 'Use out-of-the-box CC app blocks for quick co-branding without custom development.'
 ---
 
-## What Are App Blocks?
+## Important Context
 
-App blocks are pre-built UI components you can add to your theme via the theme editor—no code required.
+CreatorCommerce is primarily delivered as **theme sections/snippets** (Liquid-native), not standard Shopify app blocks.
 
-## Available CC App Blocks
+In Theme Editor, go to **Sections** and search `CC` to find these components.
 
-| Block | Purpose | Where to Use |
-|-------|---------|--------------|
-| **CC Creator Hero** | Full creator intro section (2 versions) | Landing pages |
-| **CC Product Grid/Bundles** | Creator's product picks (2 versions) | Landing pages, collections |
-| **CC Quote Badge/Testimonial** | Creator testimonial (2 versions) | Product pages |
-| **CC Discount Banner** | Persistent discount reminder | Any page |
-| **CC Email Capture** | Newsletter with attribution | Landing pages, footer |
+## CC Sections (`cc-*.liquid`)
 
-## Adding App Blocks
+These are the primary storefront components in `cc-liquid-templates/`:
 
-1. Go to Online Store → Themes → Customize
-2. Navigate to the page/section
-3. Click "Add block" or "Add section"
-4. Find blocks under "CC"
-5. Configure settings
-6. Save
+| Section File | Theme Label / Preset | What it does | Best used on |
+|---|---|---|---|
+| `cc-hero-primavera-mini-shell.liquid` | `CC Hero - Primavera` | Co-branded hero with creator identity, dynamic text, CTA, and media carousel behavior. | Creator landing pages |
+| `cc-hero-equinox.liquid` | `CC Hero - Equinox` | Alternate hero style with badge, heading/accent, CTA, and floating stat card patterns. | Creator landing pages |
+| `cc-drops-product-curated-lists-shell.liquid` | `CC Products - Curated Lists` | Multi-drop product listing section with dropdown switching and optional fallback collection behavior. | Landing pages, product-list areas |
+| `cc-drops-product-signature-bundles-shell.liquid` | `CC Products - Signature Bundles` | Bundle-oriented drop presentation with “add all” purchase flow and bundle storytelling UI. | Landing pages, campaign bundles |
+| `cc-product-quote-badge.liquid` | `CC Product - Quote Badge` | Sticky/inline quote badge for creator endorsement plus discount messaging and media expansion. | Product pages |
+| `cc-product-quote-editorial.liquid` | `CC Product - Quote Editorial` | Editorial-style creator quote block with avatar/author treatment for PDP storytelling. | Product pages |
+| `cc-banner-momentum.liquid` | `CC Banner - Momentum` | Compact creator banner for persistent reminder of who the shopper is browsing with. | Landing, collection, cart-adjacent contexts |
+| `cc-block-instructions.liquid` | `CC App Block Instructions` | Design-mode instructional helper (not a shopper-facing production block). | Theme-editor setup only |
 
-## Block Settings
+## Underlying CC Snippets (`snippets/cc-*.liquid`)
 
-Each block has customizable settings:
+These power the section logic and are reused across multiple CC sections:
 
-- **Display options** — Layout, colors, spacing
-- **Content overrides** — Custom text fallbacks
-- **Visibility** — Show only with creator context
-- **Preview** — Test with a specific creator handle
+| Snippet File | Purpose | Used by |
+|---|---|---|
+| `snippets/cc-hero-primavera-base-snippet.liquid` | Base renderer for Primavera hero output and dynamic creator-aware content. | `cc-hero-primavera-mini-shell.liquid` |
+| `snippets/cc-drops-product-curated-list-base-snippet.liquid` | Core logic/UI for curated lists, product grids, dropdown behavior, and pricing hooks. | `cc-drops-product-curated-lists-shell.liquid` |
+| `snippets/cc-drops-product-signature-bundles-base-snippet.liquid` | Core bundle rendering and drop/fallback behavior for signature bundles. | `cc-drops-product-signature-bundles-shell.liquid` |
+| `snippets/cc-process-dynamic-text.liquid` | Replaces dynamic text tokens (including nested creator paths and defaults). | Hero, banner, quote, list, and bundle sections |
+| `snippets/cc-calculate-contrast-color.liquid` | Computes readable foreground color from background values. | Hero, banner, and quote styling paths |
+| `snippets/cc-price.liquid` | Calculates creator-adjusted product pricing outputs. | Curated list product rendering |
+| `snippets/cc-custom-product-card.liquid` | Optional override for custom product card markup in curated lists. | Curated lists when custom card is enabled |
 
-## When to Use App Blocks
+## Adding CC Sections in Theme Editor
 
-✅ **Use app blocks when:**
-- Quick implementation needed
-- No developer resources
-- Testing co-branding concept
-- Standard layouts work for your brand
+1. Go to Shopify Admin → Online Store → Themes → Customize.
+2. Open the target template (landing page, product page, etc.).
+3. Add a **Section** and search `CC`.
+4. Pick the relevant section (Hero, Products, Quote, Banner).
+5. Configure settings from the schema controls.
+6. Save and test with creator context active.
 
-❌ **Use custom sections when:**
-- Pixel-perfect brand matching required
-- Complex layouts needed
-- Deep integration with existing components
+## What To Customize First
 
-## Combining Approaches
+- Dynamic text fields (creator-aware copy)
+- Fallback behavior (what shows when creator/drop data is missing)
+- Colors/contrast controls
+- Product-card mode (`default` vs `cc-custom-product-card`)
 
-Start with app blocks, then migrate to custom sections as you refine your design.
+## Related
+
+- [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks)
+- [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme)
+- [Co-branded Storefront UI Glossary](/guides/storefronts/co-branded-storefront-ui-glossary)

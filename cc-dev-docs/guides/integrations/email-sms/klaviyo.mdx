@@ -1,132 +1,90 @@
 ---
 title: 'Klaviyo'
-description: 'Sync partner data to Klaviyo for co-branded email flows, affiliate communication, and customer-to-affiliate conversion.'
+description: 'Configure Klaviyo for both consumer co-branded lifecycle emails (B2C) and creator lifecycle messaging (B2B).'
 ---
 
-Klaviyo is the primary email integration for CreatorCommerce. It powers two distinct communication channels: **messaging your affiliates** and **personalizing emails to customers** with creator context.
+Klaviyo supports two distinct CreatorCommerce messaging surfaces:
 
-## Two Sides of Klaviyo
+- **B2C consumer co-branding**: customer lifecycle emails personalized to the referring creator.
+- **B2B creator lifecycle messaging**: emails/SMS sent to creators/affiliates.
 
-### 1. Affiliate Messaging (B2B)
-Email/SMS to your creators and affiliates:
-- Welcome sequences
-- Onboarding reminders
-- Performance updates and milestones
-- Campaign announcements
-- Drop notifications
+<Warning>
+Do not combine these in one flow tree. Keep separate Klaviyo metrics, segments, and templates for B2C vs B2B.
+</Warning>
 
-### 2. Consumer Co-branding (B2C)
-Email/SMS to customers with creator personalization:
-- Cart abandonment with creator's discount
-- Post-purchase with creator thank-you message
-- Welcome series with creator intro
-- Win-back flows with creator context
+## Consumer Co-branding (B2C): Current Recommended Architecture
 
-<Card title="Deep Dive: The 2 Sides of Klaviyo" icon="arrows-left-right" href="/references/klaviyo-two-sides">
-  Detailed reference on using Klaviyo for both affiliate and consumer messaging.
-</Card>
+Consumer flows are powered by **Shopify Flow templates** that send custom events to Klaviyo via `Track an Event`:
 
-## Setup
+| Shopify Flow Template | Klaviyo Event Name |
+|-----------------------|--------------------|
+| `CC // Log a customer abandoned cart Klaviyo event` | `Creator Checkout Abandoned` |
+| `CC // Log a custom post-purchase Klaviyo event` | `Creator Attributed Order` |
+| `CC // Log a customer marketing opt-in Klaviyo event` | `Marketing Opt In From Creator` |
 
-<Steps>
-  <Step title="Connect Klaviyo">
-    In CC Admin → Integrations → Klaviyo, connect with OAuth. This enables event syncing and profile enrichment.
-  </Step>
-  <Step title="Configure sync">
-    Choose which partner properties to sync to Klaviyo profiles.
-  </Step>
-  <Step title="Get email templates from CreatorCommerce">
-    CreatorCommerce provides pre-built email templates for each of the 8 core affiliate flows. Import these into Klaviyo as your starting point and customize to match your brand.
-  </Step>
-  <Step title="Build the 8 core affiliate flows">
-    Set up automated Klaviyo flows for key affiliate lifecycle moments (detailed below).
-  </Step>
-</Steps>
+Each flow template:
+1. Starts from a Shopify trigger (`checkout abandoned`, `order created`, or marketing opt-in event).
+2. Validates creator context.
+3. Loads creator/collab data with `Get metaobject entry`.
+4. Calls Klaviyo `Track an Event`.
 
-## The 8 Core Affiliate Flows
+### Track an Event Mapping
 
-These flows automate communication across the entire affiliate lifecycle.
+Common field mapping in the Klaviyo action:
 
-### 1. Collab Invitation
-**Trigger:** CreatorCommerce `collab.invited` event  
-**Purpose:** Welcome new affiliates and guide them to set up their storefront  
-**Content:** Invitation details, onboarding link, program benefits
+- `Klaviyo Public API Key`: your Klaviyo public key
+- `Event Properties`: `{{getMetaobjectEntry.data}}`
+- `Customer Properties`: creator/collab fields used in template personalization
 
-### 2. Welcome Series
-**Trigger:** CreatorCommerce `collab.approved` event  
-**Purpose:** Onboard approved creators with setup instructions  
-**Content:** Storefront link, how to curate products, sharing tips, discount code details
+Customer properties commonly include:
+- `cc-creator-first-name`
+- `cc-creator-last-name`
+- `cc-creator-profile-picture`
+- `cc-creator-shop-title`
+- `cc-creator-shop-theme-primary-color`
+- `cc-creator-shop-handle`
+- `cc-collab-affiliate-link`
+- `cc-collab-discount-amount`
+- `cc-collab-discount-code`
+- `cc-collab-affiliate-code`
+- `cc-collab-discount-type`
+- `cc-creator-shop-description`
 
-### 3. New Drop Notification
-**Trigger:** CreatorCommerce `drop.created` event  
-**Purpose:** Notify creators when new products are available to add to their storefront  
-**Content:** New product details, link to add products, sharing suggestions
+### What To Build in Klaviyo (B2C)
 
-### 4. Onboarding Abandonment
-**Trigger:** CreatorCommerce `onboarding.started` event (with time delay check for completion)  
-**Purpose:** Re-engage creators who started onboarding but didn't complete it  
-**Content:** Reminder to finish setup, support link, program value proposition
+- Cart abandonment flow triggered by `Creator Checkout Abandoned`
+- Post-purchase flow triggered by `Creator Attributed Order`
+- Welcome/opt-in branch triggered by `Marketing Opt In From Creator`
 
-### 5. Sales Milestones
-**Trigger:** CreatorCommerce `milestone.reached` event  
-**Purpose:** Celebrate creator achievements and incentivize continued promotion  
-**Content:** Congratulations, performance stats, bonus details, next milestone preview
+Use conditional blocks to show creator content only when `cc-*` creator properties exist.
 
-### 6. Shop Abandoned
-**Trigger:** CreatorCommerce `shop.abandoned` event  
-**Purpose:** Re-engage creators who set up their storefront but haven't shared it  
-**Content:** Sharing tips, content angles, link to their storefront
+## Creator Lifecycle Messaging (B2B)
 
-### 7. Shop Updated
-**Trigger:** CreatorCommerce `shop.updated` event  
-**Purpose:** Confirm storefront changes and encourage sharing  
-**Content:** Summary of updates, preview link, sharing CTA
+For creator/affiliate lifecycle messaging (invites, activation, milestones, campaign messaging), use the creator-facing event model and templates:
 
-### 8. New Campaign
-**Trigger:** CreatorCommerce `campaign.created` event  
-**Purpose:** Announce new campaigns to relevant creators  
-**Content:** Campaign details, product selection, talking points, deadline
+- [The Two Sides of Klaviyo](/references/klaviyo-two-sides)
+- [Collab Messaging Integrations](/guides/features/collab-messaging-integrations)
 
-## Customer-to-Affiliate Conversion
-
-Turn your best customers into affiliates using Klaviyo flows.
-
-### Setup
+## Setup Checklist
 
 <Steps>
-  <Step title="Create a Klaviyo flow triggered by 'Ordered Product'">
-    In Klaviyo, create a new flow with the **Ordered Product** trigger.
+  <Step title="Connect Klaviyo integration">
+    In CC Admin, connect Klaviyo and verify API credentials.
   </Step>
-  <Step title="Add filters">
-    Filter for qualified customers:
-    - **Order count ≥ 2** (repeat purchasers)
-    - **Not already an affiliate** (check for absence of `cc_partner_status` property)
+  <Step title="Import/run Shopify Flow templates for B2C events">
+    Enable the three consumer templates and confirm each flow sends events to Klaviyo.
   </Step>
-  <Step title="Add a time delay">
-    Wait 3-7 days after purchase to let the customer experience the product before inviting them.
+  <Step title="Create separate Klaviyo flows for B2C and B2B">
+    Keep customer lifecycle automations isolated from creator lifecycle automations.
   </Step>
-  <Step title="Send the invitation email">
-    Craft an email inviting them to join your affiliate program. Include:
-    - Personalized opening referencing their purchase
-    - Program benefits (commission, exclusive access, co-branded storefront)
-    - Direct link to the CreatorCommerce application form or magic link
+  <Step title="Validate payloads in Klaviyo profile + event timeline">
+    Confirm `cc-*` properties render correctly before going live.
   </Step>
 </Steps>
-
-## Synced Properties
-
-| CC Field | Klaviyo Property | Direction |
-|----------|------------------|-----------|
-| Partner name | `cc_partner_name` | CC → Klaviyo |
-| Shop URL | `cc_shop_url` | CC → Klaviyo |
-| Discount code | `cc_discount_code` | CC → Klaviyo |
-| Tier | `cc_partner_tier` | CC → Klaviyo |
-| Lifetime sales | `cc_lifetime_sales` | CC → Klaviyo |
-| Creator handle | `cc_creator_handle` | CC → Klaviyo |
 
 ## Related
 
 - [Klaviyo Reference: Two Sides](/references/klaviyo-two-sides)
-- [Consumer Email Variables](/guides/emails/variables-reference)
-- [Creator Email Variables](/guides/creator-emails/variables-reference)
-- [Webhooks: Klaviyo Events](/references/webhooks-klaviyo)
+- [Co-branded Consumer Emails](/guides/features/co-branded-consumer-emails)
+- [Klaviyo Events](/references/webhooks-klaviyo)
+- [Implement a Shopify Flow](/guides/dev/implement-shopify-flow)

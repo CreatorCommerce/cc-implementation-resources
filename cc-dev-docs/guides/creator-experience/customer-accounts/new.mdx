@@ -1,89 +1,60 @@
 ---
 title: 'New Customer Accounts'
-description: "Adding partner experiences to Shopify's new extensible customer accounts."
+description: "How to implement creator dashboard experiences in Shopify's new extensible customer accounts."
 ---
 
 New Customer Accounts are Shopify's modern, extensible account system. You add functionality via app extensions, not theme code.
 
-## App Extensions
+## Implementation Model
 
-CC provides customer account extensions:
+Use account extensions as the UI shell and keep creator/collab writes proxy-backed.
 
-| Extension | Location | Purpose |
-|-----------|----------|---------|
-| Partner Dashboard | Account home | Quick stats and actions |
-| Shop Editor | New page | In-account drop management |
-| Link Manager | New page | Share links and QR codes |
+| Extension Surface | Purpose |
+|------------------|---------|
+| Dashboard block/page | Creator status, CTAs, quick stats |
+| Products management page | Product assignment to drops |
+| Collection editor page | Drop title/description/status/product order |
 
-## Installing Extensions
+## Build Sequence
 
-1. Go to Shopify Admin → Settings → Customer accounts
-2. Ensure "New customer accounts" is enabled
-3. Click "Customize" to open the editor
-4. Add CC app blocks from the app section
+1. Build extension UI shells for each page/module
+2. Add authenticated backend routes for collab/drop/product operations
+3. Resolve creator context by authenticated customer identity
+4. Bind section forms to `cc-*` field handles
+5. Add toasts/loading/empty states and mobile-safe interactions
 
-## Extension: Partner Dashboard Block
+## Practical UX Patterns
 
-Shows in the main account view:
+- Keep dashboard page lightweight: status + links to specialized editors
+- Use modal on larger screens and drawer on mobile for editing actions
+- Batch save in product editing flows where multiple drop assignments can change
+- Keep “informational only” panels in-account for guidance even when APIs are unavailable
 
-**Displays:**
-- Partner status badge
-- Quick performance stats
-- "Customize Shop" button
-- "Copy Link" button
-
-**Configuration:**
-- Show/hide stats
-- Custom CTA text
-- Link to full dashboard
-
-## Extension: Shop Editor Page
-
-Full product picker in customer accounts:
-
-**Features:**
-- Browse products
-- Select for drop
-- Reorder selections
-- Add annotations
-
-**Configuration:**
-- Max products
-- Categories to show
-- Annotation fields
-
-## Detecting Partners
-
-New customer accounts provide customer data via extension APIs:
+## Partner Resolution Pattern
 
 ```javascript
-// In your customer account extension
 import { useCustomer } from '@shopify/customer-account-ui-extensions';
 
 function PartnerDashboard() {
   const customer = useCustomer();
-  
-  // Check if customer is a partner via CC API
-  const { data: partner } = usePartnerStatus(customer.email);
-  
-  if (!partner) return null;
-  
-  return (
-    <PartnerCard partner={partner} />
-  );
+
+  // Recommended: call your backend, not CC directly from extension
+  const { data: collab } = useCollabByCustomer(customer.email);
+
+  if (!collab) return null;
+  return <DashboardEntry collab={collab} />;
 }
 ```
 
-## Advantages Over Legacy
+## Security Checklist
 
-| Feature | Legacy | New |
-|---------|--------|-----|
-| Implementation | Theme code | App extension |
-| Updates | Manual | Automatic via app |
-| Performance | Theme loops | API-optimized |
-| Consistency | Per-theme | Universal |
+- Backend validates customer ownership before each mutation
+- CC credentials remain server-side only
+- Write endpoints are rate-limited and logged
+- Mutation failures return structured errors for deterministic UI handling
 
-## Related
+## Related Technical Docs
 
-- [Polaris Customer Account Extensions](/references/polaris-customer-account)
 - [Legacy Customer Accounts](/guides/creator-experience/customer-accounts/legacy)
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)

@@ -70,35 +70,29 @@ To personalize emails with partner context, you need:
 ### Passing Partner Data
 
 <Tabs>
-  <Tab title="Cart Attributes">
-    Store partner info in cart, which flows to order:
-    
-    ```liquid
-    {% assign cc_handle = cart.attributes['cc-creator-handle'] %}
-    {% assign cc_name = cart.attributes['cc-creator-name'] %}
-    {% assign cc_code = cart.attributes['cc-discount-code'] %}
-    ```
-    
-    These persist to the order and are available in email platforms.
+  <Tab title="Flow Templates">
+    Use Shopify Flow templates to send events into Klaviyo:
+    - `CC // Log a customer abandoned cart Klaviyo event`
+    - `CC // Log a custom post-purchase Klaviyo event`
+    - `CC // Log a customer marketing opt-in Klaviyo event`
   </Tab>
-  
-  <Tab title="Order Properties">
-    Access in Klaviyo/email platforms:
-    
+
+  <Tab title="Event Properties">
+    In each Klaviyo `Track an Event` action, map:
+
     ```
-    {{ event.extra.cc-creator-handle }}
-    {{ event.extra.cc-creator-name }}
-    {{ event.extra.cc-discount-code }}
+    Event Properties: {{getMetaobjectEntry.data}}
     ```
   </Tab>
-  
+
   <Tab title="Customer Properties">
-    Sync partner data to customer profile:
-    
+    Include creator/collab context in `Customer Properties`, for example:
+
     ```
-    cc_acquired_by: "partner-handle"
-    cc_first_partner: "partner-name"
-    cc_discount_code: "PARTNER15"
+    cc-creator-first-name
+    cc-creator-profile-picture
+    cc-creator-shop-handle
+    cc-collab-discount-code
     ```
   </Tab>
 </Tabs>
@@ -110,15 +104,18 @@ To personalize emails with partner context, you need:
 ### Flow Setup
 
 <Steps>
-  <Step title="Create Partner-Aware Flow">
-    Clone your existing flow (e.g., cart abandonment) and add partner logic.
+  <Step title="Use CreatorCommerce B2C event names as Klaviyo triggers">
+    Build flows from:
+    - `Creator Checkout Abandoned`
+    - `Creator Attributed Order`
+    - `Marketing Opt In From Creator`
   </Step>
   
   <Step title="Add Conditional Split">
     Split based on whether partner context exists:
     
     ```
-    IF {{ event.extra.cc-creator-handle }} IS SET
+    IF person|lookup:'cc-creator-shop-handle' IS SET
     → Partner branch (co-branded emails)
     ELSE
     → Standard branch (regular emails)
@@ -138,27 +135,27 @@ To personalize emails with partner context, you need:
 
 ```html
 <!-- Partner header section -->
-{% if event.extra.cc-creator-name %}
+{% if person|lookup:'cc-creator-first-name' %}
 <div class="partner-header">
-  <img src="{{ event.extra.cc-creator-photo }}" alt="{{ event.extra.cc-creator-name }}" />
-  <p>Recommended by {{ event.extra.cc-creator-name }}</p>
+  <img src="{{ person|lookup:'cc-creator-profile-picture' }}" alt="{{ person|lookup:'cc-creator-first-name' }}" />
+  <p>Recommended by {{ person|lookup:'cc-creator-first-name' }}</p>
 </div>
 {% endif %}
 
 <!-- Email content -->
 <h1>Your cart is waiting!</h1>
-<p>The items {{ event.extra.cc-creator-name }} picked for you are still available.</p>
+<p>The items {{ person|lookup:'cc-creator-first-name' }} picked for you are still available.</p>
 
 <!-- Discount reminder -->
-{% if event.extra.cc-discount-code %}
+{% if person|lookup:'cc-collab-discount-code' %}
 <div class="discount-box">
-  <p>Use code <strong>{{ event.extra.cc-discount-code }}</strong> for your discount!</p>
+  <p>Use code <strong>{{ person|lookup:'cc-collab-discount-code' }}</strong> for your discount!</p>
 </div>
 {% endif %}
 
 <!-- CTA back to partner page -->
-<a href="https://yourstore.com/pages/creators/{{ event.extra.cc-creator-handle }}">
-  Return to {{ event.extra.cc-creator-name }}'s Page
+<a href="https://yourstore.com/pages/creators/{{ person|lookup:'cc-creator-shop-handle' }}">
+  Return to {{ person|lookup:'cc-creator-first-name' }}'s Page
 </a>
 ```
 

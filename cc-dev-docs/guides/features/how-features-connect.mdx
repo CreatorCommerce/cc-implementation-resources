@@ -1,0 +1,49 @@
+---
+title: 'How Features Connect'
+description: 'A system-level map of how CreatorCommerce features connect across data capture, storefront personalization, attribution, messaging, and automation.'
+---
+
+## Why This Matters
+
+CreatorCommerce is not a collection of isolated features. It is a connected Shopify-native system where creator and collab data is collected once, then reused across storefront UI, cart/checkout attribution, messaging, and downstream automation.
+
+## System Flow
+
+```text
+Recruitment + Forms + Integrations
+        ↓
+Creator + Collab data written to Shopify/CC model
+        ↓
+Storefront resolves cc_creator and renders co-branded UI
+        ↓
+Cart attributes + web pixel preserve attribution context
+        ↓
+Orders + customers tagged in Shopify + reflected in CC dashboard
+        ↓
+Klaviyo + Shopify Flow + API workflows activate messaging and automation
+```
+
+## Core Connections
+
+| If you are using... | It depends on... | It powers next... |
+|---------------------|------------------|-------------------|
+| Co-branded landing pages | Creator/collab data from forms + integrations | Product lists, PDP personalization, popups |
+| Co-branded product lists | Drop/product data in creator records | Cart actions and checkout attribution |
+| Co-branded popups | Active creator context in session/cart | Co-branded consumer email and segmentation |
+| Co-branded carts/checkout | Cart attributes + discount persistence | Native Shopify tags, reporting, commission logic |
+| Shopify-native attribution | Cart attributes + discount codes + web pixel | Shopify Flow automations, dashboard analytics |
+| Collab messaging integrations | Klaviyo integration + creator activity events | Affiliate lifecycle flows and partner comms |
+| Content automation workflows | Shopify Flow triggers + CC actions + API access | Scaled enrichment and publishing without new infra |
+
+## Key References
+
+- [Co-branded Landing Pages](/guides/features/co-branded-landing-pages)
+- [Co-branded Product Lists](/guides/features/co-branded-product-lists)
+- [Co-branded Pop-ups](/guides/features/co-branded-popups)
+- [Co-branded Carts & Checkout](/guides/features/co-branded-carts-checkout)
+- [Co-branded Consumer Emails](/guides/features/co-branded-consumer-emails)
+- [Collab Messaging Integrations](/guides/features/collab-messaging-integrations)
+- [Content Automation Workflows](/guides/features/content-automation-workflows)
+- [Shopify-native Attribution](/guides/features/shopify-native-attribution)
+- [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards)
+- [Recruitment Integrations](/guides/features/recruitment-integrations)

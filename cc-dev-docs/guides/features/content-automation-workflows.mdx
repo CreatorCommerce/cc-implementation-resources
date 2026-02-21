@@ -48,7 +48,17 @@ Queue for Review or Auto-publish
 | AI moderation | Auto-flag inappropriate |
 | Tier-based | VIPs auto-approve, others review |
 
+## How This Connects
+
+- Content automation is orchestration on top of existing creator data, not a separate data model.
+- Automations typically run through [Implement a Shopify Flow](/guides/dev/implement-shopify-flow) using CC triggers/actions, plus API calls when custom processing is needed.
+- For advanced enrichment or external AI logic, use [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) and [Get CC API Access](/guides/dev/get-cc-api-access) to process data and push updates back into CC/Shopify.
+- This enables scaled automation without building net-new infra for every workflow.
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards)
+- [Implement a Shopify Flow](/guides/dev/implement-shopify-flow) — Trigger/action orchestration layer
+- [Create a Collaboration Integration](/guides/dev/create-collaboration-integration) — API-based enrichment patterns
 - [Creating Shock & Awe Moments](/guides/collab-strategy/partner-activation)

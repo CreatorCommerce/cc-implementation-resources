@@ -54,7 +54,17 @@ actions:
   - Update partner metrics
 ```
 
+## How This Connects
+
+- Attribution quality comes from combining cart attributes, discount usage, and the [CC Web Pixel](/guides/dev/enable-cc-web-pixel), not from a single signal.
+- CC writes attribution into native Shopify constructs (tags, attributes, metafields), which can be used directly in admin reporting and [Shopify Flow](/guides/dev/implement-shopify-flow).
+- The same attribution context is visible in CC reporting surfaces and underpins co-branded lifecycle messaging.
+- If you need custom reporting outputs or bespoke payloads/endpoints for BI pipelines, contact CreatorCommerce for custom reporting API access.
+
 ## Related
 
 - [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel)
 - [Implement a Shopify Flow](/guides/dev/implement-shopify-flow)
+- [Order & Customer Tags](/references/order-customer-tags) — Native Shopify labels applied by CC
+- [Attribute Analyze](/guides/attribute-analyze) — Review attribution outcomes in CC
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies

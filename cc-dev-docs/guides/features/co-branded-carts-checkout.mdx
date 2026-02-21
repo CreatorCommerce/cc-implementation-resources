@@ -45,7 +45,14 @@ The shopping cart and checkout experience stays personalized with creator brandi
 | `cc-landing-url` | Original landing page URL |
 | `cc-landing-time` | Timestamp of first visit |
 
+## How This Connects
+
+- Cart and checkout are the conversion handoff from landing/PDP/product-list experiences where creator context is first introduced.
+- The cart attributes set here are reused by [Shopify-native Attribution](/guides/features/shopify-native-attribution), post-purchase tagging, and reporting.
+- Discount persistence should be implemented with [Maintained Discount Protection](/guides/features/maintained-discount-protection) so attribution and customer UX stay intact across sessions.
+
 ## Related
 
 - [Support Unique Discounts](/guides/dev/support-unique-discounts)
 - [Enable the CC Web Pixel](/guides/dev/enable-cc-web-pixel)
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies

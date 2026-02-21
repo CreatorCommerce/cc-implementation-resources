@@ -1,122 +1,84 @@
 ---
 title: 'Authentication'
-description: 'Auth patterns for custom partner dashboards.'
+description: 'Authentication patterns for creator dashboards built in Shopify customer-account experiences.'
 ---
 
-Partners need to log in to your custom dashboard. Here are the patterns.
+Authentication in a custom creator dashboard has two layers:
 
-## Options
+1. Shopper/creator identity (usually Shopify customer account auth)
+2. Backend authorization to read/write creator + collab data
 
-### CC-Issued Tokens
+## Recommended Pattern
 
-Use CC's auth system, display your UI:
+Use Shopify customer accounts for sign-in, then authorize all dashboard data actions through your backend proxy.
+
+```text
+Customer logs in with Shopify account
+-> Theme/extension gets authenticated customer context
+-> Frontend sends request to your backend
+-> Backend validates session + maps customer to creator/collab
+-> Backend calls CreatorCommerce APIs
+```
+
+Why this is preferred:
+- No API secrets in the browser
+- Cleaner permission boundaries
+- Easier auditing and rate limiting
+- Safer handling of write operations (drop updates, profile edits, uploads)
+
+## Identity Bootstrap in UI
+
+In customer-account pages, expose only minimal identity context:
+
+```liquid
+{% if customer.email %}
+  <div data-customer-email="{{ customer.email }}" style="display:none;"></div>
+{% endif %}
+```
+
+Your JS can then read that value and call your backend.
+
+## Customer -> Creator Resolution
+
+Resolve creator/collab server-side by trusted identity (email, customer ID, or both):
 
 ```javascript
-// 1. Redirect to CC login
-window.location = `https://auth.creatorcommerce.com/login?
-  redirect=${encodeURIComponent(window.location.origin + '/callback')}`;
-
-// 2. Handle callback with token
-const token = new URLSearchParams(window.location.search).get('token');
-
-// 3. Use token for API calls
-const response = await fetch('https://api.creatorcommerce.com/creators/me', {
-  headers: { 'Authorization': `Bearer ${token}` }
+// Backend route example
+app.get('/api/dashboard/collab', async (req, res) => {
+  const customer = await requireAuthenticatedCustomer(req);
+  const collab = await getCollabByCustomerIdentity(customer);
+  res.json(collab);
 });
 ```
 
-**Pros:** No auth infrastructure to build
-**Cons:** Partners see CC login briefly
+Avoid resolving partner status by looping every creator metaobject in Liquid on each page view.
 
-### SSO from Your System
+## Token Strategy
 
-If partners already log into your system:
+If your backend calls CreatorCommerce APIs:
+- Keep CC keys/tokens server-side only
+- Use short-lived session auth between browser and your backend
+- Rotate secrets and log outbound API calls
 
-```javascript
-// 1. Partner logs into your system
+## Optional SSO Patterns
 
-// 2. Generate SSO token for CC
-const ssoToken = await yourBackend.generateCCSSOToken(partnerId);
+If you run a separate creator portal outside customer accounts:
+- SSO from your existing identity system
+- Magic-link entry flows
+- CC-issued auth flow where applicable
 
-// 3. Exchange for CC access token
-const ccToken = await cc.auth.exchangeSSO(ssoToken);
+Still keep write operations proxy-based through your backend.
 
-// 4. Use CC token for API calls
-```
+## Session + Access Control Checklist
 
-**Pros:** Seamless single sign-on
-**Cons:** SSO setup required
-
-### Magic Links
-
-Email-based authentication:
-
-```javascript
-// 1. Partner requests access
-await cc.auth.sendMagicLink(email, {
-  redirectTo: 'https://partners.yourbrand.com/dashboard'
-});
-
-// 2. Partner clicks link in email
-
-// 3. Your app receives token in URL
-const token = new URLSearchParams(window.location.search).get('token');
-```
-
-**Pros:** No passwords
-**Cons:** Requires email access
-
-### Your Own Auth + CC API Keys
-
-Manage auth yourself, use API keys for CC:
-
-```javascript
-// 1. Partner logs into your system (your auth)
-
-// 2. Your backend uses CC API key
-const partner = await cc.partners.get(partnerId, {
-  apiKey: process.env.CC_API_KEY
-});
-
-// 3. Return data to your frontend
-```
-
-**Pros:** Full control
-**Cons:** More infrastructure
-
-## Token Management
-
-### Storage
-
-| Method | Lifespan | Security |
-|--------|----------|----------|
-| Memory only | Session | Highest |
-| sessionStorage | Tab | High |
-| localStorage | Persistent | Medium |
-| Cookie (httpOnly) | Persistent | High |
-
-### Refresh
-
-CC tokens expire. Handle refresh:
-
-```javascript
-async function callCCAPI(endpoint) {
-  let response = await fetch(endpoint, {
-    headers: { 'Authorization': `Bearer ${getToken()}` }
-  });
-  
-  if (response.status === 401) {
-    await refreshToken();
-    response = await fetch(endpoint, {
-      headers: { 'Authorization': `Bearer ${getToken()}` }
-    });
-  }
-  
-  return response.json();
-}
-```
+- Enforce authenticated customer session on every dashboard endpoint
+- Verify customer is mapped to the collab/drop being modified
+- Reject cross-collab writes even if IDs are guessed
+- Rate-limit write routes (`updateDrop`, `updateCollab`, `createDrop`, enhancement updates)
+- Return normalized error payloads so UI can show deterministic toasts
 
 ## Related
 
-- [CC API Authentication](/guides/authentication)
-- [Components](/guides/creator-experience/build-your-own/components)
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)
+- [Where to Host](/guides/creator-experience/build-your-own/hosting)
+- [Customer Accounts Overview](/guides/creator-experience/customer-accounts/overview)

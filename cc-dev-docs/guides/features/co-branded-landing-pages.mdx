@@ -37,8 +37,16 @@ Every creator gets a unique landing page on your Shopify store that showcases th
 | Professional endorsements | Credential-forward with featured products |
 | Ambassador programs | Community showcase with social proof |
 
+## How This Connects
+
+- Landing pages depend on creator and collab fields being present in `cc_creator`.
+- That data is typically hydrated by [Recruitment Integrations](/guides/features/recruitment-integrations) and [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards).
+- Landing pages are usually the first page view where creator context is established, then reused by product pages, popups, cart, checkout, and email.
+- Use the canonical creator resolution pattern from [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) to keep behavior consistent across templates.
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks) — Get live in under an hour using pre-built hero sections
 - [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages) — Build landing pages with metaobject templates
 - [Co-brand Your Shopify Theme](/guides/dev/co-brand-shopify-theme) — Custom theme implementation

@@ -8,13 +8,13 @@ description: 'Understand how creator data flows from your store to email platfor
 ```
 Customer lands on creator page
          ↓
-CC captures creator context
+CC captures creator context in cart/session
          ↓
-Context synced to email platform
+Shopify Flow template validates creator context
          ↓
-Profile enriched with creator data
+Get metaobject entry provides creator/collab payload
          ↓
-Flows triggered with personalization
+Klaviyo Track an Event logs B2C event + customer properties
          ↓
 Co-branded emails sent
 ```
@@ -32,25 +32,23 @@ Co-branded emails sent
 
 ## Sync Triggers
 
-| Event | What Happens |
-|-------|--------------|
-| **Page view** | Creator context captured |
-| **Identify** | Profile created/updated with CC data |
-| **Add to cart** | Event includes creator context |
-| **Checkout** | Full attribution passed |
-| **Purchase** | Order linked to creator |
+| Shopify Flow Template | Event Name in Klaviyo | What Happens |
+|-----------------------|-----------------------|--------------|
+| `CC // Log a customer abandoned cart Klaviyo event` | `Creator Checkout Abandoned` | Creator-context abandoned checkout logged |
+| `CC // Log a custom post-purchase Klaviyo event` | `Creator Attributed Order` | Attributed purchase logged for post-purchase flows |
+| `CC // Log a customer marketing opt-in Klaviyo event` | `Marketing Opt In From Creator` | Creator-context marketing opt-in logged |
 
 ## Profile Properties Set
 
 ```json
 {
-  "cc_creator_handle": "sarah-jones",
-  "cc_creator_name": "Sarah Jones",
-  "cc_discount_code": "SARAH15",
-  "cc_discount_amount": "15",
-  "cc_creator_image": "https://cdn.../profile.jpg",
-  "cc_landing_url": "https://store.com/pages/creators/sarah-jones",
-  "cc_landing_time": "2024-01-15T10:30:00Z"
+  "cc-creator-first-name": "Sarah",
+  "cc-creator-last-name": "Jones",
+  "cc-creator-profile-picture": "https://cdn.../profile.jpg",
+  "cc-creator-shop-title": "Sarah's Shop",
+  "cc-creator-shop-handle": "sarah-jones",
+  "cc-collab-discount-code": "SARAH15",
+  "cc-collab-discount-amount": "15"
 }
 ```
 

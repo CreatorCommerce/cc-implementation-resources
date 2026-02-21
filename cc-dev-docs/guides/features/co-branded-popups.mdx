@@ -45,7 +45,14 @@ if (localStorage.getItem('cc_creator_handle')) {
 | Email capture | Scroll depth / time | Join + get creator's picks |
 | Cart reminder | Idle on cart page | Creator says checkout now |
 
+## How This Connects
+
+- Popups read the same creator context used by landing and product pages, so they should only render after `cc_creator` is available.
+- Captured emails should keep creator association (handle/code/source page) so downstream [Co-branded Consumer Emails](/guides/features/co-branded-consumer-emails) can stay personalized.
+- For most stacks, that association is synced to Klaviyo via [Klaviyo](/guides/integrations/email-sms/klaviyo), where creator-attributed segments and flows are built.
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [The Full Shopping Journey](/guides/collab-strategy/funnel-details)
 - [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)

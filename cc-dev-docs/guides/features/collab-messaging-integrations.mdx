@@ -49,7 +49,17 @@ First Order? → Celebration Email
 No Orders after 14 days? → Tips Email
 ```
 
+## How This Connects
+
+- Collab messaging is primarily powered by the [Klaviyo](/guides/integrations/email-sms/klaviyo) integration and CC creator/collab activity sync.
+- The same core creator/collab records that power storefront personalization also power partner messaging events and profile updates.
+- As creator state changes (shop handle, affiliate code, activation, performance), CC pushes updated values so flows stay accurate.
+- This partner-facing stream should be operated alongside [Co-branded Consumer Emails](/guides/features/co-branded-consumer-emails), not as a replacement.
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)
+- [Klaviyo](/guides/integrations/email-sms/klaviyo) — Integration setup and lifecycle flow strategy
+- [Klaviyo Events](/references/webhooks-klaviyo) — Event reference and profile properties
 - [Creating Shock & Awe Moments](/guides/collab-strategy/partner-activation)

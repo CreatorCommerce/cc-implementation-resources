@@ -1,111 +1,35 @@
 ---
 title: 'Legacy Customer Accounts'
-description: 'Adding partner experiences to classic Liquid-based customer accounts.'
+description: 'Legacy Liquid implementation of the same creator account use cases described for new customer accounts.'
 ---
 
-Legacy customer accounts are Shopify's classic Liquid-based account pages. You have full control via theme code.
+Use this when a brand is on Shopify Legacy Customer Accounts.
 
-## Where to Add Partner UI
+The use case is the same as [New Customer Accounts](/guides/creator-experience/customer-accounts/new):
 
-| Template | Purpose |
-|----------|---------|
-| `account.liquid` | Main account dashboard |
-| `customers/account.liquid` | Account overview |
+- creator account dashboard experiences
+- creator-aware management flows
+- secure proxy-backed writes to creator/collab/drop data
 
-## Adding Partner Section
+The main difference:
 
-### 1. Check if Customer is Partner
+- **Legacy is Liquid-based**, so you can edit templates, sections, and snippets directly in theme code.
 
-```liquid
-{% liquid
-  assign is_partner = false
-  assign cc_creator = nil
+## What Changes in Legacy
 
-  for creator in metaobjects.creator
-    if creator.cc-creator-email == customer.email
-      assign is_partner = true
-      assign cc_creator = creator
-      break
-    endif
-  endfor
-%}
-```
+- UI is implemented in Liquid templates/sections instead of extension surfaces
+- You can customize markup/logic directly in theme files
+- You are responsible for theme-level maintainability across updates
 
-### 2. Show Partner Dashboard
+## Recommended Technical Pattern (Still Applies)
 
-```liquid
-{% if is_partner %}
-  <section class="cc-partner-section">
-    <h2>My Partnership</h2>
-    
-    <div class="cc-partner-stats">
-      <div class="stat">
-        <span class="value">{{ cc_creator.data.value.cc-lifetime-orders | default: 0 }}</span>
-        <span class="label">Orders</span>
-      </div>
-      <div class="stat">
-        <span class="value">{{ cc_creator.data.value.cc-lifetime-sales | money }}</span>
-        <span class="label">Sales</span>
-      </div>
-    </div>
-    
-    <div class="cc-partner-actions">
-      <a href="https://partners.{{ shop.domain }}/dashboard" class="button">
-        Customize My Shop
-      </a>
-      <button onclick="copyToClipboard('{{ shop.url }}/p/{{ cc_creator.cc-creator-shop-handle }}')" class="button secondary">
-        Copy My Link
-      </button>
-    </div>
-  </section>
-{% endif %}
-```
-
-### 3. Style the Section
-
-```css
-.cc-partner-section {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-}
-
-.cc-partner-stats {
-  display: flex;
-  gap: 2rem;
-  margin: 1rem 0;
-}
-
-.cc-partner-stats .stat {
-  text-align: center;
-}
-
-.cc-partner-stats .value {
-  display: block;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-```
-
-## Deep Linking to CC Dashboard
-
-Include SSO for seamless access:
-
-```liquid
-{% assign sso_link = "https://partners." | append: shop.domain | append: "/dashboard?email=" | append: customer.email %}
-
-<a href="{{ sso_link }}" target="_blank">
-  Manage My Partnership
-</a>
-```
-
-## Considerations
-
-- **Performance:** Looping through metaobjects can be slow with many partners
-- **Caching:** Customer accounts are not cached
-- **Security:** Verify email match server-side for sensitive operations
+- Keep authentication in Shopify customer accounts
+- Resolve creator/collab context server-side
+- Keep CC writes behind your backend proxy
+- Keep credentials out of Liquid and browser bundles
 
 ## Related
 
 - [New Customer Accounts](/guides/creator-experience/customer-accounts/new)
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)

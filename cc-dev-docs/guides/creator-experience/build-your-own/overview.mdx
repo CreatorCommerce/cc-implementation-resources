@@ -1,63 +1,69 @@
 ---
 title: 'Build Your Own Dashboard'
-description: 'Create custom partner experiences using CC APIs and your own infrastructure.'
+description: 'Build a custom creator dashboard with Shopify customer accounts, CC data, and your own secure backend.'
 ---
 
-When CC's hosted dashboard doesn't fit your needs, build your own using CC APIs.
+When CC's hosted dashboard is not enough, build your own creator dashboard with your own UX, flows, and infrastructure.
 
-## When to Build Custom
+## What This Guide Covers
 
-- Unique UX requirements
-- Deep integration with existing tools
-- Complete brand control
-- Custom workflows not supported by CC
+- Dashboard architecture for Shopify customer-account experiences
+- Secure API patterns (proxy-first, not browser-direct)
+- Real implementation patterns for:
+  - Collections/drops management
+  - Storefront editing and custom fields
+  - Product-level enhancements (notes/media)
+  - Informational, non-network dashboard panels
 
-## What You'll Build
+## Build Pattern (Recommended)
 
-| Component | CC Provides | You Build |
-|-----------|-------------|-----------|
-| Data storage | ✓ Metaobjects, API | — |
-| Authentication | Tokens, SSO | Login UI, session |
-| Partner data | Read/write APIs | Forms, displays |
-| Products | Catalog access | Picker UI |
-| Hosting | — | Your infrastructure |
+```text
+Customer Account UI (Liquid or Extensions)
+  -> Reads customer identity context
+  -> Renders dashboard pages and forms
+  -> Calls your backend proxy only
 
-## Architecture
+Your Backend Proxy (required)
+  -> Validates identity/session
+  -> Calls CreatorCommerce APIs
+  -> Calls Shopify APIs when needed
+  -> Normalizes payloads for frontend
 
-```
-Your Frontend
-     │
-     ├── Auth (your system or SSO)
-     │
-     ├── CC APIs
-     │   ├── Get partner data
-     │   ├── Update partner data
-     │   ├── Get products
-     │   └── Manage drops
-     │
-     └── Your Backend (optional)
-         └── Custom logic, storage
+CreatorCommerce + Shopify
+  -> Creator/collab/drop data
+  -> Product/catalog data
+  -> Cart/order context
 ```
 
-## Getting Started
+## Canonical Technical Docs
+
+- [Components & User Flows](/guides/creator-experience/build-your-own/components)
+- [Authentication](/guides/creator-experience/build-your-own/auth)
+- [Where to Host](/guides/creator-experience/build-your-own/hosting)
+- [Customer Accounts Overview](/guides/creator-experience/customer-accounts/overview)
+
+## Build Order
 
 <Steps>
-  <Step title="Choose hosting">
-    Where will your dashboard live? [Where to Host](/guides/creator-experience/build-your-own/hosting)
+  <Step title="Choose account surface">
+    Decide if you are building in legacy customer accounts, new customer accounts, or an external dashboard shell.
   </Step>
-  <Step title="Set up auth">
-    How will partners log in? [Auth Guide](/guides/creator-experience/build-your-own/auth)
+  <Step title="Implement proxy layer">
+    Add backend endpoints for collab, drop, product, and enhancement operations before building UI.
   </Step>
-  <Step title="Build components">
-    What UX do you need? [Components Guide](/guides/creator-experience/build-your-own/components)
+  <Step title="Build page modules">
+    Ship dashboard home, manage products, collection editor, and storefront editor as separate routes/views.
   </Step>
-  <Step title="Integrate APIs">
-    Connect to CC data. [API Reference](/references/unified-api-reference)
+  <Step title="Connect custom fields">
+    Map form inputs directly to your agreed `cc-*` custom-field handles and save via proxy.
+  </Step>
+  <Step title="Harden UX">
+    Add loading states, optimistic updates, validation, retry-safe saves, and mobile drawer fallbacks.
   </Step>
 </Steps>
 
-## In This Section
+## Related References
 
-- [Where to Host](/guides/creator-experience/build-your-own/hosting)
-- [Authentication](/guides/creator-experience/build-your-own/auth)
-- [Components & User Flows](/guides/creator-experience/build-your-own/components)
+- [Unified API Reference](/references/unified-api-reference)
+- [Custom Fields Reference](/references/custom-fields-reference)
+- [Forms Overview](/guides/creator-experience/forms/overview)

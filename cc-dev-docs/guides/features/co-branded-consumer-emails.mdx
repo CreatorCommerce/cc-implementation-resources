@@ -5,7 +5,7 @@ description: 'Customer-facing emails that include creator context—abandoned ca
 
 ## What It Is
 
-When a customer shops through a creator's page, their subsequent emails include that creator's branding—photo, name, and discount code. This reinforces the relationship and improves engagement.
+When a customer shops in creator context, customer-facing lifecycle emails stay co-branded with that creator (name, image, shop context, and discount context). This preserves trust from click to purchase and retention.
 
 ## Key Capabilities
 
@@ -14,6 +14,27 @@ When a customer shops through a creator's page, their subsequent emails include 
 - **Win-back** — "[Creator] has new recommendations"
 - **Browse abandonment** — Products they viewed + creator discount
 - **Review requests** — Attribute review to creator referral
+
+<Info>
+This page is about **consumer-facing** messaging only (B2C).  
+Creator/affiliate lifecycle communication (B2B) is documented separately in [Collab Messaging Integrations](/guides/features/collab-messaging-integrations).
+</Info>
+
+## How Consumer Flows Are Powered
+
+Consumer co-branded email flows are powered by Shopify Flow templates that push events to Klaviyo only when creator context is present.
+
+| Template | Event Name Sent to Klaviyo | Primary Trigger |
+|----------|----------------------------|-----------------|
+| `CC // Log a customer abandoned cart Klaviyo event` | `Creator Checkout Abandoned` | Customer abandons checkout |
+| `CC // Log a custom post-purchase Klaviyo event` | `Creator Attributed Order` | Order created |
+| `CC // Log a customer marketing opt-in Klaviyo event` | `Marketing Opt In From Creator` | Customer marketing opt-in/subscribe event |
+
+Each template follows the same pattern:
+1. Trigger
+2. Confirm creator-context condition
+3. `Get metaobject entry`
+4. Klaviyo `Track an Event` action with CC payload
 
 ## Email Personalization
 
@@ -28,14 +49,33 @@ When a customer shops through a creator's page, their subsequent emails include 
 ## Dynamic Content Block
 
 ```html
-{% if person.cc_creator_name %}
+{% if person|lookup:'cc-creator-first-name' %}
   <div class="creator-block">
-    <img src="{{ person.cc_creator_image }}" />
-    <p>You're shopping with <strong>{{ person.cc_creator_name }}</strong></p>
-    <p>Use code {{ person.cc_discount_code }} for {{ person.cc_discount_amount }}% off</p>
+    <img src="{{ person|lookup:'cc-creator-profile-picture' }}" />
+    <p>You're shopping with <strong>{{ person|lookup:'cc-creator-first-name' }}</strong></p>
+    <p>Use code {{ person|lookup:'cc-collab-discount-code' }} for {{ person|lookup:'cc-collab-discount-amount' }}% off</p>
   </div>
 {% endif %}
 ```
+
+## Payload Shape Used in Klaviyo Track Event
+
+The Shopify Flow templates map:
+
+- `Event Properties` -> `{{getMetaobjectEntry.data}}`
+- `Customer Properties` -> a creator/collab object including fields such as:
+  - `cc-creator-first-name`
+  - `cc-creator-last-name`
+  - `cc-creator-profile-picture`
+  - `cc-creator-shop-title`
+  - `cc-creator-shop-theme-primary-color`
+  - `cc-creator-shop-handle`
+  - `cc-collab-affiliate-link`
+  - `cc-collab-discount-amount`
+  - `cc-collab-discount-code`
+  - `cc-collab-affiliate-code`
+  - `cc-collab-discount-type`
+  - `cc-creator-shop-description`
 
 ## Performance Impact
 
@@ -46,7 +86,17 @@ When a customer shops through a creator's page, their subsequent emails include 
 | Conversion | +30-50% |
 | Unsubscribe | -10-20% |
 
+## How This Connects
+
+- Co-branded consumer emails begin with storefront visits where creator context is captured (landing, PDP, popup, cart).
+- When email is collected, persist creator association so the profile carries both shopper identity and referring creator context.
+- In most implementations, this is powered by [Klaviyo](/guides/integrations/email-sms/klaviyo) using Shopify Flow templates and CC payload mapping described in [Klaviyo Events](/references/webhooks-klaviyo).
+- This is the B2C side of messaging and complements partner lifecycle messaging in [Collab Messaging Integrations](/guides/features/collab-messaging-integrations).
+
 ## Related
 
+- [How Features Connect](/guides/features/how-features-connect) — System-level map of feature dependencies
 - [Create a Co-branded Email Sync](/guides/dev/create-co-branded-email-sync)
+- [Klaviyo](/guides/integrations/email-sms/klaviyo) — Primary integration for co-branded consumer flows
+- [The Two Sides of Klaviyo](/references/klaviyo-two-sides) — Distinguishes affiliate vs consumer messaging
 - [Testing & Retention Strategies](/guides/collab-strategy/optimize)

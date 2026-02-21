@@ -1,11 +1,11 @@
 ---
 title: 'Customer Accounts UI'
-description: 'Partner experiences embedded in Shopify customer accounts.'
+description: 'Build creator dashboards directly in Shopify customer accounts with a multi-page, proxy-backed architecture.'
 ---
 
 For ambassador programs where partners are also customers, you can embed CC experiences directly in Shopify customer accounts.
 
-## Why Customer Accounts?
+## Why Customer Accounts
 
 - **No separate login** — Partners use their existing customer account
 - **Familiar UX** — Shopify's account interface they already know
@@ -24,35 +24,38 @@ Shopify has two customer account systems:
   </Card>
 </CardGroup>
 
-## What You Can Add
+## Recommended Architecture
 
-| Feature | Implementation |
-|---------|----------------|
-| Partner dashboard link | Button/link to CC dashboard |
-| Quick stats | Orders, earnings, performance |
-| Product picker | In-account drop management |
-| Profile editor | Bio, photo, social links |
-| Share tools | Copy link, QR code |
+| Layer | Responsibility |
+|------|----------------|
+| Account templates/extensions | UI and interaction |
+| Hidden customer context | Bootstrapping customer identity |
+| Backend proxy | Auth checks + CC/Shopify API orchestration |
+| CC data model | Creators, collabs, drops, enhancements, custom fields |
 
-## Partner Detection
+## Suggested Page Split
 
-Determine if the logged-in customer is a partner:
+- Dashboard home
+- Manage products
+- Collection editor
+- Storefront editor
+
+This keeps each workflow focused and easier to maintain.
+
+## Identity + Partner Detection
+
+Use customer account identity, then resolve creator/collab server-side:
 
 ```liquid
-{% assign customer_email = customer.email %}
-{% comment %} Check if customer email matches a CC partner {% endcomment %}
-{% assign is_partner = false %}
-
-{% for creator in metaobjects.creator %}
-  {% if creator.cc-creator-email == customer_email %}
-    {% assign is_partner = true %}
-    {% assign cc_creator = creator %}
-    {% break %}
-  {% endif %}
-{% endfor %}
+{% if customer.email %}
+  <div data-customer-email="{{ customer.email }}" style="display:none;"></div>
+{% endif %}
 ```
 
-## Related
+Frontend reads `data-customer-email` and calls your backend to resolve partner context. Avoid looping all creator metaobjects in Liquid for this detection step.
+
+## Related Technical Docs
 
 - [Legacy Customer Accounts](/guides/creator-experience/customer-accounts/legacy)
 - [New Customer Accounts](/guides/creator-experience/customer-accounts/new)
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
