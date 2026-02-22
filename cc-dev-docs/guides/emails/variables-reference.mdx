@@ -3,6 +3,12 @@ title: 'Email Variables Reference'
 description: 'All available co-branded variables for images, text, and other personalization in emails.'
 ---
 
+## Klaviyo Access Patterns
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+
 ## Profile Properties
 
 These properties are set on customer profiles when they interact with creator pages.

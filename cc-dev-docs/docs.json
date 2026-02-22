@@ -1077,7 +1077,9 @@
                {
                   "item": "Klaviyo",
                   "icon": "envelope",
-                  "href": "/references/klaviyo-two-sides"
+                  "pages": [
+                     "references/klaviyo-two-sides"
+                  ]
                }
             ]
          },
