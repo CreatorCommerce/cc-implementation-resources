@@ -3,56 +3,21 @@ title: 'Co-branded Lead Magnets'
 description: 'Capture emails with partner-personalized opt-in incentives.'
 ---
 
-Lead magnets are powerful tools for list building. When co-branded with partners, they become even more effective by leveraging the partner's authority and audience trust.
+Use co-branded lead magnets to collect email in creator context, then deliver a creator-personalized reward.  
+For implementation, setup patterns, and popup UX tactics, see [Co-branded Pop-ups](/guides/storefronts/co-branded-popups).
 
-## What Makes Co-branded Lead Magnets Different
+## Simple Examples
 
-Traditional lead magnets offer generic value. Co-branded lead magnets:
+- "Get Sam's skincare routine"
+- "Get John's discount emailed to you"
 
-- **Leverage partner credibility** — "Download {{ partner_name }}'s favorite picks"
-- **Feel exclusive** — Content curated specifically by someone they follow
-- **Drive higher opt-in rates** — Personal recommendations convert better than generic offers
-- **Enable segmentation** — Know which partner drove each subscriber
+These can gate content, or reward opt-in with a creator-specific offer.
 
-## Types of Co-branded Lead Magnets
+## Content Gating Patterns
 
-<CardGroup cols={2}>
-  <Card title="Partner Picks" icon="list-check">
-    Curated product guides featuring the partner's recommendations.
-  </Card>
-  <Card title="Exclusive Discounts" icon="percent">
-    Partner-specific discount codes for email subscribers.
-  </Card>
-  <Card title="Content Downloads" icon="download">
-    PDFs, guides, or resources featuring partner expertise.
-  </Card>
-  <Card title="Early Access" icon="clock">
-    First look at products the partner is promoting.
-  </Card>
-</CardGroup>
+- **Generic reward with creator personalization**: Use the same asset for everyone, but personalize copy with creator name.
+- **Creator-specific content from custom fields**: Store creator content in a custom field (for example `cc-cookie-recipe`) and only show/deliver that asset when the field has content.
 
-## Pop-up Personalization
+## Next Step
 
-When visitors arrive via a partner link, your pop-ups can dynamically feature:
-
-- Partner's name and photo
-- Partner-specific discount code
-- Copy that references the partner's recommendation
-- Partner's quote about the product or brand
-
-## Implementation Flow
-
-1. **Capture with context** — Use CC-enabled pop-ups that capture partner attribution
-2. **Sync to ESP** — CreatorCommerce sends partner data to Klaviyo/Attentive
-3. **Segment subscribers** — Create segments based on referring partner
-4. **Personalize welcome flow** — Use partner variables in your welcome series
-
-## Measuring Success
-
-Track these metrics for co-branded lead magnets:
-- Opt-in rate by partner
-- Welcome flow engagement by partner segment
-- Time to first purchase by partner source
-- Lifetime value by partner attribution
-
-See [Co-branded Pop-ups](/guides/storefronts/co-branded-popups) for implementation details on the storefront side.
+Go to [Co-branded Pop-ups](/guides/storefronts/co-branded-popups) to implement this end-to-end.

@@ -42,35 +42,99 @@ description: 'Connect CreatorCommerce to Klaviyo, Attentive, or other email plat
   </Step>
 </Steps>
 
+### Klaviyo Template Variable Syntax
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+
 ---
 
 ## Attentive Setup
 
 <Steps>
-  <Step title="Get Your Attentive Tag">
-    In Attentive, go to Settings → Installation → Copy your tag ID
+  <Step title="Get your Attentive API credentials">
+    In Attentive, generate credentials for Custom Attributes and Custom Events API access.
   </Step>
-  <Step title="Add Custom Attributes">
-    Configure custom subscriber attributes for CC data
+  <Step title="Enable Shopify Flow templates for consumer co-branding">
+    Turn on these templates in Shopify Flow:
+    - `CC // Log a customer abandoned cart Klaviyo event`
+    - `CC // Log a custom post-purchase Klaviyo event`
+    - `CC // Log a customer marketing opt-in Klaviyo event`
   </Step>
-  <Step title="Sync Creator Context">
-    Use Attentive's JavaScript API to pass creator data
+  <Step title="Add 2 HTTP requests at the end of each flow">
+    In each flow, after creator-context validation + `Get metaobject entry`, add:
+    1. `POST https://api.attentivemobile.com/v1/attributes/custom` (set profile attributes)
+    2. `POST https://api.attentivemobile.com/v1/events/custom` (log event)
+  </Step>
+  <Step title="Verify in Attentive">
+    Run test journeys and confirm the 3 events are received:
+    - `Creator Checkout Abandoned`
+    - `Creator Attributed Order`
+    - `Marketing Opt In From Creator`
   </Step>
 </Steps>
 
-### Attentive Tracking Code
+### Request 1: Set Custom Attributes
 
-```liquid
-{% if cc_creator %}
-<script>
-  window.attentive = window.attentive || [];
-  window.attentive.push(['setCustomAttributes', {
-    'cc_creator_handle': {{ cc_creator.handle | json }},
-    'cc_creator_name': {{ cc_creator.cc-creator-first-name | json }},
-    'cc_discount_code': {{ cc_creator.cc-collab-discount-code | json }}
-  }]);
-</script>
-{% endif %}
+`POST https://api.attentivemobile.com/v1/attributes/custom`
+
+```json
+{
+  "properties": {
+    "cc-creator-first-name": "{{getMetaobjectEntry.ccCreatorFirstName}}",
+    "cc-creator-last-name": "{{getMetaobjectEntry.ccCreatorLastName}}",
+    "cc-creator-profile-picture": "{{getMetaobjectEntry.ccCreatorProfilePicture}}",
+    "cc-creator-shop-title": "{{getMetaobjectEntry.ccCreatorShopTitle}}",
+    "cc-creator-shop-theme-primary-color": "{{getMetaobjectEntry.ccCreatorShopThemePrimaryColor}}",
+    "cc-creator-shop-handle": "{{getMetaobjectEntry.ccCreatorShopHandle}}",
+    "cc-collab-affiliate-link": "{{getMetaobjectEntry.ccCollabAffiliateLink}}",
+    "cc-collab-discount-amount": "{{getMetaobjectEntry.ccCollabDiscountAmount}}",
+    "cc-collab-discount-code": "{{getMetaobjectEntry.ccCollabDiscountCode}}",
+    "cc-collab-affiliate-code": "{{getMetaobjectEntry.ccCollabAffiliateCode}}",
+    "cc-collab-discount-type": "{{getMetaobjectEntry.ccCollabDiscountType}}",
+    "cc-creator-shop-description": "{{getMetaobjectEntry.ccCreatorShopDescription}}"
+  },
+  "user": {
+    "email": "{{customer.email}}"
+  }
+}
+```
+
+### Request 2: Log Custom Event
+
+`POST https://api.attentivemobile.com/v1/events/custom`
+
+Use the event type that matches the flow:
+
+```json
+{
+  "type": "Creator Checkout Abandoned",
+  "properties": {{getMetaobjectEntry.data}},
+  "user": {
+    "email": "{{customer.email}}"
+  }
+}
+```
+
+```json
+{
+  "type": "Marketing Opt In From Creator",
+  "properties": {{getMetaobjectEntry.data}},
+  "user": {
+    "email": "{{customer.email}}"
+  }
+}
+```
+
+```json
+{
+  "type": "Creator Attributed Order",
+  "properties": {{getMetaobjectEntry.data}},
+  "user": {
+    "email": "{{customer.email}}"
+  }
+}
 ```
 
 ---

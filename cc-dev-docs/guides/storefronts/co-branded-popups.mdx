@@ -3,16 +3,42 @@ title: 'Co-branded Pop-ups'
 description: 'Create pop-ups that recognize creator context and display personalized offers.'
 ---
 
-## Pop-up Types
+## Pop-up Types and Timing
 
-| Type | Trigger | Use Case |
+| Type | Trigger | Use Case | Avoid Showing |
 |------|---------|----------|
-| Welcome | Page load | Greet creator's audience |
-| Exit intent | Mouse leaves | Remind of discount |
-| Email capture | Scroll/time | Grow list with attribution |
-| Cart reminder | Idle on cart | Nudge to checkout |
+| Welcome | Delay (5-12s) | Greet creator's audience with context | Immediately on landing-page entry |
+| Exit intent | Mouse leaves / back intent | Remind of creator offer before bounce | More than once per session |
+| Email capture | Scroll depth or timed delay | Grow list with creator attribution | Before shopper sees value content |
+| Cart reminder | Idle on cart / drawer close | Nudge checkout with creator reassurance | During active checkout interaction |
 
-## Suppress Generic Pop-ups
+## Resolve Creator Context First
+
+Use the same creator-resolution pattern before popup rendering:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+## Popup UX Conventions
+
+- Use one primary CTA (`Shop Now` *or* `Copy Code`) and one quiet dismiss action.
+- Include creator profile photo in the header for instant recognition.
+- If available, add brand logo beside creator image (`creator-avatar × brand-logo`) for visual co-branding.
+- Frequency-cap by creator (`once per session per creator`).
+- Suppress generic popup campaigns while creator context is active.
+- Keep popup copy short and practical: offer, code, and next action.
+
+## Suppress Generic Pop-ups for Creator Traffic
 
 When a customer arrives via creator link, suppress your standard pop-ups:
 
@@ -27,29 +53,63 @@ if (localStorage.getItem('cc_creator_handle') ||
 ## Creator-Aware Pop-up
 
 ```liquid
-{% if cc_creator %}
-<div class="cc-popup" id="cc-welcome">
-  <img src="{{ cc_creator.data.value.cc-creator-profile-picture | image_url: width: 80 }}" />
-  <h3>Welcome! {{ cc_creator.cc-creator-first-name }} sent you.</h3>
-  <p>Use code <strong>{{ cc_creator.cc-collab-discount-code }}</strong> for {{ cc_creator.cc-collab-discount-amount }}% off</p>
-  <button onclick="copyCode('{{ cc_creator.cc-collab-discount-code }}')">Copy Code</button>
-  <button onclick="closePopup()">Shop Now</button>
-</div>
+{% if has_creator %}
+  <aside class="cc-popup" id="cc-welcome" hidden>
+    <div class="cc-popup__header">
+      {% if cc_creator['cc-creator-profile-picture'] %}
+        <img
+          src="{{ cc_creator['cc-creator-profile-picture'] }}"
+          alt="{{ cc_creator['cc-creator-first-name'] | escape }}"
+          width="36"
+          height="36"
+          loading="lazy"
+        >
+      {% endif %}
+      <span aria-hidden="true">×</span>
+      {% if cc_creator['cc-channel-brandkit-primary-logo'] %}
+        <img
+          src="{{ cc_creator['cc-channel-brandkit-primary-logo'] }}"
+          alt="{{ cc_creator['cc-channel-brandkit-title'] | default: shop.name | escape }}"
+          height="14"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+
+    <h3>{{ cc_creator['cc-creator-first-name'] | escape }} sent you</h3>
+    <p>
+      Use code <strong>{{ cc_creator['cc-collab-discount-code'] }}</strong>
+      for {{ cc_creator['cc-collab-discount-amount'] }}% off.
+    </p>
+
+    <a class="button" href="#drops-anchor">Shop Now</a>
+    <button type="button" class="button button--tertiary" onclick="document.getElementById('cc-welcome').hidden = true;">
+      Continue browsing
+    </button>
+  </aside>
 {% endif %}
 ```
 
-## Exit Intent with Creator Context
+## Frequency-Cap and Display Rules
 
 ```javascript
-document.addEventListener('mouseleave', (e) => {
-  if (e.clientY < 0 && ccCreator && !sessionStorage.getItem('exit_shown')) {
-    showExitPopup({
-      title: `Wait! Don't forget your ${ccCreator.discountAmount}% off`,
-      code: ccCreator.discountCode
-    });
-    sessionStorage.setItem('exit_shown', 'true');
+const creatorHandle = window.CC_CREATOR_HANDLE || localStorage.getItem('cc_creator_handle');
+const popupKey = creatorHandle ? `cc_popup_seen_${creatorHandle}` : null;
+
+if (popupKey && !sessionStorage.getItem(popupKey)) {
+  const isCreatorLandingPage = window.location.pathname.includes('/pages/creators/');
+
+  // Don't interrupt immediately on the landing page itself.
+  if (!isCreatorLandingPage) {
+    window.setTimeout(() => {
+      const popup = document.getElementById('cc-welcome');
+      if (popup) {
+        popup.hidden = false;
+        sessionStorage.setItem(popupKey, '1');
+      }
+    }, 8000);
   }
-});
+}
 ```
 
 ## Email Capture with Attribution
@@ -60,6 +120,13 @@ Ensure email signups include creator attribution:
 <form action="/contact" method="post">
   <input type="email" name="contact[email]" required />
   <input type="hidden" name="contact[tags]" value="cc-signup,cc-{{ cc_creator.handle }}" />
-  <button type="submit">Get {{ cc_creator.cc-collab-discount-amount }}% Off</button>
+  <input type="hidden" name="contact[note][cc_creator_handle]" value="{{ cc_creator.handle }}">
+  <input type="hidden" name="contact[note][cc_discount_code]" value="{{ cc_creator['cc-collab-discount-code'] }}">
+  <button type="submit">Get {{ cc_creator['cc-collab-discount-amount'] }}% Off</button>
 </form>
 ```
+
+## Related
+
+- [Discount Prices Across Your Theme](/guides/storefronts/discount-prices-theme-wide)
+- [Full-Funnel Theme Personalization](/guides/storefronts/full-funnel-personalization)

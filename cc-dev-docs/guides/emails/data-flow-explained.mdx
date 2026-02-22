@@ -54,4 +54,8 @@ Co-branded emails sent
 
 ## Using in Emails
 
-Access these properties in your email templates for personalization. Each platform has its own syntax—see platform-specific guides.
+Use these conventions in Klaviyo templates:
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`

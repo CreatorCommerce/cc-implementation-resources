@@ -43,6 +43,12 @@ Typical `Customer Properties` payload:
 Some templates include additional keys (for example first/last name fields are often included for checkout abandoned and post-purchase flows). Keep your Klaviyo template logic resilient to missing optional fields.
 </Note>
 
+## Klaviyo Template Access Syntax
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+
 ## Example B2C Event Payloads
 
 ### Creator Checkout Abandoned

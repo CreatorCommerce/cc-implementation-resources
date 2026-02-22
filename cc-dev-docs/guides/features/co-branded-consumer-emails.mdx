@@ -49,14 +49,21 @@ Each template follows the same pattern:
 ## Dynamic Content Block
 
 ```html
-{% if person|lookup:'cc-creator-first-name' %}
+{% if person|lookup:"cc-creator-first-name" %}
   <div class="creator-block">
-    <img src="{{ person|lookup:'cc-creator-profile-picture' }}" />
-    <p>You're shopping with <strong>{{ person|lookup:'cc-creator-first-name' }}</strong></p>
-    <p>Use code {{ person|lookup:'cc-collab-discount-code' }} for {{ person|lookup:'cc-collab-discount-amount' }}% off</p>
+    <img src="{{ person|lookup:"cc-creator-profile-picture" }}" />
+    <p>You're shopping with <strong>{{ person|lookup:"cc-creator-first-name" }}</strong></p>
+    <p>Use code {{ person|lookup:"cc-collab-discount-code" }} for {{ person|lookup:"cc-collab-discount-amount" }}% off</p>
   </div>
 {% endif %}
 ```
+
+<Info>
+In Klaviyo templates use:
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+</Info>
 
 ## Payload Shape Used in Klaviyo Track Event
 

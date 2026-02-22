@@ -168,14 +168,19 @@ And `Customer Properties` include creator/collab keys such as:
 In Klaviyo templates, use conditional blocks to show creator content when available:
 
 ```
-{% if person|lookup:'cc-creator-first-name' %}
+{% if person|lookup:"cc-creator-first-name" %}
   <!-- Co-branded version -->
-  Shopping with {{ person|lookup:'cc-creator-first-name' }}
+  Shopping with {{ person|lookup:"cc-creator-first-name" }}
 {% else %}
   <!-- Standard version -->
   Welcome back!
 {% endif %}
 ```
+
+Use this syntax consistently in Klaviyo:
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
 
 ---
 

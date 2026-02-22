@@ -58,6 +58,12 @@ Customer properties commonly include:
 
 Use conditional blocks to show creator content only when `cc-*` creator properties exist.
 
+### Klaviyo Template Variable Syntax
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+
 ## Creator Lifecycle Messaging (B2B)
 
 For creator/affiliate lifecycle messaging (invites, activation, milestones, campaign messaging), use the creator-facing event model and templates:

@@ -39,7 +39,9 @@ Add to `theme.liquid` or a shared snippet rendered on every page:
   else
     assign cc_handle = cart.attributes['cc-creator-handle']
     assign cc_creator = metaobjects.creator[cc_handle]
-  endunless
+  endif
+
+  assign has_creator = cc_creator != blank
 %}
 ```
 
@@ -47,25 +49,41 @@ This gives every section access to `cc_creator` when a shopper is in a creator's
 
 ### 2. Personalize the Header
 
-Show a persistent banner when shopping through a creator:
+Show a persistent banner when shopping through a creator, including the visual `creator-avatar × brand-logo` lockup:
 
 ```liquid
-{% if cc_creator %}
+{% if has_creator %}
   <div class="cc-shopping-banner">
-    {% if cc_creator.data.value['cc-creator-profile-picture'].url %}
-      <img 
-        src="{{ cc_creator.data.value['cc-creator-profile-picture'].url}}" 
-        alt="{{ cc_creator.cc-creator-first-name | escape }}"
-        loading="lazy"
-      >
-    {% endif %}
+    <div class="cc-shopping-banner__lockup">
+      {% if cc_creator['cc-creator-profile-picture'] %}
+        <img 
+          src="{{ cc_creator['cc-creator-profile-picture'] }}" 
+          alt="{{ cc_creator['cc-creator-first-name'] | escape }}"
+          loading="lazy"
+        >
+      {% endif %}
+      <span aria-hidden="true">×</span>
+      {% if cc_creator['cc-channel-brandkit-primary-logo'] %}
+        <img
+          src="{{ cc_creator['cc-channel-brandkit-primary-logo'] }}"
+          alt="{{ cc_creator['cc-channel-brandkit-title'] | default: shop.name | escape }}"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+
     <span>
-      Shopping with {{ cc_creator.cc-creator-first-name | escape }}
+      Shopping with {{ cc_creator['cc-creator-first-name'] | escape }}
       {% if cc_creator['cc-collab-discount-amount'] %}
-        · {{ cc_creator['cc-collab-discount-amount'] }}% Off Everything
+        · {{ cc_creator['cc-collab-discount-amount'] }}% Off
       {% endif %}
     </span>
-    <a href="{{ cc_creator.data.value['cc-collab-affiliate-link'] }}">View Shop →</a>
+
+    {% if cc_creator['cc-collab-affiliate-link'] %}
+      <a href="{{ cc_creator['cc-collab-affiliate-link'] }}">
+        View Shop →
+      </a>
+    {% endif %}
   </div>
 {% endif %}
 ```
@@ -77,9 +95,9 @@ Replace or augment footer content with creator context:
 ```liquid
 {% if cc_creator %}
   <div class="cc-footer-cta">
-    <p>You're shopping {{ cc_creator.cc-creator-first-name | escape }}'s recommendations</p>
-    <a href="{{ cc_creator.data.value['cc-collab-affiliate-link'] }}" class="btn">
-      Back to {{ cc_creator.cc-creator-first-name | escape }}'s Shop
+    <p>You're shopping {{ cc_creator['cc-creator-first-name'] | escape }}'s recommendations</p>
+    <a href="{{ cc_creator['cc-collab-affiliate-link'] }}" class="btn">
+      Back to {{ cc_creator['cc-creator-first-name'] | escape }}'s Shop
     </a>
   </div>
 {% endif %}
@@ -92,7 +110,7 @@ On any page, surface the creator's recommended products:
 ```liquid
 {% if cc_creator and cc_creator['cc-creator-drops'].value %}
   <section class="cc-creator-picks">
-    <h2>More from {{ cc_creator.cc-creator-first-name | escape }}</h2>
+    <h2>More from {{ cc_creator['cc-creator-first-name'] | escape }}</h2>
     {% assign first_collection = cc_creator['cc-creator-drops'].value | first %}
     {% if first_collection %}
       <div class="product-grid">
@@ -113,7 +131,7 @@ Show a welcome pop-up or discount reminder only for creator traffic:
 {% if cc_creator %}
   <div class="cc-popup" id="cc-creator-popup" style="display:none;">
     <div class="cc-popup__content">
-      <h3>Welcome! {{ cc_creator.cc-creator-first-name | escape }} sent you</h3>
+      <h3>Welcome! {{ cc_creator['cc-creator-first-name'] | escape }} sent you</h3>
       <p>Use code <strong>{{ cc_creator['cc-collab-discount-code'] }}</strong> for {{ cc_creator['cc-collab-discount-amount'] }}% off</p>
       <button onclick="document.getElementById('cc-creator-popup').style.display='none'">Start Shopping</button>
     </div>
@@ -133,7 +151,7 @@ Wrap creator content in conditionals within existing sections:
 {% if cc_creator %}
   <!-- Co-branded version -->
   <div class="section-header">
-    <h2>{{ cc_creator.cc-creator-first-name | escape }}'s Picks</h2>
+    <h2>{{ cc_creator['cc-creator-first-name'] | escape }}'s Picks</h2>
   </div>
 {% else %}
   <!-- Standard version -->

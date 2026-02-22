@@ -10,6 +10,10 @@ description: 'Build custom metaobject templates for co-branded creator landing p
 | JSON Template | `templates/metaobject/creator.json` | Section-based, theme editor friendly |
 | Liquid Template | `templates/metaobject/creator.liquid` | Full custom control |
 
+<Tip>
+For section/snippet context before coding, review [App Blocks 101](/guides/storefronts/app-blocks-101) first.
+</Tip>
+
 ## JSON Template (Recommended)
 
 Create `templates/metaobject/creator.json`:
@@ -35,6 +39,17 @@ Create `templates/metaobject/creator.json`:
   "order": ["cc-hero", "cc-products", "cc-banner"]
 }
 ```
+
+## Fast Baseline from Homepage (`templates/index.json`)
+
+To move faster and keep visual consistency, start from your homepage template:
+
+1. Open `templates/index.json`
+2. Copy `sections` and `order`
+3. Paste into `templates/metaobject/creator.json`
+4. Replace homepage-specific hero/product modules with CC sections
+
+This gives you a solid starting point instead of authoring every section from scratch.
 
 ## Liquid Template
 
@@ -101,6 +116,31 @@ This is set in the **Destination** configuration for each tier within a campaign
 | Ambassador | (default) | Standard layout |
 | Affiliate | `?view=minimal` | Simple product grid layout |
 
+## Dynamic Sources for Quick Wins
+
+After template setup, connect dynamic sources in Theme Editor so non-devs can update copy quickly while creator data still personalizes output.
+
+Good first targets:
+- hero heading
+- subheading/description
+- creator image and accent media
+- CTA label fallback copy
+
+Code-first fallback example:
+
+```liquid
+{% liquid
+  assign cc_creator = metaobject
+  assign heading = section.settings.heading
+
+  if cc_creator and cc_creator['cc-creator-first-name'] != blank
+    assign heading = cc_creator['cc-creator-first-name'] | append: "'s Storefront"
+  endif
+%}
+
+<h2>{{ heading }}</h2>
+```
+
 ## Testing Your Template
 
 1. Go to **Content → Metaobjects → Creator**
@@ -114,6 +154,8 @@ Modify section settings in the theme editor or directly in code. Each CC section
 
 ## Related
 
+- [App Blocks 101](/guides/storefronts/app-blocks-101)
+- [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks)
 - [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages)
 - [Destinations Explained](/guides/storefronts/destinations-explained)
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)

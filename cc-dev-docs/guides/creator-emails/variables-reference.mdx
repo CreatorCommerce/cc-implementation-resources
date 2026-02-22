@@ -5,6 +5,12 @@ description: 'Reference for all variables available when emailing partners and c
 
 When sending emails to your creators, influencers, and affiliates through Klaviyo, CreatorCommerce provides a rich set of profile properties and event data to personalize your communications.
 
+## Klaviyo Access Patterns
+
+- Profile properties: `{{ person|lookup:"field-name" }}`
+- Event properties: `{{ event.property_name }}`
+- Nested event properties: `{{ event.property.nested_variable }}`
+
 ## Profile Properties
 
 These properties are synced to each creator's Klaviyo profile:
@@ -80,24 +86,24 @@ Fires when a partner hits a performance milestone.
 
 ### Welcome Email
 ```
-Hey {{ cc_creator_first_name }},
+Hey {{ person|lookup:"cc-creator-first-name" }},
 
-Welcome to our partner program! Your unique discount code is {{ cc_discount_code }} and your personalized shop is live at:
+Welcome to our partner program! Your unique discount code is {{ person|lookup:"cc-collab-discount-code" }} and your personalized shop is live at:
 
-{{ cc_shop_url }}
+{{ person|lookup:"cc-creator-shop-url" }}
 
-Share this with your audience to start earning {{ cc_commission_rate }} on every sale!
+Share this with your audience to start earning {{ event.commission_rate }} on every sale!
 ```
 
 ### Performance Update
 ```
-Hi {{ cc_creator_first_name }},
+Hi {{ person|lookup:"cc-creator-first-name" }},
 
 Here's your weekly performance update:
 
-Sales this week: ${{ cc_weekly_sales }}
-Orders: {{ cc_weekly_orders }}
-Commissions earned: ${{ cc_weekly_commissions }}
+Sales this week: ${{ event.weekly_sales }}
+Orders: {{ event.weekly_orders }}
+Commissions earned: ${{ event.weekly_commissions }}
 
 Keep up the great work!
 ```
@@ -106,4 +112,4 @@ Keep up the great work!
 
 - [Enable Klaviyo Connection](/guides/emails/enable-connections)
 - [Consumer Email Variables](/guides/emails/variables-reference)
-- [The 2 Sides of Klaviyo](/references/klaviyo/two-sides-overview)
+- [The 2 Sides of Klaviyo](/references/klaviyo-two-sides)

@@ -27,9 +27,24 @@ CreatorCommerce stores creator data in Shopify **metaobjects** (type: `creator`)
 - Access to Shopify theme editor or theme code
 - Creator metaobject type exists (CC creates this automatically)
 
-<Tip>
-**New to CreatorCommerce?** Start with the [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks) guide to get live in under an hour using pre-built sections. This guide covers custom builds with full code control.
-</Tip>
+## Choose Your Build Path First
+
+### Path 1: Out-of-the-box (Fastest)
+
+Use prebuilt CC sections in Theme Editor:
+- [App Blocks 101](/guides/storefronts/app-blocks-101)
+- [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks)
+
+Best when you want to launch quickly and keep everything editable in Theme Editor.
+
+### Path 2: Code-first (Most control)
+
+Use this guide to build/extend templates in code:
+- copy baseline homepage sections from `templates/index.json`
+- swap in CC sections where needed
+- wire dynamic sources and creator-aware copy
+
+Best when you want deep control over structure, cards, and custom logic.
 
 ## Quick Start
 
@@ -44,13 +59,23 @@ CreatorCommerce stores creator data in Shopify **metaobjects** (type: `creator`)
     - **JSON template** — `templates/metaobject/creator.json` (recommended, section-based)
     - **Liquid template** — `templates/metaobject/creator.liquid` (full custom control)
   </Step>
-  <Step title="Add sections to the template">
+  <Step title="Bootstrap from homepage sections (code-first quick win)">
+    If you already like your homepage section structure, use it as the landing-page baseline:
+
+    1. Open `templates/index.json`
+    2. Copy the `sections` + `order` structure
+    3. Paste into `templates/metaobject/creator.json`
+    4. Replace homepage-specific hero/featured sections with CC sections
+
+    This gets you a production-quality baseline fast without starting from a blank template.
+  </Step>
+  <Step title="Add CC sections to the template">
     Add CC sections to your template:
     - **CC Hero** — Creator intro with name, photo, bio, and optional background
     - **CC Product Grid / Drops** — Their curated product recommendations
     - **CC Banner** — Discount callout or promotional messaging
 
-    See [the AI guide](/ai-guides/ai-guide-first-landing-page) for template file recommendations.
+    See [App Blocks 101](/guides/storefronts/app-blocks-101) and [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks) for section-by-section references.
   </Step>
   <Step title="Preview the page">
     Visit `/pages/creators/[creator-handle]` to see the live page. In the theme editor, you can preview by selecting any creator entry from the metaobject picker.
@@ -65,8 +90,8 @@ On metaobject page templates, the creator data is available directly through the
 {% assign cc_creator = metaobject %}
 
 {%- comment -%} Basic fields {%- endcomment -%}
-{{ cc_creator.cc-creator-first-name }}
-{{ cc_creator.cc-creator-shop-description }}
+{{ cc_creator['cc-creator-first-name'] }}
+{{ cc_creator['cc-creator-shop-description'] }}
 {{ cc_creator.handle }}
 
 {%- comment -%} Nested data (images, drops, custom fields) {%- endcomment -%}
@@ -74,9 +99,34 @@ On metaobject page templates, the creator data is available directly through the
 {{ cc_creator.data.value.cc-creator-drops }}
 
 {%- comment -%} Discount info {%- endcomment -%}
-{{ cc_creator.cc-collab-discount-code }}
-{{ cc_creator.cc-collab-discount-amount }}
+{{ cc_creator['cc-collab-discount-code'] }}
+{{ cc_creator['cc-collab-discount-amount'] }}
 ```
+
+## Dynamic Sources and Copy Quick Wins
+
+Once the template is in place, use **Theme Editor dynamic sources** for non-developers to iterate copy quickly:
+
+- map heading/description settings to creator fields when possible
+- keep fallback static text for creator-absent states
+- use section settings for campaign-specific text while creator fields handle personalization
+
+Example fallback pattern in a section/snippet:
+
+```liquid
+{% liquid
+  assign cc_creator = metaobject
+  assign hero_heading = section.settings.heading
+
+  if cc_creator and cc_creator['cc-creator-first-name'] != blank
+    assign hero_heading = cc_creator['cc-creator-first-name'] | append: "'s Picks"
+  endif
+%}
+
+<h1>{{ hero_heading }}</h1>
+```
+
+This gives quick wins: marketing can update section settings, while creator context still personalizes automatically.
 
 ## Advanced: Looping Through Drops and Products
 
@@ -138,6 +188,9 @@ fetch('/cart.js').then(r => r.json()).then(c => console.log(c.attributes))
 ## Next Steps
 
 <CardGroup cols={2}>
+  <Card title="App Blocks 101" icon="blocks" href="/guides/storefronts/app-blocks-101">
+    Understand exactly which CC sections/snippets to add in Theme Editor
+  </Card>
   <Card title="Quick Start: Out-of-the-Box Blocks" icon="rocket" href="/guides/storefronts/quick-start-out-of-box-blocks">
     Fast-track setup using pre-built CC sections (no code)
   </Card>

@@ -13,9 +13,9 @@ Don't create separate flows for creator traffic. Add conditional blocks to exist
 
 **Email 1: Welcome**
 ```html
-{% if person.cc_creator_name %}
-  <p>Welcome! You found us through {{ person.cc_creator_name }}.</p>
-  <p>Your exclusive code: <strong>{{ person.cc_discount_code }}</strong></p>
+{% if person|lookup:"cc-creator-first-name" %}
+  <p>Welcome! You found us through {{ person|lookup:"cc-creator-first-name" }}.</p>
+  <p>Your exclusive code: <strong>{{ person|lookup:"cc-collab-discount-code" }}</strong></p>
 {% else %}
   <p>Welcome to {{ organization.name }}!</p>
 {% endif %}
@@ -25,9 +25,9 @@ Don't create separate flows for creator traffic. Add conditional blocks to exist
 
 **Email 1: Reminder (4 hours)**
 ```html
-{% if person.cc_creator_name %}
-  <h2>{{ person.cc_creator_name }} picked these for you</h2>
-  <p>Don't forget your {{ person.cc_discount_amount }}% off!</p>
+{% if person|lookup:"cc-creator-first-name" %}
+  <h2>{{ person|lookup:"cc-creator-first-name" }} picked these for you</h2>
+  <p>Don't forget your {{ person|lookup:"cc-collab-discount-amount" }}% off!</p>
 {% else %}
   <h2>You left something behind</h2>
 {% endif %}
@@ -37,10 +37,10 @@ Don't create separate flows for creator traffic. Add conditional blocks to exist
 
 **Email 1: Thank You**
 ```html
-{% if person.cc_creator_name %}
+{% if person|lookup:"cc-creator-first-name" %}
   <div class="creator-thanks">
-    <img src="{{ person.cc_creator_image }}" />
-    <p>Thanks for shopping with {{ person.cc_creator_name }}!</p>
+    <img src="{{ person|lookup:"cc-creator-profile-picture" }}" />
+    <p>Thanks for shopping with {{ person|lookup:"cc-creator-first-name" }}!</p>
   </div>
 {% endif %}
 ```
@@ -48,8 +48,8 @@ Don't create separate flows for creator traffic. Add conditional blocks to exist
 ### Browse Abandonment
 
 ```html
-{% if person.cc_creator_name %}
-  <p>{{ person.cc_creator_name }} thinks you'd love these:</p>
+{% if person|lookup:"cc-creator-first-name" %}
+  <p>{{ person|lookup:"cc-creator-first-name" }} thinks you'd love these:</p>
 {% else %}
   <p>Still thinking about these?</p>
 {% endif %}
@@ -58,9 +58,9 @@ Don't create separate flows for creator traffic. Add conditional blocks to exist
 ### Win-Back
 
 ```html
-{% if person.cc_creator_name %}
-  <h2>{{ person.cc_creator_name }} has new picks for you</h2>
-  <p>Your code {{ person.cc_discount_code }} is still active!</p>
+{% if person|lookup:"cc-creator-first-name" %}
+  <h2>{{ person|lookup:"cc-creator-first-name" }} has new picks for you</h2>
+  <p>Your code {{ person|lookup:"cc-collab-discount-code" }} is still active!</p>
 {% else %}
   <h2>We miss you!</h2>
 {% endif %}
@@ -76,3 +76,19 @@ Add creator blocks at high-impact positions:
 ## Keep Generic Fallbacks
 
 Every co-branded block needs a fallback. Not all customers will have creator context.
+
+## Conditional Logic Example (Klaviyo)
+
+Use Klaviyo conditionals to branch content by profile properties:
+
+```html
+{% if person|lookup:"Loyalty Points" > 150 %}
+Hey VIP! You’ve always got free shipping & free returns
+
+{% elif person|lookup:"Loyalty Points" > 0 %}
+You have {{ person|lookup:"Loyalty Points" }} points, and you just need 150 to become a VIP!
+
+{% else %}
+Have you heard about our VIP program? Join today on our website to start earning rewards.
+{% endif %}
+```

@@ -7,15 +7,36 @@ description: 'Show creator-discounted prices everywhere — product cards, colle
 
 When a customer is shopping through a creator's link, they should see their discounted price **everywhere** — not just at checkout. This builds trust and eliminates surprise at the payment step.
 
-## Create a Universal Price Snippet
+## Resolve Creator Context First
+
+Use the same creator-resolution block anywhere you compute pricing:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    assign cc_creator = metaobjects.creator[cc_handle]
+  endif
+  
+  assign has_creator = cc_creator != blank
+%}
+```
+
+## Create a Universal Price Snippet (`snippets/cc-price.liquid`)
 
 Create `snippets/cc-price.liquid` to handle both **Percentage** and **Fixed** discount types:
 
 ```liquid
 {% comment %}
-  Usage: {% render 'cc-price', product: product %}
+  Usage:
+  - {% render 'cc-price', product: product %}
+  - {% render 'cc-price', price: line_item.final_line_price, compare_at_price: line_item.original_line_price %}
+  - {% render 'cc-price', product: product, class: 'price-item price-item--sale', compare_class: 'price-item price-item--compare' %}
+
   Handles both Percentage and Fixed discount types.
-  Falls back to standard pricing when no creator context.
+  Falls back to standard pricing when no creator context exists.
 {% endcomment %}
 
 {% liquid
@@ -29,38 +50,52 @@ Create `snippets/cc-price.liquid` to handle both **Percentage** and **Fixed** di
   assign has_creator = cc_creator != blank
 %}
 
-{%- liquid
-  if cc_creator != blank and cc_creator != null and cc_creator['cc-collab-discount-amount']
-    if cc_creator['cc-collab-discount-type'] == 'Percentage'
-      assign discount = cc_creator['cc-collab-discount-amount'] | divided_by: 100.0
-      assign discount_multiplier = 1 | minus: discount
-      assign price = product.price | times: discount_multiplier
-      assign compare_at_price = product.price
-    elsif cc_creator['cc-collab-discount-type'] == 'Fixed'
-      assign discount_cents = cc_creator['cc-collab-discount-amount'] | times: 100
-      assign price = product.price | minus: discount_cents
-      assign compare_at_price = product.price
-    else
-      assign price = product.price
-      assign compare_at_price = product.compare_at_price
-    endif
-  else
-    assign price = product.price
-    assign compare_at_price = product.compare_at_price
-  endif
--%}
+{% liquid
+  assign base_price = price
+  assign base_compare_at_price = compare_at_price
 
-<span class="cc-price">
-  {{ price | money }}
+  if product
+    assign base_price = product.price
+    assign base_compare_at_price = product.compare_at_price
+  endif
+
+  assign final_price = base_price
+  assign final_compare_at_price = base_compare_at_price
+
+  if has_creator and cc_creator['cc-collab-discount-amount'] != blank
+    assign discount_amount = cc_creator['cc-collab-discount-amount'] | plus: 0
+    assign discount_type = cc_creator['cc-collab-discount-type']
+
+    if discount_type == 'Percentage'
+      assign discount_multiplier = 100 | minus: discount_amount | divided_by: 100.0
+      assign final_price = base_price | times: discount_multiplier | round
+      assign final_compare_at_price = base_price
+    elsif discount_type == 'Fixed'
+      assign discount_cents = discount_amount | times: 100
+      assign final_price = base_price | minus: discount_cents
+      if final_price < 0
+        assign final_price = 0
+      endif
+      assign final_compare_at_price = base_price
+    endif
+  endif
+%}
+
+<span class="{{ class | default: 'cc-price' }}">
+  {{ final_price | money }}
 </span>
-{% if compare_at_price > price %}
-  <span class="cc-price--compare">{{ compare_at_price | money }}</span>
+{% if final_compare_at_price > final_price %}
+  <span class="{{ compare_class | default: 'cc-price--compare' }}">
+    {{ final_compare_at_price | money }}
+  </span>
 {% endif %}
 ```
 
-## Use Everywhere
+## Apply Theme-Wide (Two Paths)
 
-Replace price displays throughout your theme:
+### Path A: Render `cc-price` Everywhere You Output Price
+
+Replace price displays throughout your sections/snippets:
 
 ```liquid
 {% comment %} Before {% endcomment %}
@@ -70,9 +105,59 @@ Replace price displays throughout your theme:
 {% render 'cc-price', product: product %}
 ```
 
+### Path B: Patch Your Theme's Native Price Snippet (`snippets/price.liquid`)
+
+If your theme centralizes pricing in `snippets/price.liquid` (common in Dawn and Dawn-based themes), patch that snippet once and your pricing logic propagates to most cards, grids, and PDP modules:
+
+```liquid
+{%- comment -%}
+  At the point where price is printed in snippets/price.liquid
+{%- endcomment -%}
+
+{% render 'cc-price',
+  product: product,
+  class: 'price-item price-item--sale',
+  compare_class: 'price-item price-item--compare'
+%}
+```
+
+<Tip>
+Patch `snippets/price.liquid` first, then spot-check modules that bypass it (custom cards, bundles, some app sections).
+</Tip>
+
+## Product Card Conventions (Collections, Drops, Search)
+
+### Standard Product Loops (Tabs or Dropdown Switching)
+
+For drops/collections rendered as tabs or dropdowns, each product card should print creator pricing at the card level:
+
+```liquid
+{% for product in collection.products %}
+  <article class="card-product">
+    <h3>{{ product.title }}</h3>
+    {% render 'cc-price', product: product %}
+  </article>
+{% endfor %}
+```
+
+### If You Built Your Own Product Card
+
+Render strike-through directly in your custom card:
+
+```liquid
+<div class="card__price">
+  {% render 'cc-price',
+    product: product,
+    class: 'price-item price-item--sale',
+    compare_class: 'price-item price-item--compare text-subdued line-through'
+  %}
+</div>
+```
+
 ## Key Locations to Update
 
 - Product cards (collection pages)
+- Drop tabs/dropdowns
 - Product detail page
 - Quick view modals
 - Cart line items
@@ -80,6 +165,55 @@ Replace price displays throughout your theme:
 - Recently viewed products
 - Search results
 - Featured product sections
+
+## Bundle Pricing Conventions (Signature Bundles / Add-All Flows)
+
+When rendering bundles, show both:
+- **Bundle compare total** (sum of base prices)
+- **Bundle discounted total** (sum after creator discount logic)
+
+```liquid
+{% liquid
+  assign bundle_compare_total = 0
+  assign bundle_discounted_total = 0
+%}
+
+{% for product in bundle_products %}
+  {% liquid
+    assign line_base = product.price
+    assign line_final = line_base
+
+    if has_creator and cc_creator['cc-collab-discount-amount'] != blank
+      assign discount_amount = cc_creator['cc-collab-discount-amount'] | plus: 0
+
+      if cc_creator['cc-collab-discount-type'] == 'Percentage'
+        assign line_multiplier = 100 | minus: discount_amount | divided_by: 100.0
+        assign line_final = line_base | times: line_multiplier | round
+      elsif cc_creator['cc-collab-discount-type'] == 'Fixed'
+        assign line_discount_cents = discount_amount | times: 100
+        assign line_final = line_base | minus: line_discount_cents
+        if line_final < 0
+          assign line_final = 0
+        endif
+      endif
+    endif
+
+    assign bundle_compare_total = bundle_compare_total | plus: line_base
+    assign bundle_discounted_total = bundle_discounted_total | plus: line_final
+  %}
+{% endfor %}
+
+<div class="bundle-price">
+  <span class="bundle-price__final">{{ bundle_discounted_total | money }}</span>
+  {% if bundle_compare_total > bundle_discounted_total %}
+    <span class="bundle-price__compare">{{ bundle_compare_total | money }}</span>
+  {% endif %}
+</div>
+```
+
+<Note>
+For fixed discounts, apply the fixed amount per product line in the bundle (not once across the full bundle total) to match cart-level reality.
+</Note>
 
 ## Cart Savings Display
 
@@ -95,10 +229,52 @@ Show customers how much they're saving:
     endif
   -%}
   <div class="cart-savings">
-    {{ cc_creator.cc-creator-first-name | escape }}'s discount saves you {{ savings | money }}
+    {{ cc_creator['cc-creator-first-name'] | escape }}'s discount saves you {{ savings | money }}
   </div>
 {% endif %}
 ```
+
+## Theme-Wide Visual Collab Signal (Header/Nav)
+
+Pricing is critical, but visual context also matters. Add a persistent nav pill that shows:
+- creator profile picture
+- `×`
+- brand logo
+
+```liquid
+{% if has_creator %}
+  <a class="cc-nav-collab-pill" href="{{ cc_creator['cc-collab-affiliate-link'] }}">
+    {% if cc_creator['cc-creator-profile-picture'] %}
+      <img
+        src="{{ cc_creator['cc-creator-profile-picture'] }}"
+        alt="{{ cc_creator['cc-creator-first-name'] | escape }}"
+        width="22"
+        height="22"
+        loading="lazy"
+      >
+    {% endif %}
+    <span aria-hidden="true">×</span>
+    {% if cc_creator['cc-channel-brandkit-primary-logo'] %}
+      <img
+        src="{{ cc_creator['cc-channel-brandkit-primary-logo'] }}"
+        alt="{{ cc_creator['cc-channel-brandkit-title'] | default: shop.name | escape }}"
+        height="14"
+        loading="lazy"
+      >
+    {% endif %}
+  </a>
+{% endif %}
+```
+
+## Pop-up UX Tactics (Pricing + Identity)
+
+If you run pop-ups while creator context is active:
+- include creator avatar in the popup header
+- keep one primary CTA (copy code *or* shop now, not both as equal buttons)
+- suppress generic site popups for creator traffic
+- frequency-cap per session/per creator to avoid fatigue
+
+See [Co-branded Pop-ups](/guides/storefronts/co-branded-popups) for implementation patterns.
 
 ## Checkout Consistency
 
@@ -125,4 +301,6 @@ If your store sells subscriptions, be mindful of how visual discounts interact w
 
 - [Personalize Product Pages](/guides/storefronts/personalize-product-pages)
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)
+- [Co-branded Pop-ups](/guides/storefronts/co-branded-popups)
+- [App Blocks 101](/guides/storefronts/app-blocks-101)
 - [SDK Getting Started](/references/sdk/getting-started)

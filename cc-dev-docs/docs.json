@@ -1,28 +1,28 @@
 {
-   "$schema":"https://mintlify.com/docs.json",
-   "theme":"mint",
-   "name":"CreatorCommerce.dev",
-      "logo": {
-        "light": "https://assets.creatorcommerce.shop/dx-back-icon.png",
-        "dark": "https://assets.creatorcommerce.shop/dx-red-icon.png",
-        "href": "https://creatorcommerce.dev"
-      },
-   "colors":{
-      "primary":"#FF4438",
-      "light":"#FF4438",
-      "dark":"#FF4438"
+   "$schema": "https://mintlify.com/docs.json",
+   "theme": "mint",
+   "name": "CreatorCommerce.dev",
+   "logo": {
+      "light": "https://assets.creatorcommerce.shop/dx-back-icon.png",
+      "dark": "https://assets.creatorcommerce.shop/dx-red-icon.png",
+      "href": "https://creatorcommerce.dev"
    },
-      "background": {
-        "color": {
-          "light": "#FFFFFF",
-          "dark": "#22201F" 
-        }
-      },
-   "mcp":{
-      "enabled":true
+   "colors": {
+      "primary": "#FF4438",
+      "light": "#FF4438",
+      "dark": "#FF4438"
    },
-   "contextual":{
-      "options":[
+   "background": {
+      "color": {
+         "light": "#FFFFFF",
+         "dark": "#22201F"
+      }
+   },
+   "mcp": {
+      "enabled": true
+   },
+   "contextual": {
+      "options": [
          "copy",
          "chatgpt",
          "claude",
@@ -32,32 +32,32 @@
          "mcp"
       ]
    },
-   "navbar":{
-      "links":[
+   "navbar": {
+      "links": [
          {
-            "label":"help@creatorcommerce.shop",
-            "href":"mailto:help@creatorcommerce.shop"
+            "label": "help@creatorcommerce.shop",
+            "href": "mailto:help@creatorcommerce.shop"
          }
       ],
-      "primary":{
-         "type":"button",
-         "label":"Book a discovery call",
-         "href":"https://cal.com/team/creatorcommerce/creator-commerce-consultation"
+      "primary": {
+         "type": "button",
+         "label": "Book a discovery call",
+         "href": "https://cal.com/team/creatorcommerce/creator-commerce-consultation"
       }
    },
-   "navigation":{
-      "tabs":[
+   "navigation": {
+      "tabs": [
          {
-            "tab":"Developer Platform",
-            "anchors":[
+            "tab": "Developer Platform",
+            "anchors": [
                {
-                  "anchor":"Developer Guide",
-                  "icon":"book-open",
-                  "groups":[
+                  "anchor": "Developer Guide",
+                  "icon": "book-open",
+                  "groups": [
                      {
-                        "group":"FIRST STEPS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "FIRST STEPS",
+                        "expanded": false,
+                        "pages": [
                            "guides/getting-started",
                            "guides/how-to-use-these-docs",
                            "guides/the-3-ms",
@@ -68,14 +68,21 @@
                         ]
                      },
                      {
-                        "group":"CAPABILITIES",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CAPABILITIES",
+                        "expanded": false,
+                        "pages": [
                            {
-                              "group":"Core Platform Features",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Core Platform Features",
+                              "expanded": false,
+                              "pages": [
                                  "guides/features/how-features-connect",
+                                 {
+                                    "group": "Core Platform Settings",
+                                    "expanded": false,
+                                    "pages": [
+                                       "guides/initial-settings"
+                                    ]
+                                 },
                                  "guides/features/co-branded-landing-pages",
                                  "guides/features/co-branded-product-pages",
                                  "guides/features/co-branded-carts-checkout",
@@ -92,13 +99,13 @@
                               ]
                            },
                            {
-                              "group":"Developer Use Cases",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Developer Use Cases",
+                              "expanded": false,
+                              "pages": [
                                  {
-                                    "group":"Quick Start Guides",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "Quick Start Guides",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/dev/create-collaboration-integration",
                                        "guides/dev/co-brand-shopify-theme",
                                        "guides/dev/build-custom-forms-dashboards",
@@ -114,17 +121,17 @@
                                     ]
                                  },
                                  {
-                                    "group":"Base Case Funnel Tests",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "Base Case Funnel Tests",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/dev/base-funnels/overview",
                                        "guides/dev/base-funnels/net-new-funnels"
                                     ]
                                  },
                                  {
-                                    "group":"Critical Path Building",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "Critical Path Building",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/dev/critical-path/overview",
                                        "guides/dev/critical-path/focus-frontend",
                                        "guides/dev/critical-path/cap-costs",
@@ -137,9 +144,9 @@
                                     ]
                                  },
                                  {
-                                    "group":"The Build Spectrum",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "The Build Spectrum",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/dev/build-spectrum/overview",
                                        "guides/dev/build-spectrum/app-blocks",
                                        "guides/dev/build-spectrum/theme-sections",
@@ -151,75 +158,75 @@
                               ]
                            },
                            {
-                              "group":"Merchant Use Cases",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Merchant Use Cases",
+                              "expanded": false,
+                              "pages": [
                                  {
-                                    "group":"End-to-End Collaboration Strategy",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "End-to-End Collaboration Strategy",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/collab-strategy/overview",
                                        {
-                                          "group":"Step 0: Segment Strategy",
-                                          "pages":[
+                                          "group": "Step 0: Segment Strategy",
+                                          "pages": [
                                              "guides/collab-strategy/segment-strategy"
                                           ]
                                        },
                                        {
-                                          "group":"Step 1: Partner Enrollment",
-                                          "pages":[
+                                          "group": "Step 1: Partner Enrollment",
+                                          "pages": [
                                              "guides/collab-strategy/partner-enrollment"
                                           ]
                                        },
                                        {
-                                          "group":"Step 2: Partner Activation",
-                                          "pages":[
+                                          "group": "Step 2: Partner Activation",
+                                          "pages": [
                                              "guides/collab-strategy/partner-activation"
                                           ]
                                        },
                                        {
-                                          "group":"Step 3: Co-branded Storefronts",
-                                          "pages":[
+                                          "group": "Step 3: Co-branded Storefronts",
+                                          "pages": [
                                              "guides/collab-strategy/co-branded-storefronts"
                                           ]
                                        },
                                        {
-                                          "group":"Step 4: Funnel Details",
-                                          "pages":[
+                                          "group": "Step 4: Funnel Details",
+                                          "pages": [
                                              "guides/collab-strategy/funnel-details",
                                              "guides/collab-strategy/your-first-two-funnels"
                                           ]
                                        },
                                        {
-                                          "group":"Step 5: Launch & Track",
-                                          "pages":[
+                                          "group": "Step 5: Launch & Track",
+                                          "pages": [
                                              "guides/collab-strategy/launch-track"
                                           ]
                                        },
                                        {
-                                          "group":"Step 6: Optimize",
-                                          "pages":[
+                                          "group": "Step 6: Optimize",
+                                          "pages": [
                                              "guides/collab-strategy/optimize",
                                              "guides/collab-strategy/scaling-your-program"
                                           ]
                                        },
                                        {
-                                          "group":"Step 7: Advanced Strategies",
-                                          "pages":[
+                                          "group": "Step 7: Advanced Strategies",
+                                          "pages": [
                                              "guides/collab-strategy/advanced"
                                           ]
                                        }
                                     ]
                                  },
-                                {
-                                   "group":"Quick Start Guides",
-                                   "expanded":false,
-                                   "pages":[
-                                      "use-cases/what-you-can-build",
-                                      "use-cases/funnel-architecture-by-brand-category",
-                                      "guides/make-your-first-collabs",
-                                      "guides/make-your-first-shopping-experiences",
-                                      "guides/connect-your-tech-stack",
+                                 {
+                                    "group": "Quick Start Guides",
+                                    "expanded": false,
+                                    "pages": [
+                                       "use-cases/what-you-can-build",
+                                       "use-cases/funnel-architecture-by-brand-category",
+                                       "guides/make-your-first-collabs",
+                                       "guides/make-your-first-shopping-experiences",
+                                       "guides/connect-your-tech-stack",
                                        "guides/collect-creator-content",
                                        "guides/send-co-branded-emails",
                                        "guides/create-workflow-automation",
@@ -230,9 +237,9 @@
                                     ]
                                  },
                                  {
-                                    "group":"Reporting",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "Reporting",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/attribute-analyze",
                                        "use-cases/funnel-analytics",
                                        "guides/collab-strategy/assess-cc-roi",
@@ -241,9 +248,9 @@
                                  },
                                  "partner-ad-playbooks",
                                  {
-                                    "group":"Campaign Ideas",
-                                    "expanded":false,
-                                    "pages":[
+                                    "group": "Campaign Ideas",
+                                    "expanded": false,
+                                    "pages": [
                                        "guides/campaigns/overview",
                                        "guides/campaigns/holiday-shopping-lists",
                                        "guides/campaigns/back-to-school",
@@ -255,9 +262,9 @@
                               ]
                            },
                            {
-                              "group":"Use Cases for AI",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Use Cases for AI",
+                              "expanded": false,
+                              "pages": [
                                  "ai-guides/ai-broad-strokes-onboarding",
                                  "ai-guides/ai-guide-first-landing-page",
                                  "ai-guides/ai-theme-edits",
@@ -271,36 +278,36 @@
                         ]
                      },
                      {
-                        "group":"RESOURCES",
-                        "pages":[
+                        "group": "RESOURCES",
+                        "pages": [
                            {
-                              "group":"Cursor Setup",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Cursor Setup",
+                              "expanded": false,
+                              "pages": [
                                  "guides/cursor-coding",
                                  "guides/cursor-rules"
                               ]
                            },
                            {
-                              "group":"Codex Setup",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Codex Setup",
+                              "expanded": false,
+                              "pages": [
                                  "guides/codex-coding"
                               ]
                            },
                            {
-                              "group":"Claude Setup",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Claude Setup",
+                              "expanded": false,
+                              "pages": [
                                  "guides/claude-coding",
                                  "guides/claude-rules"
                               ]
                            },
                            "guides/shopify-mcp",
                            {
-                              "group":"Figma Setup",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Figma Setup",
+                              "expanded": false,
+                              "pages": [
                                  "guides/figma-mcp",
                                  "guides/designing-for-cobranded-ui",
                                  "guides/designing-a-dashboard-for-collaboration"
@@ -312,13 +319,13 @@
                   ]
                },
                {
-                  "anchor":"References",
-                  "icon":"square-terminal",
-                  "groups":[
+                  "anchor": "References",
+                  "icon": "square-terminal",
+                  "groups": [
                      {
-                        "group":"DATA MODEL",
-                        "expanded":false,
-                        "pages":[
+                        "group": "DATA MODEL",
+                        "expanded": false,
+                        "pages": [
                            "references/data-model-overview",
                            "references/creator-collab-data-model",
                            "references/drops-products-data-model",
@@ -328,9 +335,9 @@
                         ]
                      },
                      {
-                        "group":"SHOPIFY",
-                        "expanded":false,
-                        "pages":[
+                        "group": "SHOPIFY",
+                        "expanded": false,
+                        "pages": [
                            "references/sdk/referencing-creator-content",
                            "references/order-customer-tags",
                            "references/why-collections",
@@ -338,69 +345,89 @@
                         ]
                      },
                      {
-                        "group":"SDKS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "SDKS",
+                        "expanded": false,
+                        "pages": [
                            "references/sdk/getting-started",
                            "references/sdk/referencing-creator-content"
                         ]
                      },
                      {
-                        "group":"TRACKING & ATTRIBUTION",
-                        "expanded":false,
-                        "pages":[
+                        "group": "TRACKING & ATTRIBUTION",
+                        "expanded": false,
+                        "pages": [
                            "references/order-customer-tags",
                            "references/affiliate-link-tracking"
                         ]
                      },
                      {
-                        "group":"UNIFIED API",
-                        "expanded":false,
-                        "pages":[
+                        "group": "UNIFIED API",
+                        "expanded": false,
+                        "pages": [
                            "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication",
                            {
-                              "group":"Endpoints",
-                              "expanded":false,
+                              "group": "Endpoints",
+                              "expanded": false,
                               "openapi": "api-reference/unified-api.yaml",
-                              "pages":[
-                                   "GET /channels/{myshopifyDomain}/creators/magic-link",
-                                   "GET /channels/{myshopifyDomain}/collabs",
-                                   "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                                   "GET /channels/{myshopifyDomain}/collab-tiers",
-                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                                   "GET /creators/{creatorId}/drops/{dropId}/cart",
-                                   "GET /creators/collabs",
-                                   "POST /creators/collabs",
-                                   "POST /creators/collabs/{collabId}",
-                                   "POST /creators/collabs/{collabId}/drops",
-                                   "POST /creators/collabs/{collabId}/drops/{dropId}"
-                                 ]
+                              "pages": [
+                                 "GET /creators/{creatorId}/drops/{dropId}/cart",
+                                 "GET /storage/presigned-url",
+                                 "GET /channels/{myshopifyDomain}",
+                                 "GET /channels/{myshopifyDomain}/creators/magic-link",
+                                 "POST /channels/{myshopifyDomain}/integrations/connect",
+                                 "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                                 "POST /channels/{myshopifyDomain}/settings",
+                                 "GET /channels/{myshopifyDomain}/collabs",
+                                 "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "GET /channels/{myshopifyDomain}/collab-tiers",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                                 "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                                 "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                                 "GET /channels/{myshopifyDomain}/form-definitions",
+                                 "POST /channels/{myshopifyDomain}/form-definitions",
+                                 "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                                 "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                                 "GET /channels/{myshopifyDomain}/campaigns",
+                                 "POST /channels/{myshopifyDomain}/campaigns",
+                                 "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                                 "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                                 "GET /channels/{myshopifyDomain}/metrics/session",
+                                 "GET /channels/{myshopifyDomain}/metrics/revenue",
+                                 "GET /creators/{creatorId}/forms",
+                                 "GET /creators/collabs",
+                                 "POST /creators/collabs",
+                                 "POST /creators/collabs/{collabId}",
+                                 "POST /creators/collabs/{collabId}/drops",
+                                 "POST /creators/collabs/{collabId}/drops/{dropId}",
+                                 "GET /integrations/listings"
+                              ]
                            },
                            {
-                              "group":"Shopify Flow actions",
-                              "pages":[
+                              "group": "Shopify Flow actions",
+                              "pages": [
                                  "references/shopify-flow-actions"
                               ]
                            }
                         ]
                      },
                      {
-                        "group":"WEBHOOKS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "WEBHOOKS",
+                        "expanded": false,
+                        "pages": [
                            "references/webhooks-overview",
                            "references/webhooks-shopify-flow",
-                           "references/webhooks-klaviyo"
+                           "references/klaviyo-two-sides"
                         ]
                      },
                      {
-                        "group":"KLAVIYO",
-                        "expanded":false,
-                        "pages":[
+                        "group": "KLAVIYO",
+                        "expanded": false,
+                        "pages": [
                            "references/klaviyo-two-sides",
                            "guides/emails/variables-reference",
                            "guides/creator-emails/variables-reference"
@@ -411,19 +438,20 @@
             ]
          },
          {
-            "tab":"Consumer Experiences",
-            "anchors":[
+            "tab": "Consumer Experiences",
+            "anchors": [
                {
-                  "anchor":"Co-branded Storefronts",
-                  "icon":"browser",
-                  "groups":[
+                  "anchor": "Co-branded Storefronts",
+                  "icon": "browser",
+                  "groups": [
                      {
-                        "group":"GETTING STARTED",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GETTING STARTED",
+                        "expanded": false,
+                        "pages": [
                            "guides/co-branded-storefronts",
                            "guides/storefronts/destinations-explained",
                            "references/sdk/getting-started",
+                           "references/shopify-integration-data-model",
                            "guides/storefronts/full-funnel-personalization",
                            "guides/storefronts/enable-tracking",
                            "guides/storefronts/co-branded-storefront-ui-glossary",
@@ -431,63 +459,63 @@
                         ]
                      },
                      {
-                        "group":"LANDING PAGES",
-                        "expanded":false,
-                        "pages":[
+                        "group": "LANDING PAGES",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/landing-pages-overview",
                            "guides/storefronts/getting-started-landing-pages",
                            "guides/storefronts/create-landing-page-template"
                         ]
                      },
                      {
-                        "group":"PRODUCT LISTS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "PRODUCT LISTS",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/showcase-product-lists"
                         ]
                      },
                      {
-                        "group":"PRODUCT PAGES",
-                        "expanded":false,
-                        "pages":[
+                        "group": "PRODUCT PAGES",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/personalize-product-pages"
                         ]
                      },
                      {
-                        "group":"POP-UPS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "POP-UPS",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/co-branded-popups"
                         ]
                      },
                      {
-                        "group":"CART & CHECKOUT",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CART & CHECKOUT",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/cart-checkout-overview",
                            "guides/storefronts/conditional-checkout-block"
                         ]
                      },
                      {
-                        "group":"CREATOR DIRECTORIES",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CREATOR DIRECTORIES",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/creator-directory"
                         ]
                      },
                      {
-                        "group":"THEME-WIDE COMPONENTS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "THEME-WIDE COMPONENTS",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/discount-prices-theme-wide",
                            "guides/storefronts/share-banner-copy-settings",
                            "guides/storefronts/dynamic-content-snippet"
                         ]
                      },
                      {
-                        "group":"OPERATIONS & LAUNCH",
-                        "expanded":false,
-                        "pages":[
+                        "group": "OPERATIONS & LAUNCH",
+                        "expanded": false,
+                        "pages": [
                            "guides/storefronts/post-launch-ecomm-team",
                            "guides/storefronts/migrate-existing-sections",
                            "guides/storefronts/hide-cc-collections"
@@ -496,13 +524,13 @@
                   ]
                },
                {
-                  "anchor":"Content Workflows",
-                  "icon":"diagram-project",
-                  "groups":[
+                  "anchor": "Content Workflows",
+                  "icon": "diagram-project",
+                  "groups": [
                      {
-                        "group":"GETTING STARTED",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GETTING STARTED",
+                        "expanded": false,
+                        "pages": [
                            "guides/enrichment-flows",
                            "guides/enrichment/getting-started/shopify-flow-overview",
                            "guides/enrichment/getting-started/triggers-actions",
@@ -510,35 +538,35 @@
                         ]
                      },
                      {
-                        "group":"FETCHING DATA",
-                        "expanded":false,
-                        "pages":[
+                        "group": "FETCHING DATA",
+                        "expanded": false,
+                        "pages": [
                            "guides/enrichment/fetching/order-history",
                            "guides/enrichment/fetching/external-apis"
                         ]
                      },
                      {
-                        "group":"GENERATING DATA",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GENERATING DATA",
+                        "expanded": false,
+                        "pages": [
                            "guides/enrichment/generating/ai-content-overview",
                            "guides/enrichment/generating/nano-banana",
                            "guides/enrichment/generating/openai-claude"
                         ]
                      },
                      {
-                        "group":"OPERATIONS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "OPERATIONS",
+                        "expanded": false,
+                        "pages": [
                            "guides/enrichment/operations/link-redirects",
                            "guides/enrichment/operations/shopify-data",
                            "guides/enrichment/operations/discount-codes"
                         ]
                      },
                      {
-                        "group":"AI DISCOVERABILITY",
-                        "expanded":false,
-                        "pages":[
+                        "group": "AI DISCOVERABILITY",
+                        "expanded": false,
+                        "pages": [
                            "guides/enrichment/ai-discovery/structuring-data",
                            "guides/enrichment/ai-discovery/processing-data"
                         ]
@@ -546,13 +574,13 @@
                   ]
                },
                {
-                  "anchor":"Co-branded Emails",
-                  "icon":"envelope",
-                  "groups":[
+                  "anchor": "Co-branded Emails",
+                  "icon": "envelope",
+                  "groups": [
                      {
-                        "group":"GETTING STARTED",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GETTING STARTED",
+                        "expanded": false,
+                        "pages": [
                            "guides/co-branded-messaging",
                            "guides/emails/data-flow-explained",
                            "guides/emails/enable-connections",
@@ -560,9 +588,9 @@
                         ]
                      },
                      {
-                        "group":"MESSAGE FLOWS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "MESSAGE FLOWS",
+                        "expanded": false,
+                        "pages": [
                            "guides/emails/variables-reference",
                            "guides/emails/cart-abandonment",
                            "guides/emails/post-purchase",
@@ -571,9 +599,9 @@
                         ]
                      },
                      {
-                        "group":"OPERATIONS & MIGRATION",
-                        "expanded":false,
-                        "pages":[
+                        "group": "OPERATIONS & MIGRATION",
+                        "expanded": false,
+                        "pages": [
                            "guides/emails/structure-existing-flows"
                         ]
                      }
@@ -582,16 +610,16 @@
             ]
          },
          {
-            "tab":"Creator Experiences",
-            "anchors":[
+            "tab": "Creator Experiences",
+            "anchors": [
                {
-                  "anchor":"DASHBOARDS & FORMS",
-                  "icon":"grid",
-                  "groups":[
+                  "anchor": "DASHBOARDS & FORMS",
+                  "icon": "grid",
+                  "groups": [
                      {
-                        "group":"GETTING STARTED",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GETTING STARTED",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-dashboard",
                            "guides/creator-experience/getting-started/collecting-content",
                            "guides/creator-experience/getting-started/entry-points",
@@ -600,15 +628,15 @@
                         ]
                      },
                      {
-                        "group":"CC FORMS & DASHBOARD",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CC FORMS & DASHBOARD",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-experience/forms/overview",
                            "guides/creator-experience/forms/links-auth",
                            {
-                              "group":"Forms",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Forms",
+                              "expanded": false,
+                              "pages": [
                                  "guides/creator-experience/forms/onboarding/overview",
                                  "guides/creator-experience/forms/collection/overview",
                                  "guides/creator-experience/forms/product/overview",
@@ -616,9 +644,9 @@
                               ]
                            },
                            {
-                              "group":"Custom CSS",
-                              "expanded":false,
-                              "pages":[
+                              "group": "Custom CSS",
+                              "expanded": false,
+                              "pages": [
                                  "references/dashboard-overview-css",
                                  "references/css-reference",
                                  "references/css-applied-examples"
@@ -627,18 +655,18 @@
                         ]
                      },
                      {
-                        "group":"CUSTOMER ACCOUNTS UI",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CUSTOMER ACCOUNTS UI",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-experience/customer-accounts/overview",
                            "guides/creator-experience/customer-accounts/legacy",
                            "guides/creator-experience/customer-accounts/new"
                         ]
                      },
                      {
-                        "group":"BUILD YOUR OWN DASHBOARD",
-                        "expanded":false,
-                        "pages":[
+                        "group": "BUILD YOUR OWN DASHBOARD",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-experience/build-your-own/overview",
                            "guides/creator-experience/build-your-own/hosting",
                            "guides/creator-experience/build-your-own/auth",
@@ -647,48 +675,74 @@
                            "references/api-overview",
                            "guides/authentication",
                            {
-                              "group":"Endpoints",
-                              "expanded":false,
+                              "group": "Endpoints",
+                              "expanded": false,
                               "openapi": "api-reference/unified-api.yaml",
-                              "pages":[
-                                  "GET /creators/{creatorId}/drops/{dropId}/cart",
-                                   "GET /channels/{myshopifyDomain}/creators/magic-link",
-                                   "GET /creators/collabs",
-                                   "POST /creators/collabs",
-                                   "POST /creators/collabs/{collabId}",
-                                   "POST /creators/collabs/{collabId}/drops",
-                                   "POST /creators/collabs/{collabId}/drops/{dropId}"
-                                 ]
+                              "pages": [
+                                 "GET /creators/{creatorId}/drops/{dropId}/cart",
+                                 "GET /storage/presigned-url",
+                                 "GET /channels/{myshopifyDomain}",
+                                 "GET /channels/{myshopifyDomain}/creators/magic-link",
+                                 "POST /channels/{myshopifyDomain}/integrations/connect",
+                                 "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                                 "POST /channels/{myshopifyDomain}/settings",
+                                 "GET /channels/{myshopifyDomain}/collabs",
+                                 "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "GET /channels/{myshopifyDomain}/collab-tiers",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                                 "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                                 "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                                 "GET /channels/{myshopifyDomain}/form-definitions",
+                                 "POST /channels/{myshopifyDomain}/form-definitions",
+                                 "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                                 "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                                 "GET /channels/{myshopifyDomain}/campaigns",
+                                 "POST /channels/{myshopifyDomain}/campaigns",
+                                 "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                                 "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                                 "GET /channels/{myshopifyDomain}/metrics/session",
+                                 "GET /channels/{myshopifyDomain}/metrics/revenue",
+                                 "GET /creators/{creatorId}/forms",
+                                 "GET /creators/collabs",
+                                 "POST /creators/collabs",
+                                 "POST /creators/collabs/{collabId}",
+                                 "POST /creators/collabs/{collabId}/drops",
+                                 "POST /creators/collabs/{collabId}/drops/{dropId}",
+                                 "GET /integrations/listings"
+                              ]
                            }
                         ]
                      }
                   ]
                },
                {
-                  "anchor":"Creator Message Flows",
-                  "icon":"comments",
-                  "groups":[
+                  "anchor": "Creator Message Flows",
+                  "icon": "comments",
+                  "groups": [
                      {
-                        "group":"GETTING STARTED",
-                        "expanded":false,
-                        "pages":[
+                        "group": "GETTING STARTED",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-messaging",
                            "guides/creator-experience/messaging/overview"
                         ]
                      },
                      {
-                        "group":"MESSAGE FLOWS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "MESSAGE FLOWS",
+                        "expanded": false,
+                        "pages": [
                            "guides/creator-experience/messaging/welcome-flows",
                            "guides/creator-experience/messaging/activation-flows",
                            "guides/creator-experience/messaging/performance-updates"
                         ]
                      },
                      {
-                        "group":"KLAVIYO",
-                        "expanded":false,
-                        "pages":[
+                        "group": "KLAVIYO",
+                        "expanded": false,
+                        "pages": [
                            "references/klaviyo-two-sides",
                            "guides/creator-emails/variables-reference"
                         ]
@@ -698,23 +752,23 @@
             ]
          },
          {
-            "tab":"Partner Integrations",
-            "anchors":[
+            "tab": "Partner Integrations",
+            "anchors": [
                {
-                  "anchor":"Integrations",
-                  "icon":"plug",
-                  "groups":[
+                  "anchor": "Integrations",
+                  "icon": "plug",
+                  "groups": [
                      {
-                        "group":"OVERVIEW",
-                        "expanded":false,
-                        "pages":[
+                        "group": "OVERVIEW",
+                        "expanded": false,
+                        "pages": [
                            "guides/integrations/overview"
                         ]
                      },
                      {
-                        "group":"AFFILIATE & INFLUENCER",
-                        "expanded":false,
-                        "pages":[
+                        "group": "AFFILIATE & INFLUENCER",
+                        "expanded": false,
+                        "pages": [
                            "guides/integrations/affiliate/social-snowball",
                            "guides/integrations/affiliate/refersion",
                            "guides/integrations/affiliate/grin",
@@ -727,25 +781,25 @@
                         ]
                      },
                      {
-                        "group":"EMAIL & SMS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "EMAIL & SMS",
+                        "expanded": false,
+                        "pages": [
                            "guides/integrations/email-sms/klaviyo",
                            "guides/integrations/email-sms/mailchimp",
                            "guides/integrations/email-sms/attentive"
                         ]
                      },
                      {
-                        "group":"CONTENT & AUTOMATION",
-                        "expanded":false,
-                        "pages":[
+                        "group": "CONTENT & AUTOMATION",
+                        "expanded": false,
+                        "pages": [
                            "guides/integrations/content-automation/shopify-flow"
                         ]
                      },
                      {
-                        "group":"ANALYTICS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "ANALYTICS",
+                        "expanded": false,
+                        "pages": [
                            "guides/integrations/analytics/affiliate-platforms",
                            "guides/integrations/analytics/shopify"
                         ]
@@ -753,9 +807,9 @@
                   ]
                },
                {
-                  "anchor":"Build an Integration",
-                  "icon":"hammer",
-                  "pages":[
+                  "anchor": "Build an Integration",
+                  "icon": "hammer",
+                  "pages": [
                      "guides/integrations/build-integration",
                      "guides/integrations/build/merchant-auth",
                      "guides/integrations/build/custom-webhook",
@@ -767,12 +821,12 @@
             ]
          },
          {
-            "tab":"MCP",
-            "anchors":[
+            "tab": "MCP",
+            "anchors": [
                {
-                  "anchor":"Connect to MCP",
-                  "icon":"plug",
-                  "pages":[
+                  "anchor": "Connect to MCP",
+                  "icon": "plug",
+                  "pages": [
                      "guides/mcp",
                      "guides/mcp-examples"
                   ]
@@ -780,65 +834,190 @@
             ]
          },
          {
-            "tab":"References",
-            "menu":[
+            "tab": "References",
+            "menu": [
                {
-                  "item":"Unified API",
-                  "icon":"square-terminal",
-                  "groups":[
+                  "item": "Unified API",
+                  "icon": "square-terminal",
+                  "groups": [
                      {
-                        "group":"Getting Started",
-                        "expanded":false,
-                        "pages":[
+                        "group": "Getting Started",
+                        "expanded": false,
+                        "pages": [
                            "references/api-overview",
                            "guides/authentication"
                         ]
                      },
                      {
-                        "group":"Checkout",
-                        "expanded":false,
+                        "group": "Checkout",
+                        "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
-                        "pages":[
-                           "GET /creators/{creatorId}/drops/{dropId}/cart"
-                        ]
-                     },
-                     {
-                        "group":"Magic Links",
-                        "expanded":false,
-                        "openapi": "api-reference/unified-api.yaml",
-                        "pages":[
-                           "GET /channels/{myshopifyDomain}/creators/magic-link"
-                        ]
-                     },
-                     {
-                        "group":"Collabs",
-                        "expanded":false,
-                        "openapi": "api-reference/unified-api.yaml",
-                        "pages":[
+                        "pages": [
+                           "GET /creators/{creatorId}/drops/{dropId}/cart",
+                           "GET /storage/presigned-url",
+                           "GET /channels/{myshopifyDomain}",
+                           "GET /channels/{myshopifyDomain}/creators/magic-link",
+                           "POST /channels/{myshopifyDomain}/integrations/connect",
+                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                           "POST /channels/{myshopifyDomain}/settings",
+                           "GET /channels/{myshopifyDomain}/collabs",
+                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "GET /channels/{myshopifyDomain}/collab-tiers",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions",
+                           "POST /channels/{myshopifyDomain}/form-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "GET /channels/{myshopifyDomain}/campaigns",
+                           "POST /channels/{myshopifyDomain}/campaigns",
+                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "GET /channels/{myshopifyDomain}/metrics/session",
+                           "GET /channels/{myshopifyDomain}/metrics/revenue",
+                           "GET /creators/{creatorId}/forms",
                            "GET /creators/collabs",
                            "POST /creators/collabs",
-                           "POST /creators/collabs/{collabId}"
+                           "POST /creators/collabs/{collabId}",
+                           "POST /creators/collabs/{collabId}/drops",
+                           "POST /creators/collabs/{collabId}/drops/{dropId}",
+                           "GET /integrations/listings"
                         ]
                      },
                      {
-                        "group":"Drops",
-                        "expanded":false,
+                        "group": "Magic Links",
+                        "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
-                        "pages":[
+                        "pages": [
+                           "GET /creators/{creatorId}/drops/{dropId}/cart",
+                           "GET /storage/presigned-url",
+                           "GET /channels/{myshopifyDomain}",
+                           "GET /channels/{myshopifyDomain}/creators/magic-link",
+                           "POST /channels/{myshopifyDomain}/integrations/connect",
+                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                           "POST /channels/{myshopifyDomain}/settings",
+                           "GET /channels/{myshopifyDomain}/collabs",
+                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "GET /channels/{myshopifyDomain}/collab-tiers",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions",
+                           "POST /channels/{myshopifyDomain}/form-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "GET /channels/{myshopifyDomain}/campaigns",
+                           "POST /channels/{myshopifyDomain}/campaigns",
+                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "GET /channels/{myshopifyDomain}/metrics/session",
+                           "GET /channels/{myshopifyDomain}/metrics/revenue",
+                           "GET /creators/{creatorId}/forms",
+                           "GET /creators/collabs",
+                           "POST /creators/collabs",
+                           "POST /creators/collabs/{collabId}",
                            "POST /creators/collabs/{collabId}/drops",
-                           "POST /creators/collabs/{collabId}/drops/{dropId}"
+                           "POST /creators/collabs/{collabId}/drops/{dropId}",
+                           "GET /integrations/listings"
+                        ]
+                     },
+                     {
+                        "group": "Collabs",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
+                           "GET /creators/{creatorId}/drops/{dropId}/cart",
+                           "GET /storage/presigned-url",
+                           "GET /channels/{myshopifyDomain}",
+                           "GET /channels/{myshopifyDomain}/creators/magic-link",
+                           "POST /channels/{myshopifyDomain}/integrations/connect",
+                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                           "POST /channels/{myshopifyDomain}/settings",
+                           "GET /channels/{myshopifyDomain}/collabs",
+                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "GET /channels/{myshopifyDomain}/collab-tiers",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions",
+                           "POST /channels/{myshopifyDomain}/form-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "GET /channels/{myshopifyDomain}/campaigns",
+                           "POST /channels/{myshopifyDomain}/campaigns",
+                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "GET /channels/{myshopifyDomain}/metrics/session",
+                           "GET /channels/{myshopifyDomain}/metrics/revenue",
+                           "GET /creators/{creatorId}/forms",
+                           "GET /creators/collabs",
+                           "POST /creators/collabs",
+                           "POST /creators/collabs/{collabId}",
+                           "POST /creators/collabs/{collabId}/drops",
+                           "POST /creators/collabs/{collabId}/drops/{dropId}",
+                           "GET /integrations/listings"
+                        ]
+                     },
+                     {
+                        "group": "Drops",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
+                           "GET /creators/{creatorId}/drops/{dropId}/cart",
+                           "GET /storage/presigned-url",
+                           "GET /channels/{myshopifyDomain}",
+                           "GET /channels/{myshopifyDomain}/creators/magic-link",
+                           "POST /channels/{myshopifyDomain}/integrations/connect",
+                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                           "POST /channels/{myshopifyDomain}/settings",
+                           "GET /channels/{myshopifyDomain}/collabs",
+                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                           "GET /channels/{myshopifyDomain}/collab-tiers",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions",
+                           "POST /channels/{myshopifyDomain}/form-definitions",
+                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "GET /channels/{myshopifyDomain}/campaigns",
+                           "POST /channels/{myshopifyDomain}/campaigns",
+                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "GET /channels/{myshopifyDomain}/metrics/session",
+                           "GET /channels/{myshopifyDomain}/metrics/revenue",
+                           "GET /creators/{creatorId}/forms",
+                           "GET /creators/collabs",
+                           "POST /creators/collabs",
+                           "POST /creators/collabs/{collabId}",
+                           "POST /creators/collabs/{collabId}/drops",
+                           "POST /creators/collabs/{collabId}/drops/{dropId}",
+                           "GET /integrations/listings"
                         ]
                      }
                   ]
                },
                {
-                  "item":"Data Model",
-                  "icon":"database",
-                  "groups":[
+                  "item": "Data Model",
+                  "icon": "database",
+                  "groups": [
                      {
-                        "group":"DATA MODEL",
-                        "expanded":false,
-                        "pages":[
+                        "group": "DATA MODEL",
+                        "expanded": false,
+                        "pages": [
                            "references/creator-collab-data-model",
                            "references/shopify-integration-data-model",
                            "guides/glossary"
@@ -847,13 +1026,13 @@
                   ]
                },
                {
-                  "item":"Shopify Objects",
-                  "icon":"shopping-cart",
-                  "groups":[
+                  "item": "Shopify Objects",
+                  "icon": "shopping-cart",
+                  "groups": [
                      {
-                        "group":"SHOPIFY OBJECTS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "SHOPIFY OBJECTS",
+                        "expanded": false,
+                        "pages": [
                            "references/shopify-integration-data-model",
                            "references/sdk/referencing-creator-content",
                            "references/order-customer-tags"
@@ -862,13 +1041,13 @@
                   ]
                },
                {
-                  "item":"SDKs",
-                  "icon":"code",
-                  "groups":[
+                  "item": "SDKs",
+                  "icon": "code",
+                  "groups": [
                      {
-                        "group":"SDKS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "SDKS",
+                        "expanded": false,
+                        "pages": [
                            "references/sdk/getting-started",
                            "references/sdk/cart-attributes",
                            "references/sdk/web-pixel-tracking"
@@ -877,24 +1056,24 @@
                   ]
                },
                {
-                  "item":"Webhooks",
-                  "icon":"webhook",
-                  "groups":[
+                  "item": "Webhooks",
+                  "icon": "webhook",
+                  "groups": [
                      {
-                        "group":"WEBHOOKS",
-                        "expanded":false,
-                        "pages":[
+                        "group": "WEBHOOKS",
+                        "expanded": false,
+                        "pages": [
                            "references/webhooks-overview",
                            {
-                              "group":"Shopify Flow triggers",
-                              "pages":[
+                              "group": "Shopify Flow triggers",
+                              "pages": [
                                  "references/webhooks-shopify-flow"
                               ]
                            },
                            {
-                              "group":"Klaviyo events",
-                              "pages":[
-                                 "references/webhooks-klaviyo"
+                              "group": "Klaviyo events",
+                              "pages": [
+                                 "references/klaviyo-two-sides"
                               ]
                            }
                         ]
@@ -902,35 +1081,35 @@
                   ]
                },
                {
-                  "item":"Klaviyo",
-                  "icon":"envelope",
-                  "href":"/references/klaviyo-two-sides"
+                  "item": "Klaviyo",
+                  "icon": "envelope",
+                  "href": "/references/klaviyo-two-sides"
                }
             ]
          },
          {
-            "tab":"Resources",
-            "menu":[
+            "tab": "Resources",
+            "menu": [
                {
-                  "item":"Release Notes",
-                  "icon":"newspaper",
-                  "pages":[
+                  "item": "Release Notes",
+                  "icon": "newspaper",
+                  "pages": [
                      "release-notes"
                   ]
                },
                {
-                  "item":"Product docs",
-                  "icon":"book-open",
-                  "href":"https://creatorcommerce.shop/brand-help-center"
+                  "item": "Product docs",
+                  "icon": "book-open",
+                  "href": "https://creatorcommerce.shop/brand-help-center"
                },
                {
-                  "item":"Cursor Setup",
-                  "icon":"code",
-                  "groups":[
+                  "item": "Cursor Setup",
+                  "icon": "code",
+                  "groups": [
                      {
-                        "group":"Cursor Setup",
-                        "expanded":false,
-                        "pages":[
+                        "group": "Cursor Setup",
+                        "expanded": false,
+                        "pages": [
                            "guides/cursor-coding",
                            "guides/cursor-rules"
                         ]
@@ -938,13 +1117,13 @@
                   ]
                },
                {
-                  "item":"Claude Setup",
-                  "icon":"code",
-                  "groups":[
+                  "item": "Claude Setup",
+                  "icon": "code",
+                  "groups": [
                      {
-                        "group":"Claude Setup",
-                        "expanded":false,
-                        "pages":[
+                        "group": "Claude Setup",
+                        "expanded": false,
+                        "pages": [
                            "guides/claude-coding",
                            "guides/claude-rules"
                         ]
@@ -952,33 +1131,33 @@
                   ]
                },
                {
-                  "item":"Codex Setup",
-                  "icon":"code",
-                  "groups":[
+                  "item": "Codex Setup",
+                  "icon": "code",
+                  "groups": [
                      {
-                        "group":"Codex Setup",
-                        "expanded":false,
-                        "pages":[
+                        "group": "Codex Setup",
+                        "expanded": false,
+                        "pages": [
                            "guides/codex-coding"
                         ]
                      }
                   ]
                },
                {
-                  "item":"Shopify MCP",
-                  "icon":"shopping-cart",
-                  "pages":[
+                  "item": "Shopify MCP",
+                  "icon": "shopping-cart",
+                  "pages": [
                      "guides/shopify-mcp"
                   ]
                },
                {
-                  "item":"Figma Setup",
-                  "icon":"image",
-                  "groups":[
+                  "item": "Figma Setup",
+                  "icon": "image",
+                  "groups": [
                      {
-                        "group":"Figma Setup",
-                        "expanded":false,
-                        "pages":[
+                        "group": "Figma Setup",
+                        "expanded": false,
+                        "pages": [
                            "guides/figma-mcp",
                            "guides/designing-for-cobranded-ui",
                            "guides/designing-a-dashboard-for-collaboration"
@@ -989,17 +1168,17 @@
             ]
          }
       ]
-  },
-  "description": "Access technical docs and AI resources for implementing co-branded commerce accross your brand. Build for Shopify storefronts.",
-  "footer": {
-    "socials": {
-      "github": "https://github.com/CreatorCommerce/cc-implementation-resources",
-      "youtube": "https://www.youtube.com/@creator_shops",
-      "linkedin": "https://www.linkedin.com/company/creatorcommerce/",
-      "website": "https://creatorcommerce.shop/"
-    }
-  },
-  "seo": {
-    "indexing": "all"
-  }
+   },
+   "description": "Access technical docs and AI resources for implementing co-branded commerce accross your brand. Build for Shopify storefronts.",
+   "footer": {
+      "socials": {
+         "github": "https://github.com/CreatorCommerce/cc-implementation-resources",
+         "youtube": "https://www.youtube.com/@creator_shops",
+         "linkedin": "https://www.linkedin.com/company/creatorcommerce/",
+         "website": "https://creatorcommerce.shop/"
+      }
+   },
+   "seo": {
+      "indexing": "all"
+   }
 }
