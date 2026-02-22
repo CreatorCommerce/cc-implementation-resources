@@ -4,12 +4,24 @@ description: 'Reference for all variables available when emailing partners and c
 ---
 
 When sending emails to your creators, influencers, and affiliates through Klaviyo, CreatorCommerce provides a rich set of profile properties and event data to personalize your communications.
+This guide covers **Side 1: Affiliate Messaging (B2B)** from [The Two Sides of Klaviyo](/references/klaviyo-two-sides).
 
 ## Klaviyo Access Patterns
 
 - Profile properties: `{{ person|lookup:"field-name" }}`
 - Event properties: `{{ event.property_name }}`
 - Nested event properties: `{{ event.property.nested_variable }}`
+
+## B2B Event Set (This Guide)
+
+| Klaviyo Event | Typical Use |
+|---------------|-------------|
+| `Creator Collaboration Started` | Collab invitation + onboarding start |
+| `Creator Drop Created` | Welcome/new drop creator messaging |
+| `Creator Invitation Accepted` | Onboarding abandonment logic |
+| `Creator Order Attributed` | Sales milestone messaging |
+| `Shop Updated` | Shop update confirmation |
+| `Creator Added To Campaign` | Campaign launch/activation messaging |
 
 ## Profile Properties
 
