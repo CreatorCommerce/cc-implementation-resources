@@ -419,8 +419,7 @@
                         "expanded": false,
                         "pages": [
                            "references/webhooks-overview",
-                           "references/webhooks-shopify-flow",
-                           "references/klaviyo-two-sides"
+                           "references/webhooks-shopify-flow"
                         ]
                      },
                      {
