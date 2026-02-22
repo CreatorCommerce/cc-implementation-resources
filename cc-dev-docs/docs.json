@@ -428,6 +428,7 @@
                         "pages": [
                            "references/klaviyo-two-sides",
                            "guides/emails/variables-reference",
+                           "guides/emails/cobranded-emails-variables-reference",
                            "guides/creator-emails/variables-reference"
                         ]
                      }
@@ -590,6 +591,7 @@
                         "expanded": false,
                         "pages": [
                            "guides/emails/variables-reference",
+                           "guides/emails/cobranded-emails-variables-reference",
                            "guides/emails/cart-abandonment",
                            "guides/emails/post-purchase",
                            "guides/emails/lead-magnets",
