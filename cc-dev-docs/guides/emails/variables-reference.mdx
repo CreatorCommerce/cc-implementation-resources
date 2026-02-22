@@ -8,9 +8,9 @@ Use it for customer-facing flows like cart abandonment, post-purchase, and marke
 
 ## Klaviyo Access Patterns
 
-- Profile properties: `{{ person|lookup:"field-name" }}`
-- Event properties: `{{ event.property_name }}`
-- Nested event properties: `{{ event.property.nested_variable }}`
+- Profile properties use: `person|lookup:"field-name"`
+- Event properties use: `event.property_name`
+- Nested event properties use: `event.property.nested_variable`
 
 ## B2C Event Set (This Guide)
 
@@ -24,84 +24,33 @@ Use it for customer-facing flows like cart abandonment, post-purchase, and marke
 
 - `person|lookup:"..."` values come from **Customer Properties** synced into the Klaviyo profile.
 - `event.*` values come from **Event Properties** on the triggering event.
-- In Shopify Flow templates, event properties are typically mapped from `{{getMetaobjectEntry.data}}`.
+- In Shopify Flow templates, event properties are typically mapped from `getMetaobjectEntry.data`.
 
-## Profile Properties
+## Profile Property Examples
 
-These properties are set on customer profiles when they interact with creator pages.
+```text
+{{ person|lookup:"cc-creator-shop-handle" }}
+{{ person|lookup:"cc-creator-first-name" }}
+{{ person|lookup:"cc-collab-discount-code" }}
+{{ person|lookup:"cc-collab-affiliate-link" }}
+```
 
-### Klaviyo Syntax
+## Event Property Examples
 
-| Variable | Klaviyo Access | Example Value |
-|----------|----------------|---------------|
-| Creator handle | `{{ person|lookup:"cc-creator-shop-handle" }}` | sarah-jones |
-| Creator first name | `{{ person|lookup:"cc-creator-first-name" }}` | Sarah |
-| Creator last name | `{{ person|lookup:"cc-creator-last-name" }}` | Jones |
-| Discount code | `{{ person|lookup:"cc-collab-discount-code" }}` | SARAH15 |
-| Discount amount | `{{ person|lookup:"cc-collab-discount-amount" }}` | 15 |
-| Profile image | `{{ person|lookup:"cc-creator-profile-picture" }}` | https://... |
-| Landing URL | `{{ person|lookup:"cc-collab-affiliate-link" }}` | https://... |
+```text
+{{ event.property_name }}
+{{ event.property.nested_variable }}
+{{ event.order_total }}
+{{ event.creator.shop_handle }}
+```
 
-### Using in Templates
+## Template Snippets
 
 ```html
 {% if person|lookup:"cc-creator-first-name" %}
   <p>Thanks for shopping with {{ person|lookup:"cc-creator-first-name" }}!</p>
 {% endif %}
 ```
-
-## Event Properties
-
-Use event fields from the flow trigger payload with `event.*` notation.
-
-### Klaviyo Event Syntax
-
-| Field Type | Klaviyo Access Example |
-|------------|------------------------|
-| Top-level event field | `{{ event.property_name }}` |
-| Nested event field | `{{ event.property.nested_variable }}` |
-
-```html
-<p>Event name: {{ event.event_name }}</p>
-<p>Order total: {{ event.order_total }}</p>
-<p>Creator handle from event payload: {{ event.creator.shop_handle }}</p>
-```
-
-## Images
-
-### Profile Photo
-
-```html
-<img src="{{ person|lookup:"cc-creator-profile-picture" }}"
-     alt="{{ person|lookup:"cc-creator-first-name" }}"
-     width="60" 
-     height="60" 
-     style="border-radius: 50%;" />
-```
-
-### Fallback Image
-
-```html
-{% if person|lookup:"cc-creator-profile-picture" %}
-  <img src="{{ person|lookup:"cc-creator-profile-picture" }}" alt="" />
-{% else %}
-  <img src="https://yourstore.com/default-avatar.png" alt="" />
-{% endif %}
-```
-
-## Text Personalization
-
-### Greeting
-
-```html
-{% if person|lookup:"cc-creator-first-name" %}
-  <h1>{{ person|lookup:"cc-creator-first-name" }} sent you something special</h1>
-{% else %}
-  <h1>Check out our latest picks</h1>
-{% endif %}
-```
-
-### Discount Callout
 
 ```html
 {% if person|lookup:"cc-collab-discount-code" %}
@@ -112,38 +61,14 @@ Use event fields from the flow trigger payload with `event.*` notation.
 {% endif %}
 ```
 
-## Links
-
-### Back to Creator Page
-
 ```html
-<a href="{{ person|lookup:"cc-collab-affiliate-link" }}">
-  Shop {{ person|lookup:"cc-creator-first-name" }}'s picks
+<a href="{{ person|lookup:\"cc-collab-affiliate-link\" }}">
+  Shop creator picks
 </a>
-```
-
-### Checkout with Discount
-
-```html
-<a href="https://yourstore.com/checkout?discount={{ person|lookup:"cc-collab-discount-code" }}">
-  Checkout Now
-</a>
-```
-
-## Conditional Blocks
-
-Show/hide entire sections based on creator context:
-
-```html
-{% if person|lookup:"cc-creator-shop-handle" %}
-  <!-- Full co-branded block -->
-{% else %}
-  <!-- Generic content -->
-{% endif %}
 ```
 
 ## Related
 
 - [The Two Sides of Klaviyo](/references/klaviyo-two-sides)
+- [Creator Email Variables](/guides/creator-emails/variables-reference)
 - [Co-branded Email Data Flow](/guides/emails/data-flow-explained)
-- [Enable Email Connections](/guides/emails/enable-connections)
