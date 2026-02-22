@@ -371,7 +371,7 @@
                                    "GET /channels/{myshopifyDomain}/collab-tiers",
                                    "POST /channels/{myshopifyDomain}/collabs/{collabId}",
                                    "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancement/{enhancementId}",
+                                   "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
                                    "GET /creators/{creatorId}/drops/{dropId}/cart",
                                    "GET /creators/collabs",
                                    "POST /creators/collabs",
@@ -712,7 +712,7 @@
                         ]
                      },
                      {
-                        "group":"AFFILIATE P& INFLUENCER",
+                        "group":"AFFILIATE & INFLUENCER",
                         "expanded":false,
                         "pages":[
                            "guides/integrations/affiliate/social-snowball",
