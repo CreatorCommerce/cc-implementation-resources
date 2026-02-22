@@ -3,57 +3,42 @@ title: 'UpPromote'
 description: 'Connect UpPromote affiliate programs with CreatorCommerce co-branded experiences.'
 ---
 
-UpPromote is a leading Shopify affiliate and referral marketing app. Integrating it with CreatorCommerce extends your UpPromote affiliates with personalized co-branded shopping experiences that drive higher conversion.
+Sync UpPromote affiliate data into CreatorCommerce so UpPromote-managed affiliates can power co-branded storefront funnels.
+
+## Integration Type
+
+- **Mode:** API sync (triggered by a CreatorCommerce sync endpoint)
+- **Trigger source:** Your workflow calls the CC sync webhook endpoint, then CC pulls affiliate data from UpPromote API
+- **Shopify Flow required:** Recommended for scheduled/automated sync runs
 
 ## What This Integration Does
 
-| UpPromote → CC | CC → UpPromote |
-|----------------|----------------|
-| Affiliate profiles | Co-branded page performance |
-| Program tiers | Enhanced conversion data |
-| Commission structures | Attribution signals |
+| Source Integration Data | CreatorCommerce Outcome |
+|-------------------------|------------------------|
+| Affiliate profile/program data | Creators/collabs update for co-branded funnels |
+| Discount code context | Collab discount linkage and attribution context stay current |
 
 ## Setup
 
-<Steps>
-  <Step title="Connect in CreatorCommerce">
-    In your CreatorCommerce dashboard, navigate to **Integrations → UpPromote** and follow the connection flow.
-  </Step>
-  <Step title="Map affiliate programs">
-    Select which UpPromote programs should sync with CreatorCommerce. Use the `CC //` prefix convention on program names to control sync:
+1. Connect UpPromote credentials in CreatorCommerce.
+2. Set up Shopify Flow (or another scheduler) to call the CreatorCommerce UpPromote sync endpoint.
+3. Validate a sync run and confirm creator/collab updates in CC.
 
-    ```
-    CC // Brand Ambassadors
-    CC // Influencer Program
-    ```
-  </Step>
-  <Step title="Set redirect destination">
-    Update the landing page URL for synced programs:
+## Trigger Endpoint (CC API)
 
-    ```
-    https://your-store.myshopify.com/apps/cc-storefront/redirect
-    ```
-  </Step>
-  <Step title="Test the integration">
-    Click a test affiliate link and verify:
-    - Co-branded landing page loads with creator data
-    - Cart attributes are set correctly
-    - Attribution works in both UpPromote and CC
-  </Step>
-</Steps>
+Call this endpoint when you want CreatorCommerce to run an UpPromote sync:
 
-## Use Cases
+```http
+POST /webhooks/integrations/uppromote/webhooks/affiliates/sync
+Content-Type: application/json
 
-### Layer Co-branding on Top of UpPromote
-Keep UpPromote managing commissions, payouts, and affiliate recruitment. CreatorCommerce adds the storefront personalization layer that turns clicks into conversions.
-
-### Program-Specific Experiences
-Map different UpPromote programs to different CC campaigns, each with its own landing page template and co-branding level.
-
-### Conversion Optimization
-UpPromote tracks referrals. CreatorCommerce optimizes what happens after the click — personalized landing pages, creator-curated products, and dynamic discounts.
+{
+  "shopify_domain": "your-store.myshopify.com"
+}
+```
 
 ## Related
 
 - [Partner Integrations Overview](/guides/integrations/overview)
 - [Destinations Explained](/guides/storefronts/destinations-explained)
+- [Shopify Flow Integration](/guides/integrations/content-automation/shopify-flow)

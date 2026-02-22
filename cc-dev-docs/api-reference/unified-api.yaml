@@ -1,7 +1,22 @@
 openapi: 3.0.3
 info:
   title: CreatorCommerce Unified API
-  description: API for managing creators, collabs, drops, and checkout URLs
+  description: |-
+    API for managing creators, collabs, drops, and checkout URLs.
+
+    Identifier rules for creator/collab workflows:
+    - Email-based lookup is supported on:
+      - `GET /channels/{myshopifyDomain}/collabs` via query `email`
+      - `GET /channels/{myshopifyDomain}/creators/magic-link` via query `email`
+      - `GET /creators/collabs` via query `email` + `myshopify_domain`
+      - `POST /creators/collabs` on create via body `email`
+    - Collab-based operations require `collabId` in path and email cannot replace it:
+      - `GET/POST /channels/{myshopifyDomain}/collabs/{collabId}`
+      - `POST /channels/{myshopifyDomain}/collabs/{collabId}/...`
+      - `POST /creators/collabs/{collabId}`
+      - `POST /creators/collabs/{collabId}/drops`
+      - `POST /creators/collabs/{collabId}/drops/{dropId}`
+    - Where an endpoint includes `collabId` and also accepts creator `email`, email is treated as creator data to update, not a lookup substitute for `collabId`.
   version: 1.0.0
   contact:
     name: CreatorCommerce Support
@@ -11,12 +26,26 @@ servers:
 tags:
   - name: Checkout
     description: Checkout URL generation
+  - name: Channels
+    description: Channel retrieval and channel-level settings
   - name: Magic Links
     description: Creator magic link generation
   - name: Collabs
     description: Creator collaboration management
   - name: Drops
     description: Product drop management
+  - name: Custom Field Definitions
+    description: Channel custom-field definition management
+  - name: Form Definitions
+    description: Channel form definition management
+  - name: Campaigns
+    description: Channel campaign management
+  - name: Metrics
+    description: Channel analytics metrics
+  - name: Integrations
+    description: Integration connection and listings
+  - name: Storage
+    description: Upload and media utilities
 security:
   - BearerAuth: []
   - ApiKeyAuth: []
@@ -64,12 +93,130 @@ paths:
                 error: "Internal Server Error"
                 message: "Failed to create cart url"
 
+  /storage/presigned-url:
+    get:
+      tags:
+        - Storage
+      summary: Get Presigned Upload URL
+      description: Returns a presigned upload URL and the created media object metadata.
+      operationId: getPresignedUrl
+      parameters:
+        - name: filename
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: contentType
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "image/png"
+        - name: extension
+          in: query
+          required: true
+          schema:
+            type: string
+            example: "png"
+        - name: meta[channelId]
+          in: query
+          required: false
+          description: Optional channel ID used for media ownership/tags.
+          schema:
+            type: string
+        - name: meta[creatorId]
+          in: query
+          required: false
+          description: Optional creator ID used for media ownership/tags.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Presigned URL generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignedUrlResponse'
+              example:
+                presignedUrl: "https://pub-abc123.r2.cloudflarestorage.com/shop-assets/6997d1b29655870ce8359c45-6997d1305fe142fd13cff4b6/69fa9f2a1f47f90132ab8890.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=..."
+                media:
+                  _id: "69fa9f2a1f47f90132ab8890"
+                  mediaContentType: "IMAGE"
+                  mimeType: "image/png"
+                  originalFilename: "creator-profile.png"
+                  filename: "69fa9f2a1f47f90132ab8890"
+                  extension: "png"
+                  owner: "6997d1b29655870ce8359c45-6997d1305fe142fd13cff4b6"
+                  tags:
+                    - "channel-6997d1b29655870ce8359c45"
+                    - "creator-6997d1305fe142fd13cff4b6"
+                  url: "https://assets.drops.shop/6997d1b29655870ce8359c45-6997d1305fe142fd13cff4b6/69fa9f2a1f47f90132ab8890.png"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}:
+    get:
+      tags:
+        - Channels
+      summary: Get Channel
+      description: Retrieves channel configuration by myshopify domain.
+      operationId: getChannel
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "cc-goaff-sandbox.myshopify.com"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Channel retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelResponse'
+              example:
+                channel:
+                  _id: "6997d1b29655870ce8359c45"
+                  name: "nuuds"
+                  handle: "nuuds"
+                  isInstalled: true
+                  platform: "shopify"
+                  shopify:
+                    shopId: "gid://shopify/Shop/6997d1b29655870ce8359c45"
+                    myshopifyDomain: "nuuds-com.myshopify.com"
+                    shopName: "nuuds"
+                  brandKit:
+                    title: "nuuds"
+                    primaryColor: "#270803"
+                    primaryDomain: "www.nuuds.com"
+                  features:
+                    isWebPixelEnabled: true
+                    isDefaultMessagingEnabled: false
+                  connectedIntegrations:
+                    - name: "Klaviyo"
+                      handle: "klaviyo"
+                      type: "esp"
+                      isEnabled: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /channels/{myshopifyDomain}/creators/magic-link:
     get:
       tags:
         - Magic Links
       summary: Get Magic Link
-      description: Generates a magic link for creator authentication
+      description: Generates a magic link for creator authentication. Uses creator `email` as the lookup key within the specified channel.
       operationId: getMagicLink
       parameters:
         - name: myshopifyDomain
@@ -82,7 +229,7 @@ paths:
         - name: email
           in: query
           required: true
-          description: Creator email address
+          description: Creator email lookup key.
           schema:
             type: string
             format: email
@@ -118,12 +265,177 @@ paths:
                 error: "Internal Server Error"
                 message: "Failed to create magic link"
 
+  /channels/{myshopifyDomain}/integrations/connect:
+    post:
+      tags:
+        - Integrations
+      summary: Connect Channel Integration
+      description: Connects or updates an integration config in `channel.connectedIntegrations`.
+      operationId: connectChannelIntegration
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectedIntegration'
+            example:
+              name: "Klaviyo"
+              handle: "klaviyo"
+              type: "esp"
+              isEnabled: true
+              klaviyo:
+                apiKey: "pk_1234567890abcdef"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Integration connected/updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  integration:
+                    $ref: '#/components/schemas/ConnectedIntegration'
+              example:
+                integration:
+                  name: "Klaviyo"
+                  handle: "klaviyo"
+                  type: "esp"
+                  isEnabled: true
+                  klaviyo:
+                    apiKey: "pk_1234567890abcdef"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/integrations/disconnect:
+    post:
+      tags:
+        - Integrations
+      summary: Disconnect Channel Integration
+      description: Removes a connected integration by handle.
+      operationId: disconnectChannelIntegration
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - handle
+              properties:
+                handle:
+                  type: string
+                  example: "klaviyo"
+            example:
+              handle: "klaviyo"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Integration disconnected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  handle:
+                    type: string
+                  status:
+                    type: boolean
+              example:
+                handle: "klaviyo"
+                status: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/settings:
+    post:
+      tags:
+        - Channels
+      summary: Update Channel Settings
+      description: Updates channel settings/brand-kit/feature objects (partial merge, one level deep).
+      operationId: updateChannelSettings
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            example:
+              brandKit:
+                title: "nuuds"
+                description: "Comfort-first staples."
+                primaryColor: "#270803"
+              features:
+                isWebPixelEnabled: true
+                isDefaultMessagingEnabled: true
+              onboardingSettings:
+                title: "Welcome to the creator program"
+                perks:
+                  - "Exclusive discount"
+                  - "Early access to launches"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Channel updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelResponse'
+              example:
+                channel:
+                  _id: "6997d1b29655870ce8359c45"
+                  name: "nuuds"
+                  handle: "nuuds"
+                  brandKit:
+                    title: "nuuds"
+                    description: "Comfort-first staples."
+                    primaryColor: "#270803"
+                  features:
+                    isWebPixelEnabled: true
+                    isDefaultMessagingEnabled: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /channels/{myshopifyDomain}/collabs:
     get:
       tags:
         - Collabs
       summary: Get Channel Collabs
-      description: Retrieves all collabs for a specific channel
+      description: Retrieves collabs for a specific channel. If `email` is provided, performs creator-email lookup and returns collab(s) for that creator.
       operationId: getChannelCollabs
       parameters:
         - name: myshopifyDomain
@@ -133,6 +445,19 @@ paths:
           schema:
             type: string
             example: "cc-goaff-sandbox.myshopify.com"
+        - name: query
+          in: query
+          required: false
+          description: Fuzzy search query (creator name, handle, affiliate code).
+          schema:
+            type: string
+        - name: email
+          in: query
+          required: false
+          description: Creator email lookup key. When provided, the response is scoped to that creator.
+          schema:
+            type: string
+            format: email
       security:
         - ApiKeyAuth: []
       responses:
@@ -142,6 +467,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChannelCollabsResponse'
+              example:
+                collabs:
+                  - _id: "6997d1305fe142fd13cff4d7"
+                    creator:
+                      _id: "6997d1305fe142fd13cff4b6"
+                      firstName: "Jill"
+                      lastName: "Doe"
+                      email: "jill@example.com"
+                      handle: "jill-650"
+                    collabTier:
+                      _id: "6997d1305fe142fd13cff500"
+                      title: "CC // Test Pages"
+                      tierKey: "28002"
+                    affiliateCode: "JILL23878"
+                    affiliateUrl: "https://www.nuuds.com/JILL23878"
+                    discount:
+                      discountAmount: 20
+                      discountType: "Percentage"
+                    drops:
+                      - _id: "6997dd60c65868de8b5a1aaf"
+                        title: "Without these, I'd just go nude"
+                pagination:
+                  hasNextPage: false
+                  totalCount: 1
+                  nextCursor: "6997d1305fe142fd13cff4d7"
         '500':
           description: Internal Server Error
           content:
@@ -158,7 +508,7 @@ paths:
       tags:
         - Collabs
       summary: Get Channel Collab
-      description: Retrieves a specific collab for a channel with full details including drops and enhancements
+      description: Retrieves a specific collab for a channel with full details including drops and enhancements. Requires `collabId`; email is not supported as a substitute lookup.
       operationId: getChannelCollab
       parameters:
         - name: myshopifyDomain
@@ -175,14 +525,6 @@ paths:
           schema:
             type: string
             example: "67801c7dddd3b70bb40a62e9"
-        - name: email
-          in: query
-          required: false
-          description: Creator email address (alternative to collabId)
-          schema:
-            type: string
-            format: email
-            example: "kenyon+04@creatorcommerce.shop"
       security:
         - ApiKeyAuth: []
       responses:
@@ -263,7 +605,7 @@ paths:
       tags:
         - Collabs
       summary: Update Channel Collab
-      description: Updates a collab within a channel, including ability to reorder drops
+      description: Updates a collab within a channel, including ability to reorder drops. Requires `collabId`; email is not supported as a collab lookup substitute.
       operationId: updateChannelCollab
       parameters:
         - name: myshopifyDomain
@@ -280,14 +622,6 @@ paths:
           schema:
             type: string
             example: "68d482d502627cba69150a33"
-        - name: email
-          in: query
-          required: false
-          description: Creator email address (alternative to collabId)
-          schema:
-            type: string
-            format: email
-            example: "kenyon+test1@creatorcommerce.shop"
       requestBody:
         required: true
         content:
@@ -318,6 +652,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollabResponse'
+              example:
+                collab:
+                  _id: "68d482d502627cba69150a33"
+                  channel: "67a93e156cc51f6c4e878e0c"
+                  creator: "68d4828e02627cba69144aa2"
+                  affiliateCode: "NEWCODE"
+                  affiliateUrl: "https://example.com/NEWCODE"
+                  collabTier: "68d46d30d78da92db6cad276"
+                  drops:
+                    - "68d4bd5c7796e248a07dfbf2"
+                    - "68d4be997796e248a07dfc1a"
+                  relationshipManager: "creatorcommerce"
+                  updatedAt: "2026-02-21T00:30:14.127Z"
         '500':
           description: Internal Server Error
           content:
@@ -349,6 +696,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollabTiersResponse'
+              example:
+                collabTiers:
+                  - _id: "6997d1305fe142fd13cff500"
+                    channel: "6997d1b29655870ce8359c45"
+                    tierKey: "28002"
+                    tierTitle: "CC // Test Pages"
+                    relationshipManager: "shopify-collabs"
+                    discount:
+                      discountAmount: 20
+                      discountType: "Percentage"
+                    isDefault: false
+                  - _id: "6997d1305fe142fd13cff501"
+                    channel: "6997d1b29655870ce8359c45"
+                    tierKey: "default-creatorcommerce"
+                    tierTitle: "CreatorCommerce Default"
+                    relationshipManager: "creatorcommerce"
+                    isDefault: true
         '500':
           description: Internal Server Error
           content:
@@ -365,7 +729,7 @@ paths:
       tags:
         - Drops
       summary: Update Channel Drop
-      description: Updates a drop within a channel collab with field-by-field changes
+      description: Updates a drop within a channel collab with field-by-field changes. Requires `collabId`; email is not supported as a substitute lookup.
       operationId: updateChannelDrop
       parameters:
         - name: myshopifyDomain
@@ -412,6 +776,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DropResponse'
+              example:
+                drop:
+                  _id: "68d4bf4b7796e248a07dfc2f"
+                  title: "Updated Drop Title"
+                  description: "Updated drop description"
+                  media:
+                    - _id: "68f0f2dca11250a7ccf1ea12"
+                      mediaContentType: "IMAGE"
+                      mimeType: "image/webp"
+                      url: "https://assets.drops.shop/all/68f0f2dca11250a7ccf1ea12.webp"
+                  products:
+                    - "68d4bd2202627cba6983e4df"
+                    - "67bfce788207c73f3951acb7"
+                  creator: "68d4828e02627cba69144aa2"
+                  updatedAt: "2026-02-21T00:34:20.625Z"
         '500':
           description: Internal Server Error
           content:
@@ -419,12 +798,84 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancement/{enhancementId}:
+  /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products:
+    post:
+      tags:
+        - Drops
+      summary: Add Products To Drop
+      description: Appends products (and optional enhancements/custom fields) to an existing drop. Requires `collabId`; email is not supported as a substitute lookup.
+      operationId: addProductsToDrop
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: collabId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: dropId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProductsToDropRequest'
+            example:
+              products:
+                - id: "9192128643323"
+                  enhancement:
+                    note: "Love these so much!"
+                    variant: "47773464363259"
+                    media:
+                      - "https://assets.drops.shop/all/6997dbf076e884895ba4a345.webp"
+                    custom:
+                      cc-product-badge: "Creator Favorite"
+                - id: "9177537970427"
+                  enhancement:
+                    note: "These are great!"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Products added to drop
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DropResponse'
+              example:
+                drop:
+                  _id: "68d4bf4b7796e248a07dfc2f"
+                  products:
+                    - "68d4bd2202627cba6983e4df"
+                    - "67bfce788207c73f3951acb7"
+                    - "6997dd615fe142fd13d8b43e"
+                    - "6997dd615fe142fd13d8b43f"
+                  enhancements:
+                    - "68d4c15e7796e248a07dfd53"
+                    - "68d4c15f7796e248a07dfd5d"
+                    - "6997dd61c65868de8b5a1ac4"
+                    - "6997dd61c65868de8b5a1ac7"
+                  updatedAt: "2026-02-21T00:40:11.004Z"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}:
     post:
       tags:
         - Drops
       summary: Update Product Enhancement
-      description: Updates a product enhancement within a drop in a channel collab
+      description: Updates a product enhancement within a drop in a channel collab. Requires `collabId`; email is not supported as a substitute lookup.
       operationId: updateChannelEnhancement
       parameters:
         - name: myshopifyDomain
@@ -478,6 +929,661 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EnhancementResponse'
+              example:
+                enhancement:
+                  _id: "68d4c15e7796e248a07dfd53"
+                  product: "68d4bd2202627cba6983e4df"
+                  note: "This is my absolute favorite product!"
+                  variant: "46033520853279"
+                  media:
+                    - _id: "68f0f2dca11250a7ccf1ea12"
+                      mediaContentType: "IMAGE"
+                      mimeType: "image/webp"
+                      url: "https://assets.drops.shop/all/68f0f2dca11250a7ccf1ea12.webp"
+                  formId: "form_product_123"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/custom-field-definitions:
+    get:
+      tags:
+        - Custom Field Definitions
+      summary: Get Channel Custom Field Definitions
+      operationId: getChannelCustomFieldDefinitions
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Custom field definitions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldDefinitionsResponse'
+              example:
+                customFieldDefinitions:
+                  - _id: "67f8c4da35d6e293b9c2a111"
+                    ownerType: "collab"
+                    name: "Hero Header"
+                    description: "Top hero heading for creator storefront"
+                    handle: "cc-hero-header"
+                    type: "single_line_text_field"
+                    isEditable: true
+                    isCreatorEditable: true
+                    isDeleted: false
+                  - _id: "67f8c4da35d6e293b9c2a112"
+                    ownerType: "drop"
+                    name: "Drop Subtitle"
+                    handle: "cc-drop-subtitle"
+                    type: "multi_line_text_field"
+                    isEditable: true
+                    isCreatorEditable: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Custom Field Definitions
+      summary: Create Channel Custom Field Definition
+      operationId: createChannelCustomFieldDefinition
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomFieldDefinitionRequest'
+            example:
+              ownerType: "collab"
+              name: "Hero Header"
+              description: "Top hero heading for creator storefront"
+              handle: "hero-header"
+              type: "single_line_text_field"
+              isEditable: true
+              isCreatorEditable: true
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Custom field definition created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomFieldDefinitionResponse'
+              example:
+                customFieldDefinition:
+                  _id: "67f8c4da35d6e293b9c2a111"
+                  ownerType: "collab"
+                  name: "Hero Header"
+                  description: "Top hero heading for creator storefront"
+                  handle: "cc-hero-header"
+                  type: "single_line_text_field"
+                  isEditable: true
+                  isCreatorEditable: true
+                  isDeleted: false
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/form-definitions:
+    get:
+      tags:
+        - Form Definitions
+      summary: Get Channel Form Definitions
+      operationId: getChannelFormDefinitions
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Form definitions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormDefinitionsResponse'
+              example:
+                formDefinitions:
+                  - _id: "67f8d0eb224ca611de0b5001"
+                    type: "custom"
+                    title: "Creator Intake Form"
+                    description: "Collect creator profile and funnel preferences"
+                    isActive: true
+                    fields:
+                      - fieldType: "field"
+                        name: "headline"
+                        label: "Headline"
+                        dataType: "string"
+                  - _id: "67f8d0eb224ca611de0b5002"
+                    type: "custom"
+                    title: "Drop Notes Form"
+                    isActive: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Form Definitions
+      summary: Create Channel Form Definition
+      operationId: createChannelFormDefinition
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormDefinition'
+            example:
+              type: "custom"
+              title: "Creator Intake Form"
+              description: "Collect creator profile and storefront metadata"
+              isActive: true
+              fields:
+                - fieldType: "field"
+                  name: "headline"
+                  label: "Headline"
+                  dataType: "string"
+                  inputType: "text"
+                - fieldType: "field"
+                  name: "about"
+                  label: "About"
+                  dataType: "string"
+                  inputType: "textarea"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Form definition created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormDefinitionResponse'
+              example:
+                formDefinition:
+                  _id: "67f8d0eb224ca611de0b5001"
+                  type: "custom"
+                  title: "Creator Intake Form"
+                  description: "Collect creator profile and storefront metadata"
+                  isActive: true
+                  fields:
+                    - fieldType: "field"
+                      name: "headline"
+                      label: "Headline"
+                      dataType: "string"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}:
+    get:
+      tags:
+        - Form Definitions
+      summary: Get Channel Form Definition
+      operationId: getChannelFormDefinition
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: formDefinitionId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Form definition retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormDefinitionResponse'
+              example:
+                formDefinition:
+                  _id: "67f8d0eb224ca611de0b5001"
+                  type: "custom"
+                  title: "Creator Intake Form"
+                  description: "Collect creator profile and storefront metadata"
+                  isActive: true
+                  fields:
+                    - fieldType: "field"
+                      name: "headline"
+                      label: "Headline"
+                      dataType: "string"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Form Definitions
+      summary: Update Channel Form Definition
+      operationId: updateChannelFormDefinition
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: formDefinitionId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormDefinition'
+            example:
+              title: "Creator Intake Form v2"
+              description: "Updated form copy"
+              isActive: true
+              fields:
+                - fieldType: "field"
+                  name: "headline"
+                  label: "Hero headline"
+                  dataType: "string"
+                  inputType: "text"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Form definition updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormDefinitionResponse'
+              example:
+                formDefinition:
+                  _id: "67f8d0eb224ca611de0b5001"
+                  title: "Creator Intake Form v2"
+                  description: "Updated form copy"
+                  isActive: true
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/campaigns:
+    get:
+      tags:
+        - Campaigns
+      summary: Get Channel Campaigns
+      operationId: getChannelCampaigns
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Campaigns retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsResponse'
+              example:
+                campaigns:
+                  - _id: "699752d110aaf04ada0eb4ef"
+                    title: "Default Campaign"
+                    description: "Always-on campaign"
+                    isActive: true
+                    collabTiers:
+                      - "6997d1305fe142fd13cff500"
+                    queryParams: "utm_source=creatorcommerce&utm_medium=affiliate"
+                  - _id: "699752d110aaf04ada0eb4f0"
+                    title: "Spring Push"
+                    isActive: false
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Campaigns
+      summary: Create Channel Campaign
+      operationId: createChannelCampaign
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+            example:
+              title: "Default Campaign"
+              description: "Always-on campaign"
+              isActive: true
+              collabTiers:
+                - "6997d1305fe142fd13cff500"
+              queryParams: "utm_source=creatorcommerce&utm_medium=affiliate"
+              tags:
+                - "default"
+                - "evergreen"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Campaign created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignResponse'
+              example:
+                campaign:
+                  _id: "699752d110aaf04ada0eb4ef"
+                  title: "Default Campaign"
+                  description: "Always-on campaign"
+                  isActive: true
+                  collabTiers:
+                    - "6997d1305fe142fd13cff500"
+                  queryParams: "utm_source=creatorcommerce&utm_medium=affiliate"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/campaigns/{campaignId}:
+    get:
+      tags:
+        - Campaigns
+      summary: Get Channel Campaign
+      operationId: getChannelCampaign
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Campaign retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignResponse'
+              example:
+                campaign:
+                  _id: "699752d110aaf04ada0eb4ef"
+                  title: "Default Campaign"
+                  description: "Always-on campaign"
+                  isActive: true
+                  collabTiers:
+                    - "6997d1305fe142fd13cff500"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - Campaigns
+      summary: Update Channel Campaign
+      operationId: updateChannelCampaign
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+            example:
+              title: "Default Campaign"
+              description: "Always-on campaign (updated)"
+              isActive: true
+              collabTiers:
+                - "6997d1305fe142fd13cff500"
+              startAt: "2026-02-21T00:00:00.000Z"
+              endAt: "2026-03-31T23:59:59.000Z"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Campaign updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignResponse'
+              example:
+                campaign:
+                  _id: "699752d110aaf04ada0eb4ef"
+                  title: "Default Campaign"
+                  description: "Always-on campaign (updated)"
+                  isActive: true
+                  startAt: "2026-02-21T00:00:00.000Z"
+                  endAt: "2026-03-31T23:59:59.000Z"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/metrics/session:
+    get:
+      tags:
+        - Metrics
+      summary: Get Channel Session Metrics
+      operationId: getChannelSessionMetrics
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Session metrics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              example:
+                metrics:
+                  aggregates:
+                    currentPeriod:
+                      all:
+                        sessions: 12482
+                        uniqueVisitors: 8951
+                        creatorAttributedSessions: 4720
+                      perDay:
+                        "2026-02-14":
+                          sessions: 1532
+                        "2026-02-15":
+                          sessions: 1688
+                    prevPeriod:
+                      all:
+                        sessions: 10934
+                        uniqueVisitors: 7910
+                        creatorAttributedSessions: 3904
+                      perDay:
+                        "2026-02-07":
+                          sessions: 1399
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /channels/{myshopifyDomain}/metrics/revenue:
+    get:
+      tags:
+        - Metrics
+      summary: Get Channel Revenue Metrics
+      operationId: getChannelRevenueMetrics
+      parameters:
+        - name: myshopifyDomain
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Revenue metrics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              example:
+                metrics:
+                  aggregates:
+                    currentPeriod:
+                      all:
+                        grossRevenue: 248920.33
+                        creatorAttributedRevenue: 92440.77
+                        orders: 1542
+                      perDay:
+                        "2026-02-14":
+                          grossRevenue: 30110.22
+                        "2026-02-15":
+                          grossRevenue: 32774.93
+                    prevPeriod:
+                      all:
+                        grossRevenue: 211904.07
+                        creatorAttributedRevenue: 80112.52
+                        orders: 1389
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /creators/{creatorId}/forms:
+    get:
+      tags:
+        - Collabs
+      summary: Get Creator Forms
+      description: Returns creator-facing custom forms for the creator/channel context.
+      operationId: getCreatorForms
+      parameters:
+        - name: creatorId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: channelId
+          in: query
+          required: true
+          schema:
+            type: string
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Forms retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatorFormsResponse'
+              example:
+                forms:
+                  - _id: "67f8d0eb224ca611de0b5001"
+                    title: "Creator Intake Form"
+                    description: "Collect creator profile and storefront metadata"
+                    url: "https://dashboard.creatorcommerce.shop/forms/67f8d0eb224ca611de0b5001?email=jill%40example.com&channel=nuuds-com.myshopify.com"
         '500':
           description: Internal Server Error
           content:
@@ -490,13 +1596,13 @@ paths:
       tags:
         - Collabs
       summary: Get Collabs
-      description: Retrieves all collabs for a creator
+      description: Retrieves collabs for `myshopify_domain`. If `email` is provided, resolves collab(s) for that creator email within the channel.
       operationId: getCollabs
       parameters:
         - name: email
           in: query
           required: false
-          description: Creator email address
+          description: Optional creator email lookup key (used with `myshopify_domain`).
           schema:
             type: string
             format: email
@@ -517,6 +1623,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollabsResponse'
+              example:
+                collabs:
+                  collabs:
+                    - _id: "6997d1305fe142fd13cff4d7"
+                      channel: "6997d1b29655870ce8359c45"
+                      creator:
+                        _id: "6997d1305fe142fd13cff4b6"
+                        firstName: "Jill"
+                        lastName: "Doe"
+                        email: "jill@example.com"
+                      affiliateCode: "JILL23878"
+                      affiliateUrl: "https://www.nuuds.com/JILL23878"
+                      collabTier: "6997d1305fe142fd13cff500"
         '500':
           description: Internal Server Error
           content:
@@ -527,12 +1646,11 @@ paths:
                 statusCode: 500
                 error: "Internal Server Error"
                 message: "Creator or Channel not found"
-
     post:
       tags:
         - Collabs
       summary: Create Collab
-      description: Creates a new collaboration for a creator
+      description: Creates a new collaboration for a creator. Uses body `email` as creator identity lookup within `myshopifyDomain`.
       operationId: createCollab
       requestBody:
         required: true
@@ -589,7 +1707,7 @@ paths:
       tags:
         - Collabs
       summary: Update Collab
-      description: Updates an existing collaboration
+      description: Updates an existing collaboration. Requires `collabId`; body `email` (if provided) updates creator data and does not replace `collabId` lookup.
       operationId: updateCollab
       parameters:
         - name: collabId
@@ -599,21 +1717,6 @@ paths:
           schema:
             type: string
             example: "68d482d502627cba69150a33"
-        - name: email
-          in: query
-          required: false
-          description: Creator email address
-          schema:
-            type: string
-            format: email
-            example: "kenyon+test48548sep641@creatorcommerce.shop"
-        - name: myshopify_domain
-          in: query
-          required: false
-          description: The Shopify domain
-          schema:
-            type: string
-            example: "cc-collabs-sandbox.myshopify.com"
       requestBody:
         required: true
         content:
@@ -675,7 +1778,7 @@ paths:
       tags:
         - Drops
       summary: Create Drop
-      description: Creates a new drop with products
+      description: Creates a new drop with products for the specified collab. Requires `collabId`; email is not accepted as a substitute lookup.
       operationId: createDrop
       parameters:
         - name: collabId
@@ -685,14 +1788,6 @@ paths:
           schema:
             type: string
             example: "68d482d502627cba69150a33"
-        - name: email
-          in: query
-          required: false
-          description: Creator email address
-          schema:
-            type: string
-            format: email
-            example: "kenyon+test4854899895495487@creatorcommerce.shop"
       requestBody:
         required: true
         content:
@@ -741,13 +1836,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DropResponse'
+              example:
+                drop:
+                  _id: "68d4bf4b7796e248a07dfc2f"
+                  title: "hi quest 5"
+                  description: "hello quest"
+                  media: []
+                  products:
+                    - "68d4bd2202627cba6983e4df"
+                    - "67bfce788207c73f3951acb7"
+                  enhancements:
+                    - "68d4c15e7796e248a07dfd53"
+                    - "68d4c15f7796e248a07dfd5d"
+                  creator: "68d4828e02627cba69144aa2"
+                  channels:
+                    - "67a93e156cc51f6c4e878e0c"
 
   /creators/collabs/{collabId}/drops/{dropId}:
     post:
       tags:
         - Drops
       summary: Update Drop
-      description: Updates an existing drop
+      description: Updates an existing drop for the specified collab. Requires `collabId`; email is not accepted as a substitute lookup.
       operationId: updateDrop
       parameters:
         - name: collabId
@@ -764,14 +1874,6 @@ paths:
           schema:
             type: string
             example: "68d4bf4b7796e248a07dfc2f"
-        - name: email
-          in: query
-          required: false
-          description: Creator email address
-          schema:
-            type: string
-            format: email
-            example: "kenyon+test4854899895495487@creatorcommerce.shop"
       requestBody:
         required: true
         content:
@@ -839,6 +1941,46 @@ paths:
                   updatedAt: "2025-09-25T04:13:21.875Z"
                   __v: 0
 
+  /integrations/listings:
+    get:
+      tags:
+        - Integrations
+      summary: Get Integration Listings
+      description: Returns available integration listings enriched from CreatorCommerce and Webflow metadata.
+      operationId: getIntegrationListings
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Integration listings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationListingsResponse'
+              example:
+                integrationListings:
+                  - _id: "67f8f77fd40ab5053b233301"
+                    title: "Klaviyo"
+                    handle: "klaviyo"
+                    type: "esp"
+                    enablementMode: "internal"
+                    enablementConfigFields:
+                      - label: "API Key"
+                        description: "Klaviyo private API key"
+                        name: "apiKey"
+                        inputType: "password"
+                  - _id: "67f8f77fd40ab5053b233302"
+                    title: "Shopify Collabs"
+                    handle: "shopify-collabs"
+                    type: "affiliate"
+                    enablementMode: "flow"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   securitySchemes:
     BearerAuth:
@@ -901,12 +2043,16 @@ components:
       type: object
       properties:
         collabs:
-          type: object
-          properties:
-            collabs:
-              type: array
+          oneOf:
+            - type: array
               items:
                 $ref: '#/components/schemas/Collab'
+            - type: object
+              properties:
+                collabs:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Collab'
 
     Collab:
       type: object
@@ -1142,14 +2288,18 @@ components:
         email:
           type: string
           format: email
-          description: Creator email address
+          description: Creator email lookup key used to find or upsert the creator within `myshopifyDomain`.
         firstName:
           type: string
         lastName:
           type: string
+        handle:
+          type: string
         affiliateCode:
           type: string
         affiliateUrl:
+          type: string
+        collabTier:
           type: string
         profilePicture:
           oneOf:
@@ -1175,6 +2325,7 @@ components:
         email:
           type: string
           format: email
+          description: Optional creator email field to update on the collab's creator. Not used as a replacement lookup for `collabId`.
         firstName:
           type: string
         lastName:
@@ -1346,6 +2497,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Collab'
+        pagination:
+          type: object
+          properties:
+            hasNextPage:
+              type: boolean
+            totalCount:
+              type: integer
+            nextCursor:
+              type: string
+              nullable: true
       description: Response containing array of collabs for a channel
 
     ChannelCollabResponse:
@@ -1542,9 +2703,14 @@ components:
         ownerType:
           type: string
           enum:
+            - creator
+            - campaign
             - collab
+            - collabTier
+            - advert
             - drop
             - product
+            - enhancement
           description: Type of entity this field belongs to
         ownerId:
           type: string
@@ -1562,10 +2728,35 @@ components:
         type:
           type: string
           enum:
+            - drop
+            - media
+            - product
+            - tag
+            - boolean
+            - date_time
+            - json
+            - number_decimal
+            - number_integer
             - single_line_text_field
             - multi_line_text_field
-            - media
+            - list.drop
             - list.media
+            - list.tags
+            - list.single_line_text_field
+            - list.multi_line_text_field
+            - list.product
+            - collection_reference
+            - customer_reference
+            - file_reference
+            - metaobject_reference
+            - page_reference
+            - product_reference
+            - variant_reference
+            - list.collection_reference
+            - list.customer_reference
+            - list.file_reference
+            - list.metaobject_reference
+            - list.product_reference
           description: Field type classification
 
     UpdateEnhancementRequest:
@@ -1591,6 +2782,9 @@ components:
         formId:
           type: string
           description: Form template ID
+        product:
+          type: string
+          description: Existing internal product ID to attach this enhancement to
 
     UpdateChannelCollabRequest:
       type: object
@@ -1601,9 +2795,22 @@ components:
             email:
               type: string
               format: email
+              description: Optional creator email field to update. Not used as a replacement lookup for `collabId`.
             firstName:
               type: string
             lastName:
+              type: string
+            handle:
+              type: string
+            profilePicture:
+              oneOf:
+                - type: string
+                  format: uri
+                - $ref: '#/components/schemas/Media'
+            primaryColor:
+              type: string
+              pattern: '^#[0-9A-Fa-f]{6}$'
+            title:
               type: string
             shop:
               type: object
@@ -1648,7 +2855,11 @@ components:
         products:
           type: array
           items:
-            $ref: '#/components/schemas/DropProduct'
+            oneOf:
+              - type: string
+              - $ref: '#/components/schemas/DropProduct'
+              - type: object
+                additionalProperties: true
         custom:
           type: object
           additionalProperties: true
@@ -1663,3 +2874,415 @@ components:
           $ref: '#/components/schemas/Enhancement'
       description: Response containing updated enhancement
 
+    PresignedUrlResponse:
+      type: object
+      properties:
+        presignedUrl:
+          type: string
+          format: uri
+        media:
+          $ref: '#/components/schemas/Media'
+      required:
+        - presignedUrl
+        - media
+
+    ChannelResponse:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+      required:
+        - channel
+
+    Channel:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        handle:
+          type: string
+        isInstalled:
+          type: boolean
+        isTest:
+          type: boolean
+        platform:
+          type: string
+          enum:
+            - shopify
+            - other
+        shopify:
+          type: object
+          additionalProperties: true
+        brandKit:
+          type: object
+          additionalProperties: true
+        onboardingSettings:
+          type: object
+          additionalProperties: true
+        features:
+          type: object
+          additionalProperties: true
+        connectedIntegrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectedIntegration'
+        metadata:
+          type: object
+          additionalProperties: true
+        shopifyCreatorMetaobjectDefinitionId:
+          type: string
+        shopifyWebPixelId:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ConnectedIntegration:
+      type: object
+      properties:
+        name:
+          type: string
+        handle:
+          type: string
+          enum:
+            - shopify-collabs
+            - social-snowball
+            - tapcart
+            - klaviyo
+            - goaffpro
+            - other
+            - grin
+            - refersion
+            - impact
+            - superfiliate
+            - roster
+            - uppromote
+        type:
+          type: string
+          enum:
+            - affiliate
+            - mobile-app
+            - esp
+        isEnabled:
+          type: boolean
+        shopifyCollabs:
+          type: object
+          additionalProperties: true
+        socialSnowball:
+          type: object
+          additionalProperties: true
+        goAffPro:
+          type: object
+          additionalProperties: true
+        tapcart:
+          type: object
+          additionalProperties: true
+        klaviyo:
+          type: object
+          additionalProperties: true
+        grin:
+          type: object
+          additionalProperties: true
+        refersion:
+          type: object
+          additionalProperties: true
+        superfiliate:
+          type: object
+          additionalProperties: true
+        roster:
+          type: object
+          additionalProperties: true
+        uppromote:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+
+    AddProductsToDropRequest:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/DropProduct'
+      required:
+        - products
+
+    CustomFieldDefinitionsResponse:
+      type: object
+      properties:
+        customFieldDefinitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldDefinition'
+      required:
+        - customFieldDefinitions
+
+    CustomFieldDefinition:
+      type: object
+      properties:
+        _id:
+          type: string
+        ownerType:
+          type: string
+          enum:
+            - creator
+            - campaign
+            - collab
+            - collabTier
+            - advert
+            - product
+            - drop
+            - enhancement
+        name:
+          type: string
+        description:
+          type: string
+        handle:
+          type: string
+        type:
+          type: string
+        isEditable:
+          type: boolean
+        isCreatorEditable:
+          type: boolean
+        isDeleted:
+          type: boolean
+        channel:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateCustomFieldDefinitionRequest:
+      type: object
+      required:
+        - ownerType
+        - name
+        - handle
+        - type
+      properties:
+        ownerType:
+          type: string
+          enum:
+            - creator
+            - campaign
+            - collab
+            - collabTier
+            - advert
+            - product
+            - drop
+            - enhancement
+        name:
+          type: string
+        description:
+          type: string
+        handle:
+          type: string
+          description: Handle is auto-normalized with `cc-` prefix.
+        type:
+          type: string
+        isEditable:
+          type: boolean
+        isCreatorEditable:
+          type: boolean
+        isDeleted:
+          type: boolean
+
+    CustomFieldDefinitionResponse:
+      type: object
+      properties:
+        customFieldDefinition:
+          $ref: '#/components/schemas/CustomFieldDefinition'
+      required:
+        - customFieldDefinition
+
+    FormDefinition:
+      type: object
+      properties:
+        _id:
+          type: string
+        channel:
+          type: string
+        collabTiers:
+          type: array
+          items:
+            type: string
+        productTags:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        onSubmit:
+          type: string
+        action:
+          type: string
+        isActive:
+          type: boolean
+        fields:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+
+    FormDefinitionsResponse:
+      type: object
+      properties:
+        formDefinitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormDefinition'
+      required:
+        - formDefinitions
+
+    FormDefinitionResponse:
+      type: object
+      properties:
+        formDefinition:
+          $ref: '#/components/schemas/FormDefinition'
+      required:
+        - formDefinition
+
+    CampaignsResponse:
+      type: object
+      properties:
+        campaigns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+      required:
+        - campaigns
+
+    CampaignResponse:
+      type: object
+      properties:
+        campaign:
+          $ref: '#/components/schemas/Campaign'
+      required:
+        - campaign
+
+    MetricsResponse:
+      type: object
+      properties:
+        metrics:
+          type: object
+          properties:
+            aggregates:
+              type: object
+              properties:
+                currentPeriod:
+                  type: object
+                  properties:
+                    all:
+                      type: object
+                      additionalProperties: true
+                    perDay:
+                      type: object
+                      additionalProperties: true
+                prevPeriod:
+                  type: object
+                  properties:
+                    all:
+                      type: object
+                      additionalProperties: true
+                    perDay:
+                      type: object
+                      additionalProperties: true
+      required:
+        - metrics
+
+    CreatorFormsResponse:
+      type: object
+      properties:
+        forms:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              title:
+                type: string
+              description:
+                type: string
+              url:
+                type: string
+                format: uri
+      required:
+        - forms
+
+    IntegrationListingsResponse:
+      type: object
+      properties:
+        integrationListings:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationListing'
+      required:
+        - integrationListings
+
+    IntegrationListing:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        handle:
+          type: string
+        type:
+          type: string
+          enum:
+            - affiliate
+            - mobile-app
+            - esp
+        enablementMode:
+          type: string
+          enum:
+            - flow
+            - internal
+            - external
+            - other
+        enablementUrl:
+          type: string
+          format: uri
+        enablementConfigKey:
+          type: string
+        enablementConfigFields:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              inputType:
+                type: string
+            additionalProperties: true
+      additionalProperties: true

@@ -1,0 +1,43 @@
+---
+title: 'Roster'
+description: 'Connect Roster affiliate programs with CreatorCommerce co-branded experiences.'
+---
+
+Sync Roster program and ambassador data into CreatorCommerce to power co-branded storefront funnels.
+
+## Integration Type
+
+- **Mode:** API sync (triggered by a CreatorCommerce sync endpoint)
+- **Trigger source:** Your workflow calls the CC sync webhook endpoint, then CC pulls programs/ambassadors from the Roster API
+- **Shopify Flow required:** Recommended for scheduled/automated sync runs
+
+## What This Integration Does
+
+| Source Integration Data | CreatorCommerce Outcome |
+|-------------------------|------------------------|
+| Program and ambassador data | Creators/collabs update for co-branded funnels |
+| Discount and referral context | Collab mapping and attribution context stay current |
+
+## Setup
+
+1. Connect Roster credentials in CreatorCommerce (`apiKey`, optional `apiDomain`).
+2. Set up Shopify Flow (or another scheduler) to call the CreatorCommerce Roster sync endpoint.
+3. Validate a sync run and confirm creator/collab updates in CC.
+
+## Trigger Endpoint (CC API)
+
+Call this endpoint when you want CreatorCommerce to run a Roster sync:
+
+```http
+POST /webhooks/integrations/roster/webhooks/affiliates/sync
+Content-Type: application/json
+
+{
+  "shopify_domain": "your-store.myshopify.com"
+}
+```
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Shopify Flow Integration](/guides/integrations/content-automation/shopify-flow)

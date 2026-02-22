@@ -1,0 +1,40 @@
+---
+title: 'Superfiliate'
+description: 'Connect Superfiliate creator updates with CreatorCommerce co-branded experiences.'
+---
+
+Sync Superfiliate creator updates into CreatorCommerce to keep creators, collabs, and campaign-linked discount context current.
+
+## Integration Type
+
+- **Mode:** Hybrid (webhook event + API enrichment)
+- **Trigger source:** Superfiliate webhooks call CreatorCommerce endpoints; CC then calls Superfiliate API for campaign context
+- **Shopify Flow required:** No (direct webhook pattern)
+
+## What This Integration Does
+
+| Source Integration Data | CreatorCommerce Outcome |
+|-------------------------|------------------------|
+| Creator update events | Creators/collabs update for co-branded funnels |
+| Campaign metadata and reward context | Collab tiers and attribution fields stay current |
+
+## Setup
+
+1. Connect Superfiliate credentials in CreatorCommerce (`clientId` + `clientSecret`).
+2. Configure Superfiliate webhooks to CreatorCommerce for creator update events.
+3. Validate by updating a creator in Superfiliate and confirming creator/collab changes in CC.
+
+## Webhook Endpoints (CC API)
+
+Configure Superfiliate to POST to:
+
+```http
+POST /webhooks/integrations/superfiliate/webhooks/creator/updated?myshopify_domain=your-store.myshopify.com
+POST /webhooks/integrations/superfiliate/webhooks/campaigns/sync?myshopify_domain=your-store.myshopify.com
+Content-Type: application/json
+```
+
+## Related
+
+- [Partner Integrations Overview](/guides/integrations/overview)
+- [Destinations Explained](/guides/storefronts/destinations-explained)

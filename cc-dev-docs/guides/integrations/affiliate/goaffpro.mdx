@@ -3,57 +3,42 @@ title: 'GoAffPro'
 description: 'Connect GoAffPro affiliate data with CreatorCommerce co-branded experiences.'
 ---
 
-GoAffPro is a popular affiliate management app for Shopify stores. Integrating it with CreatorCommerce transforms your GoAffPro affiliates' basic referral links into personalized co-branded storefronts.
+Sync GoAffPro affiliate data into CreatorCommerce so GoAffPro-managed affiliates can power co-branded storefront funnels.
+
+## Integration Type
+
+- **Mode:** API sync (triggered by a CreatorCommerce sync endpoint)
+- **Trigger source:** Your workflow calls the CC sync webhook endpoint, then CC pulls affiliates/groups from GoAffPro API
+- **Shopify Flow required:** Recommended for scheduled/automated sync runs
 
 ## What This Integration Does
 
-| GoAffPro → CC | CC → GoAffPro |
-|----------------|----------------|
-| Affiliate profiles | Co-branded page performance |
-| Commission tiers | Enhanced conversion data |
-| Referral tracking data | Attribution signals |
+| Source Integration Data | CreatorCommerce Outcome |
+|-------------------------|------------------------|
+| Affiliate and group data | Creators/collabs update for co-branded funnels |
+| Discount code context | Collab tier mapping and attribution context stay current |
 
 ## Setup
 
-<Steps>
-  <Step title="Connect in CreatorCommerce">
-    In your CreatorCommerce dashboard, navigate to **Integrations → GoAffPro** and follow the connection flow to authorize access.
-  </Step>
-  <Step title="Map affiliate programs">
-    Select which GoAffPro programs should sync with CreatorCommerce. Use the `CC //` prefix convention on program names to control which programs sync:
+1. Connect GoAffPro credentials in CreatorCommerce.
+2. Set up Shopify Flow (or another scheduler) to call the CreatorCommerce GoAffPro sync endpoint.
+3. Confirm creators/collabs are created or updated after a sync run.
 
-    ```
-    CC // Ambassador Program
-    CC // VIP Affiliates
-    ```
-  </Step>
-  <Step title="Set redirect destination">
-    Update the landing page URL for synced programs to route through CreatorCommerce:
+## Trigger Endpoint (CC API)
 
-    ```
-    https://your-store.myshopify.com/apps/cc-storefront/redirect
-    ```
-  </Step>
-  <Step title="Test">
-    Click a test affiliate link and verify:
-    - Co-branded landing page renders correctly
-    - Cart attributes are set
-    - Orders are attributed in both GoAffPro and CC
-  </Step>
-</Steps>
+Call this endpoint when you want CreatorCommerce to run a GoAffPro sync:
 
-## Use Cases
+```http
+POST /webhooks/integrations/goaffpro/webhooks/affiliates/sync
+Content-Type: application/json
 
-### Upgrade Existing Program
-Your GoAffPro affiliates keep their existing commission structure and tracking. CreatorCommerce layers co-branded storefronts on top — same economics, better conversion.
-
-### Tiered Co-branding
-Map different GoAffPro tiers to different CC campaign configurations for varying levels of storefront customization.
-
-### Bridge to Scale
-Use GoAffPro for affiliate management and payouts while CreatorCommerce handles the storefront personalization layer.
+{
+  "shopify_domain": "your-store.myshopify.com"
+}
+```
 
 ## Related
 
 - [Partner Integrations Overview](/guides/integrations/overview)
 - [Destinations Explained](/guides/storefronts/destinations-explained)
+- [Shopify Flow Integration](/guides/integrations/content-automation/shopify-flow)

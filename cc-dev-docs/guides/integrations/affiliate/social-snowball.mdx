@@ -3,112 +3,39 @@ title: 'Social Snowball'
 description: 'Connect Social Snowball affiliate programs with CreatorCommerce co-branded experiences.'
 ---
 
-Social Snowball is one of the most popular affiliate platforms on Shopify. Integrating it with CreatorCommerce upgrades your affiliates from basic discount links to fully personalized co-branded storefronts — same attribution, dramatically better conversion.
+Sync Social Snowball affiliate data into CreatorCommerce so each affiliate can power a co-branded funnel experience in Shopify.
+
+## Integration Type
+
+- **Mode:** Webhook-based
+- **Trigger source:** Social Snowball events posted to CreatorCommerce webhook endpoints
+- **Shopify Flow required:** No (direct webhook pattern)
 
 ## What This Integration Does
 
-| Social Snowball → CC | CC → Social Snowball |
-|----------------------|----------------------|
-| Affiliate profiles synced as creators | Co-branded page performance |
-| Program tiers mapped to CC campaigns | Enhanced conversion tracking |
-| Commission & discount data | Attribution signals |
-| Affiliate approval events | Storefront visit data |
+| Source Integration Data | CreatorCommerce Outcome |
+|-------------------------|------------------------|
+| Affiliate profile and program events | Creators/collabs update for co-branded funnels |
+| Program and discount context | Attribution context is preserved through CC redirects |
 
 ## Setup
 
-<Steps>
-  <Step title="Enable the integration in CreatorCommerce">
-    In your CreatorCommerce dashboard, navigate to **Integrations → Social Snowball** and enable the sync. This will begin syncing affiliate data from Social Snowball into CreatorCommerce as creator profiles.
-  </Step>
-  <Step title="Update email flows">
-    Social Snowball sends default system emails to affiliates. Since CreatorCommerce introduces new touchpoints (storefront links, onboarding, drop notifications), you'll want to update your email flows to include co-branded context.
+1. Enable Social Snowball in CreatorCommerce.
+2. Configure Social Snowball webhook delivery to CreatorCommerce for affiliate/program updates.
+3. Use `CC //` naming on Social Snowball programs you want treated as co-branded programs.
+4. Validate by updating a test affiliate and confirming creator/collab updates in CC.
 
-    Depending on your email provider:
-    - **Klaviyo** — See the [Klaviyo integration guide](/guides/integrations/email-sms/klaviyo) for setting up automated flows
-    - **SendLane** — Configure affiliate segments with CC event triggers
-    - **Mailchimp** — See the [Mailchimp integration guide](/guides/integrations/email-sms/mailchimp) for Shopify Flow setup
-  </Step>
-  <Step title="Disable default Social Snowball emails">
-    To avoid duplicate communications, disable the default Social Snowball system emails for programs synced with CreatorCommerce. Your updated email flows will handle all affiliate communication with co-branded context.
-  </Step>
-  <Step title="Prefix program titles with CC //">
-    For programs that sync with CreatorCommerce, edit the program title in Social Snowball to include the `CC //` prefix:
+## Webhook Endpoint (CC API)
 
-    ```
-    CC // Ambassador Program
-    CC // Influencer Program
-    ```
+Configure Social Snowball to POST to:
 
-    This prefix tells CreatorCommerce which Social Snowball programs to sync. Programs without the prefix are ignored.
-  </Step>
-</Steps>
-
-## Enrolling a Social Snowball Program into a CC Campaign
-
-Once the integration is enabled, you need to connect specific Social Snowball programs to CreatorCommerce campaigns.
-
-<Steps>
-  <Step title="Create a new program in Social Snowball (or edit existing)">
-    In Social Snowball, create a new program or edit an existing one. Make sure the title includes the `CC //` prefix.
-  </Step>
-  <Step title="Set the landing page URL">
-    Set the program's **landing page** destination to your CreatorCommerce redirect URL:
-
-    ```
-    https://your-store.myshopify.com/apps/cc-storefront/redirect
-    ```
-
-    This ensures that when affiliates share their links, traffic routes through CreatorCommerce for co-branded personalization and tracking.
-  </Step>
-  <Step title="Select the program in CreatorCommerce">
-    In CreatorCommerce, navigate to the campaign you want to connect. Under **Affiliate Platform**, select the Social Snowball program with the `CC //` prefix. The program's affiliates will begin syncing as creators in that campaign.
-  </Step>
-  <Step title="Test the flow">
-    Click a test affiliate link and verify:
-    - Traffic redirects through CreatorCommerce
-    - The co-branded landing page renders with creator data
-    - Cart attributes are set correctly
-    - The order is attributed in both Social Snowball and CreatorCommerce
-  </Step>
-</Steps>
-
-## How Affiliate Links Work
-
-When Social Snowball is connected, CreatorCommerce handles the redirect layer:
-
+```http
+POST /webhooks/integrations/ss/webhooks/program/changed
+Content-Type: application/json
 ```
-Affiliate shares link → Social Snowball tracks click
-       ↓
-CC redirect captures context → Sets cart attributes
-       ↓
-Shopper lands on co-branded page → Personalized experience
-       ↓
-Purchase → Attributed in both SS and CC
-```
-
-CreatorCommerce appends its own tracking parameter (e.g., `cc={{tracking-handle}}`) to the affiliate URL without modifying any of Social Snowball's original parameters. This preserves attribution for both platforms.
-
-<Note>
-Social Snowball's **Safe Links** provide an additional layer of fraud protection compared to standard discount codes. When using Safe Links with CreatorCommerce, the attribution and redirect flow work identically.
-</Note>
-
-## Use Cases
-
-### Upgrade Existing Affiliates to Co-branded Storefronts
-Your Social Snowball affiliates already have discount codes and tracking links. Adding CreatorCommerce gives each one a personalized landing page, product recommendations, and UGC — without changing your commission structure.
-
-### Tiered Co-branding by Program
-Use different Social Snowball programs mapped to different CC campaigns to offer varying levels of storefront customization:
-- **Ambassadors** — Full co-branded landing pages with drops and custom content
-- **Micro-influencers** — Simplified product recommendation pages
-- **Affiliates** — Basic discount landing pages
-
-### Performance-Based Upgrades
-Start affiliates on a basic tier, then upgrade high performers to richer co-branded experiences as they prove ROI.
 
 ## Related
 
 - [Partner Integrations Overview](/guides/integrations/overview)
-- [Klaviyo Integration](/guides/integrations/email-sms/klaviyo)
 - [Destinations Explained](/guides/storefronts/destinations-explained)
 - [Affiliate Link Tracking Reference](/references/affiliate-link-tracking)
