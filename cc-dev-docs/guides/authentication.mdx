@@ -38,18 +38,6 @@ x-partner-access-token: <your-partner-token>
 - Partner API access
 - Channel-specific operations
 
-### Admin Access Token
-
-For administrative operations, you can use:
-
-```bash
-x-admin-access-token: <your-admin-token>
-```
-
-**When to use:**
-- Administrative operations
-- System-level integrations
-
 ## Getting Your Credentials
 
 ### JWT Tokens
@@ -61,7 +49,6 @@ JWT tokens are obtained through the CreatorCommerce authentication flow. These t
 API keys are provided when you:
 - Set up a channel integration
 - Register as a partner
-- Configure administrative access
 
 Contact CreatorCommerce Support to obtain API keys for your use case.
 
@@ -106,4 +93,3 @@ If authentication fails, you'll receive a `401 Unauthorized` or `403 Forbidden` 
 ## Token Expiration
 
 JWT tokens have expiration times. Monitor the token expiration and implement refresh logic. API keys typically don't expire but can be revoked by administrators.
-

@@ -148,7 +148,7 @@ Once you understand their context, recommend one of three approaches. Each has d
     "cc-banner": {
       "type": "cc-banner-momentum",
       "settings": {
-        "message": "Use code [DISCOUNT_CODE] for [DISCOUNT_AMOUNT]% off"
+        "message": "Use code [cc-creator-discount-code] for [cc-creator-discount-amount]% off"
       }
     }
   },
@@ -159,7 +159,7 @@ Once you understand their context, recommend one of three approaches. Each has d
 **How to customize:**
 - Adjust section settings in the Theme Editor
 - Modify default text to match brand voice
-- Use dynamic text tokens like `[cc-creator-first-name]`, `[DISCOUNT_CODE]`, `[DISCOUNT_AMOUNT]`
+- Use dynamic text tokens like `[cc-creator-first-name]`, `[cc-creator-discount-code]`, `[cc-creator-discount-amount]`
 - Change color schemes to match brand
 
 **Time to launch:** 30-60 minutes
@@ -194,7 +194,7 @@ Once you understand their context, recommend one of three approaches. Each has d
 
    **Copy Personalization:**
    - Find text settings in sections (headings, descriptions, CTAs)
-   - Add dynamic text tokens: `[cc-creator-first-name]`, `[DISCOUNT_CODE]`, `[DISCOUNT_AMOUNT]`
+   - Add dynamic text tokens: `[cc-creator-first-name]`, `[cc-creator-discount-code]`, `[cc-creator-discount-amount]`
    - Use `snippets/cc-process-dynamic-text.liquid` or `snippets/cc-dynamic-text.liquid` if available
 
    **Example modifications:**
@@ -206,7 +206,7 @@ Once you understand their context, recommend one of three approaches. Each has d
          "type": "hero-section",
          "settings": {
            "heading": "Shop [cc-creator-first-name]'s Favorites",
-           "subheading": "Use code [DISCOUNT_CODE] for [DISCOUNT_AMOUNT]% off"
+           "subheading": "Use code [cc-creator-discount-code] for [cc-creator-discount-amount]% off"
          }
        },
        "featured-collection": {
@@ -443,8 +443,8 @@ After asking the preference-building questions, if a clear preference emerges:
 **Dynamic text tokens:**
 - `[cc-creator-first-name]` - Creator's first name
 - `[cc-creator-full-name]` - Creator's full name
-- `[DISCOUNT_CODE]` - Creator's discount code
-- `[DISCOUNT_AMOUNT]` - Discount percentage/amount
+- `[cc-creator-discount-code]` - Creator's discount code
+- `[cc-creator-discount-amount]` - Discount percentage/amount
 - Custom field tokens — any collab-level custom field can be referenced as `[field-name]` if the dynamic text snippet supports it
 
 ### Custom Fields & Forms Awareness

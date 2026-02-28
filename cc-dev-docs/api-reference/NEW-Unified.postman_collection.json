@@ -52,7 +52,7 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "aB1c2D3e4F5g6H7i8J9kx12dwpoi6xn3mxi761asw8ftuswe",
 										"type": "text"
 									}
@@ -214,7 +214,7 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "aB1c2D3e4F5g6H7i8J9kx12dwpoi6xn3mxi761asw8ftuswe",
 										"type": "text"
 									}
@@ -370,7 +370,7 @@
 								"method": "GET",
 								"header": [
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "aB1c2D3e4F5g6H7i8J9kx12dwpoi6xn3mxi761asw8ftuswe",
 										"type": "text"
 									}
@@ -671,7 +671,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "aB1c2D3e4F5g6H7i8J9kx12dwpoi6xn3mxi761asw8ftuswe",
 								"type": "text"
 							}
@@ -738,7 +738,7 @@
 										"type": "text"
 									},
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "blah",
 										"type": "text"
 									}
@@ -877,7 +877,7 @@
 										"type": "text"
 									},
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "blah",
 										"type": "text"
 									}
@@ -1010,7 +1010,7 @@
 										"type": "text"
 									},
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "blah",
 										"type": "text"
 									}
@@ -1146,7 +1146,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -1188,7 +1188,7 @@
 										"disabled": true
 									},
 									{
-										"key": "x-admin-access-token",
+										"key": "x-channel-access-token",
 										"value": "blah",
 										"type": "text"
 									}
@@ -1619,7 +1619,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -1663,7 +1663,7 @@
 								"type": "text"
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -1775,7 +1775,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -1896,7 +1896,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -1942,7 +1942,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -2001,7 +2001,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "",
 								"type": "text"
 							}
@@ -2113,7 +2113,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -2234,7 +2234,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -2293,7 +2293,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "",
 								"type": "text"
 							}
@@ -2405,7 +2405,7 @@
 								"disabled": true
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -2526,7 +2526,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -2580,7 +2580,7 @@
 								"type": "text"
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -2712,7 +2712,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -2771,7 +2771,7 @@
 								"type": "text"
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -2908,7 +2908,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "blah",
 						"type": "text"
 					}
@@ -2965,7 +2965,7 @@
 								"type": "text"
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}
@@ -3100,7 +3100,7 @@
 						"disabled": true
 					},
 					{
-						"key": "x-admin-access-token",
+						"key": "x-channel-access-token",
 						"value": "",
 						"type": "text"
 					}
@@ -3162,7 +3162,7 @@
 								"type": "text"
 							},
 							{
-								"key": "x-admin-access-token",
+								"key": "x-channel-access-token",
 								"value": "blah",
 								"type": "text"
 							}

@@ -1,0 +1,27 @@
+---
+title: "SDK Cart Attributes"
+description: "Canonical cart attributes written by the CreatorCommerce SDK and how to use them."
+---
+
+The CreatorCommerce SDK writes attribution context to Shopify cart attributes when a shopper arrives via a creator link.
+
+## Canonical Attributes
+
+| Attribute | Description |
+|---|---|
+| `cc-creator-handle` | Creator handle used to resolve `metaobjects.creator[handle]` |
+| `cc-creator-id` | CreatorCommerce creator ID |
+| `cc-campaign-id` | Campaign ID used for attribution and reporting |
+| `cc-shop-id` | CreatorCommerce shop/channel identifier |
+
+## Example Access
+
+```liquid
+{% assign cc_handle = cart.attributes['cc-creator-handle'] %}
+{% assign cc_creator = metaobjects.creator[cc_handle] %}
+```
+
+## Related
+
+- [SDK Getting Started](/references/sdk/getting-started)
+- [Enable Tracking](/guides/storefronts/enable-tracking)

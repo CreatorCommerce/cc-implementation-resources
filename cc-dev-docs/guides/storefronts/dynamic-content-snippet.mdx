@@ -7,7 +7,7 @@ description: 'Convert user inputs in section settings into co-branded content us
 
 You want section settings like headlines to support both:
 - Static copy: "Shop our best sellers"
-- Dynamic copy: "Shop [CREATOR_NAME]'s picks"
+- Dynamic copy: "Shop [cc-creator-first-name]'s picks"
 
 ## The CC Dynamic Text Snippet
 
@@ -22,15 +22,15 @@ Create `snippets/cc-dynamic-text.liquid`:
   assign output = text
   
   if cc_creator
-    assign output = output | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name
-    assign output = output | replace: '[CREATOR_FULL_NAME]', cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name
-    assign output = output | replace: '[DISCOUNT_CODE]', cc_creator.cc-collab-discount-code
-    assign output = output | replace: '[DISCOUNT_AMOUNT]', cc_creator.cc-collab-discount-amount
+    assign output = output | replace: '[cc-creator-first-name]', cc_creator.cc-creator-first-name
+    assign output = output | replace: '[cc-creator-full-name]', cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name
+    assign output = output | replace: '[cc-creator-discount-code]', cc_creator.cc-collab-discount-code
+    assign output = output | replace: '[cc-creator-discount-amount]', cc_creator.cc-collab-discount-amount
   else
-    assign output = output | replace: '[CREATOR_NAME]', 'our expert'
-    assign output = output | replace: '[CREATOR_FULL_NAME]', 'our team'
-    assign output = output | replace: '[DISCOUNT_CODE]', ''
-    assign output = output | replace: '[DISCOUNT_AMOUNT]', ''
+    assign output = output | replace: '[cc-creator-first-name]', 'our expert'
+    assign output = output | replace: '[cc-creator-full-name]', 'our team'
+    assign output = output | replace: '[cc-creator-discount-code]', ''
+    assign output = output | replace: '[cc-creator-discount-amount]', ''
   endif
 %}
 
@@ -49,10 +49,10 @@ Create `snippets/cc-dynamic-text.liquid`:
 
 | Token | With Creator | Without Creator | Notes |
 |-------|--------------|-----------------|-------|
-| `[CREATOR_NAME]` | Sarah | our expert | Most commonly used |
-| `[CREATOR_FULL_NAME]` | Sarah Jones | our team | For formal contexts |
-| `[DISCOUNT_CODE]` | SARAH15 | *(empty string)* | Pair with conditional rendering |
-| `[DISCOUNT_AMOUNT]` | 15 | *(empty string)* | Numeric — add `%` or `$` in your template |
+| `[cc-creator-first-name]` | Sarah | our expert | Most commonly used |
+| `[cc-creator-full-name]` | Sarah Jones | our team | For formal contexts |
+| `[cc-creator-discount-code]` | SARAH15 | *(empty string)* | Pair with conditional rendering |
+| `[cc-creator-discount-amount]` | 15 | *(empty string)* | Numeric — add `%` or `$` in your template |
 
 ### Extending with Custom Tokens
 
@@ -63,17 +63,17 @@ You can extend the snippet to support additional tokens. Common additions:
   assign output = text
   
   if cc_creator
-    assign output = output | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name
-    assign output = output | replace: '[CREATOR_FULL_NAME]', cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name
-    assign output = output | replace: '[DISCOUNT_CODE]', cc_creator.cc-collab-discount-code
-    assign output = output | replace: '[DISCOUNT_AMOUNT]', cc_creator.cc-collab-discount-amount
+    assign output = output | replace: '[cc-creator-first-name]', cc_creator.cc-creator-first-name
+    assign output = output | replace: '[cc-creator-full-name]', cc_creator.cc-creator-first-name | append: ' ' | append: cc_creator.cc-creator-last-name
+    assign output = output | replace: '[cc-creator-discount-code]', cc_creator.cc-collab-discount-code
+    assign output = output | replace: '[cc-creator-discount-amount]', cc_creator.cc-collab-discount-amount
     assign output = output | replace: '[SHOP_TITLE]', cc_creator.cc-creator-shop-title
     assign output = output | replace: '[BIO]', cc_creator.cc-creator-shop-description
   else
-    assign output = output | replace: '[CREATOR_NAME]', 'our expert'
-    assign output = output | replace: '[CREATOR_FULL_NAME]', 'our team'
-    assign output = output | replace: '[DISCOUNT_CODE]', ''
-    assign output = output | replace: '[DISCOUNT_AMOUNT]', ''
+    assign output = output | replace: '[cc-creator-first-name]', 'our expert'
+    assign output = output | replace: '[cc-creator-full-name]', 'our team'
+    assign output = output | replace: '[cc-creator-discount-code]', ''
+    assign output = output | replace: '[cc-creator-discount-amount]', ''
     assign output = output | replace: '[SHOP_TITLE]', 'Our Shop'
     assign output = output | replace: '[BIO]', ''
   endif
@@ -105,7 +105,7 @@ When a token resolves to empty (e.g., no discount code), the surrounding text mi
 
 ```liquid
 {% comment %} ❌ Awkward: "Use code  for % off!" (when no discount) {% endcomment %}
-<p>{% render 'cc-dynamic-text', text: 'Use code [DISCOUNT_CODE] for [DISCOUNT_AMOUNT]% off!', cc_creator: cc_creator %}</p>
+<p>{% render 'cc-dynamic-text', text: 'Use code [cc-creator-discount-code] for [cc-creator-discount-amount]% off!', cc_creator: cc_creator %}</p>
 
 {% comment %} ✅ Better: Only show the discount line when the code exists {% endcomment %}
 {% if cc_creator and cc_creator.cc-collab-discount-code != blank %}
@@ -124,15 +124,15 @@ In your section schema, include info text so merchants know which tokens are ava
   "type": "text",
   "id": "heading",
   "label": "Heading",
-  "default": "Shop [CREATOR_NAME]'s favorites",
-  "info": "Tokens: [CREATOR_NAME], [CREATOR_FULL_NAME], [DISCOUNT_CODE], [DISCOUNT_AMOUNT]"
+  "default": "Shop [cc-creator-first-name]'s favorites",
+  "info": "Tokens: [cc-creator-first-name], [cc-creator-full-name], [cc-creator-discount-code], [cc-creator-discount-amount]"
 },
 {
   "type": "textarea",
   "id": "subheading",
   "label": "Subheading",
-  "default": "Hand-picked by [CREATOR_NAME] just for you",
-  "info": "Tokens: [CREATOR_NAME], [CREATOR_FULL_NAME]"
+  "default": "Hand-picked by [cc-creator-first-name] just for you",
+  "info": "Tokens: [cc-creator-first-name], [cc-creator-full-name]"
 }
 ```
 

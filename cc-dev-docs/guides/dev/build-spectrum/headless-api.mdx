@@ -45,36 +45,27 @@ The Headless API approach lets you build completely custom frontends while CC ha
 ### Read Creator Data
 
 ```javascript
-// Get creator by handle
-const creator = await fetch(
-  `https://api.creatorcommerce.com/v1/creators/${handle}`,
-  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+// Get creator collabs by email + channel
+const collabs = await fetch(
+  `https://unified-api.creatorcommerce.shop/creators/collabs?email=${encodeURIComponent(email)}&myshopify_domain=${encodeURIComponent(myshopifyDomain)}`,
+  { headers: { 'x-channel-access-token': CHANNEL_TOKEN } }
 ).then(r => r.json());
 
-// Get creator's drops
-const drops = await fetch(
-  `https://api.creatorcommerce.com/v1/creators/${creatorId}/drops`,
-  { headers: { 'Authorization': `Bearer ${API_KEY}` } }
+// Generate a creator drop cart URL
+const cartUrl = await fetch(
+  `https://unified-api.creatorcommerce.shop/creators/${creatorId}/drops/${dropId}/cart`,
+  { headers: { 'x-channel-access-token': CHANNEL_TOKEN } }
 ).then(r => r.json());
 ```
 
-### Write Attribution
+### Read Attribution Metrics
 
 ```javascript
-// Track page view with creator context
-await fetch('https://api.creatorcommerce.com/v1/events/pageview', {
-  method: 'POST',
-  headers: { 
-    'Authorization': `Bearer ${API_KEY}`,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    creatorHandle: 'partner-handle',
-    sessionId: getSessionId(),
-    pageType: 'landing',
-    url: window.location.href
-  })
-});
+// Read session metrics for a channel
+const sessionMetrics = await fetch(
+  `https://unified-api.creatorcommerce.shop/channels/${myshopifyDomain}/metrics/session?startDate=2026-02-01&endDate=2026-02-28`,
+  { headers: { 'x-channel-access-token': CHANNEL_TOKEN } }
+).then(r => r.json());
 ```
 
 ### SDK Alternative

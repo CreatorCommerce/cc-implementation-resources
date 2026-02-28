@@ -37,21 +37,7 @@ Merchant copies API key from CC and pastes into your integration settings.
 **Pros:** Simple, no OAuth required
 **Cons:** Manual step, key visible to merchant
 
-### Pattern 2: OAuth Flow
-
-Your integration redirects to CC for authorization, receives token automatically.
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│ Your System  │────▶│      CC      │────▶│ Your System  │
-│  Redirect    │     │   Authorize  │     │ Store Token  │
-└──────────────┘     └──────────────┘     └──────────────┘
-```
-
-**Pros:** No manual key copying, revokable access
-**Cons:** More complex to implement
-
-### Pattern 3: Shopify App Installation
+### Pattern 2: Shopify App Installation
 
 For Shopify apps, use Shopify's OAuth and access CC data via metaobjects.
 
@@ -141,19 +127,6 @@ async function rotateApiKey(merchantId, newApiKey) {
 }
 ```
 
-## Scopes and Permissions
-
-When requesting access, only request what you need:
-
-| Scope | Access |
-|-------|--------|
-| `creators:read` | Read partner profiles |
-| `creators:write` | Create/update partners |
-| `drops:read` | Read drops and products |
-| `drops:write` | Update drops |
-| `orders:read` | Read attributed orders |
-| `analytics:read` | Read performance data |
-
 ## Error Handling
 
 Handle auth errors gracefully:
@@ -161,15 +134,15 @@ Handle auth errors gracefully:
 | Error | Cause | Action |
 |-------|-------|--------|
 | `401 Unauthorized` | Invalid or expired key | Prompt merchant to reconnect |
-| `403 Forbidden` | Insufficient scopes | Request additional permissions |
+| `403 Forbidden` | Insufficient permissions | Request access verification |
 | `429 Too Many Requests` | Rate limited | Backoff and retry |
 
 ```javascript
 async function callCCApi(merchantId, endpoint) {
   try {
     const apiKey = await getDecryptedKey(merchantId);
-    return await fetch(`https://api.creatorcommerce.com${endpoint}`, {
-      headers: { 'Authorization': `Bearer ${apiKey}` }
+    return await fetch(`https://unified-api.creatorcommerce.shop${endpoint}`, {
+      headers: { 'x-channel-access-token': apiKey }
     });
   } catch (error) {
     if (error.status === 401) {

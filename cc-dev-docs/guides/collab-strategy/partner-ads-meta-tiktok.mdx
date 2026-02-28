@@ -1,0 +1,168 @@
+---
+title: 'Partner Ads on Meta or TikTok'
+description: 'Run partner ads on Meta or TikTok at scale by aligning ad creative with co-branded funnels and measuring what matters.'
+---
+
+When you run **partner ads** (paid traffic from creator accounts or using creator content) on Meta or TikTok, the biggest lever is **funnel fit**: sending that paid traffic to a co-branded experience that matches what the ad promised. This guide covers how to design and scale funnels that are well adapted to your ads.
+
+---
+
+## Why Funnel–Ad Fit Matters at Scale
+
+Partner ads perform best when:
+
+1. **The ad and the landing experience are one story.** Someone who clicks an ad featuring a creator’s face and recommendation should land on a page that prominently shows that same creator, their picks, and their discount — not a generic PDP or homepage.
+2. **You can repeat the pattern.** At scale, you need a repeatable structure: ad creative type → matching funnel type → clear attribution and optimization.
+
+CreatorCommerce co-branded landers (creator metaobject pages, destinations) give you a dedicated URL per creator and consistent attribution. The strategy is to **match each ad format and audience to the right funnel**, then scale that pairing.
+
+---
+
+## Meta vs TikTok: Funnel Implications
+
+<Tabs>
+  <Tab title="Meta (Facebook & Instagram)">
+    **Common ad formats:**
+    - Single-image or carousel (static or UGC)
+    - Reels / short-form video
+    - Partnership ads (formerly whitelisted/spark) — ad runs from creator’s account, your budget
+
+    **Funnel considerations:**
+    - **Message match:** If the ad is “Recommended by [Creator],” the lander should lead with that creator (hero, name, photo, discount).
+    - **Mobile-first:** Most traffic is mobile; keep hero and CTA above the fold, fast load.
+    - **Attribution:** Use UTM parameters and/or CC destination links so you can segment by campaign, ad set, and creator. Cart attributes (`cc-creator-handle`, etc.) preserve creator context into checkout and reporting.
+  </Tab>
+
+  <Tab title="TikTok">
+    **Common ad formats:**
+    - In-feed video (Spark Ads / content that originated from creator)
+    - TopView / branded takeovers (less typical for partner ads)
+
+    **Funnel considerations:**
+    - **Vibe match:** TikTok users expect a fast, visual, scroll-friendly experience. Co-branded landers that feel “native” (creator front and center, short copy, clear CTA) tend to convert better than long, text-heavy pages.
+    - **Short consideration:** Many clicks are impulse; reduce steps to add-to-cart (e.g. “Shop [Creator]’s Picks” → product grid → checkout).
+    - **Attribution:** Same idea as Meta — unique CC URLs per creator/campaign and cart attributes so you can attribute orders to creator and ad source.
+  </Tab>
+</Tabs>
+
+---
+
+## Funnel Types Suited to Partner Ads at Scale
+
+Different ad creatives and offers work best with different funnel shapes. Use these as templates and replicate by creator or segment.
+
+### 1. Creator Hero Lander (Best for “Recommended by [Name]” Ads)
+
+**Ad:** Single creator, face and name clear, “Shop my picks” or “Use my code.”
+
+**Funnel:**
+- **Landing:** Creator metaobject page with CC Hero (creator photo, name, bio, discount) and a product grid from their drops.
+- **Rest of journey:** Co-branded product pages, cart, checkout (discount auto-applied or clearly shown), post-purchase email with creator context.
+
+**Scale pattern:** One lander per creator; one destination/URL per creator. Run multiple creators in parallel, each with their own ad creative and link. Optimize by creator and by creative.
+
+### 2. Product-Review Lander (Best for UGC / “I tried this” Ads)
+
+**Ad:** Creator unboxing, review, or “get ready with me” featuring specific products.
+
+**Funnel:**
+- **Landing:** Same creator’s page but with emphasis on the **product(s)** in the ad — e.g. section or block that highlights “What [Creator] loves about [Product]” and the reviewed SKUs.
+- **Rest of journey:** Add-to-cart from that product or bundle; cart and checkout stay creator-attributed.
+
+**Scale pattern:** Per creator you can have one primary lander; use dynamic content or sections so the “featured product” can match the ad (e.g. by UTM or campaign). Alternatively, create a small set of lander variants per creator (e.g. by product category) and point different ads to the right variant.
+
+### 3. Local / Trust Lander (Best for “Your local [X] recommends” Ads)
+
+**Ad:** “Your local nutritionist/trainer/stylist recommends…” with partner’s likeness.
+
+**Funnel:**
+- **Landing:** Co-branded page that reinforces “local” and trust: practitioner/partner name, credentials, photo, short bio, curated picks, discount.
+- **Rest of journey:** Same as above; post-purchase and abandonment emails reference the local partner.
+
+**Scale pattern:** One lander per local partner; target ads by geography so the “local” claim holds. Scale by adding more local partners and replicating the same funnel structure.
+
+---
+
+## Designing Funnels for Scale
+
+### One Variable at a Time When Testing
+
+When testing funnel–ad fit:
+
+- **Hold the funnel constant** and test ad creative (different hooks, visuals, copy).
+- Or **hold the ad constant** and test funnel elements (hero size, product count, discount placement, CTA copy).
+
+Mixing both at once makes it hard to know what drove the change. Once you have a winning creator + funnel + ad format combo, replicate that combo for more creators.
+
+### Consistent Attribution Across Funnel and Ads
+
+To optimize at scale you need to know which creator and which ad drove the order.
+
+- **Creator:** Use CC destinations so each creator has a stable URL. Cart attributes (`cc-creator-handle`, `cc-creator-id`, etc.) carry creator through checkout; order/customer tags (e.g. via Shopify Flow or your stack) record it for reporting.
+- **Ad source:** Use UTM (or equivalent) on the CC link so you can segment by `utm_source`, `utm_medium`, `utm_campaign`, and optionally ad set/creative. Store these in cart or session if you need them on the order.
+
+Then you can answer: “Which creator + campaign + creative has the best ROAS?” and scale those.
+
+### Funnel Consistency (No Surprises)
+
+From ad → lander → product → cart → checkout → email, keep the **same** creator name, face, and discount visible. Inconsistent or generic steps (e.g. generic checkout with no creator mention) can hurt trust and conversion. Use [full-funnel personalization](/guides/storefronts/full-funnel-personalization) so creator context is present wherever the platform allows.
+
+### Mobile and Speed
+
+Most partner ad traffic is mobile. Ensure:
+
+- Hero and primary CTA are above the fold and load quickly.
+- Product grids and add-to-cart are thumb-friendly.
+- Page speed is optimized (images sized, critical path fast).
+
+---
+
+## Scaling the Creative–Funnel Loop
+
+1. **Start with a few creators** and one clear funnel type (e.g. creator hero lander). Run partner ads (Meta and/or TikTok) to their CC pages.
+2. **Measure** ROAS, CVR, and AOV by creator and by ad (using attribution above). Double down on creators and creatives that work.
+3. **Replicate:** Add more creators to the same funnel template; produce more ad creative in the same format (e.g. “Recommended by [Name]” with a new creator).
+4. **Expand funnel types** only when you have a new ad format (e.g. product-specific UGC) that warrants a different lander shape (e.g. product-review lander). Then scale that second pattern the same way.
+
+---
+
+## Checklist: Funnels Adapted to Partner Ads at Scale
+
+<Checklist>
+  - [ ] Every partner ad lands on a co-branded page (creator metaobject page or equivalent), not a generic PDP or homepage
+  - [ ] Landing page matches the ad promise (same creator, same product focus when the ad is product-specific)
+  - [ ] One stable URL per creator (CC destinations) so you can scale and attribute cleanly
+  - [ ] Cart attributes and order/customer tags capture creator and (where possible) campaign/creative
+  - [ ] Full funnel is creator-consistent (lander, product, cart, checkout, email)
+  - [ ] Mobile-first and fast; hero and CTA above the fold
+  - [ ] You test one variable at a time (funnel vs creative); then scale the winning creator + funnel + ad pattern
+</Checklist>
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Partner Ad Playbooks" icon="megaphone" href="/partner-ad-playbooks">
+    Three playbooks: local B2B, content seeding, and celebrity/ambassador path
+  </Card>
+  <Card title="Full-Funnel Personalization" icon="layer-group" href="/guides/storefronts/full-funnel-personalization">
+    Keep creator context across landing, cart, and checkout
+  </Card>
+  <Card title="Destinations Explained" icon="map-pin" href="/guides/storefronts/destinations-explained">
+    How to map traffic (including ad links) to co-branded pages
+  </Card>
+  <Card title="Launch & Track" icon="chart-line" href="/guides/collab-strategy/launch-track">
+    Tracking, attribution, and monitoring for partner funnels
+  </Card>
+</CardGroup>
+
+---
+
+## Need Help?
+
+<Card title="Book a Strategy Call" icon="calendar" href="https://cal.com/team/creatorcommerce/creator-commerce-consultation">
+  Work with the CreatorCommerce team on partner ads and funnel strategy
+</Card>
+
+For technical implementation (links, attribution, theme), see **help@creatorcommerce.shop**.

@@ -88,14 +88,14 @@ Enhance the shared content with creator personalization:
 
 Use tokens in your settings that get replaced based on context.
 
-**Setting value:** `[CREATOR_NAME]'s fans get free shipping!`
+**Setting value:** `[cc-creator-first-name]'s fans get free shipping!`
 
 ```liquid
 {% assign banner_text = settings.home_creator_landing_pages_headline %}
 {% if cc_creator %}
-  {% assign banner_text = banner_text | replace: '[CREATOR_NAME]', cc_creator.cc-creator-first-name %}
+  {% assign banner_text = banner_text | replace: '[cc-creator-first-name]', cc_creator.cc-creator-first-name %}
 {% else %}
-  {% assign banner_text = banner_text | replace: "[CREATOR_NAME]'s fans get", "You get" %}
+  {% assign banner_text = banner_text | replace: "[cc-creator-first-name]'s fans get", "You get" %}
 {% endif %}
 
 <div class="promo-banner">{{ banner_text }}</div>
@@ -113,7 +113,7 @@ Use tokens in your settings that get replaced based on context.
 - Define core messages in Theme Settings
 - Let creator context **enhance**, not **replace** brand messaging
 - Test both states: with and without creator context
-- Keep token names consistent (e.g., `[CREATOR_NAME]`, `[DISCOUNT]`)
+- Keep token names consistent (e.g., `[cc-creator-first-name]`, `[cc-creator-discount-code]`)
 
 ## Related
 

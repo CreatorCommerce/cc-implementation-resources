@@ -162,8 +162,8 @@ shopifyFlow.on('cc_creator_activated', (event) => {
 Use your CC API key for server-to-server integrations:
 
 ```bash
-curl -X GET "https://api.creatorcommerce.com/v1/creators" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X GET "https://unified-api.creatorcommerce.shop/creators/collabs?email=creator@example.com&myshopify_domain=your-store.myshopify.com" \
+  -H "x-channel-access-token: YOUR_CHANNEL_TOKEN"
 ```
 
 ### Shopify Authentication
