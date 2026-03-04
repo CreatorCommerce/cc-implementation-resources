@@ -925,7 +925,7 @@ div#hero-image {
                     <div style="margin-bottom: 0px;">
                       <a href="{{ cta_url }}" style="text-decoration: none;">
                       <button type="button" class="button{% if override_theme_button %} fallback-cta hero-cta-button{% endif %}" {% if override_theme_button %}style="background-color: {{cta_background}}; color: {{ cta_text_color }}; padding: 24px 42px; text-align: center; line-height: 1.2; cursor: pointer; border-radius: {{ border_radius }}px; {% if uppercase_accent_text %}text-transform:uppercase;{% endif %}"{% endif %}>
-                          <p>{{ cta_text }}</p>
+                          {{ cta_text }}
                         </button>
                       </a>
                     </div>
