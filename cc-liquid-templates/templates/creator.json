@@ -1,0 +1,62 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+ {
+    "sections": {
+      "cc_hero_primavera_mini_shell_V3fHpK": {
+        "type": "cc-hero-primavera-mini-shell",
+        "name": "CC Hero - Primavera",
+        "settings": {
+          "eyebrowcopy": "Enable CC on your theme: Select \"App Embeds\" -> Enable CreatorCommerce SDK",
+          "title": "<h1>Build a compelling funnel, all about [cc-creator-first-name] [cc-creator-last-name]</h1>",
+          "subtitle": "CC sections like this can use <strong>dynamic CreatorCommerce variables</strong>, allowing content to change based on the creator across the entire theme  & any page. For example, a discount can be rendered using: [cc-collab-discount-amount]%. You can also add <strong>fallback values if data is missing for a creator.</strong> Example: [cc-custom-header | default:Meet John] (Click to see the syntax). <strong>You can even use CC dynamic sources on these 'Creator' page templates, to leverage co-branded data on ANY section added to this page. </strong>You can spin up thousands of these pages by syncing additional creators & referencing creator-specific <a href=\"https://creatorcommerce.shop/brand-help-center/shopify-creator-metaobjects-reference\" title=\"https://creatorcommerce.shop/brand-help-center/shopify-creator-metaobjects-reference\"><strong>product recommendations or UGC variables</strong></a><strong> though this template, or </strong><a href=\"https://creatorcommerce.shop/brand-help-center/how-to-create-new-landing-page-theme-templates\" title=\"https://creatorcommerce.shop/brand-help-center/how-to-create-new-landing-page-theme-templates\"><strong>an added page template for another tier.</strong></a>",
+          "stars": "Trusted by {{ metaobject[\"cc-creator-first-name\"].value }}'s followers",
+          "cta_text": "EDIT THIS PAGE",
+          "cta_url": "https://creatorcommerce.shop/brand-help-center-category/storefronts",
+          "collab_highlight_display": "first_name",
+          "carousel_type": "inline",
+          "background": "#818181",
+          "textcolor": "#ffffff",
+          "auto_text_contrast": false,
+          "eyebrowbackground": "#000000",
+          "eyebrowbordercolor": "#000000",
+          "cta_background": "#000000",
+          "override_theme_button": true,
+          "border_width_general": 0,
+          "border_radius": 8,
+          "padding_vertical": 3.8,
+          "accent_text_size": 12,
+          "uppercase_accent_text": false,
+          "star_adjustment_spacing": 0,
+          "padding_left": 80,
+          "custom_css": ""
+        }
+      },
+      "1772770165fc1cf488": {
+        "type": "apps",
+        "blocks": {
+          "creatorcommerce_co_branding_cc_block_instructions_UERghh": {
+            "type": "shopify://apps/creatorcommerce-co-branding/blocks/cc-block-instructions/4dbde762-1068-4d2d-8b03-4505bf4cf377",
+            "settings": {}
+          }
+        },
+        "block_order": [
+          "creatorcommerce_co_branding_cc_block_instructions_UERghh"
+        ],
+        "settings": {
+          "include_margins": true
+        }
+      }
+    },
+    "order": [
+      "cc_hero_primavera_mini_shell_V3fHpK",
+      "1772770165fc1cf488"
+    ]
+  }
+  
