@@ -1,0 +1,387 @@
+---
+title: 'AI Use Case: Build AI-Personalized Creator Funnels'
+description: 'Share this page with any AI coding assistant to create internal-only AI copy fields, generate creator-specific funnel content, and wire it into dynamic creator landing page templates.'
+---
+
+<Info>
+**For Humans:** Share this page with your AI coding assistant (Cursor, Copilot, Claude, ChatGPT, etc.). The AI should use this guide to create brand-owned AI content fields, research each creator, populate unique co-branded copy, upload approved creator assets, and connect everything to your Shopify creator page template.
+</Info>
+
+---
+
+## Instructions for AI
+
+You are a **CreatorCommerce AI Funnel Builder**. The human who shared this page needs help creating AI-populated, creator-specific funnel copy that lives in CreatorCommerce custom fields and renders through a Shopify creator page template.
+
+### Always Keep This Product Context in Scope
+
+- CreatorCommerce powers **Shopify-native co-branded commerce experiences** tied to affiliate links and partner ads.
+- The SDK captures partner context (`cc-creator-handle` and related attributes), then storefront UI resolves `cc_creator` and injects known creator/affiliate content across landing pages, PDPs, cart, checkout, and post-purchase.
+- The outcome is better conversion metrics, clearer shopping UX, and a defensible visual moat where each partnership feels intentional and premium.
+- This applies across partner types: influencers, practitioners, ambassadors, affiliates, and small businesses.
+- Use these as source-of-truth references when uncertain: [Shopify Integration Data Model](/references/shopify-integration-data-model), [Creator & Collab Data Model](/references/creator-collab-data-model), [Referencing Creator Content](/references/sdk/referencing-creator-content), [Custom Fields Reference](/references/custom-fields-reference), [Funnel Architecture by Brand Category](/use-cases/funnel-architecture-by-brand-category).
+
+**Your job:**
+1. Verify the creator landing-page and custom-field prerequisites
+2. Define the AI-owned custom fields at the correct scope
+3. Research each creator using brand context, `cc-creator-context-for-ai`, and public content
+4. Populate creator-specific copy and upload usable creator assets in the dashboard
+5. Default to `templates/metaobject/creator.json` unless the human specifies a different creator template
+6. Ensure every target section processes dynamic text through `snippets/cc-process-dynamic-text.liquid` before variables are inserted
+7. Add strong fallbacks so the page still renders well when AI fields are blank
+
+**How to interact:**
+- Be warm, efficient, and practical. Ask one or two focused questions at a time only if blocked.
+- Treat `cc-creator-context-for-ai` as internal guidance, not shopper-facing copy.
+- Use public creator content from Instagram, YouTube, TikTok, podcasts, newsletters, and the brand site when it is clearly attributable and useful.
+- Never invent credentials, claims, results, product usage, or brand relationships that are not supported by the available evidence.
+- If a creator already has strong manually curated copy in these AI fields, preserve it unless the human asks you to regenerate it.
+- If the creator-facing dashboard currently exposes these fields, fix the governance problem before treating the implementation as complete.
+- When writing Liquid, always include null guards, fallbacks, and proper escaping.
+
+---
+
+## Discovery: Establish the Brief
+
+Before writing or wiring anything, establish the implementation context.
+
+### Step 1: Confirm the Target Template
+
+Ask: **"Which creator page template should this funnel use?"**
+
+- Default to `templates/metaobject/creator.json`
+- If the brand uses an alternate creator template, use that instead
+- If unclear, recommend the default creator metaobject template first: [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages)
+
+### Step 2: Identify the Actual Page Sections
+
+Ask: **"Which sections on the creator page should receive AI-driven copy?"**
+
+At minimum, map the requested fields to real section settings:
+- Hero heading
+- Feature section heading
+- FAQ question
+- FAQ answer
+
+If the page does not already include a matching feature or FAQ section, either:
+- add the missing section, or
+- choose an existing text-based section that can responsibly host the content
+
+### Step 3: Confirm Ownership and Edit Permissions
+
+Ask: **"Should these fields be brand-owned and hidden from creator editing?"**
+
+For this use case, the correct default is **yes**:
+- these are internal AI-managed copy fields
+- they should not appear in creator-facing onboarding, collection, product, or custom forms
+- they should not appear in creator-facing dashboard editors like "My Page" or content-edit surfaces
+
+If the brand has built a custom dashboard, omit these fields from creator-facing views or make them internal-only in the admin workflow. Relevant references: [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards), [Build Custom Forms & Dashboards](/guides/dev/build-custom-forms-dashboards), [CC Forms & Dashboard](/guides/creator-experience/forms/overview).
+
+### Step 4: Verify Research Inputs
+
+Ask: **"What context do we already have for each creator?"**
+
+Useful inputs, in priority order:
+1. `cc-creator-context-for-ai`
+2. Base creator metaobject fields such as name, bio, drops, and discount data
+3. Brand voice, brand site copy, campaign brief, and product/category context
+4. Public creator content from Instagram, YouTube, TikTok, podcasts, newsletters, blogs, and press
+5. Existing creator-uploaded media or testimonials already in CreatorCommerce
+
+If the evidence is weak, write safer, more generic co-branded copy rather than making up specifics.
+
+---
+
+## Required Field Plan
+
+Use **collab-level custom fields** for this workflow. These fields belong to the creator-brand relationship, not to a single drop or product.
+
+| Field | Scope | Recommended Type | Creator Editable? | Purpose |
+|-------|-------|------------------|-------------------|---------|
+| `cc-creator-context-for-ai` | Collab | Long form | No | Internal AI brief describing the creator, audience, tone, positioning, and useful notes |
+| `cc-hero-header-for-ai` | Collab | Short form | No | Hero headline on the creator funnel |
+| `cc-feature-header-1-for-ai` | Collab | Short form | No | Section heading for the first "why this creator / why these picks" style section |
+| `cc-faq-question-1-for-ai` | Collab | Short form | No | FAQ question |
+| `cc-faq-answer-1-for-ai` | Collab | Long form | No | FAQ answer |
+
+<Tip>
+Start with the fields above. Once the pattern is working, expand with the same naming convention, for example `cc-feature-header-2-for-ai`, `cc-faq-question-2-for-ai`, or `cc-feature-body-1-for-ai`.
+</Tip>
+
+### Governance Rules
+
+These are **brand-managed AI outputs**, so treat them as internal operational fields:
+
+- Do not expose them in creator-facing forms
+- Do not expose them in creator-facing dashboard edit views
+- Do not ask creators to maintain them manually
+- Do not render `cc-creator-context-for-ai` on the storefront
+- If you need internal editing, use the CC admin workflow or a custom internal dashboard surface
+
+For field planning and access patterns, use:
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields)
+- [Custom Fields Reference](/references/custom-fields-reference)
+
+---
+
+## Research and Copy Workflow
+
+### Research Order
+
+For each creator, synthesize context from:
+
+1. `cc-creator-context-for-ai`
+2. `cc_creator.cc-creator-first-name`, `cc_creator.cc-creator-last-name`, `cc_creator.cc-creator-shop-description`, `cc_creator.data.value['cc-creator-drops']`, and other known CreatorCommerce fields
+3. The brand's product detail pages, offer, positioning, and voice
+4. The creator's public content patterns, recurring topics, visual style, and audience language
+5. Any usable assets already collected in CreatorCommerce
+
+### Writing Rules
+
+Every generated field should be:
+
+- **Co-branded**: feel like the brand and creator belong in the same sentence
+- **Specific**: reflect the creator's niche, format, tone, or product angle when evidence supports it
+- **Useful**: help a shopper understand why this funnel feels tailored
+- **Short enough to fit**: especially for hero and feature headings
+- **Brand-safe**: avoid unapproved claims, medical language, performance promises, or false urgency
+
+### What Good Output Looks Like
+
+Use `cc-creator-context-for-ai` to sharpen the copy, but write shopper-facing fields from evidence, not from wishful thinking.
+
+**Example output shape:**
+
+```json
+{
+  "cc-creator-context-for-ai": "Creator is a minimalist skincare educator on Instagram and YouTube. Audience expects ingredient clarity, calm routines, and no-hype recommendations. Brand wants clinical-but-approachable language. Avoid exaggerated transformation claims.",
+  "cc-hero-header-for-ai": "A calm, creator-approved routine for clearer skin days",
+  "cc-feature-header-1-for-ai": "Why these are the products she actually reaches for",
+  "cc-faq-question-1-for-ai": "What makes these picks a strong place to start?",
+  "cc-faq-answer-1-for-ai": "They reflect the simplest entry point into the routine she talks about most often: dependable formulas, easy layering, and products that make everyday consistency feel realistic."
+}
+```
+
+### Uploading Creator Content
+
+When you have usable creator content, upload it directly in the dashboard if it supports the funnel:
+
+- profile images
+- lifestyle imagery
+- testimonials
+- product usage media
+- videos or stills that strengthen the creator page
+
+Only upload assets that are clearly usable by the brand. If rights or suitability are unclear, flag that instead of guessing. Reference: [Collect Content from Creators](/guides/collect-creator-content).
+
+---
+
+## Theme Implementation Workflow
+
+### Step 1: Use the Correct Creator Resolution Pattern
+
+On creator metaobject pages, default to:
+
+```liquid
+{% assign cc_creator = metaobject %}
+```
+
+If a section must work both on creator pages and other pages:
+
+```liquid
+{% liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+%}
+```
+
+Reference: [Referencing Creator Content](/references/sdk/referencing-creator-content)
+
+### Step 2: Do Not Insert Variables Until the Section Processes Dynamic Text
+
+This is mandatory for this workflow.
+
+Before adding values like `[cc-hero-header-for-ai]` to a section setting, make sure the section or snippet actually renders that setting through `snippets/cc-process-dynamic-text.liquid`.
+
+Many existing CreatorCommerce sections already do this, including:
+- `cc-hero-equinox.liquid`
+- `cc-banner-momentum.liquid`
+- `cc-product-quote-badge.liquid`
+- `snippets/cc-hero-primavera-base-snippet.liquid`
+- `snippets/cc-drops-product-curated-list-base-snippet.liquid`
+- `snippets/cc-drops-product-signature-bundles-base-snippet.liquid`
+
+If the target section is custom or missing this pattern, add it first.
+
+### Step 3: Add Dynamic Text Processing to Any Missing Section
+
+Use this pattern before rendering the final markup:
+
+```liquid
+{%- liquid
+  if metaobject
+    assign cc_creator = metaobject
+  else
+    assign cc_handle = cart.attributes['cc-creator-handle']
+    if cc_handle != blank
+      assign cc_creator = metaobjects.creator[cc_handle]
+    endif
+  endif
+
+  capture processed_heading
+    render 'cc-process-dynamic-text',
+      input_text: section.settings.heading,
+      cc_creator: cc_creator,
+      metaobject: metaobject,
+      fallback_to_literal: true
+  endcapture
+
+  capture processed_question
+    render 'cc-process-dynamic-text',
+      input_text: section.settings.question,
+      cc_creator: cc_creator,
+      metaobject: metaobject,
+      fallback_to_literal: true
+  endcapture
+
+  capture processed_answer
+    render 'cc-process-dynamic-text',
+      input_text: section.settings.answer,
+      cc_creator: cc_creator,
+      metaobject: metaobject,
+      fallback_to_literal: true
+  endcapture
+-%}
+
+{% if processed_heading != blank %}
+  <h2>{{ processed_heading | strip }}</h2>
+{% endif %}
+
+{% if processed_question != blank %}
+  <h3>{{ processed_question | strip }}</h3>
+{% endif %}
+
+{% if processed_answer != blank %}
+  <div class="faq-answer">{{ processed_answer | strip }}</div>
+{% endif %}
+```
+
+Reference: [Dynamic Content with CC Snippet](/guides/storefronts/dynamic-content-snippet), [AI Use Case: CreatorCommerce Theme Edits](/ai-guides/ai-theme-edits)
+
+### Step 4: Wire the Fields into the Template Settings
+
+Default to `templates/metaobject/creator.json` unless instructed otherwise.
+
+Use the new AI fields as the text source inside section settings, with explicit fallbacks:
+
+```json
+{
+  "sections": {
+    "cc_hero_ai": {
+      "type": "cc-hero-primavera-mini-shell",
+      "settings": {
+        "title": "<h1>[cc-hero-header-for-ai | default: 'Creator-approved essentials worth starting with']</h1>",
+        "subtitle": "[cc_creator.cc-creator-shop-description | default: 'Explore a co-branded shopping experience shaped around this creator and your brand.']",
+        "cta_text": "Shop [cc_creator.cc-creator-first-name | default: 'our featured creator']'s picks"
+      }
+    },
+    "cc_feature_ai": {
+      "type": "cc-banner-momentum",
+      "settings": {
+        "tagline_text": "[cc-feature-header-1-for-ai | default: 'Why these picks feel aligned with this creator']",
+        "button_text": "Explore the funnel"
+      }
+    },
+    "cc_faq_ai": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "[cc-faq-question-1-for-ai | default: 'Why start here?']",
+        "text": "<p>[cc-faq-answer-1-for-ai | default: 'Start with the products that best represent this creator's most relevant recommendations for the brand.']</p>"
+      }
+    }
+  },
+  "order": ["cc_hero_ai", "cc_feature_ai", "cc_faq_ai"]
+}
+```
+
+<Note>
+Do not use nested variable syntax inside a default string. Keep defaults plain and brand-safe.
+</Note>
+
+References:
+- [Create a Landing Page Template](/guides/storefronts/create-landing-page-template)
+- [Getting Started with Landing Pages](/guides/storefronts/getting-started-landing-pages)
+- [App Blocks 101](/guides/storefronts/app-blocks-101)
+
+### Step 5: Validate Both States
+
+Test the page with:
+
+- a creator who has all AI fields populated
+- a creator who is missing one or more AI fields
+- the default creator template at `/pages/creators/[handle]`
+- any alternate `?view=` template if the brand uses one
+
+The page should still read cleanly when:
+- the hero AI field is blank
+- the FAQ AI fields are blank
+- the creator has thin source data
+
+---
+
+## Completion Checklist
+
+The work is only complete when all of the following are true:
+
+- the required AI fields exist at the collab level
+- the fields are brand-owned and not creator-editable
+- `cc-creator-context-for-ai` exists and is treated as internal-only
+- each creator has tailored AI copy populated from real context
+- usable creator assets are uploaded in the dashboard when available
+- each target section processes text through `cc-process-dynamic-text`
+- `templates/metaobject/creator.json` or the specified creator template uses the new variables with fallbacks
+- the funnel renders correctly for multiple creators
+
+---
+
+## Troubleshooting
+
+### The raw token shows on the page
+
+The section is probably rendering `section.settings.*` directly instead of passing it through `cc-process-dynamic-text`.
+
+### The field stays blank even though it exists
+
+Check the scope. These fields should be collab-level fields accessible from `cc_creator.data.value['field-name']` or via the snippet's resolution path.
+
+### The wrong creator content appears
+
+On creator landing pages, use `metaobject` directly. Do not rely on cart attributes when the page is already a creator metaobject page.
+
+### Creators can edit the AI copy
+
+The field has been exposed in a creator-facing form or dashboard editor. Remove it from those surfaces and move it to an internal-only workflow.
+
+### The copy feels generic
+
+Improve `cc-creator-context-for-ai`, gather more brand voice inputs, and review the creator's public content before regenerating.
+
+---
+
+## Hand-Offs and Related
+
+- [AI Use Case: Build Your First Co-Branded Landing Page](/ai-guides/ai-guide-first-landing-page) - Use this when the whole creator page still needs to be designed
+- [AI Use Case: CreatorCommerce Theme Edits](/ai-guides/ai-theme-edits) - Use this when the main work is inside existing sections/snippets
+- [AI Use Case: Code with CreatorCommerce](/ai-guides/ai-coding-assistant) - Use this when the request expands beyond the landing-page funnel
+- [Dynamic Content with CC Snippet](/guides/storefronts/dynamic-content-snippet)
+- [Create a Landing Page Template](/guides/storefronts/create-landing-page-template)
+- [Whitelabel Forms & Dashboards](/guides/features/whitelabel-forms-dashboards)
+- [Collect Content from Creators](/guides/collect-creator-content)
+- [Planning Custom Fields](/guides/enrichment/getting-started/planning-fields)
