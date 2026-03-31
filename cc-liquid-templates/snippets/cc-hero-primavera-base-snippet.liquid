@@ -524,6 +524,7 @@ div#hero-image {
       margin: 0;
       padding: 0;
       text-align: center;
+      overflow: visible;
     }
 
     .hero-header-copy {
@@ -973,11 +974,13 @@ div#hero-image {
               {%- assign counter = 0 -%}
 
               {%- assign first_video_found = false -%}
+              {%- assign displayed_media_urls = '' -%}
               
               {%- for drop in metaobject.data.value['cc-creator-drops'] -%}
                 {%- for product in drop['cc-creator-drop-products'] -%}
                   {%- for media in product.enhancement.media -%}
                     {%- if media.url contains 'assets.drops.shop' -%}
+                    {%- unless displayed_media_urls contains media.url -%}
                     {%- if media.mimeType contains 'video' and true -%}
                       {%- assign is_first_video = false -%}
                       {%- if first_video_found == false -%}
@@ -986,7 +989,7 @@ div#hero-image {
                       {%- endif -%}
                       <div class="story__slide swiper-slide">
                         <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
-                          <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                          <video muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                             <source src="{{ media.url }}" type="video/mp4">
                           </video>
                           <div class="pause-icon">
@@ -1029,6 +1032,7 @@ div#hero-image {
                         </div>
                       </div>
                       {%- assign has_ugc_videos = true -%}
+                      {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
                     {%- elsif media.mimeType contains 'image' and true -%}
                       <div class="story__slide swiper-slide">
                         <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
@@ -1036,7 +1040,9 @@ div#hero-image {
                         </div>
                       </div>
                       {%- assign has_ugc_videos = true -%}
+                      {%- assign displayed_media_urls = displayed_media_urls | append: media.url | append: ',' -%}
                     {%- endif -%}
+                    {%- endunless -%}
                     {%- endif -%}
                   {%- endfor -%}
                   
@@ -1046,6 +1052,7 @@ div#hero-image {
                     {%- if field_value.first -%}
                       {%- for item in field_value -%}
                         {%- if item.url contains 'assets.drops.shop' -%}
+                          {%- unless displayed_media_urls contains item.url -%}
                           {%- if item.mimeType contains 'video' and true -%}
                             {%- assign is_first_video = false -%}
                             {%- if first_video_found == false -%}
@@ -1054,7 +1061,7 @@ div#hero-image {
                             {%- endif -%}
                             <div class="story__slide swiper-slide">
                               <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
-                                <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                <video muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                                   <source src="{{ item.url }}" type="video/mp4">
                                 </video>
                                 <div class="pause-icon">
@@ -1072,6 +1079,7 @@ div#hero-image {
                               </div>
                             </div>
                             {%- assign has_ugc_videos = true -%}
+                            {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                           {%- elsif item.mimeType contains 'image' and true -%}
                             <div class="story__slide swiper-slide">
                               <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
@@ -1079,7 +1087,9 @@ div#hero-image {
                               </div>
                             </div>
                             {%- assign has_ugc_videos = true -%}
+                            {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                           {%- endif -%}
+                          {%- endunless -%}
                         {%- endif -%}
                       {%- endfor -%}
                     {%- endif -%}
@@ -1092,6 +1102,7 @@ div#hero-image {
                   {%- if field_value.first -%}
                     {%- for item in field_value -%}
                       {%- if item.url contains 'assets.drops.shop' -%}
+                        {%- unless displayed_media_urls contains item.url -%}
                         {%- if item.mimeType contains 'video' and true -%}
                           {%- assign is_first_video = false -%}
                           {%- if first_video_found == false -%}
@@ -1100,7 +1111,7 @@ div#hero-image {
                           {%- endif -%}
                           <div class="story__slide swiper-slide">
                             <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
-                              <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                              <video muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                                 <source src="{{ item.url }}" type="video/mp4">
                               </video>
                               <div class="pause-icon">
@@ -1118,6 +1129,7 @@ div#hero-image {
                             </div>
                           </div>
                           {%- assign has_ugc_videos = true -%}
+                          {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                         {%- elsif item.mimeType contains 'image' and true -%}
                           <div class="story__slide swiper-slide">
                             <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
@@ -1125,7 +1137,9 @@ div#hero-image {
                             </div>
                           </div>
                           {%- assign has_ugc_videos = true -%}
+                          {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                         {%- endif -%}
+                        {%- endunless -%}
                       {%- endif -%}
                     {%- endfor -%}
                   {%- endif -%}
@@ -1138,6 +1152,7 @@ div#hero-image {
                 {%- if field_value.first -%}
                   {%- for item in field_value -%}
                     {%- if item.url contains 'assets.drops.shop' -%}
+                      {%- unless displayed_media_urls contains item.url -%}
                       {%- if item.mimeType contains 'video' and true -%}
                         {%- assign is_first_video = false -%}
                         {%- if first_video_found == false -%}
@@ -1146,7 +1161,7 @@ div#hero-image {
                         {%- endif -%}
                         <div class="story__slide swiper-slide">
                           <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
-                            <video muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                            <video muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                               <source src="{{ item.url }}" type="video/mp4">
                             </video>
                             <div class="pause-icon">
@@ -1164,6 +1179,7 @@ div#hero-image {
                           </div>
                         </div>
                         {%- assign has_ugc_videos = true -%}
+                        {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                       {%- elsif item.mimeType contains 'image' and true -%}
                         <div class="story__slide swiper-slide">
                       <div class="unique-testimonial__image media-wrapper media-wrapper--small" tabindex="0">
@@ -1171,7 +1187,9 @@ div#hero-image {
                       </div>
                   </div>
                         {%- assign has_ugc_videos = true -%}
+                        {%- assign displayed_media_urls = displayed_media_urls | append: item.url | append: ',' -%}
                       {%- endif -%}
+                      {%- endunless -%}
                     {%- endif -%}
                   {%- endfor -%}
                 {%- endif -%}
@@ -1182,7 +1200,7 @@ div#hero-image {
                 {%- assign is_first_section_video = true -%}
                 <div class="story__slide swiper-slide">
                   <div class="unique-testimonial__image media-wrapper media-wrapper--small playing" tabindex="0">
-                    {{ video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, class: 'autoplay-first' }}
+                    {{ video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, preload: 'metadata', class: 'autoplay-first' }}
                     <div class="play-icon first-video">
                        <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                                   <polygon points="8,5 19,12 8,19" fill="currentColor"/>
@@ -1263,6 +1281,7 @@ div#hero-image {
                                 muted
                                 playsinline
                                 loop
+                                preload="metadata"
                                 style="height:100%;width:100%;object-fit: cover;object-position: center;"
                               >
                                 <source src="{{ media.url }}" type="video/mp4">
@@ -1353,7 +1372,7 @@ div#hero-image {
                                 {%- endif -%}
                                 <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
                                   <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
-                                    <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                    <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                                       <source src="{{ item.url }}" type="video/mp4">
                                     </video>
                                     <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
@@ -1411,7 +1430,7 @@ div#hero-image {
                               {%- endif -%}
                               <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
                                 <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
-                                  <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                  <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                                     <source src="{{ item.url }}" type="video/mp4">
                                   </video>
                                   <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
@@ -1469,7 +1488,7 @@ div#hero-image {
                             {%- endif -%}
                             <div class="unique-video-slider-item{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% endif %}">
                               <div class="unique-testimonial__image media-wrapper media-wrapper--small{% if is_first_video_list %} playing{% endif %}" tabindex="0">
-                                <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop style="height:100%;width:100%;object-fit: cover;object-position: center;">
+                                <video {% if is_first_video_list %} autoplay class="autoplay-first" {% endif %} muted playsinline loop preload="metadata" style="height:100%;width:100%;object-fit: cover;object-position: center;">
                                   <source src="{{ item.url }}" type="video/mp4">
                                 </video>
                                 <div class="pause-icon{% if is_first_video_list %} first-video{% endif %}">
@@ -1519,7 +1538,7 @@ div#hero-image {
                     {%- assign is_first_inline_video = true -%}
                     <div class="unique-video-slider-item is-selected{% if total_media_count == 1 %} single-media-item{% endif %}" style="{% if total_media_count == 1 %}margin: 0 auto;{% elsif inline_media_count == 1 and has_ugc_videos == false %}margin-left:0;margin:auto{% endif %}">
                       <div class="unique-testimonial__image media-wrapper media-wrapper--small playing" tabindex="0">
-                        {{ video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, class: 'autoplay-first' }}
+                        {{ video_1 | video_tag: image_size: '1080x', autoplay: true, muted: true, loop: true, playsinline: true, controls: false, preload: 'metadata', class: 'autoplay-first' }}
                         <div class="play-icon first-video">
                           <svg width="50" height="50" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                               <polygon points="8,5 19,12 8,19" fill="currentColor"/>
@@ -2127,7 +2146,7 @@ div#hero-image {
         lazyVideo.setAttribute("muted", "");
         lazyVideo.setAttribute("autoplay", "");
         lazyVideo.setAttribute("loop", "");
-        lazyVideo.setAttribute("preload", "none");
+        lazyVideo.setAttribute("preload", "metadata");
         if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
 
         // ALSO set properties (needed on iOS Safari sometimes)
@@ -2264,7 +2283,7 @@ div#hero-image {
         lazyVideo.setAttribute("muted", "");
         lazyVideo.setAttribute("autoplay", "");
         lazyVideo.setAttribute("loop", "");
-        lazyVideo.setAttribute("preload", "none");
+        lazyVideo.setAttribute("preload", "metadata");
         if (posterUrl) lazyVideo.setAttribute("poster", posterUrl);
 
         const source = document.createElement("source");
