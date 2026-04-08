@@ -1,570 +1,142 @@
 ---
 title: 'Documentation Built for AI'
-description: 'Learn how to leverage these LLM-forward docs by copying context into your AI assistant of choice for faster, better implementations'
+description: 'Use CreatorCommerce docs with AI by pairing overview pages with canonical references instead of duplicating source-of-truth facts.'
+pageType: 'AI playbook'
 ---
 
 # How to Use These Docs Effectively
 
-These documentation files are designed with **LLM-forward** principles in mind, meaning they're optimized for use with Language Learning Models (LLMs) like Claude, ChatGPT, or Cursor's AI assistant. This page explains how to get the most out of these docs.
+These docs are designed for both humans and AI systems, but they are not meant to be consumed as one giant undifferentiated dump. The corpus is organized so overview pages explain the shape of the platform, how-to pages explain implementation steps, and reference pages hold canonical facts.
 
-## The LLM-Forward Approach
+If you are using an AI assistant, start with the right page type and then pull in the specific reference pages that own the facts you need.
 
-### What Does "LLM-Forward" Mean?
+<Info>
+If two pages seem to overlap, trust the canonical reference page. See the [Documentation Contract](/guides/documentation-contract) for the full rules.
+</Info>
 
-**LLM-forward documentation** is structured to provide complete, contextual information that AI assistants can easily understand and act upon. Instead of requiring you to piece together information from multiple sources, these docs contain comprehensive context within each file.
+## How the Docs Are Organized
 
-This approach follows the same documentation strategy used by leading AI platforms like Claude, which provides detailed context upfront so the AI can generate better, more accurate responses.
+| Page type | What it does | What to use it for |
+|-----------|--------------|-------------------|
+| Overview | Explains what something is, when to use it, and how it connects | Orientation, planning, feature discovery |
+| How-to | Gives implementation steps and sequencing | Building, setup, migration, QA |
+| Reference | Holds canonical facts, schemas, fields, endpoints, payloads, selectors, and variables | Source-of-truth technical detail |
+| Use-case page | Routes a developer or operator to the right references | Fast starts, task routing |
+| AI playbook | Helps AI assistants reason about CreatorCommerce workflows without inventing facts | Prompting, implementation guidance, workflow framing |
 
-### Why This Matters
+## Recommended Workflow for AI
 
-**Traditional documentation:**
-- Requires you to read multiple pages
-- Makes you connect dots between concepts
-- Forces you to remember context across sessions
-- Leads to incomplete implementations
+### 1. Start with the smallest page that frames the task
 
-**LLM-forward documentation:**
-- Provides complete context in one place
-- Allows AI to connect concepts automatically
-- Enables accurate, context-aware assistance
-- Results in better implementations
+Use:
 
-## How to Use These Docs with LLMs
+- an overview page if you need orientation
+- a use-case page if you know the job to be done
+- a how-to page if you are already implementing
 
-### Method 1: Copy Entire Docs
+### 2. Add the canonical references
 
-**Best for:** Getting comprehensive, context-rich assistance on a specific topic.
+For any factual or structural detail, pull in the canonical page instead of relying on summaries from multiple guides.
 
-**When to use:**
-- Starting a new implementation
-- Learning a new concept
-- Need deep understanding of a topic
-- Building complex features
+Common reference homes:
 
-**How to do it:**
-1. Open the relevant documentation file
-2. Copy the entire contents (Cmd/Ctrl + A, then Cmd/Ctrl + C)
-3. Paste into your LLM prompt, prefaced with:
-   ```
-   I'm working with CreatorCommerce. Here's the documentation for [topic]:
-   
-   [paste full doc content]
-   
-   Now help me [your specific question/task]
-   ```
+- Data model: [Data Model Overview](/references/data-model-overview), [Creator & Collab Data Model](/references/creator-collab-data-model), [Drops & Products Data Model](/references/drops-products-data-model)
+- Creator data access: [Referencing Creator Content](/references/sdk/referencing-creator-content)
+- SDK + tracking: [SDK Getting Started](/references/sdk/getting-started), [SDK Cart Attributes](/references/sdk/cart-attributes), [SDK Web Pixel Tracking](/references/sdk/web-pixel-tracking)
+- API + auth: [Unified API Reference](/references/unified-api-reference), [API Overview](/references/api-overview), [Authentication](/guides/authentication)
+- Email variables: [Co-branded Consumer Email Variables](/guides/emails/variables-reference), [Creator Email Variables](/guides/creator-emails/variables-reference)
+- Storefront vocabulary: [Co-branded Storefront UI Glossary](/guides/storefronts/co-branded-storefront-ui-glossary)
+- Terminology: [Glossary](/guides/glossary)
 
-**Example:**
-```
-I'm working with CreatorCommerce. Here's the documentation for drops and products:
+### 3. Ask the AI to cite the references it used
 
-[paste entire drops-products-data-model.mdx]
+This keeps the answer anchored to the real source-of-truth pages and makes it easier to spot drift or assumptions.
 
-I need to build a section that shows a creator's drops. Can you help me write the Liquid code?
-```
+### 4. Add your local context last
 
-### Method 2: Copy Multiple Related Docs
+After the docs, add:
 
-**Best for:** Building features that require understanding multiple concepts.
+- your actual code
+- theme or app constraints
+- exact storefront surface or page type
+- what is already working
+- what is failing
 
-**When to use:**
-- Building co-branded experiences (needs data model + storefronts docs)
-- Implementing drops (needs drops docs + custom fields)
-- Setting up integrations (needs API docs + data models)
+## What Not to Do
 
-**How to do it:**
-1. Identify all relevant documentation files
-2. Copy each file's contents
-3. Combine them in one prompt with clear section headers
+- Do not give the AI five overlapping pages that all restate the same facts in slightly different ways.
+- Do not prefer a long overview page over a canonical reference page for field names, schemas, selectors, or payloads.
+- Do not rely on legacy documentation for new work.
+- Do not point public implementation workflows at repo-local draft files or internal notes.
 
-**Example:**
-```
-I'm building a co-branded product page. Here's the relevant CreatorCommerce documentation:
+## Good Prompt Patterns
 
-=== Data Model Overview ===
-[paste data-model-overview.mdx]
+### Implementation prompt
 
-=== Drops & Products Data Model ===
-[paste drops-products-data-model.mdx]
+```text
+I'm implementing CreatorCommerce on a Shopify theme.
 
-=== Custom Fields Reference ===
-[paste custom-fields-reference.mdx]
+Use these pages as the source of truth:
+- /guides/storefronts/migrate-existing-sections
+- /references/sdk/referencing-creator-content
+- /references/drops-products-data-model
 
-Now help me build a product page that:
-1. Shows the creator's review/note for the current product
-2. Displays the product with custom fields from the drop
-3. Shows other products from the same drop
+Here is my current section code:
+[paste code]
+
+Please propose the smallest safe change, cite which reference page each important decision came from, and call out any assumptions.
 ```
 
-### Method 3: Selective Context Extraction
+### Debugging prompt
 
-**Best for:** Quick questions about specific topics.
+```text
+I'm debugging creator resolution on a PDP.
 
-**When to use:**
-- Quick reference questions
-- Clarifying specific concepts
-- Understanding particular patterns
-- Troubleshooting specific issues
+Canonical references:
+- /references/sdk/getting-started
+- /references/sdk/cart-attributes
+- /references/sdk/referencing-creator-content
 
-**How to do it:**
-1. Find the specific section you need
-2. Copy that section plus relevant context around it
-3. Include any related code examples or patterns
+Observed behavior:
+- landing pages personalize correctly
+- PDPs do not
 
-**Example:**
-```
-I'm working with CreatorCommerce and need to match products in drops. Here's the relevant section from the drops documentation:
+Here is the Liquid:
+[paste code]
 
-[paste "Product Matching" section + code examples]
-
-I'm getting a type mismatch error. Can you help me fix it?
+Please explain the most likely failure points in order.
 ```
 
-### Method 4: Progressive Context Building
+### Strategy-to-build prompt
 
-**Best for:** Complex implementations that build on each other.
+```text
+I need a plan for a creator directory implementation.
 
-**When to use:**
-- Building multiple related features
-- Iterative development
-- Learning while building
-- Refactoring existing code
+Use these pages:
+- /guides/storefronts/creator-directory
+- /guides/storefronts/co-branded-storefront-ui-glossary
+- /references/creator-collab-data-model
+- /references/custom-fields-reference
 
-**How to do it:**
-1. Start with high-level overview docs
-2. Add specific docs as you drill into features
-3. Include your current code for context
-4. Ask for incremental improvements
-
-**Example (Session 1):**
-```
-I'm starting to build with CreatorCommerce. Here's the data model overview:
-
-[paste data-model-overview.mdx]
-
-Help me understand how creator data flows through the system.
+Please separate:
+1. what is canonical data model fact
+2. what is implementation recommendation
+3. what is an assumption
 ```
 
-**Example (Session 2):**
-```
-Continuing from where we left off. I've got the basic structure. Now I need to access drops. Here's the drops documentation:
+## Conflict Resolution
 
-[paste drops-products-data-model.mdx]
+When pages overlap, resolve conflicts in this order:
 
-And here's my current code:
-[paste your code]
+1. Reference pages in `references/`
+2. [Glossary](/guides/glossary) for naming and terminology
+3. How-to pages for implementation sequencing
+4. Overview pages for framing
+5. AI playbooks for prompting guidance
 
-Help me iterate the drops properly.
-```
+## Start Here
 
-### Method 5: Complete Context Dumps
-
-**Best for:** Comprehensive implementations from scratch.
-
-**When to use:**
-- Building entire features from scratch
-- Complex implementations requiring full context
-- Want AI to consider all possibilities
-- Need optimal, best-practice implementations
-
-**How to do it:**
-1. Identify all relevant documentation
-2. Copy everything (data models, API references, patterns, examples)
-3. Provide clear, specific requirements
-4. Ask for complete implementation
-
-**Example:**
-```
-I'm building a creator directory grid. Here's all the CreatorCommerce documentation I think is relevant:
-
-=== Glossary ===
-[paste glossary.mdx]
-
-=== Creator & Collab Data Model ===
-[paste creator-collab-data-model.mdx]
-
-=== Data Model Overview ===
-[paste data-model-overview.mdx]
-
-=== Custom Fields Reference ===
-[paste custom-fields-reference.mdx]
-
-Build me a complete Shopify section file for a creator directory grid that:
-- Shows all public creators
-- Displays profile picture, name, and bio
-- Links to creator pages
-- Filters by tags (optional)
-- Is responsive and accessible
-```
-
-## Best Practices for LLM Prompts
-
-### 1. Always Include Relevant Context
-
-**Don't do this:**
-```
-How do I access creator drops?
-```
-
-**Do this:**
-```
-I'm working with CreatorCommerce. Here's the drops documentation:
-
-[paste drops-products-data-model.mdx]
-
-How do I access creator drops in Liquid? I'm on a regular product page, not a metaobject page.
-```
-
-### 2. Be Specific About Your Context
-
-**Don't do this:**
-```
-Help me build a product page.
-```
-
-**Do this:**
-```
-I'm building a product page that shows creator reviews. Here's the relevant documentation:
-
-[paste drops-products-data-model.mdx section on product enhancements]
-
-I need to:
-1. Find if the current product is in any of the creator's drops
-2. Display the enhancement note if found
-3. Show the creator's name and profile picture
-
-Current product context: {{ product }}
-Creator context: Available via cart attributes
-```
-
-### 3. Include Your Current Code
-
-**Don't do this:**
-```
-Fix this code:
-[code with no context]
-```
-
-**Do this:**
-```
-I'm working on accessing creator drops. Here's the CreatorCommerce drops documentation:
-
-[paste relevant sections]
-
-And here's my current implementation:
-[paste your code]
-
-I'm getting [specific error]. Can you help me fix it following the patterns in the documentation?
-```
-
-### 4. Reference Specific Patterns
-
-**Don't do this:**
-```
-How do I match products?
-```
-
-**Do this:**
-```
-Looking at the "Product Matching" pattern in the drops documentation:
-
-[paste that section]
-
-I'm trying to match products but having trouble with the ID comparison. Can you show me the correct way based on this pattern?
-```
-
-### 5. Ask for Improvements Based on Best Practices
-
-**Don't do this:**
-```
-Is this code good?
-```
-
-**Do this:**
-```
-Here's my code for accessing creator data:
-
-[paste your code]
-
-And here's the CreatorCommerce documentation on data access patterns:
-
-[paste relevant sections]
-
-Can you review my code and suggest improvements based on the best practices in the documentation?
-```
-
-## Recommended Doc Combinations
-
-### Building Co-Branded Storefronts
-
-**Combine:**
-- `co-branded-storefronts.mdx`
-- `data-model-overview.mdx`
-- `creator-collab-data-model.mdx`
-- `custom-fields-reference.mdx`
-- `glossary.mdx`
-
-**Why:** Need understanding of data structures, access patterns, and co-branding concepts.
-
-### Implementing Drops
-
-**Combine:**
-- `drops-products-data-model.mdx`
-- `shopify-integration-data-model.mdx`
-- `custom-fields-reference.mdx`
-- `data-model-overview.mdx`
-
-**Why:** Need to understand drop structure, collection mapping, and custom fields.
-
-### API Integration
-
-**Combine:**
-- `api-overview.mdx`
-- `unified-api-reference.mdx`
-- `data-model-overview.mdx`
-- `glossary.mdx`
-
-**Why:** Need API endpoints, data structures, and terminology.
-
-### Building Sections/Snippets
-
-**Combine:**
-- `data-model-overview.mdx`
-- Relevant data model docs (creator-collab, drops-products, etc.)
-- `custom-fields-reference.mdx`
-- `shopify-integration-data-model.mdx`
-
-**Why:** Need data structures, access patterns, and Shopify integration details.
-
-### Learning the Platform
-
-**Start with:**
-1. `the-3-ms.mdx` - Understand the philosophy
-2. `getting-started.mdx` - Platform overview
-3. `glossary.mdx` - Learn terminology
-4. `data-model-overview.mdx` - Understand architecture
-5. Then dive into specific topics as needed
-
-## Copying Docs: Tips & Tricks
-
-### Tooling Recommendations
-
-**For Desktop:**
-- Use your code editor to open `.mdx` files
-- Full file selection is easier in editors
-- Some editors have "copy file path" features
-
-**For Web:**
-- Use the Mintlify docs site if available
-- Browser extensions for selecting all content
-- Use "View Source" if available
-
-**For AI Tools:**
-- Cursor: Open file in editor, select all, paste into chat
-- ChatGPT/Claude: Copy from editor, paste in chat
-- Some tools support file uploads (use `.mdx` or convert to `.md`)
-
-### Organizing Your Prompts
-
-**Use clear section headers:**
-```
-=== CreatorCommerce Documentation ===
-
-=== Glossary ===
-[paste]
-
-=== Data Model Overview ===
-[paste]
-
-=== My Question ===
-[your specific question]
-```
-
-**Use code blocks for code:**
-```
-Here's the pattern from the docs:
-```liquid
-{% assign cc_creator = ... %}
-```
-
-And my current code:
-```liquid
-[your code]
-```
-```
-
-### Handling Long Docs
-
-**If docs are too long for your LLM:**
-1. Break into logical sections
-2. Start with overview, add details as needed
-3. Use progressive context building
-4. Focus on most relevant sections first
-
-**Most LLMs handle these docs fine:**
-- Individual docs are sized for typical context windows
-- Combine 2-3 docs usually works well
-- Modern LLMs handle 50k+ tokens easily
-
-## Why This Strategy Works
-
-### Benefits for You
-
-**Faster Development:**
-- Less time hunting for information
-- AI can answer with full context
-- Fewer iterations needed
-
-**Better Implementations:**
-- AI sees complete picture
-- Can suggest optimal patterns
-- Catches edge cases you might miss
-
-**Learning While Building:**
-- AI explains concepts in context
-- Can ask follow-up questions
-- Documentation is always available
-
-**Consistent Patterns:**
-- AI references same patterns
-- Encourages best practices
-- Reduces code inconsistencies
-
-### Benefits for AI Assistants
-
-**Complete Context:**
-- Understands full system
-- Can make connections between concepts
-- Provides accurate, relevant answers
-
-**Pattern Recognition:**
-- Sees consistent patterns across docs
-- Can suggest pattern-aligned solutions
-- Understands why patterns exist
-
-**Better Code Generation:**
-- Generates code that matches platform style
-- Includes proper error handling
-- Follows best practices
-
-## Real-World Examples
-
-### Example 1: Building a Product Review Section
-
-**Prompt:**
-```
-I need to build a product page section that shows creator reviews. Here's the CreatorCommerce documentation:
-
-=== Drops & Products Data Model ===
-[paste drops-products-data-model.mdx]
-
-=== Creator & Collab Data Model ===
-[paste creator-collab-data-model.mdx - sections on access patterns]
-
-=== Shopify Integration Data Model ===
-[paste shopify-integration-data-model.mdx - sections on metaobject access]
-
-Build me a Shopify section file that:
-1. Finds if the current product is in any creator's drops
-2. Displays the enhancement note if found
-3. Shows creator name and profile picture
-4. Handles missing data gracefully
-
-Section file name: `sections/cc-product-review.liquid`
-```
-
-**Why this works:**
-- AI has complete context on how drops work
-- Understands product matching patterns
-- Knows access patterns for creator data
-- Can generate code following documented patterns
-
-### Example 2: Understanding the Data Model
-
-**Prompt:**
-```
-I'm new to CreatorCommerce. Help me understand the data model:
-
-=== Data Model Overview ===
-[paste data-model-overview.mdx]
-
-=== Creator & Collab Data Model ===
-[paste creator-collab-data-model.mdx]
-
-Explain:
-1. How creators relate to channels/brands
-2. How drops relate to creators and collections
-3. How I access this data in Liquid templates
-4. Common patterns I should know
-```
-
-**Why this works:**
-- AI can explain relationships clearly
-- Can connect concepts across docs
-- Provides examples from the documentation
-- Helps you understand the "why" behind patterns
-
-### Example 3: Troubleshooting Code
-
-**Prompt:**
-```
-I'm having trouble matching products in drops. Here's the relevant documentation:
-
-=== Drops & Products Data Model - Product Matching ===
-[paste "Product Matching" section with ID comparison patterns]
-
-And my current code:
-```liquid
-{% for json_drop in cc_creator.data.value['cc-creator-drops'] %}
-  {% for drop_product in json_drop['cc-creator-drop-products'] %}
-    {% assign product_id_str = product.id | append: '' %}
-    {% if product_id_str == drop_product['cc-creator-drop-product-shopify-id'] %}
-      <!-- Match found -->
-    {% endif %}
-  {% endfor %}
-{% endfor %}
-```
-
-The condition never matches. Can you help me fix it based on the documentation patterns?
-```
-
-**Why this works:**
-- AI sees the documented pattern
-- Can compare to your code
-- Understands the ID type conversion issue
-- Can explain why the fix works
-
-## Your Workflow Recommendation
-
-### Step 1: Start with Strategy
-Copy `the-3-ms.mdx` to understand the philosophy and orient around what matters.
-
-### Step 2: Learn the Basics
-Copy `getting-started.mdx` and `glossary.mdx` for platform overview.
-
-### Step 3: Understand the Data Model
-Copy `data-model-overview.mdx` and relevant specific data model docs.
-
-### Step 4: Build Features
-Copy relevant docs for each feature you build:
-- Building storefronts? → Co-branded docs + data models
-- Working with drops? → Drops docs + integration docs
-- Using API? → API docs + data models
-
-### Step 5: Reference as Needed
-Copy specific sections for quick questions or troubleshooting.
-
-## Tips for Maximum Effectiveness
-
-1. **Don't be shy about copying large amounts** - These docs are designed for this
-2. **Include multiple related docs** - AI benefits from seeing connections
-3. **Copy your code too** - AI needs context to help effectively
-4. **Reference specific sections** - Helps AI focus on relevant parts
-5. **Ask follow-up questions** - Build on the context you've provided
-6. **Save your prompts** - Reuse successful prompt patterns
-
-## Related Documentation
-
-- [Getting Started](/getting-started) - Platform overview
-- [The 3 M's](/the-3-ms) - Strategic orientation
-- [Glossary](/glossary) - Key concepts and terminology
-- All data model docs - Complete context for implementations
+- [Build with CreatorCommerce](/guides/getting-started)
+- [Documentation Contract](/guides/documentation-contract)
+- [Glossary](/guides/glossary)
+- [Connect to CreatorCommerce MCP](/guides/mcp)

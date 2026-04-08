@@ -1,27 +1,41 @@
 ---
 title: Authentication
+description: 'Canonical authentication model for the CreatorCommerce Unified API, including JWT and API key usage.'
+pageType: 'Reference'
 ---
 
-The CreatorCommerce Unified API supports multiple authentication methods depending on your use case.
+<Info>
+Page type: `Reference`. Use this page with [API Overview](/references/api-overview) and [Unified API Reference](/references/unified-api-reference).
+</Info>
+
+The CreatorCommerce Unified API supports multiple authentication methods depending on the caller and trust boundary.
+
+## Choose the Right Authentication Mode
+
+| Method | Header | Best for |
+|--------|--------|----------|
+| Bearer token (JWT) | `Authorization: Bearer <token>` | Authenticated user requests and CC-managed sessions |
+| Channel API key | `x-channel-access-token: <token>` | Server-to-server brand or merchant workflows |
+| Partner API key | `x-partner-access-token: <token>` | Server-to-server partner-facing or integration workflows |
 
 ## Authentication Methods
 
 ### Bearer Token (JWT)
 
-For authenticated user requests, use Bearer token authentication. Include the JWT token in the `Authorization` header:
+Use Bearer authentication for authenticated user requests. Include the JWT token in the `Authorization` header:
 
 ```bash
 Authorization: Bearer <your-jwt-token>
 ```
 
-**When to use:**
+Use this for:
 - Authenticated user requests
 - Requests from the CreatorCommerce dashboard
 - User-initiated API calls
 
 ### API Key Authentication
 
-For server-to-server communication, use API key authentication via custom headers:
+Use API keys for server-to-server communication via the custom headers below:
 
 ```bash
 x-channel-access-token: <your-channel-token>
@@ -33,9 +47,9 @@ or
 x-partner-access-token: <your-partner-token>
 ```
 
-**When to use:**
+Use this for:
 - Server-to-server integrations
-- Partner API access
+- Backend automation
 - Channel-specific operations
 
 ## Getting Your Credentials
@@ -52,13 +66,14 @@ API keys are provided when you:
 
 Contact CreatorCommerce Support to obtain API keys for your use case.
 
-## Security Best Practices
+## Security Rules
 
-1. **Never commit credentials to version control** - Store API keys and tokens in environment variables or secure secret management systems
-2. **Use HTTPS only** - All API requests must use HTTPS
-3. **Rotate keys regularly** - Periodically rotate your API keys for security
-4. **Use the principle of least privilege** - Only request the permissions you need
-5. **Monitor token expiration** - Implement proper token refresh logic for JWT tokens
+- Never commit credentials to version control.
+- Keep API keys server-side only.
+- Use HTTPS for all requests.
+- Rotate keys on a regular schedule.
+- Request the minimum access needed for the workflow.
+- Monitor JWT expiration and implement refresh behavior where required.
 
 ## Example Requests
 
@@ -93,3 +108,8 @@ If authentication fails, you'll receive a `401 Unauthorized` or `403 Forbidden` 
 ## Token Expiration
 
 JWT tokens have expiration times. Monitor the token expiration and implement refresh logic. API keys typically don't expire but can be revoked by administrators.
+
+## Related
+
+- [API Overview](/references/api-overview)
+- [Unified API Reference](/references/unified-api-reference)

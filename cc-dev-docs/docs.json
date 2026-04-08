@@ -60,6 +60,7 @@
                         "pages": [
                            "guides/getting-started",
                            "guides/how-to-use-these-docs",
+                           "guides/documentation-contract",
                            "guides/the-3-ms",
                            "guides/co-branded-collab-spectrum",
                            "guides/shopify-compatibility",
@@ -263,10 +264,11 @@
                               ]
                            },
                            {
-                              "group": "Use Cases for AI",
+                              "group": "AI Playbooks",
                               "expanded": false,
                               "pages": [
                                  "ai-guides/ai-broad-strokes-onboarding",
+                                 "use-cases/ai-help-creators-get-started",
                                  "ai-guides/ai-guide-first-landing-page",
                                  "ai-guides/ai-creator-funnel-copy",
                                  "ai-guides/ai-theme-edits",
@@ -369,51 +371,7 @@
                            "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication",
-                           {
-                              "group": "Endpoints",
-                              "expanded": false,
-                              "openapi": "api-reference/unified-api.yaml",
-                              "pages": [
-                                 "GET /channels/{myshopifyDomain}/creators/magic-link",
-                           "GET /channels/{myshopifyDomain}",
-                           "GET /creators/{creatorId}/drops/{dropId}/cart",
-                                 "POST /channels/{myshopifyDomain}/integrations/connect",
-                                 "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                                 "POST /channels/{myshopifyDomain}/settings",
-                                 "GET /channels/{myshopifyDomain}/collabs",
-                                 "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                                 "GET /channels/{myshopifyDomain}/collab-tiers",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                                 "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                                 "POST /channels/{myshopifyDomain}/custom-field-definitions",
-                                 "GET /channels/{myshopifyDomain}/form-definitions",
-                                 "POST /channels/{myshopifyDomain}/form-definitions",
-                                 "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                                 "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                                 "GET /channels/{myshopifyDomain}/campaigns",
-                                 "POST /channels/{myshopifyDomain}/campaigns",
-                                 "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                                 "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                                 "GET /channels/{myshopifyDomain}/metrics/session",
-                                 "GET /channels/{myshopifyDomain}/metrics/revenue",
-                                 "GET /creators/{creatorId}/forms",
-                                 "GET /creators/collabs",
-                                 "POST /creators/collabs",
-                                 "POST /creators/collabs/{collabId}",
-                                 "POST /creators/collabs/{collabId}/drops",
-                                 "POST /creators/collabs/{collabId}/drops/{dropId}",
-                                 "GET /integrations/listings"
-                              ]
-                           },
-                           {
-                              "group": "Shopify Flow actions",
-                              "pages": [
-                                 "references/shopify-flow-actions"
-                              ]
-                           }
+                           "references/shopify-flow-actions"
                         ]
                      },
                      {
@@ -429,6 +387,7 @@
                         "expanded": false,
                         "pages": [
                            "references/klaviyo-two-sides",
+                           "references/webhooks-klaviyo",
                            "guides/emails/variables-reference",
                            "guides/creator-emails/variables-reference"
                         ]
@@ -455,6 +414,7 @@
                            "guides/storefronts/full-funnel-personalization",
                            "guides/storefronts/enable-tracking",
                            "guides/storefronts/co-branded-storefront-ui-glossary",
+                           "guides/storefronts/quick-start-out-of-box-blocks",
                            "guides/storefronts/app-blocks-101"
                         ]
                      },
@@ -633,6 +593,7 @@
                         "pages": [
                            "guides/creator-experience/forms/overview",
                            "guides/creator-experience/forms/links-auth",
+                           "references/form-html-reference",
                            {
                               "group": "Forms",
                               "expanded": false,
@@ -671,48 +632,8 @@
                            "guides/creator-experience/build-your-own/hosting",
                            "guides/creator-experience/build-your-own/auth",
                            "guides/creator-experience/build-your-own/components",
-                           "references/unified-api-reference",
-                           "references/api-overview",
                            "guides/authentication",
-                           {
-                              "group": "Endpoints",
-                              "expanded": false,
-                              "openapi": "api-reference/unified-api.yaml",
-                              "pages": [
-                                 "GET /channels/{myshopifyDomain}/creators/magic-link",
-                           "GET /channels/{myshopifyDomain}",
-                           "GET /creators/{creatorId}/drops/{dropId}/cart",
-                                 "POST /channels/{myshopifyDomain}/integrations/connect",
-                                 "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                                 "POST /channels/{myshopifyDomain}/settings",
-                                 "GET /channels/{myshopifyDomain}/collabs",
-                                 "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                                 "GET /channels/{myshopifyDomain}/collab-tiers",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
-                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                                 "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                                 "POST /channels/{myshopifyDomain}/custom-field-definitions",
-                                 "GET /channels/{myshopifyDomain}/form-definitions",
-                                 "POST /channels/{myshopifyDomain}/form-definitions",
-                                 "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                                 "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                                 "GET /channels/{myshopifyDomain}/campaigns",
-                                 "POST /channels/{myshopifyDomain}/campaigns",
-                                 "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                                 "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                                 "GET /channels/{myshopifyDomain}/metrics/session",
-                                 "GET /channels/{myshopifyDomain}/metrics/revenue",
-                                 "GET /creators/{creatorId}/forms",
-                                 "GET /creators/collabs",
-                                 "POST /creators/collabs",
-                                 "POST /creators/collabs/{collabId}",
-                                 "POST /creators/collabs/{collabId}/drops",
-                                 "POST /creators/collabs/{collabId}/drops/{dropId}",
-                                 "GET /integrations/listings"
-                              ]
-                           }
+                           "references/unified-api-reference"
                         ]
                      }
                   ]
@@ -772,7 +693,6 @@
                            "guides/integrations/affiliate/refersion",
                            "guides/integrations/affiliate/grin",
                            "guides/integrations/affiliate/shopify-collabs",
-                           "guides/integrations/affiliate/impact",
                            "guides/integrations/affiliate/goaffpro",
                            "guides/integrations/affiliate/uppromote",
                            "guides/integrations/affiliate/superfiliate",
@@ -843,47 +763,18 @@
                         "group": "Getting Started",
                         "expanded": false,
                         "pages": [
+                           "references/unified-api-reference",
                            "references/api-overview",
                            "guides/authentication"
                         ]
                      },
                      {
-                        "group": "Checkout",
+                        "group": "Channels",
                         "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages": [
-                           "GET /channels/{myshopifyDomain}/creators/magic-link",
                            "GET /channels/{myshopifyDomain}",
-                           "GET /creators/{creatorId}/drops/{dropId}/cart",
-                           "POST /channels/{myshopifyDomain}/integrations/connect",
-                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                           "POST /channels/{myshopifyDomain}/settings",
-                           "GET /channels/{myshopifyDomain}/collabs",
-                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "GET /channels/{myshopifyDomain}/collab-tiers",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions",
-                           "POST /channels/{myshopifyDomain}/form-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "GET /channels/{myshopifyDomain}/campaigns",
-                           "POST /channels/{myshopifyDomain}/campaigns",
-                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "GET /channels/{myshopifyDomain}/metrics/session",
-                           "GET /channels/{myshopifyDomain}/metrics/revenue",
-                           "GET /creators/{creatorId}/forms",
-                           "GET /creators/collabs",
-                           "POST /creators/collabs",
-                           "POST /creators/collabs/{collabId}",
-                           "POST /creators/collabs/{collabId}/drops",
-                           "POST /creators/collabs/{collabId}/drops/{dropId}",
-                           "GET /integrations/listings"
+                           "POST /channels/{myshopifyDomain}/settings"
                         ]
                      },
                      {
@@ -891,37 +782,16 @@
                         "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages": [
-                           "GET /channels/{myshopifyDomain}/creators/magic-link",
-                           "GET /channels/{myshopifyDomain}",
-                           "GET /creators/{creatorId}/drops/{dropId}/cart",
+                           "GET /channels/{myshopifyDomain}/creators/magic-link"
+                        ]
+                     },
+                     {
+                        "group": "Integrations",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
                            "POST /channels/{myshopifyDomain}/integrations/connect",
                            "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                           "POST /channels/{myshopifyDomain}/settings",
-                           "GET /channels/{myshopifyDomain}/collabs",
-                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "GET /channels/{myshopifyDomain}/collab-tiers",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions",
-                           "POST /channels/{myshopifyDomain}/form-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "GET /channels/{myshopifyDomain}/campaigns",
-                           "POST /channels/{myshopifyDomain}/campaigns",
-                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "GET /channels/{myshopifyDomain}/metrics/session",
-                           "GET /channels/{myshopifyDomain}/metrics/revenue",
-                           "GET /creators/{creatorId}/forms",
-                           "GET /creators/collabs",
-                           "POST /creators/collabs",
-                           "POST /creators/collabs/{collabId}",
-                           "POST /creators/collabs/{collabId}/drops",
-                           "POST /creators/collabs/{collabId}/drops/{dropId}",
                            "GET /integrations/listings"
                         ]
                      },
@@ -930,77 +800,75 @@
                         "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages": [
-                           "GET /channels/{myshopifyDomain}/creators/magic-link",
-                           "GET /channels/{myshopifyDomain}",
-                           "GET /creators/{creatorId}/drops/{dropId}/cart",
-                           "POST /channels/{myshopifyDomain}/integrations/connect",
-                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                           "POST /channels/{myshopifyDomain}/settings",
                            "GET /channels/{myshopifyDomain}/collabs",
                            "GET /channels/{myshopifyDomain}/collabs/{collabId}",
                            "POST /channels/{myshopifyDomain}/collabs/{collabId}",
                            "GET /channels/{myshopifyDomain}/collab-tiers",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
-                           "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions",
-                           "POST /channels/{myshopifyDomain}/form-definitions",
-                           "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "GET /channels/{myshopifyDomain}/campaigns",
-                           "POST /channels/{myshopifyDomain}/campaigns",
-                           "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "GET /channels/{myshopifyDomain}/metrics/session",
-                           "GET /channels/{myshopifyDomain}/metrics/revenue",
                            "GET /creators/{creatorId}/forms",
                            "GET /creators/collabs",
                            "POST /creators/collabs",
-                           "POST /creators/collabs/{collabId}",
-                           "POST /creators/collabs/{collabId}/drops",
-                           "POST /creators/collabs/{collabId}/drops/{dropId}",
-                           "GET /integrations/listings"
+                           "POST /creators/collabs/{collabId}"
                         ]
                      },
                      {
-                        "group": "Drops",
+                        "group": "Drops & Checkout",
                         "expanded": false,
                         "openapi": "api-reference/unified-api.yaml",
                         "pages": [
-                           "GET /channels/{myshopifyDomain}/creators/magic-link",
-                           "GET /channels/{myshopifyDomain}",
                            "GET /creators/{creatorId}/drops/{dropId}/cart",
-                           "POST /channels/{myshopifyDomain}/integrations/connect",
-                           "POST /channels/{myshopifyDomain}/integrations/disconnect",
-                           "POST /channels/{myshopifyDomain}/settings",
-                           "GET /channels/{myshopifyDomain}/collabs",
-                           "GET /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "POST /channels/{myshopifyDomain}/collabs/{collabId}",
-                           "GET /channels/{myshopifyDomain}/collab-tiers",
                            "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
                            "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
                            "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                           "POST /creators/collabs/{collabId}/drops",
+                           "POST /creators/collabs/{collabId}/drops/{dropId}"
+                        ]
+                     },
+                     {
+                        "group": "Custom Field Definitions",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
                            "GET /channels/{myshopifyDomain}/custom-field-definitions",
-                           "POST /channels/{myshopifyDomain}/custom-field-definitions",
+                           "POST /channels/{myshopifyDomain}/custom-field-definitions"
+                        ]
+                     },
+                     {
+                        "group": "Form Definitions",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
                            "GET /channels/{myshopifyDomain}/form-definitions",
                            "POST /channels/{myshopifyDomain}/form-definitions",
                            "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
-                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                           "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}"
+                        ]
+                     },
+                     {
+                        "group": "Campaigns",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
                            "GET /channels/{myshopifyDomain}/campaigns",
                            "POST /channels/{myshopifyDomain}/campaigns",
                            "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
-                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                           "POST /channels/{myshopifyDomain}/campaigns/{campaignId}"
+                        ]
+                     },
+                     {
+                        "group": "Metrics",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
                            "GET /channels/{myshopifyDomain}/metrics/session",
-                           "GET /channels/{myshopifyDomain}/metrics/revenue",
-                           "GET /creators/{creatorId}/forms",
-                           "GET /creators/collabs",
-                           "POST /creators/collabs",
-                           "POST /creators/collabs/{collabId}",
-                           "POST /creators/collabs/{collabId}/drops",
-                           "POST /creators/collabs/{collabId}/drops/{dropId}",
-                           "GET /integrations/listings"
+                           "GET /channels/{myshopifyDomain}/metrics/revenue"
+                        ]
+                     },
+                     {
+                        "group": "Storage",
+                        "expanded": false,
+                        "openapi": "api-reference/unified-api.yaml",
+                        "pages": [
+                           "GET /storage/presigned-url"
                         ]
                      }
                   ]
@@ -1068,7 +936,7 @@
                            {
                               "group": "Klaviyo events",
                               "pages": [
-                                 "references/klaviyo-two-sides"
+                                 "references/webhooks-klaviyo"
                               ]
                            }
                         ]
@@ -1079,7 +947,8 @@
                   "item": "Klaviyo",
                   "icon": "envelope",
                   "pages": [
-                     "references/klaviyo-two-sides"
+                     "references/klaviyo-two-sides",
+                     "references/webhooks-klaviyo"
                   ]
                }
             ]
@@ -1166,7 +1035,7 @@
          }
       ]
    },
-   "description": "Access technical docs and AI resources for implementing co-branded commerce accross your brand. Build for Shopify storefronts.",
+   "description": "Access technical docs and AI resources for implementing co-branded commerce across your brand. Build for Shopify storefronts.",
    "footer": {
       "socials": {
          "github": "https://github.com/CreatorCommerce/cc-implementation-resources",

@@ -1,66 +1,49 @@
 ---
 title: Setting up Rules for Cursor
+description: 'Create Cursor rules that point the model at canonical CreatorCommerce references instead of duplicated technical detail.'
+pageType: 'AI playbook'
 ---
 
-Configure Cursor rules to ensure consistent code generation and best practices for CreatorCommerce development.
+Configure Cursor rules so the model knows where CreatorCommerce truth lives and which implementation patterns it should follow.
 
-## Overview
+## What Your Rules Should Enforce
 
-Cursor rules help guide the AI assistant to generate code that follows your project's conventions and best practices. This is especially important for CreatorCommerce projects where specific patterns and rules must be followed.
+- Reference pages are canonical for facts.
+- The glossary is canonical for terminology.
+- Liquid creator resolution should follow the documented `cc_creator` pattern.
+- Custom fields should be read from the correct level instead of guessed.
+- API work should route through the Unified API references and authentication guidance.
 
-## Creating Rules Files
+## Recommended Rule Topics
 
-Cursor rules are typically stored in `.cursorrules` files in your project root or specific directories.
+- Creator resolution and fallbacks:
+  - [Referencing Creator Content](/references/sdk/referencing-creator-content)
+- Custom field scoping:
+  - [Custom Fields Reference](/references/custom-fields-reference)
+- API and auth:
+  - [API Overview](/references/api-overview)
+  - [Authentication](/guides/authentication)
+- Documentation behavior:
+  - [Documentation Contract](/guides/documentation-contract)
 
-### Basic Rule Structure
+## Starter Rules File
 
 ```markdown
 # CreatorCommerce Development Rules
 
-## Liquid Template Rules
-- Always use CreatorCommerce data reference patterns
-- Follow the co-branded UI data reference rules
-- Use proper fallback handling for creator data
-
-## API Integration Rules
-- Always include proper error handling
-- Use the Unified API endpoints
-- Follow authentication best practices
+When working with CreatorCommerce:
+- Treat `/references/*` pages as canonical for facts, fields, payloads, and stable implementation details.
+- Use `/guides/glossary` as the canonical terminology source.
+- Use `/references/sdk/referencing-creator-content` for creator resolution and Liquid access patterns.
+- Use `/references/custom-fields-reference` for field naming and level-specific access.
+- Use `/guides/authentication` and `/references/api-overview` for Unified API work.
+- Prefer summaries plus links over copying canonical technical detail into new docs.
 ```
 
-## Common Rules for CreatorCommerce
-
-### Data Reference Rules
-
-```markdown
-When referencing creator data:
-- Always check for creator context first
-- Use proper metaobject access patterns
-- Include graceful fallbacks
-```
-
-### Code Organization Rules
-
-```markdown
-- Keep Liquid logic in liquid blocks when possible
-- Use descriptive variable names
-- Comment complex logic
-- Follow existing code patterns in the project
-```
-
-## Best Practices
-
-1. **Start with Project-Specific Rules**: Add rules that are specific to your CreatorCommerce implementation
-2. **Reference Existing Code**: Point Cursor to existing patterns in your codebase
-3. **Update Regularly**: Keep rules updated as patterns evolve
-4. **Test Rules**: Verify that Cursor follows your rules correctly
-
-## Example Rules File
-
-See the [Cursor Rules documentation](https://cursor.sh/docs) for more examples and advanced configuration options.
+See the [Cursor documentation](https://cursor.sh/docs) for tool-specific rule syntax and configuration options.
 
 ## Related Resources
 
 - [Coding in Cursor](/guides/cursor-coding)
-- [CreatorCommerce Co-Branded UI Rules](/.cursor/rules/cc-referencing-drops-data.mdc)
-
+- [Documentation Contract](/guides/documentation-contract)
+- [Referencing Creator Content](/references/sdk/referencing-creator-content)

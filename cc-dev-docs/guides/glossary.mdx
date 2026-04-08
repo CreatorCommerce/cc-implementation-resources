@@ -1,9 +1,24 @@
 ---
 title: 'Glossary'
 description: 'Comprehensive glossary of CreatorCommerce concepts, data models, and terminology'
+pageType: 'Reference'
 ---
 
 This glossary defines key concepts, data models, and terminology used throughout the CreatorCommerce platform. Use this as a reference when working with the API, building integrations, or implementing co-branded experiences.
+
+## Terminology Contract
+
+Use these as the preferred primary terms across the docs:
+
+| Preferred term | Use when | Acceptable aliases |
+|----------------|----------|--------------------|
+| Creator | Referring to the person in the CC data model | Partner, affiliate, influencer, ambassador, practitioner when audience context specifically calls for it |
+| Channel | Referring to the merchant's Shopify store in technical or API contexts | Brand, merchant, store in audience-facing prose |
+| Collab | Referring to the creator-channel relationship object | Collaboration |
+| Campaign | Referring to the routing and grouping object in the API | Destination in merchant-facing UX where helpful |
+| Co-branded storefront | Referring to the personalized shopping surface | Creator page, landing page, partner page where context narrows the meaning |
+
+If a page needs one canonical technical term, prefer `creator`, `channel`, `collab`, and `campaign`.
 
 ## Core Concepts
 
@@ -466,26 +481,9 @@ Always handle missing data:
 {% endif %}
 ```
 
-## API Endpoints Summary
-
-### Checkout
-- `GET /creators/{creatorId}/drops/{dropId}/cart` - Generate checkout URL for a drop
-
-### Magic Links
-- `GET /channels/{myshopifyDomain}/creators/magic-link` - Get magic link for creator
-
-### Collabs
-- `GET /creators/collabs` - List creator's collabs
-- `POST /creators/collabs` - Create new collab
-- `POST /creators/collabs/{collabId}` - Update existing collab
-
-### Drops
-- `POST /creators/collabs/{collabId}/drops` - Create new drop
-- `POST /creators/collabs/{collabId}/drops/{dropId}` - Update existing drop
-
 ## Related Documentation
 
-- [API Reference](/api-overview) - Complete API documentation
-- [Co-Branded Storefronts](/co-branded-storefronts) - Building personalized experiences
-- [Getting Started](/getting-started) - Platform overview and setup
-- [Data Model Reference](/unified-api-reference) - Detailed schema documentation
+- [API Overview](/references/api-overview) - Capability map for the Unified API
+- [Unified API Reference](/references/unified-api-reference) - Endpoint-level documentation
+- [Co-Branded Storefronts](/guides/co-branded-storefronts) - Building personalized experiences
+- [Build with CreatorCommerce](/guides/getting-started) - Platform overview and setup

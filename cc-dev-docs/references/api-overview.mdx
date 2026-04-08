@@ -1,8 +1,14 @@
 ---
 title: API Overview
+description: 'Conceptual map of the Unified API, including capability areas, authentication modes, and where canonical endpoint details live.'
+pageType: 'Reference'
 ---
 
-The CreatorCommerce Unified API provides a comprehensive interface for managing creators, collaborations, drops, and checkout URLs. This API enables you to integrate CreatorCommerce functionality into your applications.
+<Info>
+Page type: `Reference`. Endpoint-level details live in the generated OpenAPI pages under [Unified API Reference](/references/unified-api-reference).
+</Info>
+
+The CreatorCommerce Unified API provides programmatic access to CreatorCommerce data and workflows across creator experiences, brand operations, and connected integrations.
 
 ## Base URL
 
@@ -12,51 +18,64 @@ https://unified-api.creatorcommerce.shop
 
 ## Authentication
 
-The API supports two authentication methods:
+The API supports JWT and API key authentication.
 
-1. **Bearer Token (JWT)** - For authenticated user requests
-2. **API Key** - Using `x-channel-access-token` or `x-partner-access-token` headers
+| Method | When to use |
+|--------|-------------|
+| Bearer token (JWT) | Authenticated user requests |
+| `x-channel-access-token` | Brand or merchant server-to-server workflows |
+| `x-partner-access-token` | Partner-facing or integration workflows |
 
-See the [Authentication Guide](/guides/authentication) for detailed information.
+See [Authentication](/guides/authentication) for header details and security guidance.
 
-## API Endpoints
+## API Shape
 
-The API is organized into Channel-centric and Creator-centric patterns, allowing both brands and creators to manage their collaborations effectively.
+The API is easiest to understand through two primary access patterns:
 
-### Channel-Centric Endpoints
+### Channel-Centric
 
-These endpoints are designed for channels (Shopify stores) to manage their collabs, tiers, and drops.
+Endpoints prefixed with `/channels/{myshopifyDomain}/` are used by the brand side of the platform.
 
-#### Collabs Management
-- **GET** `/channels/{myshopifyDomain}/collabs` - Get all collabs for a channel
-- **GET** `/channels/{myshopifyDomain}/collabs/{collabId}` - Get a specific collab with full details including drops and enhancements
-- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}` - Update a channel collab (includes drop reordering capability)
+Typical capabilities:
 
-#### Tiers Management
-- **GET** `/channels/{myshopifyDomain}/collab-tiers` - Get all collab tiers configured for a channel
+- Channel settings
+- Magic links
+- Integrations
+- Collabs and tiers
+- Drops and enhancements
+- Custom field definitions
+- Form definitions
+- Campaigns
+- Metrics
 
-#### Drops & Enhancements
-- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}` - Update a drop with field-by-field changes
-- **POST** `/channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}` - Update product enhancement (notes, media, variant-specific content)
+### Creator-Centric
 
-### Creator-Centric Endpoints
+Endpoints prefixed with `/creators/` are used for creator-facing or creator-scoped workflows.
 
-These endpoints are designed for creators to manage their collaborations and drops.
+Typical capabilities:
 
-#### Collabs
-- **GET** `/creators/collabs` - Retrieve all collabs for a creator
-- **POST** `/creators/collabs` - Create a new collaboration
-- **POST** `/creators/collabs/{collabId}` - Update an existing collaboration
+- Creator collabs
+- Creator drops
+- Creator checkout/cart generation
+- Creator forms
 
-#### Drops
-- **POST** `/creators/collabs/{collabId}/drops` - Create a new drop with products
-- **POST** `/creators/collabs/{collabId}/drops/{dropId}` - Update an existing drop
+## Capability Areas
 
-### Checkout
-- **GET** `/creators/{creatorId}/drops/{dropId}/cart` - Generate a checkout URL for a drop with all products added to cart
+The OpenAPI spec is organized around these capability areas:
 
-### Authentication
-- **GET** `/channels/{myshopifyDomain}/creators/magic-link` - Generate a magic link for creator authentication
+| Area | What it covers |
+|------|----------------|
+| Channels | Channel retrieval and settings |
+| Magic Links | Authenticated creator entry flows |
+| Integrations | Connected integration listings and lifecycle |
+| Collabs | Brand-side and creator-side collaboration operations |
+| Drops | Drop creation, updates, products, and enhancements |
+| Custom Field Definitions | Channel-level field definitions |
+| Form Definitions | Channel-level form definitions |
+| Campaigns | Campaign creation and updates |
+| Metrics | Session and revenue reporting |
+| Checkout | Creator drop cart URL generation |
+| Storage | Upload utility endpoints |
 
 ## Response Format
 
@@ -70,10 +89,13 @@ All responses are returned in JSON format. Successful responses typically includ
 }
 ```
 
-## Rate Limiting
+## Where to Find Endpoint Details
 
-Rate limits may apply to API requests. Check response headers for rate limit information.
+- Use [Unified API Reference](/references/unified-api-reference) as the primary entry point for endpoint docs.
+- Use the generated endpoint groups in the References nav for request and response details.
+- Use [Authentication](/guides/authentication) for credential strategy and header usage.
 
-## Support
+## Related
 
-For API support, contact CreatorCommerce Support.
+- [Unified API Reference](/references/unified-api-reference)
+- [Authentication](/guides/authentication)

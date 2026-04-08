@@ -1,6 +1,7 @@
 ---
 title: 'Referencing Creator Content'
 description: 'Access creator data—name, bio, photo, discounts, drops—on any page of your Shopify theme.'
+pageType: 'Reference'
 ---
 
 ## Creator Resolution Pattern
@@ -104,7 +105,9 @@ Some stores may expose legacy `cc-channel-myshopify-domian` alongside `cc-channe
 | Campaign ID | `cc_creator.data.value['cc-campaign-id']` |
 | Campaign title | `cc_creator.data.value['cc-campaign-title']` |
 
-### Social Handles (Coming Soon)
+### Social Handles (Channel-Dependent)
+
+Some CreatorCommerce installs expose additional social handle fields when they have been mapped into the creator record. Treat these as optional fields and confirm availability in your channel before building storefront logic around them.
 
 | Field | Access |
 |-------|--------|

@@ -1,5 +1,7 @@
 # Table of contents
 
+> Legacy archive only. The active, canonical documentation lives in `../cc-dev-docs/`.
+
 ## Getting Started
 
 * [The CreatorCommerce Platform](README.md)

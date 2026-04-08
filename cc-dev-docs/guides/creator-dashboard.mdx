@@ -1,11 +1,29 @@
 ---
 title: "Creator Dashboard"
 description: "Learn how to customize the creator dashboard experience for your brand"
+pageType: 'Overview'
 ---
 
-The Creator Dashboard is where creators manage their collaborations, drops, and profile settings. You can customize this experience in two ways:
+The Creator Dashboard is where creators manage collaborations, drops, onboarding data, and profile settings. There are two supported paths:
 
-## Option 1: Build a Custom Dashboard via API
+## 1. Customize the Hosted Dashboard with CSS
+
+Use CreatorCommerce's hosted dashboard and theme it with stable selectors when you want a fast launch and minimal maintenance.
+
+This path is best when you want:
+
+- Quick implementation
+- Brand alignment through CSS
+- No maintenance burden for core dashboard functionality
+- CC-managed product updates and feature rollout
+
+Canonical references:
+
+- [Creator Dashboard CSS Overview](/references/dashboard-overview-css)
+- [CSS Reference](/references/css-reference)
+- [Code Examples & Practical Patterns](/references/css-applied-examples)
+
+## 2. Build a Custom Dashboard via API
 
 Build a completely custom creator dashboard using the CreatorCommerce API and integrate it into Shopify's Customer Account Portal. This approach gives you:
 
@@ -14,15 +32,23 @@ Build a completely custom creator dashboard using the CreatorCommerce API and in
 - **Flexible workflows**: Create custom onboarding flows and user journeys
 - **Native integration**: Embed within Shopify's Customer Account Portal for a seamless experience
 
-See the [API Reference](/unified-api-reference) for endpoints and authentication details.
+Canonical references:
 
-## Option 2: Customize the Hosted Dashboard with CSS
+- [Build Your Own Dashboard](/guides/creator-experience/build-your-own/overview)
+- [Authenticate a Custom Creator Dashboard](/guides/creator-experience/build-your-own/auth)
+- [Authentication](/guides/authentication)
+- [Unified API Reference](/references/unified-api-reference)
 
-Use CreatorCommerce's hosted dashboard and customize it with CSS to match your brand. This approach provides:
+## Choose the Right Path
 
-- **Quick implementation**: Start with a fully functional dashboard
-- **CSS theming**: Re-skin the dashboard using stable selectors and classes
-- **No code maintenance**: We handle updates and feature additions
-- **Brand consistency**: Apply your colors, fonts, and styling throughout
+| Need | Best path |
+|------|-----------|
+| Launch quickly and keep maintenance low | Hosted dashboard + CSS |
+| Build custom workflows, layouts, or data flows | Custom dashboard via API |
+| Add a few brand touches without rebuilding the product | Hosted dashboard + CSS |
+| Unify creator UX with a broader custom customer-account experience | Custom dashboard via API |
 
-The following documentation covers CSS customization for the hosted dashboard.
+## Related
+
+- [Customer Accounts Overview](/guides/creator-experience/customer-accounts/overview)
+- [Documentation Contract](/guides/documentation-contract)

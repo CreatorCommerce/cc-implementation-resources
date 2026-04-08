@@ -1,4 +1,6 @@
-# Cloudflare Images Upload Worker Documentation
+# Archived: Cloudflare Images Upload Worker Documentation
+
+> Archived note. This file is not part of the canonical CreatorCommerce product documentation.
 
 ## Worker URL
 ```
@@ -206,4 +208,3 @@ async function uploadToCloudflare(fileOrBlob, filename) {
 2. Copy the `uploadToCloudflare()` function above
 3. Send images as FormData with the `file` field
 4. Parse the JSON response and use `data.url` for the CDN URL
-

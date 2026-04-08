@@ -1,0 +1,94 @@
+---
+title: 'Documentation Contract'
+description: 'How CreatorCommerce documentation is organized, where canonical facts live, and how to update the docs without creating drift.'
+pageType: 'Reference'
+---
+
+<Info>
+If two CreatorCommerce docs appear to overlap, this page explains which one wins. For facts and stable technical detail, canonical reference pages win over summaries.
+</Info>
+
+## Canonical Rule
+
+CreatorCommerce docs are intentionally split by job:
+
+- Overview pages explain what something is and when to use it.
+- How-to pages explain implementation order and execution steps.
+- Reference pages hold canonical facts.
+- Use-case pages route you to the right references.
+- AI playbooks help assistants reason about workflows, but they should cite canonical docs instead of restating them as truth.
+
+## Page Types
+
+| Page type | Purpose | What belongs there | What does not |
+|-----------|---------|--------------------|---------------|
+| Overview | Orientation and decision framing | Concepts, tradeoffs, system maps, capability summaries | Full field lists, endpoint catalogs, canonical payloads |
+| How-to | Implementation guidance | Steps, sequencing, setup, migration, QA | Full schema definitions duplicated from references |
+| Reference | Source-of-truth technical detail | Fields, selectors, stable variables, event payloads, auth details, endpoint groups | Broad strategy or marketing framing |
+| Use-case page | Fast routing by task | What you can do, where to go next, best references | Deep technical detail that already lives elsewhere |
+| AI playbook | AI workflow guidance | Prompt patterns, reasoning guardrails, task framing | Competing copies of canonical technical facts |
+
+Every live page should declare its role in frontmatter with `pageType`.
+
+## Path Ownership
+
+These path conventions determine default page type ownership across the live docs:
+
+| Path or pattern | Default page type |
+|-----------------|-------------------|
+| `references/**` | Reference |
+| `ai-guides/**` | AI playbook |
+| `guides/dev/**` | Use-case page |
+| `use-cases/**` | Overview or routing page |
+| `guides/**/overview` | Overview |
+| `guides/storefronts/**`, `guides/emails/**`, `guides/enrichment/**`, `guides/creator-experience/**`, `guides/integrations/build/**` | How-to by default unless explicitly framed as an overview |
+
+## Canonical Homes for High-Value Domains
+
+| Domain | Canonical home |
+|--------|----------------|
+| Terminology | [Glossary](/guides/glossary) |
+| Data model | [Data Model Overview](/references/data-model-overview), [Creator & Collab Data Model](/references/creator-collab-data-model), [Drops & Products Data Model](/references/drops-products-data-model), [Shopify Integration Data Model](/references/shopify-integration-data-model) |
+| Creator data access in Liquid | [Referencing Creator Content](/references/sdk/referencing-creator-content) |
+| SDK and cart attributes | [SDK Getting Started](/references/sdk/getting-started), [SDK Cart Attributes](/references/sdk/cart-attributes), [SDK Web Pixel Tracking](/references/sdk/web-pixel-tracking) |
+| Unified API and auth | [Unified API Reference](/references/unified-api-reference), [API Overview](/references/api-overview), [Authentication](/guides/authentication) |
+| Email variables | [Co-branded Consumer Email Variables](/guides/emails/variables-reference), [Creator Email Variables](/guides/creator-emails/variables-reference) |
+| Storefront UI vocabulary | [Co-branded Storefront UI Glossary](/guides/storefronts/co-branded-storefront-ui-glossary) |
+
+## Authoring Rules
+
+- Add or update canonical facts in the reference page first.
+- If an overview or how-to page needs the same fact, summarize it and link to the canonical reference instead of restating it in full.
+- Do not publish placeholder pages, planning notes, or draft stubs in live navigation.
+- Do not link public docs to repo-local implementation notes or private file paths.
+- If a new concept introduces stable product vocabulary, update the glossary.
+- If a new feature changes downstream implementation behavior, update both the canonical reference and the relevant use-case or how-to routing page.
+
+## Required Cross-Links
+
+Every new feature or capability should link outward in a predictable way:
+
+1. Overview page links to the canonical reference and at least one how-to page.
+2. How-to page links back to the overview and the canonical reference.
+3. Reference page links to the nearest overview or how-to page for context.
+4. AI playbook links to the canonical reference pages it expects an assistant to trust.
+
+## Update Workflow
+
+When shipping a new feature, capability, or data-model change:
+
+1. Update the canonical reference page first.
+2. Update overview and how-to pages that summarize or implement that feature.
+3. Update the glossary if naming or meaning changed.
+4. Update AI playbooks only if the prompting pattern or recommended workflow changed.
+5. Add a release note if the change is externally meaningful.
+6. Verify links, nav placement, and page-type fit before publishing.
+
+## Validation Checklist
+
+- Every live page declares `pageType` in frontmatter.
+- No placeholder or draft content in the live docs.
+- No conflicting copies of canonical facts across guides.
+- Internal links resolve to the active docs tree.
+- API endpoint details come from the generated OpenAPI surfaces.
+- Legacy or archived material is clearly marked non-canonical.
