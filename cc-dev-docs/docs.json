@@ -344,6 +344,7 @@
                         "pages": [
                            "references/sdk/referencing-creator-content",
                            "references/order-customer-tags",
+                           "references/shopifyql",
                            "references/why-collections",
                            "references/shopify-integration-data-model"
                         ]

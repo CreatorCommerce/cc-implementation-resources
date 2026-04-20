@@ -1,0 +1,91 @@
+---
+title: 'ShopifyQL'
+description: 'Reference ShopifyQL queries for isolating CreatorCommerce-tagged traffic and reviewing conversion rate plus AOV trends in Shopify analytics.'
+pageType: 'Reference'
+---
+
+Use ShopifyQL when you want to inspect CreatorCommerce-tagged traffic directly inside Shopify analytics. The queries on this page assume your CC traffic is tagged with a `cc-` prefix in `utm_content`, so Shopify can isolate those sessions and attributed sales without requiring a separate BI layer.
+
+<Info>
+These examples filter on `utm_content CONTAINS 'cc-'`. Keep that prefix consistent in your partner links if you want a clean CC-only reporting slice in Shopify.
+</Info>
+
+## What This Page Helps You Answer
+
+- How much CC-tagged traffic reaches cart, checkout, and purchase
+- Whether CC traffic converts better or worse than the previous period
+- How average order value changes across CC-tagged sessions over time
+
+## Query 1: CreatorCommerce Conversion Rate Breakdown
+
+Use this query when you want a daily funnel view of CC traffic inside Shopify's `sessions` dataset.
+
+```sql
+FROM sessions
+  SHOW sessions, sessions_with_cart_additions, sessions_that_reached_checkout,
+    sessions_that_completed_checkout, conversion_rate
+  WHERE utm_content CONTAINS 'cc-'
+  TIMESERIES day WITH TOTALS, PERCENT_CHANGE
+  SINCE -30d UNTIL today
+  COMPARE TO previous_period
+  ORDER BY day ASC
+  LIMIT 1000
+VISUALIZE conversion_rate TYPE funnel
+```
+
+### Why this query works
+
+| Clause | Purpose |
+|--------|---------|
+| `FROM sessions` | Uses Shopify's session dataset for storefront funnel metrics. |
+| `WHERE utm_content CONTAINS 'cc-'` | Keeps the report limited to CreatorCommerce-tagged traffic. |
+| `SHOW sessions, sessions_with_cart_additions, sessions_that_reached_checkout, sessions_that_completed_checkout, conversion_rate` | Returns the core funnel steps plus session-to-order conversion rate. |
+| `TIMESERIES day WITH TOTALS, PERCENT_CHANGE` | Adds daily rows, a rolled-up total, and change columns for the comparison period. |
+| `COMPARE TO previous_period` | Compares the last 30 days against the preceding 30-day window. |
+| `VISUALIZE conversion_rate TYPE funnel` | Renders the result as a funnel-oriented view keyed to conversion performance. |
+
+### Read the result like this
+
+- Compare `sessions_with_cart_additions` to `sessions_that_reached_checkout` to spot mid-funnel friction.
+- Compare `sessions_that_reached_checkout` to `sessions_that_completed_checkout` to spot checkout drop-off.
+- Use `PERCENT_CHANGE` to see whether CC traffic quality is improving or degrading versus the previous period.
+
+## Query 2: CreatorCommerce Average Order Value Over Time
+
+Use this query when you want to measure whether CC-tagged traffic is driving stronger or weaker order values over time.
+
+```sql
+FROM sales
+  SHOW gross_sales, discounts, orders, average_order_value
+  WHERE excludes_post_order_adjustments = 'true'
+    AND utm_content CONTAINS 'cc-'
+  GROUP BY day WITH TOTALS, PERCENT_CHANGE, LAST_CLICK_ATTRIBUTION
+  TIMESERIES day
+  SINCE -30d UNTIL today
+  COMPARE TO previous_period
+VISUALIZE average_order_value__last_click TYPE line
+```
+
+### Why this query works
+
+| Clause | Purpose |
+|--------|---------|
+| `FROM sales` | Uses Shopify's sales dataset for revenue and order-value metrics. |
+| `WHERE excludes_post_order_adjustments = 'true'` | Keeps AOV aligned to the original order value before later order adjustments. |
+| `WHERE utm_content CONTAINS 'cc-'` | Limits the slice to CreatorCommerce-tagged traffic. |
+| `GROUP BY day WITH TOTALS, PERCENT_CHANGE, LAST_CLICK_ATTRIBUTION` | Buckets results by day, adds comparison columns, and asks Shopify for attributed sales columns. |
+| `TIMESERIES day` | Keeps the output day-based for trend review and charting. |
+| `VISUALIZE average_order_value__last_click TYPE line` | Plots the last-click-attributed AOV metric that Shopify adds when `LAST_CLICK_ATTRIBUTION` is applied. |
+
+### Read the result like this
+
+- Rising AOV with flat conversion usually means CC traffic is buying higher-priced bundles or carts.
+- Falling AOV can indicate discount-heavy traffic, weaker product mix, or a funnel variant that gets more low-intent orders.
+- Compare this chart to the conversion query above so you can tell whether a better funnel is increasing both conversion efficiency and basket size.
+
+## Related
+
+- [Shopify](/guides/integrations/analytics/shopify)
+- [Track Your Funnel Traffic](/guides/track-funnel-traffic)
+- [Affiliate Link Tracking](/references/affiliate-link-tracking)
+- [SDK Web Pixel Tracking](/references/sdk/web-pixel-tracking)
