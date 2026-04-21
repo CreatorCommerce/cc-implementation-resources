@@ -32,6 +32,12 @@
          "mcp"
       ]
    },
+   "redirects": [
+      {
+         "source": "/references/api-overview",
+         "destination": "/references/unified-api-reference"
+      }
+   ],
    "navbar": {
       "links": [
          {
@@ -370,8 +376,110 @@
                         "expanded": false,
                         "pages": [
                            "references/unified-api-reference",
-                           "references/api-overview",
                            "guides/authentication",
+                           {
+                              "group": "Channels",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}",
+                                 "POST /channels/{myshopifyDomain}/settings"
+                              ]
+                           },
+                           {
+                              "group": "Magic Links",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/creators/magic-link"
+                              ]
+                           },
+                           {
+                              "group": "Integrations",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "POST /channels/{myshopifyDomain}/integrations/connect",
+                                 "POST /channels/{myshopifyDomain}/integrations/disconnect",
+                                 "GET /integrations/listings"
+                              ]
+                           },
+                           {
+                              "group": "Collabs",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/collabs",
+                                 "GET /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}",
+                                 "GET /channels/{myshopifyDomain}/collab-tiers",
+                                 "GET /creators/{creatorId}/forms",
+                                 "GET /creators/collabs",
+                                 "POST /creators/collabs",
+                                 "POST /creators/collabs/{collabId}"
+                              ]
+                           },
+                           {
+                              "group": "Drops & Checkout",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /creators/{creatorId}/drops/{dropId}/cart",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/products",
+                                 "POST /channels/{myshopifyDomain}/collabs/{collabId}/drops/{dropId}/enhancements/{enhancementId}",
+                                 "POST /creators/collabs/{collabId}/drops",
+                                 "POST /creators/collabs/{collabId}/drops/{dropId}"
+                              ]
+                           },
+                           {
+                              "group": "Custom Field Definitions",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/custom-field-definitions",
+                                 "POST /channels/{myshopifyDomain}/custom-field-definitions"
+                              ]
+                           },
+                           {
+                              "group": "Form Definitions",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/form-definitions",
+                                 "POST /channels/{myshopifyDomain}/form-definitions",
+                                 "GET /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}",
+                                 "POST /channels/{myshopifyDomain}/form-definitions/{formDefinitionId}"
+                              ]
+                           },
+                           {
+                              "group": "Campaigns",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/campaigns",
+                                 "POST /channels/{myshopifyDomain}/campaigns",
+                                 "GET /channels/{myshopifyDomain}/campaigns/{campaignId}",
+                                 "POST /channels/{myshopifyDomain}/campaigns/{campaignId}"
+                              ]
+                           },
+                           {
+                              "group": "Metrics",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /channels/{myshopifyDomain}/metrics/session",
+                                 "GET /channels/{myshopifyDomain}/metrics/revenue"
+                              ]
+                           },
+                           {
+                              "group": "Storage",
+                              "expanded": false,
+                              "openapi": "api-reference/unified-api.yaml",
+                              "pages": [
+                                 "GET /storage/presigned-url"
+                              ]
+                           },
                            "references/shopify-flow-actions"
                         ]
                      },
@@ -765,7 +873,6 @@
                         "expanded": false,
                         "pages": [
                            "references/unified-api-reference",
-                           "references/api-overview",
                            "guides/authentication"
                         ]
                      },

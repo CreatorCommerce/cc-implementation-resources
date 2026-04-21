@@ -1,15 +1,15 @@
 ---
 title: Unified API Reference
-description: 'Canonical entry point for generated Unified API endpoint documentation and related API reference guides.'
+description: 'Canonical map for the CreatorCommerce Unified API, including authentication, capability areas, response shape, and generated endpoint documentation.'
 api: api-reference/unified-api.yaml
 pageType: 'Reference'
 ---
 
-The CreatorCommerce Unified API provides programmatic access to manage creators, collaborations, drops, and checkout URLs. Use this API to build custom dashboards, integrate with external tools, or create bespoke creator experiences.
-
 <Info>
-Page type: `Reference`. The OpenAPI file is the source of truth for endpoint shapes and request/response details.
+Page type: `Reference`. Endpoint-level request and response details come from the generated OpenAPI pages under this reference.
 </Info>
+
+The CreatorCommerce Unified API provides programmatic access to CreatorCommerce data and workflows across creator experiences, brand operations, and connected integrations. Use it to build custom dashboards, integrate external tools, manage creator collaborations, update drops, and generate checkout-ready URLs.
 
 ## Base URL
 
@@ -29,18 +29,23 @@ Two authentication methods are supported:
 
 See the [Authentication Guide](/guides/authentication) for setup details.
 
-## API Patterns
+## API Shape
 
-The API is organized into two patterns:
+The API is easiest to understand through two primary access patterns.
 
 ### Channel-Centric (Brand Side)
 
 Endpoints prefixed with `/channels/{myshopifyDomain}/` are used by brands to manage their program:
 
+- **Channel settings** -- Read and update channel configuration
+- **Magic Links** -- Generate authenticated creator entry links
+- **Integrations** -- Connect, disconnect, and list external integrations
 - **Collabs** -- List, get, and update collaborations
 - **Tiers** -- Retrieve configured collab tiers
 - **Drops** -- Update product curation and enhancements
-- **Magic Links** -- Generate authenticated creator links
+- **Custom fields and forms** -- Manage channel-level field and form definitions
+- **Campaigns** -- Create, read, and update channel campaigns
+- **Metrics** -- Query session and revenue analytics
 
 ### Creator-Centric (Creator Side)
 
@@ -49,14 +54,51 @@ Endpoints prefixed with `/creators/` are used by creators to manage their own da
 - **Collabs** -- View and update their collaborations
 - **Drops** -- Create and manage product curation
 - **Cart URLs** -- Generate checkout-ready URLs
+- **Forms** -- Fetch creator-facing custom forms
+
+## Capability Areas
+
+The OpenAPI spec is organized around these capability areas:
+
+| Area | What it covers |
+|------|----------------|
+| Channels | Channel retrieval and settings |
+| Magic Links | Authenticated creator entry flows |
+| Integrations | Connected integration listings and lifecycle |
+| Collabs | Brand-side and creator-side collaboration operations |
+| Drops | Drop creation, updates, products, and enhancements |
+| Custom Field Definitions | Channel-level field definitions |
+| Form Definitions | Channel-level form definitions |
+| Campaigns | Campaign creation and updates |
+| Metrics | Session and revenue reporting |
+| Checkout | Creator drop cart URL generation |
+| Storage | Upload utility endpoints |
+
+## Response Format
+
+All responses are returned in JSON format. Successful responses typically include a `data` object or the updated resource. Errors follow a consistent error response structure:
+
+```json
+{
+  "statusCode": 500,
+  "error": "Internal Server Error",
+  "message": "Error description"
+}
+```
+
+## Where to Find Endpoint Details
+
+- Use the generated endpoint groups in the navigation for request parameters, request bodies, response schemas, and examples.
+- Use [Authentication](/guides/authentication) for credential strategy and header usage.
+- Use [Shopify Flow Actions](/references/shopify-flow-actions) for workflow automation actions that sit outside the REST endpoint catalog.
 
 ## Quick Links
 
 <CardGroup cols={2}>
-  <Card title="API Overview" icon="book" href="/references/api-overview">
-    Capability map, mental model, and API surface overview
-  </Card>
   <Card title="Authentication" icon="key" href="/guides/authentication">
     Setup guide for API keys and JWT tokens
+  </Card>
+  <Card title="Shopify Flow Actions" icon="workflow" href="/references/shopify-flow-actions">
+    Workflow automation actions connected to CreatorCommerce data
   </Card>
 </CardGroup>
