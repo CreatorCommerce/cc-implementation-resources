@@ -55,9 +55,32 @@ Both platforms receive full attribution:
 | SDK enabled | The CreatorCommerce Theme App Embed must be active on your Shopify theme |
 | Active affiliate link | Your affiliate platform must generate valid links with tracking parameters |
 | Redirect endpoint | Affiliate links must route through `/apps/cc-storefront/redirect` for CC tracking to work |
+| Valid Destination | Synced creators need a valid Destination for affiliate traffic to land on their configured co-branded experience |
 | URL parameter support | Your site must support parameterized URLs (standard for all Shopify stores) |
 
 ## Important Details
+
+### The Redirect is Safe for All Affiliates
+
+You can apply `/apps/cc-storefront/redirect` broadly in your affiliate platform, including to affiliates that are not enrolled in CreatorCommerce yet. If the redirect receives traffic for a creator who is not synced into CreatorCommerce, or for a creator who is not assigned to a valid Destination, CreatorCommerce sends the shopper to your homepage.
+
+### Destinations Control the Landing Page
+
+The core CreatorCommerce creator page can render at:
+
+```text
+/pages/creator/{{handle}}
+```
+
+But the final shopper destination is controlled by the creator's Destination. A Destination can send traffic to a creator page, collection, product page, homepage, or custom theme page, and it can add template parameters such as `?view=campaign-template`.
+
+If you need to manually preview a page before affiliate redirects are configured, use:
+
+```text
+/pages/creator/{{handle}}?cc={{handle}}
+```
+
+Use the handle from the creator's page in CreatorCommerce. This is a preview fallback only; production traffic should pass through `/apps/cc-storefront/redirect`.
 
 ### CreatorCommerce Does Not Manage Third-Party Scripts
 

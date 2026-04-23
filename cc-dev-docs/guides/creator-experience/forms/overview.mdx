@@ -47,10 +47,26 @@ CC Forms & Dashboard takes authentication, infrastructure, and design off your s
 
 | Form Type | Purpose | When to Use |
 |-----------|---------|-------------|
-| Onboarding | Initial partner signup and profile | First interaction |
-| Collection | Gather specific content (bio, social) | After signup |
-| Product | Product/collection selection | Curating drops |
-| Custom | Any structured data | Unique requirements |
+| Onboarding | Initial creator signup, profile data, and first required setup | First interaction; completed once |
+| Collection | Product curation plus collection-level questions | When a creator builds or edits a curated collection/drop |
+| Product | Per-product questions inside a collection flow | When creators add products and need to leave reviews, notes, UGC, ratings, or other product-level context |
+| Custom | Repeatable structured data collection | Ongoing campaign, content, or dashboard forms creators can complete more than once |
+
+## Default vs. Custom Experiences
+
+If you do not create any custom forms, creators still get a default onboarding experience. The default onboarding form uses copy, fonts, images, and splash-screen settings from CreatorCommerce settings, then guides the creator through the default collection and product forms. That default flow can collect selected products, product reviews or UGC, collection title, and collection description.
+
+Build custom forms when you want to override the default experience with your own copy, custom questions, required or optional fields, and data backed by CreatorCommerce custom fields.
+
+## How Forms Fit Together
+
+Collection forms are the backbone of product curation. A collection form represents a group of products a creator curated together, plus extra questions you want answered about that collection. Use collection-level questions for data about the whole collection or drop, not for a single product and not for the whole collab.
+
+Product forms render inside collection forms when creators add products. Use them for per-product notes, ratings, testimonials, media, usage tips, or "why I love this" copy.
+
+Collection forms can be included inside onboarding forms or custom forms. Onboarding forms are required once for the creator's first setup; custom forms can be completed repeatedly and appear in the creator dashboard for ongoing access.
+
+Product search and default product selection are controlled in CreatorCommerce settings. Use product exclusion tags to omit products from creator search, and use the recommended collection setting to show a default product collection. See [Initial Settings Configuration](/guides/initial-settings).
 
 ## Quick Start
 

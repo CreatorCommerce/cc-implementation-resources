@@ -8,6 +8,8 @@ pageType: 'Overview'
 
 A **Destination** is a core CreatorCommerce feature that controls **where shoppers land** after clicking an affiliate link. It connects your affiliate tiers to specific co-branded shopping experiences, ensuring every click leads to a page designed to convert.
 
+CreatorCommerce can render the core creator page at `/pages/creator/{{handle}}`, but Destinations are what define the actual shopping landing spot. Because the CreatorCommerce SDK and default CC sections can reference creator data anywhere in the theme, the experience can start on a creator page, collection, product page, homepage, or any custom page.
+
 ## The Three Core Parts
 
 ### 1. Collaboration Tiers
@@ -41,7 +43,7 @@ Cart attributes set → Personalized experience begins
 
 | Type | URL Pattern | Best For |
 |------|-------------|----------|
-| **Creator Landing Page** | `/pages/creators/{{shop.handle}}` | Dedicated creator storefronts |
+| **Creator Landing Page** | `/pages/creator/{{shop.handle}}` | Dedicated creator storefronts |
 | **Collection** | `/collections/[collection-handle]` | Product-focused experiences |
 | **Product** | `/products/[product-handle]` | Direct product promotion |
 | **Homepage** | `/` | Full-funnel site personalization |
@@ -101,8 +103,19 @@ https://your-store.myshopify.com/apps/cc-storefront/redirect
 
 CreatorCommerce handles the rest — resolving the affiliate, determining their destination, and routing traffic to the right co-branded experience.
 
+This redirect is safe to apply to all affiliates, even affiliates that are not yet enrolled in CreatorCommerce. If traffic passes through `/apps/cc-storefront/redirect` and the creator is not synced or is not in a valid Destination, CreatorCommerce sends the shopper to your homepage instead of showing a broken creator experience.
+
+If you need to preview a creator page before the affiliate platform redirect is configured, use:
+
+```text
+/pages/creator/{{handle}}?cc={{handle}}
+```
+
+Get the handle from the creator's page in CreatorCommerce. Do not use this as the production affiliate link, because it bypasses the redirect step that applies Destination logic and tracking context.
+
 ## Related
 
 - [Building Co-branded Landing Pages](/guides/storefronts/landing-pages-overview)
 - [Create a Landing Page Template](/guides/storefronts/create-landing-page-template)
 - [Full-Funnel Personalization](/guides/storefronts/full-funnel-personalization)
+- [Affiliate Link Tracking](/references/affiliate-link-tracking)

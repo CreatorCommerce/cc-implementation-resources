@@ -123,6 +123,48 @@ POST /creators/collabs
 
 ## Managing Collabs
 
+### Getting the Invite or Onboarding Link
+
+Use this when a creator needs the link that signs them into onboarding or the creator dashboard.
+
+<Steps>
+  <Step title="Confirm the creator is in a Destination">
+    The creator must be assigned to a valid [Destination](/guides/storefronts/destinations-explained). If they are not in a Destination, CreatorCommerce does not consider them active for storefront and onboarding workflows.
+  </Step>
+  <Step title="Open the Collaborations table">
+    In CreatorCommerce, go to the **Collaborations** table.
+  </Step>
+  <Step title="Open the creator actions">
+    Click the right side of the creator's row, or click into the creator's page.
+  </Step>
+  <Step title="Copy the invite/onboarding link">
+    Use the copy action for the creator's invite or onboarding link.
+  </Step>
+  <Step title="Send it to the creator">
+    The link automatically logs the creator in and takes them to the correct onboarding or dashboard experience.
+  </Step>
+</Steps>
+
+Creators can also self-enter onboarding when you send a Klaviyo creator invite flow, deploy the CreatorCommerce customer account block, or use an embedded sign-in integration inside your affiliate platform's affiliate portal. For access options, see [Links + Auth Explained](/guides/creator-experience/forms/links-auth).
+
+### Testing or Viewing a Creator Storefront
+
+To test a creator as a merchant, find the collab and click the creator's affiliate link. The creator must be in a valid Destination, and the affiliate link should route through:
+
+```text
+/apps/cc-storefront/redirect
+```
+
+That redirect resolves the creator's Destination, keeps affiliate platform tracking intact, and invokes the CreatorCommerce SDK with creator context.
+
+If the affiliate platform link is not yet configured to use the redirect, manually preview the page with:
+
+```text
+/pages/creator/{{handle}}?cc={{handle}}
+```
+
+Use the handle shown on the creator's page. This manual URL is a preview fallback; production affiliate links should go through `/apps/cc-storefront/redirect`.
+
 ### Updating Collab Details
 
 **Via API:**
@@ -283,6 +325,5 @@ After creating your first collab:
 - [Creator & Collab Data Model](/references/creator-collab-data-model) - Deep dive into collab structure
 - [Building Prerequisites](/guides/building-prerequisites) - Setup requirements
 - [Connect Your Tech Stack](/guides/connect-your-tech-stack) - Integration setup
-
 
 

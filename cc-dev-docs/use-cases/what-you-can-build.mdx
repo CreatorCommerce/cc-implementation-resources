@@ -10,6 +10,60 @@ CreatorCommerce isn't a single feature — it's infrastructure for building an o
 
 ---
 
+## Common Merchant Operations
+
+Use these workflows when a creator already exists in CreatorCommerce and you need to help them get started, test their storefront, or understand what powers the experience.
+
+### Get a Creator's Invite or Onboarding Link
+
+1. Make sure the creator is assigned to a valid [Destination](/guides/storefronts/destinations-explained). If the creator is not in a Destination, CreatorCommerce does not treat them as active for storefront and onboarding workflows.
+2. Open the **Collaborations** table.
+3. Click the right side of the creator's row, or open the creator directly.
+4. Click to copy the creator's invite/onboarding link.
+5. Send the link to the creator. The link signs them in automatically and takes them into the right onboarding or dashboard experience.
+
+Creators can also get into onboarding themselves through a Klaviyo creator invite flow, the CreatorCommerce customer account block, or an embedded sign-in integration inside your affiliate platform's affiliate portal. For the auth model, see [Links + Auth Explained](/guides/creator-experience/forms/links-auth).
+
+### Test or View a Creator's Storefront
+
+1. Find the creator's collab in CreatorCommerce.
+2. Click the collab's affiliate link.
+3. Confirm the affiliate link routes through `/apps/cc-storefront/redirect`.
+
+That redirect is the essential integration step for affiliate links. It lets CreatorCommerce resolve the creator, apply the right Destination, append creator context, and load any Destination-specific template such as `?view=template-name`.
+
+If the affiliate platform is not yet sending traffic through the redirect, you can manually preview a creator page with:
+
+```text
+/pages/creator/{{handle}}?cc={{handle}}
+```
+
+Get the handle from the creator's page in CreatorCommerce. Use this as a preview fallback only; production affiliate traffic should pass through `/apps/cc-storefront/redirect` so tracking, UTMs, Destinations, and SDK personalization work correctly. See [Affiliate Link Tracking](/references/affiliate-link-tracking) for redirect requirements.
+
+### Understand Where Shoppers Land
+
+CreatorCommerce can render a core creator page at `/pages/creator/{{handle}}`, but the shopper experience can be any page in your Shopify theme. The CC SDK and default CC sections can reference creator data across the theme, so co-branding is not limited to one page.
+
+The mechanism that decides where affiliate traffic goes is the [Destination](/guides/storefronts/destinations-explained). A Destination defines the landing spot for each creator/tier and can add template parameters such as `?view=summer-campaign`.
+
+### Understand Forms
+
+If you do not build any custom forms, creators still have a default onboarding path. You can override onboarding copy, fonts, and imagery in CreatorCommerce settings, then let the default flow take creators through product selection, product reviews or UGC, collection title, and collection description.
+
+Use custom forms when you want custom copy, questions backed by custom fields, required or optional field control, or a repeatable dashboard form. Collection forms are the backbone of product curation: they combine a creator's selected products with collection-level questions, and they can render product forms for per-product notes or reviews. See [CC Forms & Dashboard](/guides/creator-experience/forms/overview) for the full form model.
+
+### Read Metrics
+
+CreatorCommerce dashboard metrics come from the CC tracking layer and web pixel. The web pixel is enabled by default in settings. Session-driven dashboard data is delayed by 24 hours, so data viewed at 2pm ET reflects the state through 2pm ET the previous day. For real-time reporting, use Shopify reports. See [Funnel Analytics](/use-cases/funnel-analytics) and [Enable Tracking on Liquid Themes](/guides/storefronts/enable-tracking).
+
+### Set Up Klaviyo or Another Integration
+
+Klaviyo supports two jobs: co-branded customer emails such as cart abandonment and post-purchase flows, and creator lifecycle emails such as onboarding invites, referral milestones, and campaign participation nudges. Add your Klaviyo API key in CreatorCommerce, then email [help@creatorcommerce.shop](mailto:help@creatorcommerce.shop) to have the base emails and flows assembled. Invite [team@creatorcommerce.shop](mailto:team@creatorcommerce.shop) as a Klaviyo manager when you need CreatorCommerce to help build flows.
+
+For any other integration, open the integration card in CreatorCommerce, click **Learn more**, and follow the integration-specific setup. If you need help, [book time with CreatorCommerce](https://cal.com/creatorcommerce/30min) or email [help@creatorcommerce.shop](mailto:help@creatorcommerce.shop).
+
+---
+
 ## Enrollment
 
 Get creators into your program and set them up for success.

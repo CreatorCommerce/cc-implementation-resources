@@ -102,7 +102,7 @@ const creatorHandle = window.CC_CREATOR_HANDLE || localStorage.getItem('cc_creat
 const popupKey = creatorHandle ? `cc_popup_seen_${creatorHandle}` : null;
 
 if (popupKey && !sessionStorage.getItem(popupKey)) {
-  const isCreatorLandingPage = window.location.pathname.includes('/pages/creators/');
+  const isCreatorLandingPage = window.location.pathname.includes('/pages/creator/');
 
   // Don't interrupt immediately on the landing page itself.
   if (!isCreatorLandingPage) {

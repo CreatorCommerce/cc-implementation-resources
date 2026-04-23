@@ -161,7 +161,7 @@ When a shopper finds a product via search or browsing, show a link back to the c
 
 ```liquid
 {% if cc_creator %}
-  <a href="/pages/creators/{{ cc_creator.handle }}" class="btn btn--secondary">
+  <a href="/pages/creator/{{ cc_creator.handle }}" class="btn btn--secondary">
     View {{ cc_creator.cc-creator-first-name | escape }}'s Full Shop
   </a>
 {% endif %}

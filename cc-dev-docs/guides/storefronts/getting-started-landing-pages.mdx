@@ -19,7 +19,7 @@ CreatorCommerce stores creator data in Shopify **metaobjects** (type: `creator`)
 - **Convenient data access** — The `metaobject` variable is automatically available in the template
 - **Scalable templates** — One template serves all creators
 - **Theme editor compatibility** — Design and configure in Shopify's visual editor
-- **Automatic URL generation** — Each creator gets `/pages/creators/[handle]`
+- **Automatic URL generation** — Each creator gets `/pages/creator/[handle]`
 
 ## Prerequisites
 
@@ -79,7 +79,7 @@ Best when you want deep control over structure, cards, and custom logic.
     See [App Blocks 101](/guides/storefronts/app-blocks-101) and [Quick Start: Out-of-the-Box Blocks](/guides/storefronts/quick-start-out-of-box-blocks) for section-by-section references.
   </Step>
   <Step title="Preview the page">
-    Visit `/pages/creators/[creator-handle]` to see the live page. In the theme editor, you can preview by selecting any creator entry from the metaobject picker.
+    Visit `/pages/creator/[creator-handle]` to see the live page. In the theme editor, you can preview by selecting any creator entry from the metaobject picker.
   </Step>
 </Steps>
 
@@ -171,7 +171,7 @@ Always iterate the JSON drops first (`data.value['cc-creator-drops']`) and match
 ## Testing
 
 1. **Theme editor** — Select a creator from the metaobject picker to preview
-2. **Live preview** — Visit `/pages/creators/[handle]` directly
+2. **Live preview** — Visit `/pages/creator/[handle]` directly
 3. **Cart attributes** — On non-metaobject pages, verify cart attributes are set by checking:
 
 ```javascript
